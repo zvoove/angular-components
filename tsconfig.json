@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@prosoft/components": [
+        "dist/components"
+      ],
+      "@prosoft/components/*": [
+        "dist/components/*"
+      ]
+    }
   }
 }
