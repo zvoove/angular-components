@@ -1,0 +1,11 @@
+<h1>Flip Container Demo</h1>
+
+<ps-flip-container #flip style="display:block; width: 100px; height: 100px;">
+  <div *psFlipContainerFront style="height: 100px; background-color: red;">
+    Front
+    <button (click)="counter = counter + 1" style="cursor: pointer">increase count</button>
+  </div>
+  <div *psFlipContainerBack style="height: 100px; background-color: green;">Back</div>
+</ps-flip-container>
+<button (click)="flip.toggleFlip()">toggle</button>
+Counter: {{ counter }}

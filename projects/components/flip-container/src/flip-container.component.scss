@@ -1,0 +1,23 @@
+.ps-flip-container__container {
+  perspective: 100%;
+}
+
+.ps-flip-container__flip-box {
+  display: grid;
+  grid-template-areas: 'content';
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.ps-flip-container__side {
+  grid-area: content;
+  backface-visibility: hidden;
+}
+
+.ps-flip-container__side__back {
+  transform: rotateY(180deg);
+}
+
+.ps-flip-container__side__front {
+  transform: rotateY(0deg);
+}
