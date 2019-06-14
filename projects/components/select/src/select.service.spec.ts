@@ -86,6 +86,32 @@ describe('OptionsPsSelectService', () => {
     const renderOptions = getRenderData(dataSource);
     expect(renderOptions).toEqual([{ value: { x: 1, y: 'item 1' }, label: 'item 1', hidden: false }]);
   }));
+
+  it('should work with data array', fakeAsync(() => {
+    const service = new OptionsPsSelectService();
+
+    const dataSource = service.createDataSource([{ value: 1, label: 'item 1' }], null);
+
+    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
+    expectStrictEqualComparer(dataSource);
+    expectIdGetItemsForValues(dataSource);
+
+    const renderOptions = getRenderData(dataSource);
+    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false }]);
+  }));
+
+  it('should work with observable array', fakeAsync(() => {
+    const service = new OptionsPsSelectService();
+
+    const dataSource = service.createDataSource(of([{ value: 1, label: 'item 1' }]), null);
+
+    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
+    expectStrictEqualComparer(dataSource);
+    expectIdGetItemsForValues(dataSource);
+
+    const renderOptions = getRenderData(dataSource);
+    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false }]);
+  }));
 });
 
 function getRenderData(dataSource: PsSelectDataSource) {

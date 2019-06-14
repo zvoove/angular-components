@@ -41,16 +41,24 @@ export interface PsSelectOptionsData<T = any> {
   loadTrigger?: PsSelectLoadTrigger;
 }
 
-export declare type PsSelectData = PsSelectOptionsData | PsSelectDataSource;
+export declare type PsSelectData<T = any> =
+  | PsSelectOptionsData<T>
+  | PsSelectDataSource<T>
+  | PsSelectItem<T>[]
+  | Observable<PsSelectItem<T>[]>;
+
+function isPsSelectOptionsData(value: any): value is PsSelectOptionsData {
+  return typeof value === 'object' && 'idKey' in value && 'labelKey' in value && 'idKey' in value && 'mode' in value;
+}
 
 @Injectable()
-export class OptionsPsSelectService extends PsSelectService {
-  public createDataSource<T>(data: PsSelectData, _: AbstractControl): PsSelectDataSource<T> {
+export class OptionsPsSelectService extends DefaultPsSelectService {
+  public createDataSource<T>(data: PsSelectData, control: AbstractControl): PsSelectDataSource<T> {
     if (isPsSelectDataSource(data)) {
       return data;
     }
 
-    if (typeof data === 'object' && data.idKey && data.labelKey && data.idKey && ['id', 'entity'].indexOf(data.mode) > -1) {
+    if (isPsSelectOptionsData(data)) {
       const entityToSelectItem = createEntityToSelectItemMapper(data.mode, data.idKey, data.labelKey);
       const items$: Observable<PsSelectItem[]> = (isObservable(data.items) ? data.items : of(data.items)).pipe(
         map(items => items.map(entityToSelectItem))
@@ -69,7 +77,7 @@ export class OptionsPsSelectService extends PsSelectService {
       return dataSource;
     }
 
-    throw getSelectUnknownDataSourceError();
+    return super.createDataSource(data, control);
   }
 }
 
