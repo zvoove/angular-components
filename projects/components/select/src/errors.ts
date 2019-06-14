@@ -3,5 +3,5 @@
  * @docs-private
  */
 export function getSelectUnknownDataSourceError() {
-  return Error('The provided data source did not match any of the compatible types (array, Observable, DataSource)');
+  return Error('The provided data source did not match any of the compatible types');
 }
