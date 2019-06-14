@@ -468,6 +468,6 @@ describe('DynamicPsSelectDataSource', () => {
   }));
 });
 
-function createOption(label: string, value: any, hidden = false) {
-  return { label: label, value: value, hidden: hidden };
+function createOption(label: string, value: any, hidden = false): { label: string; value: any; hidden: boolean } {
+  return { label, value, hidden };
 }
