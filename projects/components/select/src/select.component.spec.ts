@@ -1,7 +1,9 @@
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 import { MatSelect } from '@angular/material/select';
 import { Subject } from 'rxjs';
 import { PsSelectComponent } from './select.component';
+import { PsSelectModule } from './select.module';
+import { OptionsPsSelectService } from './select.service';
 
 function createMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -22,6 +24,15 @@ function createMatSelect(): MatSelect {
 }
 
 describe('PsSelectComponent', () => {
+  it('should create', () => {
+    TestBed.configureTestingModule({
+      imports: [PsSelectModule.forRoot(OptionsPsSelectService)],
+    });
+    const fixture = TestBed.createComponent(PsSelectComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+  });
+
   it('should fix MatSelect.close() not emitting stateChanges', fakeAsync(() => {
     const matSelect = createMatSelect();
 
