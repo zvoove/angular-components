@@ -6,6 +6,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule } from '@angular/router';
 import { DefaultPsSelectService, PsSelectModule } from '@prosoft/components/select';
 import { SelectWithCustomSelectServiceComponent } from './demos/select-with-custom-select-service.component';
+import { SelectWithCustomTemplateComponent } from './demos/select-with-custom-template.component';
 import { SelectWithEndlessLoadingDataSourceComponent } from './demos/select-with-endless-loading-datasource.component';
 import { SelectWithErrorInDataSourceComponent } from './demos/select-with-error-in-datasource.component';
 import { SelectWithEventsOnlyComponent } from './demos/select-with-events-only.component';
@@ -26,6 +27,7 @@ import { SelectDemoComponent } from './select-demo.component';
     SelectWithOtherLoadTriggerComponent,
     SelectWithMultiselectComponent,
     SelectWithCustomSelectServiceComponent,
+    SelectWithCustomTemplateComponent,
   ],
   imports: [
     FormsModule,

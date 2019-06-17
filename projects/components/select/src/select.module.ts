@@ -7,11 +7,12 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { PsSelectDataComponent } from './select-data.component';
 import { PsSelectComponent } from './select.component';
 import { PsSelectService } from './select.service';
+import { PsSelectOptionTemplateDirective } from './select-option-template.directive';
 
 @NgModule({
   imports: [CommonModule, FormsModule, ReactiveFormsModule, MatSelectModule, MatTooltipModule, NgxMatSelectSearchModule],
-  declarations: [PsSelectComponent, PsSelectDataComponent],
-  exports: [MatSelectModule, PsSelectComponent, PsSelectDataComponent],
+  declarations: [PsSelectComponent, PsSelectDataComponent, PsSelectOptionTemplateDirective],
+  exports: [MatSelectModule, PsSelectComponent, PsSelectDataComponent, PsSelectOptionTemplateDirective],
   entryComponents: [],
 })
 export class PsSelectModule {

@@ -11,6 +11,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     <app-select-with-error-in-datasource></app-select-with-error-in-datasource>
     <app-select-with-other-load-trigger></app-select-with-other-load-trigger>
     <app-select-with-custom-select-service></app-select-with-custom-select-service>
+    <app-select-with-custom-template></app-select-with-custom-template>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

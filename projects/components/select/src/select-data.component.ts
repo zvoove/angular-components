@@ -11,6 +11,7 @@ import {
   QueryList,
   ViewChildren,
   ViewEncapsulation,
+  TemplateRef,
 } from '@angular/core';
 import { AbstractControl, FormControl, NgControl } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
@@ -34,7 +35,11 @@ import { PsSelectService } from './select.service';
       <span class="ps-select-data__error-message">{{ errorMessage }}</span>
     </mat-option>
     <mat-option *ngFor="let item of items; trackBy: trackByOptions" [value]="item.value" [class.ps-option-hidden]="item.hidden">
-      {{ item.label }}
+      <ng-container *ngIf="!optionTemplate">
+        {{ item.label }}
+      </ng-container>
+      <ng-template *ngIf="optionTemplate" [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: item }">
+      </ng-template>
     </mat-option>
   `,
   styles: [
@@ -80,6 +85,8 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
 
   /** Gibt an, ob im singleselect Modus eine leere Option auswählbar sein soll */
   @Input() public clearable = true;
+
+  @Input() public optionTemplate: TemplateRef<any> | null = null;
 
   /** Die MatOptions für MatSelect */
   @ViewChildren(MatOption) public options: QueryList<MatOption>;

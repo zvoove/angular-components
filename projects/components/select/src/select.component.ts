@@ -9,11 +9,14 @@ import {
   Self,
   ViewChild,
   ViewEncapsulation,
+  ContentChild,
+  TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { PsSelectOptionTemplateDirective } from './select-option-template.directive';
 
 @Component({
   selector: 'ps-select',
@@ -30,7 +33,12 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
         (selectionChange)="onSelectionChange($event)"
         (openedChange)="onOpenedChange($event)"
       >
-        <ps-select-data [dataSource]="dataSource" [compareWith]="compareWith" [clearable]="clearable"></ps-select-data>
+        <ps-select-data
+          [dataSource]="dataSource"
+          [compareWith]="compareWith"
+          [clearable]="clearable"
+          [optionTemplate]="optionTemplate"
+        ></ps-select-data>
       </mat-select>
     </div>
   `,
@@ -50,6 +58,9 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 export class PsSelectComponent<T = any> implements ControlValueAccessor, MatFormFieldControl<T> {
   public static nextId = 0;
   @HostBinding() public id = `ps-select-${PsSelectComponent.nextId++}`;
+
+  @ContentChild(PsSelectOptionTemplateDirective, { read: TemplateRef, static: false })
+  public optionTemplate: TemplateRef<any> | null = null;
 
   @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
     this._matSelect = select;
