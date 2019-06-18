@@ -1,0 +1,20 @@
+language: node_js
+node_js:
+  - "10.16.0"
+sudo: true
+
+addons:
+  chrome: stable
+
+before_script:
+  - npm ci
+  # Install commitlint cli for travis
+  - npm install @commitlint/travis-cli
+
+script:
+  # Lint the commit messages
+  - commitlint-travis
+  - ng lint
+  - ng build components
+  - ng test components --watch false --browsers ChromeHeadless
+  - ng build --prod --baseHref=/components/
