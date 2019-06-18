@@ -4,7 +4,8 @@
   "command": {
     "publish": {
       "conventionalCommits": true,
-      "message": "chore(release): release"
+      "message": "chore(release): release",
+      "contents": "dist"
     },
     "version": {
       "push": false
