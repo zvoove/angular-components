@@ -1,16 +1,16 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ContentChild,
   EventEmitter,
   HostBinding,
   Input,
   Optional,
   Output,
   Self,
+  TemplateRef,
   ViewChild,
   ViewEncapsulation,
-  ContentChild,
-  TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
@@ -71,10 +71,6 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
       close.call(select);
       select.stateChanges.next();
     };
-
-    // Bindet unsere onChange/onTouched Callbacks an die Callbacks von MatSelect
-    bindCallbacksToControl(this._matSelect, 'registerOnChange', (value: any) => this._onChange(value));
-    bindCallbacksToControl(this._matSelect, 'registerOnTouched', () => this._onTouched());
   }
 
   /**
@@ -163,11 +159,11 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   }
 
   public registerOnChange(fn: () => void) {
-    this._onChange = <any>fn;
+    // Brauchen wir nicht, da wir das FormControl an das MatSelect weiterreichen
   }
 
   public registerOnTouched(fn: any): void {
-    this._onTouched = fn;
+    // Brauchen wir nicht, da wir das FormControl an das MatSelect weiterreichen
   }
 
   public setDisabledState(isDisabled: boolean): void {
@@ -188,21 +184,4 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   public onOpenedChange(event: boolean) {
     this.openedChange.emit(event);
   }
-
-  private _onChange: (value: any) => void = (_: any) => {};
-  private _onTouched: () => void = () => {};
-}
-
-function bindCallbacksToControl(
-  otherControl: ControlValueAccessor,
-  functionName: 'registerOnTouched' | 'registerOnChange',
-  ownRegisteredCallback: (value: any) => void
-) {
-  const originalFn = otherControl[functionName];
-  otherControl[functionName] = (fn: (data: any) => void) => {
-    originalFn.call(otherControl, (value: any) => {
-      fn(value);
-      ownRegisteredCallback(value);
-    });
-  };
 }

@@ -1,9 +1,11 @@
-import { fakeAsync, TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, flush } from '@angular/core/testing';
 import { MatSelect } from '@angular/material/select';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
 import { PsSelectModule } from './select.module';
 import { OptionsPsSelectService } from './select.service';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 
 function createMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -36,8 +38,8 @@ describe('PsSelectComponent', () => {
   it('should fix MatSelect.close() not emitting stateChanges', fakeAsync(() => {
     const matSelect = createMatSelect();
 
-    const service = new PsSelectComponent(null, null, null);
-    service.setMatSelect = matSelect;
+    const psSelect = new PsSelectComponent(null, null, null);
+    psSelect.setMatSelect = matSelect;
 
     spyOn(matSelect.stateChanges, 'next');
 
@@ -46,60 +48,76 @@ describe('PsSelectComponent', () => {
     expect(matSelect.stateChanges.next).toHaveBeenCalled();
   }));
 
-  it('should also call PsSelect._onChange() when MatSelect._onChange() is called', fakeAsync(() => {
-    const matSelect = createMatSelect();
-
-    const service = new PsSelectComponent(null, null, null);
-    service.setMatSelect = matSelect;
-
-    let orgOnChangeCallbackCalled = false;
-    const onChangeCallback = () => {
-      orgOnChangeCallbackCalled = true;
-    };
-    matSelect.registerOnChange(onChangeCallback);
-
-    spyOn(<any>service, '_onChange');
-
-    matSelect._onChange('test');
-
-    expect(orgOnChangeCallbackCalled).toBeTruthy();
-    expect((<any>service)._onChange).toHaveBeenCalledWith('test');
-  }));
-
-  it('should also call PsSelect._onTouched() when MatSelect._onTouched() is called', fakeAsync(() => {
-    const matSelect = createMatSelect();
-
-    const service = new PsSelectComponent(null, null, null);
-    service.setMatSelect = matSelect;
-
-    let orgOnTouchedCallbackCalled = false;
-    const onTouchedCallback = () => {
-      orgOnTouchedCallbackCalled = true;
-      return {};
-    };
-    matSelect.registerOnTouched(onTouchedCallback);
-
-    spyOn(<any>service, '_onTouched');
-
-    matSelect._onTouched();
-
-    expect(orgOnTouchedCallbackCalled).toBeTruthy();
-    expect((<any>service)._onTouched).toHaveBeenCalled();
-  }));
-
   it('should not enable/disable formControl, if it is already', fakeAsync(() => {
     // formControl enable/disable calls setDisabledState on the valueAccessor, which is the PsSelect -> endless loop
-    const service = new PsSelectComponent(null, null, null);
-    service.formControl.enable();
+    const psSelect = new PsSelectComponent(null, null, null);
+    psSelect.formControl.enable();
 
-    spyOn(service.formControl, 'enable');
-    service.setDisabledState(false);
-    expect(service.formControl.enable).not.toHaveBeenCalled();
+    spyOn(psSelect.formControl, 'enable');
+    psSelect.setDisabledState(false);
+    expect(psSelect.formControl.enable).not.toHaveBeenCalled();
 
-    service.formControl.disable();
+    psSelect.formControl.disable();
 
-    spyOn(service.formControl, 'disable');
-    service.setDisabledState(false);
-    expect(service.formControl.disable).not.toHaveBeenCalled();
+    spyOn(psSelect.formControl, 'disable');
+    psSelect.setDisabledState(false);
+    expect(psSelect.formControl.disable).not.toHaveBeenCalled();
   }));
+});
+
+@Component({
+  selector: 'ps-test-component',
+  template: `
+    <div [formGroup]="form">
+      <ps-select formControlName="select" [dataSource]="dataSource"></ps-select>
+    </div>
+  `,
+})
+export class TestComponent implements OnDestroy {
+  dataSource = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
+  form = new FormGroup({
+    select: new FormControl(),
+  });
+  emittedValues = [];
+
+  @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
+
+  private valuesSubscription: Subscription;
+  constructor() {
+    this.valuesSubscription = this.form.get('select').valueChanges.subscribe(value => {
+      this.emittedValues.push(value);
+    });
+  }
+
+  ngOnDestroy() {
+    this.valuesSubscription.unsubscribe();
+  }
+}
+
+describe('PsSelectComponent', () => {
+  it('should emit only once when selecting an option', () => {
+    TestBed.configureTestingModule({
+      imports: [PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      declarations: [TestComponent],
+    });
+    const fixture = TestBed.createComponent(TestComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+
+    fixture.detectChanges();
+
+    const options = ((component.select as any)._matSelect as MatSelect).options;
+
+    // select item 2
+    options.last.select();
+    expect(component.emittedValues).toEqual([2]);
+
+    // select the clear item
+    // MatSelect emits this twice, commented out until it is fixed:
+    // https://github.com/angular/components/issues/10675
+    // https://github.com/angular/components/issues/12267
+    // component.emittedValues = [];
+    // options.first.select();
+    // expect(component.emittedValues).toEqual([undefined]);
+  });
 });
