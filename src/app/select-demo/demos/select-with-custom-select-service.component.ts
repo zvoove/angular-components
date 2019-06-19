@@ -33,10 +33,12 @@ export class CustomPsSelectService extends OptionsPsSelectService {
         <mat-label>lookup (mode: entity)</mat-label>
         <ps-select formControlName="lookup_entity" [dataSource]="'lookup:country'"></ps-select>
       </mat-form-field>
+      value: {{ form.value.lookup_entity | json }}<br />
       <mat-form-field style="display:inline-block">
         <mat-label>lookup (mode: id)</mat-label>
         <ps-select formControlName="lookup_id" [dataSource]="'idlookup:country'"></ps-select>
       </mat-form-field>
+      value: {{ form.value.lookup_id | json }}<br />
       <mat-form-field style="display:inline-block">
         <mat-label>options (mode: entity)</mat-label>
         <ps-select
@@ -44,12 +46,13 @@ export class CustomPsSelectService extends OptionsPsSelectService {
           [dataSource]="{ mode: 'entity', idKey: 'Id', labelKey: 'Name', items: items$ }"
         ></ps-select>
       </mat-form-field>
+      value: {{ form.value.options_entity | json }}<br />
       <mat-form-field style="display:inline-block">
         <mat-label>options (mode: id)</mat-label>
         <ps-select formControlName="options_id" [dataSource]="{ mode: 'id', idKey: 'Id', labelKey: 'Name', items: items$ }"></ps-select>
       </mat-form-field>
+      value: {{ form.value.options_id | json }}<br />
     </div>
-    value: {{ form.value | json }}<br />
     <ul>
       <li>The initially visible selections should be 'not visible after first open', '??? (ID: country1)', 'Item 1' and 'Item 1'</li>
       <li>After first opening the lookup dropdowns (when the items are loaded) the label should update to 'country 1'</li>

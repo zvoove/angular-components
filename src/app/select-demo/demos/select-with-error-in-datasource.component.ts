@@ -7,12 +7,12 @@ import { NEVER, throwError } from 'rxjs';
   selector: 'app-select-with-error-in-datasource',
   template: `
     <h2>Error while loading items</h2>
-    <div [formGroup]="form">
+    <span [formGroup]="form">
       <mat-form-field style="display:inline-block">
         <mat-label>select</mat-label>
         <ps-select formControlName="select" [dataSource]="dataSource"></ps-select>
       </mat-form-field>
-    </div>
+    </span>
     value: {{ form.value.select | json }}<br />
     <ul>
       <li>Initially '??? (ID: idx)' should be selected</li>

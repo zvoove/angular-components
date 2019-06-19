@@ -8,18 +8,19 @@ import { delay } from 'rxjs/operators';
   selector: 'app-select-with-other-load-trigger',
   template: `
     <h2>Custom load trigger with 1 second loading delay</h2>
-    <mat-radio-group [(ngModel)]="currentLoadTrigger" (change)="onTriggerChanged($event.value)">
-      <mat-radio-button value="initial">initial</mat-radio-button>
-      <mat-radio-button value="firstopen">first panel open</mat-radio-button>
-      <mat-radio-button value="everyopen">every panel open</mat-radio-button>
-    </mat-radio-group>
-
-    <div [formGroup]="form">
+    <div>
+      <mat-radio-group [(ngModel)]="currentLoadTrigger" (change)="onTriggerChanged($event.value)">
+        <mat-radio-button value="initial">initial</mat-radio-button>
+        <mat-radio-button value="firstopen">first panel open</mat-radio-button>
+        <mat-radio-button value="everyopen">every panel open</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <span [formGroup]="form">
       <mat-form-field style="display:inline-block">
         <mat-label>select</mat-label>
         <ps-select formControlName="select" [dataSource]="dataSource"></ps-select>
       </mat-form-field>
-    </div>
+    </span>
     value: {{ form.value.select | json }}<br />
     current load trigger: {{ currentLoadTrigger }}<br />
     load trigger count: {{ loadCount }}

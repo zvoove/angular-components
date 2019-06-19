@@ -14,13 +14,15 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-select-with-error-state-matcher',
   template: `
     <h2>Disabled form with custom error state matcher</h2>
-    <button (click)="toggleDiabled()">toggle disabled</button>
-    <div [formGroup]="form">
+    <div>
+      <button (click)="toggleDiabled()">toggle disabled</button>
+    </div>
+    <span [formGroup]="form">
       <mat-form-field style="display:inline-block">
         <mat-label>select</mat-label>
         <ps-select formControlName="select" [dataSource]="items$" [errorStateMatcher]="errorStateMatcher"></ps-select>
       </mat-form-field>
-    </div>
+    </span>
     value: {{ form.value.select | json }}<br />
     last 5 values: {{ lastFiveValues$ | async }}
     <ul>

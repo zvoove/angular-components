@@ -6,13 +6,13 @@ import { of, Observable } from 'rxjs';
   selector: 'app-select-with-selected-item-not-in-datasource',
   template: `
     <h2>Initially selected Item is not in DataSource</h2>
-    <div [formGroup]="form">
+    <span [formGroup]="form">
       <mat-form-field style="display:inline-block">
         <mat-label>select</mat-label>
         <ps-select formControlName="select" [dataSource]="items$"></ps-select>
       </mat-form-field>
-    </div>
-    value: {{ form.value | json }}<br />
+    </span>
+    value: {{ form.value.select | json }}<br />
     <ul>
       <li>Initially '??? (ID: idx)' should be selected</li>
       <li>When first opening the dropdown '??? (ID: idx)' should be the first item and marked as selected</li>

@@ -6,13 +6,13 @@ import { of, Observable } from 'rxjs';
   selector: 'app-select-with-multiselect',
   template: `
     <h2>Multiselect</h2>
-    <div [formGroup]="form">
+    <span [formGroup]="form">
       <mat-form-field style="display:inline-block">
         <mat-label>select</mat-label>
         <ps-select formControlName="select" [dataSource]="items$" [multiple]="true"></ps-select>
       </mat-form-field>
-    </div>
-    value: {{ form.value | json }}<br />
+    </span>
+    value: {{ form.value.select | json }}<br />
     <ul>
       <li>Multiple items should be selectable</li>
       <li>On mouseover the selected items should be shown in a tooltip</li>

@@ -25,11 +25,6 @@ import { PsSelectOptionTemplateDirective } from './select-option-template.direct
     <div [formGroup]="formGroup" [matTooltip]="tooltip" [matTooltipDisabled]="!multiple">
       <mat-select
         [formControl]="formControl"
-        [compareWith]="compareWith || defaultCompareWith"
-        [multiple]="multiple"
-        [panelClass]="panelClass"
-        [placeholder]="placeholder"
-        [required]="required"
         [disableOptionCentering]="true"
         (selectionChange)="onSelectionChange($event)"
         (openedChange)="onOpenedChange($event)"
@@ -81,26 +76,54 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
    *   - `DataSource` object that implements the connect/disconnect interface.
    */
   @Input() public dataSource: any;
+
   @Input() public compareWith: (o1: any, o2: any) => boolean = null;
+
   /** When true, an empty option is added to the top of the list (ignored for multiple true) */
   @Input() public clearable = true;
-  @Input()
-  public set disabled(value: boolean) {
+
+  @Input() public set disabled(value: boolean) {
     this.setDisabledState(value);
   }
   public get disabled(): boolean {
     return this.formControl.disabled;
   }
-  @Input() public multiple = false;
+
+  @Input() public set multiple(value: boolean) {
+    this._matSelect.multiple = value;
+  }
+  public get multiple(): boolean {
+    return this._matSelect.multiple;
+  }
+
   @Input() public set errorStateMatcher(value: ErrorStateMatcher) {
     this._matSelect.errorStateMatcher = value;
   }
   public get errorStateMatcher(): ErrorStateMatcher {
     return this._matSelect.errorStateMatcher;
   }
-  @Input() public panelClass: string | string[] | Set<string> | { [key: string]: any };
-  @Input() public placeholder: string;
-  @Input() public required = false;
+
+  @Input() public set panelClass(value: string | string[] | Set<string> | { [key: string]: any }) {
+    this._matSelect.panelClass = value;
+  }
+  public get panelClass(): string | string[] | Set<string> | { [key: string]: any } {
+    return this._matSelect.panelClass;
+  }
+
+  @Input() public set placeholder(value: string) {
+    this._matSelect.placeholder = value;
+  }
+  public get placeholder(): string {
+    return this._matSelect.placeholder;
+  }
+
+  @Input() public set required(value: boolean) {
+    this._matSelect.required = value;
+  }
+  public get required(): boolean {
+    return this._matSelect.required;
+  }
+
   @Output() public openedChange = new EventEmitter<boolean>();
   @Output() public selectionChange = new EventEmitter<MatSelectChange>();
 
@@ -123,7 +146,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   public get errorState() {
     return this._matSelect.errorState;
   }
-  public controlType = 'ps-select';
+  public readonly controlType = 'ps-select';
 
   public get formGroup(): FormGroup {
     return (this._parentFormGroup && this._parentFormGroup.form) || (this._parentForm && this._parentForm.form) || this._dummyForm;
@@ -162,8 +185,6 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
     // for changes on ps-select, which would cause problems with mat-form-field.
     this._matSelect.ngDoCheck();
   }
-
-  public defaultCompareWith = (o1: any, o2: any) => o1 === o2;
 
   public onContainerClick(_: MouseEvent): void {}
   public setDescribedByIds(_: string[]): void {}

@@ -1,12 +1,12 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { fakeAsync, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material';
+import { fakeAsync, TestBed, flush, ComponentFixture } from '@angular/core/testing';
 import { MatSelect } from '@angular/material/select';
 import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
 import { PsSelectModule } from './select.module';
 import { OptionsPsSelectService } from './select.service';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
+import { FormGroup, FormControl, ReactiveFormsModule, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material';
 
 function createMatSelect(): MatSelect {
   const matSelect = <any>{
