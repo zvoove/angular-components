@@ -67,6 +67,13 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
       close.call(select);
       select.stateChanges.next();
     };
+
+    // Forward the ControlValueAccessor methods to mat-select
+    this.writeValue = select.writeValue.bind(select);
+    this.registerOnChange = select.registerOnChange.bind(select);
+    this.registerOnTouched = select.registerOnTouched.bind(select);
+    this.setDisabledState = select.setDisabledState.bind(select);
+    select.writeValue = select.registerOnChange = select.registerOnTouched = select.setDisabledState = () => {};
   }
 
   /**
@@ -149,9 +156,11 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   public readonly controlType = 'ps-select';
 
   public get formGroup(): FormGroup {
+    // ngModel or envent binding only -> dummy control
     return (this._parentFormGroup && this._parentFormGroup.form) || (this._parentForm && this._parentForm.form) || this._dummyForm;
   }
   public get formControl(): FormControl {
+    // envent binding only -> dummy control
     return (this.ngControl && (this.ngControl.control as FormControl)) || this._dummyControl;
   }
 
@@ -190,26 +199,19 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   public setDescribedByIds(_: string[]): void {}
 
   public writeValue(_: any) {
-    // We dont need to do anything here, because we forward the FormControl to MatSelect
+    // This method is overwritten in setMatSelect
   }
 
   public registerOnChange(fn: () => void) {
-    // We dont need to do anything here, because we forward the FormControl to MatSelect
+    // This method is overwritten in setMatSelect
   }
 
   public registerOnTouched(fn: any): void {
-    // We dont need to do anything here, because we forward the FormControl to MatSelect
+    // This method is overwritten in setMatSelect
   }
 
   public setDisabledState(isDisabled: boolean): void {
-    if (this.formControl.disabled === isDisabled) {
-      return;
-    }
-    if (isDisabled) {
-      this.formControl.disable();
-    } else {
-      this.formControl.enable();
-    }
+    // This method is overwritten in setMatSelect
   }
 
   public onSelectionChange(event: MatSelectChange) {

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef, Component, OnDestroy, ViewChild } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
@@ -12,6 +12,8 @@ function createMatSelect(): MatSelect {
   const matSelect = <any>{
     stateChanges: new Subject<void>(),
     close: () => {},
+    setDisabledState: () => {},
+    writeValue: () => {},
     _onChange: null,
     _onTouched: null,
   };
@@ -98,19 +100,40 @@ export class TestComponent implements OnDestroy {
 }
 
 @Component({
-  selector: 'ps-multiple-css-test-component',
+  selector: 'ps-test-multiple-component',
   template: `
     <ps-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true"></ps-select>
   `,
 })
-export class TestMultipleCssComponent {
+export class TestMultipleComponent {
   dataSource = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
   value = null;
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
+
+  constructor(public cd: ChangeDetectorRef) {}
 }
 
 describe('PsSelectComponent', () => {
+  it('should work with ngModel', async(() => {
+    TestBed.configureTestingModule({
+      imports: [PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
+      declarations: [TestMultipleComponent],
+    });
+    const fixture = TestBed.createComponent(TestMultipleComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+
+    fixture.detectChanges();
+
+    // Update value from ps-select
+    const options = ((component.select as any)._matSelect as MatSelect).options;
+    options.last.select();
+    fixture.detectChanges();
+    expect(component.value).toEqual([2]);
+    expect(getSelectedValueText(fixture)).toEqual('item2');
+  }));
+
   it('should emit only once when selecting an option', () => {
     TestBed.configureTestingModule({
       imports: [PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
@@ -214,9 +237,9 @@ describe('PsSelectComponent', () => {
   it('should set multiple css class for multiple mode', () => {
     TestBed.configureTestingModule({
       imports: [PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
-      declarations: [TestMultipleCssComponent],
+      declarations: [TestMultipleComponent],
     });
-    const fixture = TestBed.createComponent(TestMultipleCssComponent);
+    const fixture = TestBed.createComponent(TestMultipleComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
 
@@ -226,6 +249,12 @@ describe('PsSelectComponent', () => {
     expect(classes).toContain('ps-select-multiple');
   });
 });
+
+function getSelectedValueText(fixture: ComponentFixture<any>) {
+  const testComponentElement: HTMLElement = fixture.nativeElement;
+  const selectValueElement = testComponentElement.querySelector('.mat-select-value-text');
+  return selectValueElement ? selectValueElement.children[0].textContent : null;
+}
 
 function getPsSelectCssClasses(fixture: ComponentFixture<any>) {
   const testComponentElement: HTMLElement = fixture.nativeElement;

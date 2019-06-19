@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-select-with-ng-model',
   template: `
     <h2>ngModel</h2>
+    <div>
+      <button (click)="random()">select random value</button>
+    </div>
     <mat-form-field>
       <mat-label>ngModel bound</mat-label>
       <ps-select [(ngModel)]="ngModelValue" [dataSource]="items"></ps-select>
@@ -22,4 +25,12 @@ export class SelectWithNgModelComponent {
     label: `Item ${i}`,
   }));
   public ngModelValue: any = 'id11';
+
+  constructor(private cd: ChangeDetectorRef) {}
+
+  public random() {
+    const idx = Math.floor(Math.random() * this.items.length);
+    this.ngModelValue = this.items[idx].value;
+    this.cd.markForCheck();
+  }
 }
