@@ -12,6 +12,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     <app-select-with-other-load-trigger></app-select-with-other-load-trigger>
     <app-select-with-custom-select-service></app-select-with-custom-select-service>
     <app-select-with-custom-template></app-select-with-custom-template>
+    <app-select-with-error-state-matcher></app-select-with-error-state-matcher>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

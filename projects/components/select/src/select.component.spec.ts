@@ -1,11 +1,12 @@
-import { fakeAsync, TestBed, flush } from '@angular/core/testing';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { fakeAsync, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material';
 import { MatSelect } from '@angular/material/select';
 import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
 import { PsSelectModule } from './select.module';
 import { OptionsPsSelectService } from './select.service';
-import { Component, ViewChild, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 
 function createMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -69,16 +70,18 @@ describe('PsSelectComponent', () => {
   selector: 'ps-test-component',
   template: `
     <div [formGroup]="form">
-      <ps-select formControlName="select" [dataSource]="dataSource"></ps-select>
+      <ps-select formControlName="select" [dataSource]="dataSource" [errorStateMatcher]="errorStateMatcher"></ps-select>
     </div>
   `,
 })
 export class TestComponent implements OnDestroy {
   dataSource = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
+  control = new FormControl(null, [Validators.required]);
   form = new FormGroup({
-    select: new FormControl(),
+    select: this.control,
   });
   emittedValues = [];
+  errorStateMatcher: ErrorStateMatcher = null;
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
 
@@ -119,5 +122,35 @@ describe('PsSelectComponent', () => {
     // component.emittedValues = [];
     // options.first.select();
     // expect(component.emittedValues).toEqual([undefined]);
+  });
+
+  it('should use the error state matcher input', () => {
+    TestBed.configureTestingModule({
+      imports: [PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      declarations: [TestComponent],
+    });
+    const fixture = TestBed.createComponent(TestComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+
+    fixture.detectChanges();
+
+    // Default matcher
+    expect(component.control.value).toBe(null);
+    expect(component.select.errorState).toBe(false);
+
+    // Custom matcher - empty value
+    component.errorStateMatcher = {
+      isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+        return !!(control && control.invalid);
+      },
+    };
+    fixture.detectChanges();
+    expect(component.select.errorState).toBe(true);
+
+    // Custom matcher - item 1
+    component.control.patchValue(1);
+    fixture.detectChanges();
+    expect(component.select.errorState).toBe(false);
   });
 });

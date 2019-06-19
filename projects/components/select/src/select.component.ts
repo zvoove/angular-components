@@ -11,9 +11,10 @@ import {
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
+  DoCheck,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
-import { MatOption } from '@angular/material/core';
+import { ErrorStateMatcher, MatOption } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { PsSelectOptionTemplateDirective } from './select-option-template.directive';
@@ -55,7 +56,7 @@ import { PsSelectOptionTemplateDirective } from './select-option-template.direct
   },
   providers: [{ provide: MatFormFieldControl, useExisting: PsSelectComponent }],
 })
-export class PsSelectComponent<T = any> implements ControlValueAccessor, MatFormFieldControl<T> {
+export class PsSelectComponent<T = any> implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck {
   public static nextId = 0;
   @HostBinding() public id = `ps-select-${PsSelectComponent.nextId++}`;
 
@@ -65,7 +66,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
     this._matSelect = select;
 
-    // MatSelect hat nen Bug und triggert beim close kein stateChanges, deshalb patchen wir das hier dran, bis sie es fixen.
+    // MatSelect doesn't trigger stateChanges on close which causes problems, so we patch it here.
     const close = select.close;
     select.close = () => {
       close.call(select);
@@ -81,7 +82,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
    */
   @Input() public dataSource: any;
   @Input() public compareWith: (o1: any, o2: any) => boolean = null;
-  /** Gibt an, ob im singleselect Modus eine leere Option auswählbar sein soll */
+  /** When true, an empty option is added to the top of the list (ignored for multiple true) */
   @Input() public clearable = true;
   @Input()
   public set disabled(value: boolean) {
@@ -91,6 +92,12 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
     return this.formControl.disabled;
   }
   @Input() public multiple = false;
+  @Input() public set errorStateMatcher(value: ErrorStateMatcher) {
+    this._matSelect.errorStateMatcher = value;
+  }
+  public get errorStateMatcher(): ErrorStateMatcher {
+    return this._matSelect.errorStateMatcher;
+  }
   @Input() public panelClass: string | string[] | Set<string> | { [key: string]: any };
   @Input() public placeholder: string;
   @Input() public required = false;
@@ -126,7 +133,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   }
 
   public get tooltip(): string {
-    // MatSelect ist anfangs noch nicht initialisiert, deshalb die ganzen Checks
+    // MatSelect is not fully initialized in the beginning, so we need to skip this here until it is ready
     if (this.multiple && this._matSelect && this._matSelect._selectionModel && this._matSelect.selected) {
       return (<MatOption[]>this._matSelect.selected).map(x => x.viewValue).join(', ');
     }
@@ -149,21 +156,28 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
     }
   }
 
+  public ngDoCheck() {
+    // Wen need to call MatSelects ngDoCheck here to update the errorState.
+    // Otherwise the errorState would be updated after angular is done with checking
+    // for changes on ps-select, which would cause problems with mat-form-field.
+    this._matSelect.ngDoCheck();
+  }
+
   public defaultCompareWith = (o1: any, o2: any) => o1 === o2;
 
   public onContainerClick(_: MouseEvent): void {}
   public setDescribedByIds(_: string[]): void {}
 
   public writeValue(_: any) {
-    // Brauchen wir nicht, da wir das FormControl an das MatSelect weiterreichen
+    // We dont need to do anything here, because we forward the FormControl to MatSelect
   }
 
   public registerOnChange(fn: () => void) {
-    // Brauchen wir nicht, da wir das FormControl an das MatSelect weiterreichen
+    // We dont need to do anything here, because we forward the FormControl to MatSelect
   }
 
   public registerOnTouched(fn: any): void {
-    // Brauchen wir nicht, da wir das FormControl an das MatSelect weiterreichen
+    // We dont need to do anything here, because we forward the FormControl to MatSelect
   }
 
   public setDisabledState(isDisabled: boolean): void {
