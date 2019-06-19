@@ -9,9 +9,10 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "commit": "git-cz",
-    "prepublish": "ng lint components && ng test components --watch false && ng build components",
-    "lerna:prerelease": "lerna version prerelease",
-    "publish": "cd dist/components && npm publish"
+    "release:step1": "ng lint components && ng test components --watch false",
+    "release:step2": "lerna version prerelease",
+    "release:step3": "ng build components",
+    "release:step4": "cd dist/components && npm publish"
   },
   "private": false,
   "dependencies": {
