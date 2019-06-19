@@ -1,12 +1,12 @@
-import { fakeAsync, TestBed, flush, ComponentFixture } from '@angular/core/testing';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material';
 import { MatSelect } from '@angular/material/select';
 import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
 import { PsSelectModule } from './select.module';
 import { OptionsPsSelectService } from './select.service';
-import { Component, ViewChild, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, ReactiveFormsModule, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material';
 
 function createMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -97,6 +97,19 @@ export class TestComponent implements OnDestroy {
   }
 }
 
+@Component({
+  selector: 'ps-multiple-css-test-component',
+  template: `
+    <ps-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true"></ps-select>
+  `,
+})
+export class TestMultipleCssComponent {
+  dataSource = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
+  value = null;
+
+  @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
+}
+
 describe('PsSelectComponent', () => {
   it('should emit only once when selecting an option', () => {
     TestBed.configureTestingModule({
@@ -153,4 +166,78 @@ describe('PsSelectComponent', () => {
     fixture.detectChanges();
     expect(component.select.errorState).toBe(false);
   });
+
+  it('should set the right css classes', () => {
+    TestBed.configureTestingModule({
+      imports: [PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      declarations: [TestComponent],
+    });
+    const fixture = TestBed.createComponent(TestComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+    let errorState = false;
+    component.errorStateMatcher = {
+      isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+        return errorState;
+      },
+    };
+
+    fixture.detectChanges();
+
+    // Empty
+    assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-empty']);
+
+    // Item selected
+    ((component.select as any)._matSelect as MatSelect).options.last.select();
+    fixture.detectChanges();
+    assertPsSelectCssClasses(fixture, ['ps-select']);
+
+    // Disabled
+    component.control.disable();
+    fixture.detectChanges();
+    assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-disabled']);
+    component.control.enable();
+
+    // Invalid
+    errorState = true;
+    fixture.detectChanges();
+    assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-invalid']);
+    errorState = false;
+
+    // Required
+    component.select.required = true;
+    fixture.detectChanges();
+    assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-required']);
+    component.select.required = false;
+  });
+
+  it('should set multiple css class for multiple mode', () => {
+    TestBed.configureTestingModule({
+      imports: [PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
+      declarations: [TestMultipleCssComponent],
+    });
+    const fixture = TestBed.createComponent(TestMultipleCssComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+
+    fixture.detectChanges();
+
+    const classes = getPsSelectCssClasses(fixture);
+    expect(classes).toContain('ps-select-multiple');
+  });
 });
+
+function getPsSelectCssClasses(fixture: ComponentFixture<any>) {
+  const testComponentElement: HTMLElement = fixture.nativeElement;
+  const classes = testComponentElement
+    .querySelector('ps-select')
+    .className.split(' ')
+    .filter(x => x.startsWith('ps-'))
+    .sort();
+  return classes;
+}
+
+function assertPsSelectCssClasses(fixture: ComponentFixture<any>, exprectedClasses: string[]) {
+  const classes = getPsSelectCssClasses(fixture);
+  expect(classes).toEqual(exprectedClasses.sort());
+}
