@@ -27,6 +27,10 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./select-demo/select-demo.module').then(m => m.SelectDemoModule),
       },
       {
+        path: 'form-errors',
+        loadChildren: () => import('./form-errors-demo/form-errors-demo.module').then(m => m.FormErrorsDemoModule),
+      },
+      {
         path: '**',
         pathMatch: 'full',
         loadChildren: () => import('./start-page/start-page.module').then(m => m.StartPageModule),
