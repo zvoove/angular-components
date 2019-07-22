@@ -5,29 +5,34 @@
   "projects": {
     "prosoft-components-demo": {
       "projectType": "application",
-      "schematics": {},
-      "root": "",
-      "sourceRoot": "src",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/prosoft-components-demo",
+      "sourceRoot": "projects/prosoft-components-demo/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/prosoft-components-demo",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "index": "projects/prosoft-components-demo/src/index.html",
+            "main": "projects/prosoft-components-demo/src/main.ts",
+            "polyfills": "projects/prosoft-components-demo/src/polyfills.ts",
+            "tsConfig": "projects/prosoft-components-demo/tsconfig.app.json",
+            "aot": true,
+            "assets": ["projects/prosoft-components-demo/src/favicon.ico", "projects/prosoft-components-demo/src/assets"],
+            "styles": ["projects/prosoft-components-demo/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "projects/prosoft-components-demo/src/environments/environment.ts",
+                  "with": "projects/prosoft-components-demo/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -70,26 +75,30 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "main": "projects/prosoft-components-demo/src/test.ts",
+            "polyfills": "projects/prosoft-components-demo/src/polyfills.ts",
+            "tsConfig": "projects/prosoft-components-demo/tsconfig.spec.json",
+            "karmaConfig": "projects/prosoft-components-demo/karma.conf.js",
+            "assets": ["projects/prosoft-components-demo/src/favicon.ico", "projects/prosoft-components-demo/src/assets"],
+            "styles": ["projects/prosoft-components-demo/src/styles.scss"],
             "scripts": []
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["tsconfig.app.json", "tsconfig.spec.json", "e2e/tsconfig.json"],
+            "tsConfig": [
+              "projects/prosoft-components-demo/tsconfig.app.json",
+              "projects/prosoft-components-demo/tsconfig.spec.json",
+              "projects/prosoft-components-demo/e2e/tsconfig.json"
+            ],
             "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
+            "protractorConfig": "projects/prosoft-components-demo/e2e/protractor.conf.js",
             "devServerTarget": "prosoft-components-demo:serve"
           },
           "configurations": {
