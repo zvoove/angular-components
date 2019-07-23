@@ -54,7 +54,8 @@
     "whitespace": false,
     "one-line": false,
     "max-line-length": false,
-    "semicolon": false
+    "semicolon": false,
+    "object-literal-shorthand": [true, "never"]
   },
   "rulesDirectory": ["codelyzer"]
 }
