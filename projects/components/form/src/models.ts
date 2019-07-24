@@ -5,7 +5,7 @@ export interface IPsFormErrorData {
   isControl: boolean;
 }
 
-export interface PsFormError {
+export interface IPsFormError {
   data: IPsFormErrorData;
   errorText: string;
 }

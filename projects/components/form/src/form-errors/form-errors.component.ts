@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { PsFormErrorsService } from './form-errors.service';
-import { PsFormError } from './models';
+import { PsFormService } from '../form.service';
+import { IPsFormError } from '../models';
 
 @Component({
   selector: 'ps-form-errors',
@@ -28,11 +28,11 @@ export class PsFormErrorsComponent implements OnChanges {
   @Input() public form!: FormGroup;
   @Input() public includeControls = true;
 
-  public errors$!: Observable<PsFormError[]>;
+  public errors$!: Observable<IPsFormError[]>;
 
-  constructor(private formErrorsService: PsFormErrorsService) {}
+  constructor(private formErrorsService: PsFormService) {}
 
   public ngOnChanges() {
-    this.errors$ = this.formErrorsService.getErrors(this.form, this.includeControls);
+    this.errors$ = this.formErrorsService.getFormErrors(this.form, this.includeControls);
   }
 }
