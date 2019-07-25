@@ -1,6 +1,6 @@
 export { PsFormModule } from './src/form.module';
 export { BasePsFormService, PsFormService } from './src/form.service';
-export { IPsFormErrorData, IPsFormError as PsFormError } from './src/models';
+export { IPsFormErrorData, IPsFormError } from './src/models';
 
 export { PsFormErrorsComponent } from './src/form-errors/form-errors.component';
 

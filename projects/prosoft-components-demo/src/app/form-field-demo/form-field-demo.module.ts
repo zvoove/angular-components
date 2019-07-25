@@ -11,7 +11,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { RouterModule } from '@angular/router';
-import { BasePsFormService, IPsFormErrorData, PsFormError, PsFormModule } from '@prosoft/components/form';
+import { BasePsFormService, IPsFormErrorData, IPsFormError, PsFormModule } from '@prosoft/components/form';
 import { Observable, of } from 'rxjs';
 import { FormFieldDemoComponent, ReferenceColumnComponent } from './form-field-demo.component';
 
@@ -19,7 +19,7 @@ export class DemoPsErrorsService extends BasePsFormService {
   public getLabel(formControl: any): Observable<string> {
     return formControl.psLabel ? of(formControl.psLabel) : null;
   }
-  protected mapDataToError(errorData: IPsFormErrorData[]): Observable<PsFormError[]> {
+  protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
     return of(
       errorData.map(data => ({
         errorText: `${data.controlPath} - ${data.errorKey} - ${JSON.stringify(data.errorValue)}`,
