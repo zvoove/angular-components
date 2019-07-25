@@ -154,7 +154,7 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
     // MatOptions weiter reichen
     this.options.changes
       .pipe(
-        startWith(null),
+        startWith(null as any),
         takeUntil(this._ngUnsubscribe$)
       )
       .subscribe(() => {

@@ -17,7 +17,7 @@ export abstract class PsFormService {
    *
    * @param control The control class (MatSlider, MatSelect, ...)
    */
-  public abstract getControlType(control: any): string;
+  public abstract getControlType(control: any): string | null;
   public abstract getControlErrors(control: FormControl): Observable<IPsFormError[]>;
   public abstract getFormErrors(form: FormGroup, includeControls: boolean): Observable<IPsFormError[]>;
 }
@@ -51,7 +51,7 @@ export abstract class BasePsFormService extends PsFormService {
 
   private createUpdateTrigger(control: AbstractControl): Observable<any> {
     return merge(control.valueChanges, control.statusChanges).pipe(
-      startWith(null),
+      startWith(null as any),
       debounceTime(this.options.debounceTime)
     );
   }

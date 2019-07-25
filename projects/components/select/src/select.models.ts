@@ -14,7 +14,7 @@ export abstract class PsSelectDataSource<T = any> {
   public error: any = null;
 
   /** The error message for the error or null. */
-  public errorMessage: string = null;
+  public errorMessage: string | null = null;
   public compareWith: (value1: T, value2: T) => boolean = (a, b) => a === b;
 
   /**

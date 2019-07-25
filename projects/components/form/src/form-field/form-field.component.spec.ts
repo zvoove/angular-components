@@ -57,7 +57,7 @@ export class TestNoFormComponent {
   `,
 })
 export class TestNgModelComponent {
-  value = null;
+  value: any = null;
 
   @ViewChild(PsFormFieldComponent, { static: true }) formField: PsFormFieldComponent;
 

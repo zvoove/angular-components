@@ -8,14 +8,14 @@ import { isPsSelectDataSource, PsSelectDataSource, PsSelectItem } from './select
 
 @Injectable()
 export abstract class PsSelectService {
-  public abstract createDataSource<T>(dataSource: any, _: AbstractControl): PsSelectDataSource<T>;
+  public abstract createDataSource<T>(dataSource: any, _: AbstractControl | null): PsSelectDataSource<T>;
 }
 
 @Injectable()
 export class DefaultPsSelectService extends PsSelectService {
   public createDataSource<T>(
     dataSource: PsSelectItem<T>[] | Observable<PsSelectItem<T>[]> | PsSelectDataSource<T>,
-    _: AbstractControl
+    _: AbstractControl | null
   ): PsSelectDataSource<T> {
     if (Array.isArray(dataSource)) {
       dataSource = of(<PsSelectItem<T>[]>dataSource);

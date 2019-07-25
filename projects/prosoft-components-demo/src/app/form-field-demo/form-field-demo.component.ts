@@ -11,7 +11,7 @@ import { FormControl, FormGroup } from '@angular/forms';
   `,
 })
 export class ReferenceColumnComponent {
-  public value = null;
+  public value = '';
 }
 
 @Component({

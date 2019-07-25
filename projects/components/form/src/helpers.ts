@@ -8,14 +8,16 @@ export function hasRequiredField(abstractControl: AbstractControl): boolean {
     }
   }
   if (abstractControl instanceof FormGroup || abstractControl instanceof FormArray) {
-    for (const controlName in abstractControl.controls) {
-      if (abstractControl.controls[controlName]) {
-        if (hasRequiredField(abstractControl.controls[controlName])) {
+    const controls: any = abstractControl.controls; // any because of https://github.com/microsoft/TypeScript/issues/32552
+    for (const controlName in controls) {
+      if (controls[controlName]) {
+        if (hasRequiredField(controls[controlName])) {
           return true;
         }
       }
     }
   }
+
   return false;
 }
 
@@ -24,7 +26,7 @@ export function hasRequiredField(abstractControl: AbstractControl): boolean {
  *
  * @param control The control class (MatSlider, MatSelect, ...)
  */
-export function getControlType(control: any): string {
+export function getControlType(control: any): string | null {
   const controlId: string = control.id /* MatFormFieldControl, z.B. checkbox */ || control.name; /* mat-radio-group */
   if (controlId) {
     const parts = controlId.split('-');

@@ -30,7 +30,7 @@ export interface IDynamicPsSelectDataSourceOptions {
   searchDebounceTime?: number;
 }
 
-export class DynamicPsSelectDataSource<T> extends PsSelectDataSource<T> {
+export class DynamicPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   private _searchDebounceTime: number;
   private _loadTrigger: PsSelectLoadTrigger;
   private _isPanelOpen$ = new BehaviorSubject<boolean>(false);
@@ -98,7 +98,7 @@ export class DynamicPsSelectDataSource<T> extends PsSelectDataSource<T> {
       })
     );
 
-    const options$ = combineLatest(loadedOptions$, missingOptions$).pipe(
+    const options$ = combineLatest([loadedOptions$, missingOptions$]).pipe(
       map(([options, missingOptions]) =>
         missingOptions.concat(options).map(option => {
           if (!option.label) {

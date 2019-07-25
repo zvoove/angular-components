@@ -330,7 +330,7 @@ describe('DynamicPsSelectDataSource', () => {
       return items$;
     });
 
-    let currentRenderOptions: any[];
+    let currentRenderOptions: any[] | null = null;
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
@@ -373,7 +373,7 @@ describe('DynamicPsSelectDataSource', () => {
       { loadTrigger: PsSelectLoadTrigger.All }
     );
 
-    let currentRenderOptions: any[];
+    let currentRenderOptions: any[] | null = null;
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
@@ -469,5 +469,9 @@ describe('DynamicPsSelectDataSource', () => {
 });
 
 function createOption(label: string, value: any, hidden = false): { label: string; value: any; hidden: boolean } {
-  return { label, value, hidden };
+  return {
+    label: label,
+    value: value,
+    hidden: hidden,
+  };
 }
