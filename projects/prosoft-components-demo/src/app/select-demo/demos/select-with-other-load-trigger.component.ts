@@ -58,7 +58,7 @@ export class SelectWithOtherLoadTriggerComponent {
   }
 
   private createDataSource(loadTrigger: PsSelectLoadTrigger) {
-    return new DynamicPsSelectDataSource(
+    return new DynamicPsSelectDataSource<number>(
       () => {
         this.loadCount++;
         const rnd1 = Math.random();
@@ -74,7 +74,7 @@ export class SelectWithOtherLoadTriggerComponent {
           },
         ]).pipe(delay(1000));
       },
-      { loadTrigger }
+      { loadTrigger: loadTrigger }
     );
   }
 }

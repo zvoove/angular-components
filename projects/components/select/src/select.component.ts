@@ -84,7 +84,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
    */
   @Input() public dataSource: any;
 
-  @Input() public compareWith: (o1: any, o2: any) => boolean = null;
+  @Input() public compareWith: ((o1: any, o2: any) => boolean) | null = null;
 
   /** When true, an empty option is added to the top of the list (ignored for multiple true) */
   @Input() public clearable = true;
@@ -174,7 +174,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
 
   private _dummyForm = new FormGroup({});
   private _dummyControl = new FormControl(null);
-  private _matSelect: MatSelect;
+  private _matSelect!: MatSelect;
 
   constructor(
     @Optional() private _parentForm: NgForm,

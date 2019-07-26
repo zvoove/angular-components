@@ -45,7 +45,7 @@ export class SelectWithErrorStateMatcherComponent {
   });
   public errorStateMatcher = new MyErrorStateMatcher();
   public lastFiveValues$ = this.form.get('select').valueChanges.pipe(
-    startWith(null, null, null, null, null),
+    startWith(null, null, null, null, null as any),
     bufferCount(5, 1)
   );
 

@@ -82,7 +82,7 @@ export class TestComponent implements OnDestroy {
   form = new FormGroup({
     select: this.control,
   });
-  emittedValues = [];
+  emittedValues: any[] = [];
   errorStateMatcher: ErrorStateMatcher = null;
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
@@ -107,7 +107,7 @@ export class TestComponent implements OnDestroy {
 })
 export class TestMultipleComponent {
   dataSource = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
-  value = null;
+  value: any = null;
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
 
@@ -177,7 +177,7 @@ describe('PsSelectComponent', () => {
 
     // Custom matcher - empty value
     component.errorStateMatcher = {
-      isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+      isErrorState: (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean => {
         return !!(control && control.invalid);
       },
     };
@@ -200,7 +200,7 @@ describe('PsSelectComponent', () => {
     expect(component).toBeDefined();
     let errorState = false;
     component.errorStateMatcher = {
-      isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+      isErrorState: (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean => {
         return errorState;
       },
     };
