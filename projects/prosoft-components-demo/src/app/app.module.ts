@@ -40,6 +40,10 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./savebar-demo/savebar-demo.module').then(m => m.SavebarDemoModule),
       },
       {
+        path: 'block-ui',
+        loadChildren: () => import('./block-ui-demo/block-ui-demo.module').then(m => m.BlockUiDemoModule),
+      },
+      {
         path: '**',
         pathMatch: 'full',
         loadChildren: () => import('./start-page/start-page.module').then(m => m.StartPageModule),
