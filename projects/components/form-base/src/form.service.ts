@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, ControlValueAccessor } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { objectToKeyValueArray } from '@prosoft/components/utils';
 import { merge, Observable } from 'rxjs';
 import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
-import { IPsFormErrorData, IPsFormError } from './models';
-import { MatFormFieldControl } from '@angular/material/form-field';
 import { getControlType } from './helpers';
+import { IPsFormError, IPsFormErrorData } from './models';
 
 @Injectable()
 export abstract class PsFormService {

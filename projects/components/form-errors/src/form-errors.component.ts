@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { IPsFormError, PsFormService } from '@prosoft/components/form-base';
 import { Observable } from 'rxjs';
-import { PsFormService } from '../form.service';
-import { IPsFormError } from '../models';
 
 @Component({
   selector: 'ps-form-errors',
@@ -23,6 +22,7 @@ import { IPsFormError } from '../models';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
 export class PsFormErrorsComponent implements OnChanges {
   @Input() public form!: FormGroup;

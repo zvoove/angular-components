@@ -1,14 +1,13 @@
 import { ChangeDetectorRef, Component, Injectable, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick, flush } from '@angular/core/testing';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Observable, of } from 'rxjs';
-import { PsFormModule } from '../form.module';
-import { BasePsFormService, PsFormService } from '../form.service';
-import { IPsFormError, IPsFormErrorData } from '../models';
-import { PsFormFieldComponent } from './form-field.component';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
+import { Observable, of } from 'rxjs';
+import { PsFormFieldComponent } from './form-field.component';
+import { PsFormFieldModule } from './form-field.module';
 
 @Injectable()
 class TestPsFormService extends BasePsFormService {
@@ -86,7 +85,7 @@ describe('PsFormFieldComponent', () => {
   describe('formControl', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, PsFormModule],
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, PsFormFieldModule],
         declarations: [TestFormComponent],
         providers: [{ provide: PsFormService, useClass: TestPsFormService }],
       }).compileComponents();
@@ -134,7 +133,7 @@ describe('PsFormFieldComponent', () => {
   describe('ngModel', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormModule],
+        imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormFieldModule],
         declarations: [TestNgModelComponent],
         providers: [{ provide: PsFormService, useClass: TestPsFormService }],
       }).compileComponents();
@@ -162,7 +161,7 @@ describe('PsFormFieldComponent', () => {
   describe('no form', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormModule],
+        imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormFieldModule],
         declarations: [TestNoFormComponent],
         providers: [{ provide: PsFormService, useClass: TestPsFormService }],
       }).compileComponents();

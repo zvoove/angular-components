@@ -11,11 +11,12 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { RouterModule } from '@angular/router';
-import { BasePsFormService, IPsFormErrorData, IPsFormError, PsFormModule } from '@prosoft/components/form';
+import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormBaseModule } from '@prosoft/components/form-base';
+import { PsFormFieldModule } from '@prosoft/components/form-field';
 import { Observable, of } from 'rxjs';
 import { FormFieldDemoComponent, ReferenceColumnComponent } from './form-field-demo.component';
 
-export class DemoPsErrorsService extends BasePsFormService {
+export class DemoPsFormsService extends BasePsFormService {
   public getLabel(formControl: any): Observable<string> {
     return formControl.psLabel ? of(formControl.psLabel) : null;
   }
@@ -40,7 +41,8 @@ export class CustomErrorStateMatcher implements ErrorStateMatcher {
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    PsFormModule.forRoot(DemoPsErrorsService),
+    PsFormBaseModule.forRoot(DemoPsFormsService),
+    PsFormFieldModule,
     RouterModule.forChild([
       {
         path: '',

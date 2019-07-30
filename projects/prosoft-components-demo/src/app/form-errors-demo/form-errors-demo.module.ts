@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { BasePsFormService, IPsFormErrorData, IPsFormError, PsFormModule } from '@prosoft/components/form';
+import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormBaseModule } from '@prosoft/components/form-base';
+import { PsFormErrorsModule } from '@prosoft/components/form-errors';
 import { Observable, of } from 'rxjs';
 import { FormErrorsDemoComponent } from './form-errors-demo.component';
 
-export class DemoPsErrorsService extends BasePsFormService {
+export class DemoPsFormsService extends BasePsFormService {
   public getLabel(formControl: any): Observable<string> {
     return formControl.psLabel ? of(formControl.psLabel) : null;
   }
@@ -23,7 +24,8 @@ export class DemoPsErrorsService extends BasePsFormService {
   declarations: [FormErrorsDemoComponent],
   imports: [
     ReactiveFormsModule,
-    PsFormModule.forRoot(DemoPsErrorsService),
+    PsFormBaseModule.forRoot(DemoPsFormsService),
+    PsFormErrorsModule,
     RouterModule.forChild([
       {
         path: '',

@@ -3,6 +3,7 @@ import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testi
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
 import { PsSelectModule } from './select.module';
@@ -117,7 +118,7 @@ export class TestMultipleComponent {
 describe('PsSelectComponent', () => {
   it('should work with ngModel', async(() => {
     TestBed.configureTestingModule({
-      imports: [PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
       declarations: [TestMultipleComponent],
     });
     const fixture = TestBed.createComponent(TestMultipleComponent);
@@ -136,7 +137,7 @@ describe('PsSelectComponent', () => {
 
   it('should emit only once when selecting an option', () => {
     TestBed.configureTestingModule({
-      imports: [PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
       declarations: [TestComponent],
     });
     const fixture = TestBed.createComponent(TestComponent);
@@ -162,7 +163,7 @@ describe('PsSelectComponent', () => {
 
   it('should use the error state matcher input', () => {
     TestBed.configureTestingModule({
-      imports: [PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
       declarations: [TestComponent],
     });
     const fixture = TestBed.createComponent(TestComponent);

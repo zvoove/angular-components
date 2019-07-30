@@ -16,10 +16,8 @@ import { FormControl, NgControl } from '@angular/forms';
 import { FloatLabelType } from '@angular/material/core';
 import { MatFormField, MatFormFieldControl, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
 import { Observable, Subscription, of } from 'rxjs';
-import { PsFormService } from '../form.service';
-import { hasRequiredField } from '../helpers';
-import { IPsFormError } from '../models';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
+import { IPsFormError, PsFormService, hasRequiredField } from '@prosoft/components/form-base';
 
 @Component({
   selector: 'ps-form-field',
@@ -76,10 +74,10 @@ import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
       }
 
       /* Falls für emulated die Schrift rot sein soll:
-    .mat-form-field--emulated.mat-form-field-invalid .mat-form-field-wrapper {
-      color: var(--ps-error) !important;
-    }
-    */
+      .mat-form-field--emulated.mat-form-field-invalid .mat-form-field-wrapper {
+        color: var(--ps-error) !important;
+      }
+      */
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

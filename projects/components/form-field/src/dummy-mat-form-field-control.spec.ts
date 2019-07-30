@@ -1,6 +1,5 @@
 import { FormControl, Validators } from '@angular/forms';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
-import { hasRequiredField } from '../helpers';
 
 describe('DummyMatFormFieldControl', () => {
   it('should sync value and errorState with the FormControl', () => {

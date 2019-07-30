@@ -36,6 +36,10 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./form-field-demo/form-field-demo.module').then(m => m.FormFieldDemoModule),
       },
       {
+        path: 'savebar',
+        loadChildren: () => import('./savebar-demo/savebar-demo.module').then(m => m.SavebarDemoModule),
+      },
+      {
         path: '**',
         pathMatch: 'full',
         loadChildren: () => import('./start-page/start-page.module').then(m => m.StartPageModule),
