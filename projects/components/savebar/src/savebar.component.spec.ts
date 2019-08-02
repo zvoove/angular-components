@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Injectable, ViewChild } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatCard } from '@angular/material/card';
 import { MatChipList } from '@angular/material/chips';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -57,7 +58,7 @@ export class TestComponent {
   public form = new FormGroup({
     input: new FormControl(null, [Validators.required]),
   });
-  public mode: 'sticky' | 'fixed' | 'auto' = null;
+  public mode: 'sticky' | 'fixed' | 'auto' | 'hide' = null;
   public canSave: boolean | null = null;
   public canStepFwd: boolean;
   public canStepBack: boolean;
@@ -76,6 +77,18 @@ describe('PsSavebarComponent', () => {
       declarations: [TestComponent],
       providers: [{ provide: PsFormService, useClass: TestPsFormService }, { provide: PsSavebarIntl, useClass: PsSavebarIntlEn }],
     }).compileComponents();
+  }));
+
+  it('should be sticky or fixed depending on the mode', async(() => {
+    const fixture = TestBed.createComponent(TestComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.directive(MatCard))).not.toBe(null);
+
+    component.mode = 'hide';
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.directive(MatCard))).toBe(null);
   }));
 
   it('should be sticky or fixed depending on the mode', async(() => {

@@ -28,7 +28,7 @@ import { IPsSavebarIntlTexts, PsSavebarIntl } from './savebar.intl';
   encapsulation: ViewEncapsulation.None,
 })
 export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() public mode: 'sticky' | 'fixed' | 'auto' = 'auto';
+  @Input() public mode: 'sticky' | 'fixed' | 'auto' | 'hide' = 'auto';
   @Input() public form: FormGroup;
   @Input() public canSave: boolean | null;
   @Input() public canStepFwd: boolean;
@@ -43,6 +43,10 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
 
   @ContentChild(PsSavebarRightContentDirective, { read: TemplateRef, static: false })
   public customRightContent: TemplateRef<any> | null;
+
+  public get isHidden(): boolean {
+    return this.mode === 'hide';
+  }
 
   public get isSticky(): boolean {
     if (this.mode && this.mode !== 'auto') {
@@ -71,7 +75,7 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   private _intlSub: Subscription;
   private _stopListening: () => void;
 
-  constructor(private intlService: PsSavebarIntl, private renderer: Renderer2, private ngZone: NgZone, private cd: ChangeDetectorRef) {}
+  constructor(private intlService: PsSavebarIntl, private renderer: Renderer2, private ngZone: NgZone, public cd: ChangeDetectorRef) {}
 
   public ngOnInit() {
     this._intlSub = this._updateIntl$.subscribe(() => {

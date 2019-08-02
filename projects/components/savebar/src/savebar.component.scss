@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 
-.ps-savebar__content-container {
+.ps-savebar__card {
   bottom: -1px;
   margin: 1em 0 1em 0;
   z-index: 5;
@@ -12,7 +12,7 @@
   border-top: solid var(--ps-accent) 5px;
 }
 
-mat-card.ps-savebar__content-container--sticky {
+mat-card.ps-savebar__card--sticky {
   position: sticky;
 }
 
@@ -34,7 +34,7 @@ mat-card.ps-savebar__content-container--sticky {
 }
 
 @media only screen and (max-width: 35em) {
-  mat-card.ps-savebar__content-container--sticky {
+  mat-card.ps-savebar__card--sticky {
     position: initial;
   }
 }

@@ -1,6 +1,6 @@
 <div class="ps-savebar__main-container">
   <ng-content></ng-content>
-  <mat-card [class.ps-savebar__content-container--sticky]="isSticky" class="ps-savebar__content-container mat-elevation-z2">
+  <mat-card *ngIf="!isHidden" [class.ps-savebar__card--sticky]="isSticky" class="ps-savebar__card mat-elevation-z2">
     <div class="ps-savebar__container">
       <ps-form-errors *ngIf="form" [form]="form" [includeControls]="false"></ps-form-errors>
       <div *ngIf="!form" class="ps-savebar__container-spacer"></div>
