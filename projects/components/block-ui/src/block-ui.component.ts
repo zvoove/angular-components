@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, ViewC
     </div>
     <ng-container *ngIf="blocked">
       <div class="ps-block-ui__overlay">
-        <div class="ps-block-ui__overlay-content">
+        <div class="ps-block-ui__overlay-content" [style.top]="overlayContentTop">
           <mat-spinner class="ps-block-ui__spinner" [diameter]="spinnerDiameter"></mat-spinner>
           <div *ngIf="spinnerText">{{ spinnerText }}</div>
         </div>
@@ -46,7 +46,6 @@ import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, ViewC
         justify-content: center;
         align-items: center;
         position: sticky;
-        top: calc(50% - 100px);
       }
     `,
   ],
@@ -58,6 +57,7 @@ export class PsBlockUiComponent implements OnChanges {
   @Input() public spinnerText: string;
 
   public spinnerDiameter = 100;
+  public overlayContentTop = 'calc(50% - 50px)';
 
   @ViewChild('content', { static: true }) public contentNode: ElementRef<HTMLElement>;
 
@@ -66,5 +66,6 @@ export class PsBlockUiComponent implements OnChanges {
     const minDimension = Math.min(nativeEl.offsetWidth, nativeEl.offsetHeight);
     const textSpace = this.spinnerText ? 20 : 0;
     this.spinnerDiameter = Math.max(Math.min(minDimension - textSpace, 100), 10);
+    this.overlayContentTop = `calc(50% - ${Math.floor(this.spinnerDiameter / 2)}px)`;
   }
 }

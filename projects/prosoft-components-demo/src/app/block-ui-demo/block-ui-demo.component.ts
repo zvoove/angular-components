@@ -13,7 +13,13 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
         this will be blocked
       </mat-card>
     </ps-block-ui>
-    <div style="height: 50vh"></div>
+    <div style="height: 1em;"></div>
+    <ps-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
+      <mat-card style="height: 100px">
+        this will also be blocked
+      </mat-card>
+    </ps-block-ui>
+    <div style="height: 1em;"></div>
     <ps-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
       <mat-card style="height: 300vh">
         this will also be blocked to show position sticky
@@ -21,6 +27,13 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
     </ps-block-ui>
     <div style="height: 100vh"></div>
   `,
+  styles: [
+    `
+      app-block-ui-demo .mat-card {
+        background-color: #ccc;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
