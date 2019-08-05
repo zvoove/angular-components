@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-reference-column',
@@ -128,7 +129,7 @@ export class ReferenceColumnComponent {
           </div>
           <div>
             <ps-form-field hint="hint text">
-              <mat-checkbox formControlName="Checkbox">Custom Label</mat-checkbox>
+              <mat-checkbox formControlName="Checkbox">{{ asyncLabel$ | async }}</mat-checkbox>
             </ps-form-field>
           </div>
           <div>
@@ -162,6 +163,7 @@ export class ReferenceColumnComponent {
   encapsulation: ViewEncapsulation.None,
 })
 export class FormFieldDemoComponent {
+  public asyncLabel$ = of('Custom Label');
   public ctrlCountNumbers = Array(7).fill(1);
   public value = '';
   public get disabled(): boolean {

@@ -193,7 +193,11 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
       if (this.controlType.startsWith('mat-checkbox')) {
         const labelNode = this._elementRef.nativeElement.querySelectorAll('.mat-checkbox-label')[0];
         if (!labelNode.innerText.trim()) {
-          labelNode.innerText = label;
+          if (labelNode.childNodes.length === 1) {
+            labelNode.appendChild(document.createTextNode(label));
+          } else {
+            labelNode.childNodes[1].nodeValue = label;
+          }
         }
       } else {
         this.calculatedLabel = label;

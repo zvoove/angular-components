@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, Injectable, ViewChild } from '@angular/core';
 import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -81,7 +82,60 @@ export class TestFormComponent {
   constructor(public cd: ChangeDetectorRef) {}
 }
 
+@Component({
+  selector: 'ps-test-component',
+  template: `
+    <ps-form-field #f1 class="template-label">
+      <mat-checkbox [formControl]="formControl">{{ asyncLabel$ | async }}</mat-checkbox>
+    </ps-form-field>
+    <ps-form-field #f2 class="no-label">
+      <mat-checkbox [formControl]="formControl"></mat-checkbox>
+    </ps-form-field>
+  `,
+})
+export class TestCheckboxComponent {
+  public asyncLabel$ = of('async label');
+  formControl = new FormControl('');
+
+  @ViewChild('f1', { static: true }) formFieldTemplateLabel: PsFormFieldComponent;
+  @ViewChild('f2', { static: true }) formFieldNoLabel: PsFormFieldComponent;
+
+  constructor(public cd: ChangeDetectorRef) {}
+}
+
 describe('PsFormFieldComponent', () => {
+  describe('checkbox', () => {
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
+        declarations: [TestCheckboxComponent],
+        providers: [{ provide: PsFormService, useClass: TestPsFormService }],
+      }).compileComponents();
+    }));
+
+    it('should set checkbox label if no label is set in the template', async(() => {
+      const fixture = TestBed.createComponent(TestCheckboxComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      (<any>component.formControl).psLabel = 'service label';
+      fixture.detectChanges();
+
+      expect(
+        fixture.debugElement
+          .query(By.css('.template-label'))
+          .query(By.css('.mat-checkbox-label'))
+          .nativeElement.textContent.trim()
+      ).toBe('async label');
+      expect(
+        fixture.debugElement
+          .query(By.css('.no-label'))
+          .query(By.css('.mat-checkbox-label'))
+          .nativeElement.textContent.trim()
+      ).toBe('service label');
+    }));
+  });
+
   describe('formControl', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
@@ -96,7 +150,7 @@ describe('PsFormFieldComponent', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      // Label calcualted from the service
+      // Label calculated from the service
       (<any>component.formControl).psLabel = 'service label';
       fixture.detectChanges();
       expect(component.formField.calculatedLabel).toBe('service label');
