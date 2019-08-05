@@ -44,6 +44,10 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./block-ui-demo/block-ui-demo.module').then(m => m.BlockUiDemoModule),
       },
       {
+        path: 'form',
+        loadChildren: () => import('./form-demo/form-demo.module').then(m => m.FormDemoModule),
+      },
+      {
         path: '**',
         pathMatch: 'full',
         loadChildren: () => import('./start-page/start-page.module').then(m => m.StartPageModule),

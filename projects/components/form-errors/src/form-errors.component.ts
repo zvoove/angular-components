@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
       .ps-form-errors__container {
         font-size: 12px;
       }
-      .ps-form-errors__item {
+      .mat-chip.ps-form-errors__item {
         background-color: var(--ps-error);
         color: var(--ps-error-contrast);
       }
