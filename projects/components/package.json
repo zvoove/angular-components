@@ -1,11 +1,11 @@
 {
   "name": "@prosoft/components",
-  "version": "0.0.2-alpha.2",
+  "version": "0.0.2-alpha.3",
   "peerDependencies": {
+    "@angular/cdk": "^8.0.0",
     "@angular/common": "^8.0.0",
     "@angular/core": "^8.0.0",
     "@angular/forms": "~8.0.0",
-    "@angular/cdk": "^8.0.0",
     "@angular/material": "^8.0.0",
     "ngx-mat-select-search": "^1.7.0"
   },
