@@ -18,6 +18,16 @@ export abstract class PsSavebarIntl implements IPsSavebarIntlTexts {
   public abstract cancelLabel: string;
   public abstract nextLabel: string;
   public abstract prevLabel: string;
+
+  public mergeIntl(overrides: IPsSavebarIntlTexts): IPsSavebarIntlTexts {
+    return {
+      saveLabel: (overrides && overrides.saveLabel) || this.saveLabel,
+      saveAndCloseLabel: (overrides && overrides.saveAndCloseLabel) || this.saveAndCloseLabel,
+      cancelLabel: (overrides && overrides.cancelLabel) || this.cancelLabel,
+      nextLabel: (overrides && overrides.nextLabel) || this.nextLabel,
+      prevLabel: (overrides && overrides.prevLabel) || this.prevLabel,
+    };
+  }
 }
 
 export class PsSavebarIntlEn extends PsSavebarIntl {

@@ -209,7 +209,9 @@ describe('PsFormComponent', () => {
       expect(getSavebarCard(fixture)).toBe(null);
       expect(getErrorContainer(fixture)).not.toBe(null);
       expect(getErrorIcon(fixture)).not.toBe(null);
-      expect(getErrorActions(fixture)).not.toBe(null);
+      const errorActionBar = getErrorActions(fixture);
+      expect(errorActionBar).not.toBe(null);
+      expect(errorActionBar.query(By.css('.mat-button-wrapper')).nativeElement.textContent.trim()).toBe('Cancel');
     }));
 
     it('should show error bar when saving failed', fakeAsync(() => {
@@ -418,17 +420,19 @@ describe('PsFormComponent', () => {
   describe('isolated', () => {
     let actionService: PsFormActionService;
     let errorExtractor: PsExceptionMessageExtractor;
+    let intlService: PsSavebarIntl;
     let route: ActivatedRoute;
     let cd: ChangeDetectorRef;
     let component: PsFormComponent;
     beforeEach(async(() => {
       actionService = new DemoPsFormActionService();
+      intlService = new PsSavebarIntlEn();
       errorExtractor = new PsExceptionMessageExtractor();
       route = {} as any;
       cd = {
         markForCheck: () => {},
       } as ChangeDetectorRef;
-      component = new PsFormComponent(actionService, errorExtractor, route, cd);
+      component = new PsFormComponent(actionService, intlService, errorExtractor, route, cd);
       component.form = new FormGroup({});
       component.formMode = 'update';
       component.loadFnc = () => of({});

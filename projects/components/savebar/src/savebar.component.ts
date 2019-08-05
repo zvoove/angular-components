@@ -16,7 +16,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BehaviorSubject, merge, Subscription } from 'rxjs';
+import { merge, Subject, Subscription } from 'rxjs';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { PsSavebarRightContentDirective } from './savebar-right-content.directive';
 import { IPsSavebarIntlTexts, PsSavebarIntl } from './savebar.intl';
 
@@ -70,31 +71,29 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
 
   public intl: IPsSavebarIntlTexts;
 
-  private _updateIntl$ = new BehaviorSubject<void>(null);
+  private ngUnsubscribe$ = new Subject<void>();
   private _formSub: Subscription;
-  private _intlSub: Subscription;
   private _stopListening: () => void;
 
   constructor(private intlService: PsSavebarIntl, private renderer: Renderer2, private ngZone: NgZone, public cd: ChangeDetectorRef) {}
 
   public ngOnInit() {
-    this._intlSub = this._updateIntl$.subscribe(() => {
-      this.intl = {
-        saveLabel: (this.intlOverride && this.intlOverride.saveLabel) || this.intlService.saveLabel,
-        saveAndCloseLabel: (this.intlOverride && this.intlOverride.saveAndCloseLabel) || this.intlService.saveAndCloseLabel,
-        cancelLabel: (this.intlOverride && this.intlOverride.cancelLabel) || this.intlService.cancelLabel,
-        nextLabel: (this.intlOverride && this.intlOverride.nextLabel) || this.intlService.nextLabel,
-        prevLabel: (this.intlOverride && this.intlOverride.prevLabel) || this.intlService.prevLabel,
-      };
-      this.cd.markForCheck();
-    });
+    this.intlService.intlChanged$
+      .pipe(
+        startWith(null as any),
+        takeUntil(this.ngUnsubscribe$)
+      )
+      .subscribe(() => {
+        this.updateIntl();
+        this.cd.markForCheck();
+      });
 
     this.updateSaveKeyListener();
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.intlOverride) {
-      this._updateIntl$.next();
+      this.updateIntl();
     }
 
     if (changes.form) {
@@ -119,11 +118,11 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
+
     if (this._stopListening) {
       this._stopListening();
-    }
-    if (this._intlSub) {
-      this._intlSub.unsubscribe();
     }
     if (this._formSub) {
       this._formSub.unsubscribe();
@@ -132,6 +131,10 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
 
   public hasObservers(emitter: EventEmitter<any>) {
     return emitter && !!emitter.observers.length;
+  }
+
+  private updateIntl() {
+    this.intl = this.intlService.mergeIntl(this.intlOverride);
   }
 
   private updateSaveKeyListener() {

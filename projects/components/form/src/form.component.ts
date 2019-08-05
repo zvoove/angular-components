@@ -6,6 +6,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Optional,
   Output,
   SimpleChanges,
@@ -14,9 +15,9 @@ import {
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PsExceptionMessageExtractor } from '@prosoft/components/exception';
-import { IPsSavebarIntlTexts, PsSavebarComponent } from '@prosoft/components/savebar';
+import { IPsSavebarIntlTexts, PsSavebarComponent, PsSavebarIntl } from '@prosoft/components/savebar';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { PsFormActionService } from './form-action.service';
 import { IPsFormSaveParams } from './models';
 
@@ -109,7 +110,7 @@ export class PsFormCancelEvent extends PsFormEvent {}
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PsFormComponent implements OnChanges, OnDestroy {
+export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   @Input() public form: FormGroup;
   @Input() public formMode: 'create' | 'update';
   @Input() public autocomplete: 'on' | 'off' = 'off';
@@ -142,9 +143,7 @@ export class PsFormComponent implements OnChanges, OnDestroy {
   public get canSaveIntern(): boolean | null {
     return this.blocked ? false : this.canSave;
   }
-  public get intl(): IPsSavebarIntlTexts {
-    return this._savebar ? this._savebar.intl : ({} as any);
-  }
+  public intl: IPsSavebarIntlTexts;
   public get savebarMode(): string {
     return this.hasLoadError ? 'hide' : 'auto';
   }
@@ -157,12 +156,29 @@ export class PsFormComponent implements OnChanges, OnDestroy {
 
   constructor(
     public actionService: PsFormActionService,
+    public intlService: PsSavebarIntl,
     private errorExtractor: PsExceptionMessageExtractor,
     @Optional() private route: ActivatedRoute,
     private cd: ChangeDetectorRef
   ) {}
 
+  public ngOnInit() {
+    this.intlService.intlChanged$
+      .pipe(
+        startWith(null as any),
+        takeUntil(this.ngUnsubscribe$)
+      )
+      .subscribe(() => {
+        this.updateIntl();
+        this.cd.markForCheck();
+      });
+  }
+
   public ngOnChanges(changes: SimpleChanges) {
+    if (changes.intlOverride) {
+      this.updateIntl();
+    }
+
     if (changes.loadFnc) {
       this.loadData();
     }
@@ -304,6 +320,10 @@ export class PsFormComponent implements OnChanges, OnDestroy {
         route: this.route,
       });
     }
+  }
+
+  private updateIntl() {
+    this.intl = this.intlService.mergeIntl(this.intlOverride);
   }
 
   private updateSaveBinding() {
