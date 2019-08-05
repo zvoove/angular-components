@@ -96,7 +96,7 @@ export class PsFormCancelEvent extends PsFormEvent {}
       }
 
       .ps-form__error-icon {
-        color: var(--ps-primary);
+        color: var(--ps-error);
         font-size: 72px;
         height: 72px;
         width: 72px;
