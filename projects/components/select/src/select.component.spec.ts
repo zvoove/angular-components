@@ -122,6 +122,39 @@ export class TestMultipleComponent {
   constructor(public cd: ChangeDetectorRef) {}
 }
 
+@Component({
+  selector: 'ps-test-custom-template',
+  template: `
+    <ps-select [(ngModel)]="value" [dataSource]="items">
+      <ng-container *psSelectTriggerTemplate="let item">
+        trigger:{{ item.value }}:<span [style.color]="item.value">{{ item.viewValue }}</span>
+      </ng-container>
+      <ng-container *psSelectOptionTemplate="let item">
+        <div>color:</div>
+        <div>{{ item.value }}:</div>
+        <div [style.color]="item.value">{{ item.label }}</div>
+      </ng-container>
+    </ps-select>
+  `,
+})
+export class TestCustomTemplateComponent {
+  public items = [
+    {
+      value: `red`,
+      label: `Red`,
+    },
+    {
+      value: `green`,
+      label: `Green`,
+    },
+    {
+      value: `blue`,
+      label: `Blue`,
+    },
+  ];
+  public value: any = null;
+}
+
 describe('PsSelectComponent', () => {
   it('should work with ngModel', async(() => {
     TestBed.configureTestingModule({
@@ -280,6 +313,34 @@ describe('PsSelectComponent', () => {
 
     const classes = getPsSelectCssClasses(fixture);
     expect(classes).toContain('ps-select-multiple');
+  });
+
+  it('should work with custom templates', () => {
+    TestBed.configureTestingModule({
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
+      declarations: [TestCustomTemplateComponent],
+    });
+    const fixture = TestBed.createComponent(TestCustomTemplateComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+
+    fixture.detectChanges();
+    const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
+    matSelectTrigger.triggerEventHandler('click', new Event('click'));
+    fixture.detectChanges();
+
+    // mat-option text
+    const selectPanelNode = document.querySelector('.mat-select-panel');
+    const matOptionNodes = selectPanelNode.querySelectorAll('mat-option');
+    const itemNode = matOptionNodes.item(2);
+    expect(itemNode.textContent.trim()).toEqual('color:blue:Blue');
+
+    // select the mat-option
+    itemNode.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+
+    // trigger text
+    expect(matSelectTrigger.nativeElement.textContent.trim()).toEqual('trigger:blue:color:blue:Blue'); // static trigger text + value + mat-option viewValue
   });
 });
 

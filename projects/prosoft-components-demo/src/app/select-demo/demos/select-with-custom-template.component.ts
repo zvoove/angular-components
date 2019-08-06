@@ -7,6 +7,9 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
     <mat-form-field>
       <mat-label>select</mat-label>
       <ps-select [(ngModel)]="ngModelValue" [dataSource]="items" [panelClass]="panelNgClass">
+        <ng-container *psSelectTriggerTemplate="let item">
+          color: <span [style.color]="item.value" class="asdf">{{ item.viewValue }}</span>
+        </ng-container>
         <ng-container *psSelectOptionTemplate="let item">
           <div>color:</div>
           <span [style.color]="item.value.color" [style.font-size]="item.value.size" class="asdf">{{ item.label }}</span>

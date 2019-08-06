@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
+  DoCheck,
   EventEmitter,
   HostBinding,
   Input,
@@ -11,13 +12,13 @@ import {
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
-  DoCheck,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { ErrorStateMatcher, MatOption } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { PsSelectOptionTemplateDirective } from './select-option-template.directive';
+import { PsSelectTriggerTemplateDirective } from './select-trigger-template.directive';
 
 @Component({
   selector: 'ps-select',
@@ -29,6 +30,9 @@ import { PsSelectOptionTemplateDirective } from './select-option-template.direct
         (selectionChange)="onSelectionChange($event)"
         (openedChange)="onOpenedChange($event)"
       >
+        <mat-select-trigger *ngIf="triggerTemplate && !empty">
+          <ng-template [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: customTriggerData }"></ng-template>
+        </mat-select-trigger>
         <ps-select-data
           [dataSource]="dataSource"
           [compareWith]="compareWith"
@@ -57,6 +61,9 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
 
   @ContentChild(PsSelectOptionTemplateDirective, { read: TemplateRef, static: false })
   public optionTemplate: TemplateRef<any> | null = null;
+
+  @ContentChild(PsSelectTriggerTemplateDirective, { read: TemplateRef, static: false })
+  public triggerTemplate: TemplateRef<any> | null = null;
 
   @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
     this._matSelect = select;
@@ -160,7 +167,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
     return (this._parentFormGroup && this._parentFormGroup.form) || (this._parentForm && this._parentForm.form) || this._dummyForm;
   }
   public get formControl(): FormControl {
-    // envent binding only -> dummy control
+    // event binding only -> dummy control
     return (this.ngControl && (this.ngControl.control as FormControl)) || this._dummyControl;
   }
 
@@ -170,6 +177,32 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
       return (<MatOption[]>this._matSelect.selected).map(x => x.viewValue).join(', ');
     }
     return '';
+  }
+
+  /** The value displayed in the trigger. */
+  get customTriggerData(): { value: string; viewValue: string } | { value: string; viewValue: string }[] {
+    if (this.empty) {
+      return null;
+    }
+
+    if (this.multiple) {
+      const selectedOptions = this._matSelect._selectionModel.selected.map(toTriggerDataObj);
+
+      if (this._matSelect._isRtl()) {
+        selectedOptions.reverse();
+      }
+
+      return selectedOptions;
+    }
+
+    return toTriggerDataObj(this._matSelect._selectionModel.selected[0]);
+
+    function toTriggerDataObj(option: MatOption): { value: string; viewValue: string } {
+      return {
+        value: option.value,
+        viewValue: option.viewValue,
+      };
+    }
   }
 
   private _dummyForm = new FormGroup({});
