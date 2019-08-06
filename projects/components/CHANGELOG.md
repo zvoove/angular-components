@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2-alpha.4](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.3...@prosoft/components@0.0.2-alpha.4) (2019-08-06)
+
+
+### Bug Fixes
+
+* **form:** error view icon has primary color instead of error color ([#7](https://github.com/prosoft-edv/components/issues/7)) ([a49c731](https://github.com/prosoft-edv/components/commit/a49c731))
+* **form:** when loading instantly failed, then cancel label wasn't shown ([#8](https://github.com/prosoft-edv/components/issues/8)) ([b931c6c](https://github.com/prosoft-edv/components/commit/b931c6c))
+* **form-field:** async checkbox labels in the template are overwritten ([#9](https://github.com/prosoft-edv/components/issues/9)) ([37e03a9](https://github.com/prosoft-edv/components/commit/37e03a9))
+* **form-field:** when getLabel runs async then the label is not shown ([#10](https://github.com/prosoft-edv/components/issues/10)) ([0750975](https://github.com/prosoft-edv/components/commit/0750975))
+
+
+
+
+
 ## [0.0.2-alpha.3](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.2...@prosoft/components@0.0.2-alpha.3) (2019-08-05)
 
 
