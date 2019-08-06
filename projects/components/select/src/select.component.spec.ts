@@ -3,6 +3,7 @@ import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testi
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
@@ -73,7 +74,12 @@ describe('PsSelectComponent', () => {
   selector: 'ps-test-component',
   template: `
     <div [formGroup]="form">
-      <ps-select formControlName="select" [dataSource]="dataSource" [errorStateMatcher]="errorStateMatcher"></ps-select>
+      <ps-select
+        formControlName="select"
+        [dataSource]="dataSource"
+        [errorStateMatcher]="errorStateMatcher"
+        [panelClass]="panelClass"
+      ></ps-select>
     </div>
   `,
 })
@@ -85,6 +91,7 @@ export class TestComponent implements OnDestroy {
   });
   emittedValues: any[] = [];
   errorStateMatcher: ErrorStateMatcher = null;
+  panelClass: { [key: string]: boolean } = {};
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
 
@@ -191,9 +198,9 @@ describe('PsSelectComponent', () => {
     expect(component.select.errorState).toBe(false);
   });
 
-  it('should set the right css classes', () => {
+  it('should set the right css classes', async(() => {
     TestBed.configureTestingModule({
-      imports: [PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
       declarations: [TestComponent],
     });
     const fixture = TestBed.createComponent(TestComponent);
@@ -233,7 +240,32 @@ describe('PsSelectComponent', () => {
     fixture.detectChanges();
     assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-required']);
     component.select.required = false;
-  });
+
+    // mat-option
+    component.panelClass = { 'custom-mat-option-class': true };
+    fixture.detectChanges();
+
+    const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
+    matSelectTrigger.triggerEventHandler('click', new Event('click'));
+    fixture.detectChanges();
+
+    // select panel
+    const selectPanelNode = document.querySelector('.mat-select-panel');
+    expect(selectPanelNode).not.toBeNull();
+    expect(selectPanelNode.classList).toContain('custom-mat-option-class');
+
+    const matOptionNodes = selectPanelNode.querySelectorAll('mat-option');
+
+    // mat-select-search
+    expect(matOptionNodes.item(0).classList.contains('mat-option-disabled')).toBeTruthy();
+    expect(matOptionNodes.item(0).classList.contains('ps-select-data__search')).toBeTruthy();
+
+    // empty input
+    expect(matOptionNodes.item(1).classList.contains('ps-select-data__empty-option')).toBeTruthy();
+
+    // items
+    expect(matOptionNodes.item(2).classList.contains('ps-select-data__option')).toBeTruthy();
+  }));
 
   it('should set multiple css class for multiple mode', () => {
     TestBed.configureTestingModule({

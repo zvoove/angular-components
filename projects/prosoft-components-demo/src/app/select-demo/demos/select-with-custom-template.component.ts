@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-select-with-custom-template',
@@ -6,9 +6,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     <h2>Custom options template</h2>
     <mat-form-field>
       <mat-label>select</mat-label>
-      <ps-select [(ngModel)]="ngModelValue" [dataSource]="items">
+      <ps-select [(ngModel)]="ngModelValue" [dataSource]="items" [panelClass]="panelNgClass">
         <ng-container *psSelectOptionTemplate="let item">
-          <span [style.color]="item.value" class="asdf">{{ item.label }}</span>
+          <div>color:</div>
+          <span [style.color]="item.value.color" [style.font-size]="item.value.size" class="asdf">{{ item.label }}</span>
         </ng-container>
       </ps-select>
     </mat-form-field>
@@ -17,22 +18,46 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       <li>The selectable items should be in the color of their name</li>
     </ul>
   `,
+  styles: [
+    `
+      .app-select-with-custom-template__custom-panel.mat-select-panel .mat-option {
+        height: auto;
+        min-height: 3em;
+        line-height: 1.5em;
+        padding-top: 3px;
+        padding-bottom: 3px;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
 export class SelectWithCustomTemplateComponent {
   public items = [
     {
-      value: `red`,
+      value: {
+        color: `red`,
+        size: '3em',
+      },
       label: `Red`,
     },
     {
-      value: `green`,
+      value: {
+        color: `green`,
+        size: '2em',
+      },
       label: `Green`,
     },
     {
-      value: `blue`,
+      value: {
+        color: `blue`,
+        size: '1.5em',
+      },
       label: `Blue`,
     },
   ];
   public ngModelValue: any = null;
+  public panelNgClass = {
+    'app-select-with-custom-template__custom-panel': true,
+  };
 }

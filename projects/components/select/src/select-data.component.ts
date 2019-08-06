@@ -25,16 +25,21 @@ import { PsSelectService } from './select.service';
 @Component({
   selector: 'ps-select-data',
   template: `
-    <mat-option>
+    <mat-option class="ps-select-data__search">
       <ngx-mat-select-search [formControl]="filterCtrl" [searching]="loading"></ngx-mat-select-search>
     </mat-option>
-    <mat-option *ngIf="showEmptyInput">
+    <mat-option *ngIf="showEmptyInput" class="ps-select-data__empty-option">
       --
     </mat-option>
     <mat-option *ngIf="hasError" [disabled]="true" class="ps-select-data__error">
       <span class="ps-select-data__error-message">{{ errorMessage }}</span>
     </mat-option>
-    <mat-option *ngFor="let item of items; trackBy: trackByOptions" [value]="item.value" [class.ps-option-hidden]="item.hidden">
+    <mat-option
+      *ngFor="let item of items; trackBy: trackByOptions"
+      [value]="item.value"
+      [class.ps-option-hidden]="item.hidden"
+      class="ps-select-data__option"
+    >
       <ng-container *ngIf="!optionTemplate">
         {{ item.label }}
       </ng-container>
