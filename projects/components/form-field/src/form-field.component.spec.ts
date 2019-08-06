@@ -9,16 +9,24 @@ import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from
 import { Observable, of } from 'rxjs';
 import { PsFormFieldComponent } from './form-field.component';
 import { PsFormFieldModule } from './form-field.module';
+import { delay } from 'rxjs/operators';
 
 @Injectable()
 class TestPsFormService extends BasePsFormService {
+  public labelDelay = 0;
   constructor() {
     super();
     this.options.debounceTime = 0;
   }
 
   public getLabel(formControl: any): Observable<string> | null {
-    return formControl.psLabel ? of(formControl.psLabel) : null;
+    if (!formControl.psLabel) {
+      return null;
+    }
+    if (this.labelDelay) {
+      return of(formControl.psLabel).pipe(delay(this.labelDelay));
+    }
+    return of(formControl.psLabel);
   }
   protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
     return of(
@@ -145,7 +153,7 @@ describe('PsFormFieldComponent', () => {
       }).compileComponents();
     }));
 
-    it('should emulate label if mat-label is missing', async(() => {
+    it('should set label', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
@@ -153,12 +161,21 @@ describe('PsFormFieldComponent', () => {
       // Label calculated from the service
       (<any>component.formControl).psLabel = 'service label';
       fixture.detectChanges();
-      expect(component.formField.calculatedLabel).toBe('service label');
+      expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('service label');
 
       // label defined with <mat-label>
       component.customLabel = 'custom label';
       fixture.detectChanges();
-      expect(component.formField.calculatedLabel).toBe(null);
+      expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('custom label');
+
+      // Label calculated from the service with delay
+      component.customLabel = null;
+      (<any>component.formControl).psLabel = 'async label';
+      TestBed.get(PsFormService).labelDelay = 10;
+      fixture.detectChanges();
+      tick(10);
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('async label');
     }));
 
     it('should show errors', fakeAsync(() => {

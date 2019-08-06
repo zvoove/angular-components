@@ -203,7 +203,9 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
         this.calculatedLabel = label;
       }
 
-      this.cd.markForCheck();
+      // when only our own component is marked for check, then the label will not be shown
+      // when labelText$ didn't run synchronously
+      (<any>this._matFormField)._changeDetectorRef.markForCheck();
     });
   }
 }
