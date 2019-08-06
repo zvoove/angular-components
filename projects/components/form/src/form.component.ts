@@ -190,7 +190,6 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
       if (changes.hideSaveAndClose) {
         this.updateSaveAndCloseBinding();
       }
-      this._savebar.cd.markForCheck();
     }
   }
 
@@ -334,6 +333,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
     if (!this.hideSave) {
       this._saveSub = this._savebar.save.subscribe(() => this.onSave(false));
     }
+    this._savebar.cd.markForCheck();
   }
 
   private updateSaveAndCloseBinding() {
@@ -344,5 +344,6 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
     if (!this.hideSaveAndClose) {
       this._saveAndCloseSub = this._savebar.saveAndClose.subscribe(() => this.onSave(true));
     }
+    this._savebar.cd.markForCheck();
   }
 }

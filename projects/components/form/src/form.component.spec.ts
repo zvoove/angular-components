@@ -131,6 +131,20 @@ describe('PsFormComponent', () => {
       }).compileComponents();
     }));
 
+    it('should show savebar buttons', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+      fixture.detectChanges();
+
+      tick(1);
+      fixture.detectChanges();
+
+      expect(getSaveButton(fixture)).not.toBe(null);
+      expect(getSaveAndCloseButton(fixture)).not.toBe(null);
+      expect(getCancelButton(fixture)).not.toBe(null);
+    }));
+
     it('should hide save button if hideSave is true', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestComponent);
       const component = fixture.componentInstance;
@@ -561,8 +575,8 @@ function getSaveButton(fixture: ComponentFixture<TestComponent>): DebugElement {
 function getSaveAndCloseButton(fixture: ComponentFixture<TestComponent>): DebugElement {
   return fixture.debugElement.query(By.css('.ps-savebar__button__save-and-close'));
 }
-function getCloseButton(fixture: ComponentFixture<TestComponent>): DebugElement {
-  return fixture.debugElement.query(By.css('.ps-savebar__button__close'));
+function getCancelButton(fixture: ComponentFixture<TestComponent>): DebugElement {
+  return fixture.debugElement.query(By.css('.ps-savebar__button__cancel'));
 }
 function getBlockUi(fixture: ComponentFixture<TestComponent>): DebugElement {
   return fixture.debugElement.query(By.directive(PsBlockUiComponent));
