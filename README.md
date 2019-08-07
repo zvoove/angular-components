@@ -6,7 +6,7 @@ A set of angular components compatible with and/or dependent on @angular/materia
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `ng serve` for a dev server. Navigate to `http://localhost:4500/`. The app will automatically reload if you change any of the source files.
 
 ## Running unit tests
 
