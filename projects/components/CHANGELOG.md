@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2-alpha.5](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.4...@prosoft/components@0.0.2-alpha.5) (2019-08-07)
+
+
+### Bug Fixes
+
+* **form:** sometimes the savebar buttons arent visible after loading ([#12](https://github.com/prosoft-edv/components/issues/12)) ([9d759a9](https://github.com/prosoft-edv/components/commit/9d759a9))
+
+
+### Features
+
+* **form:** form input is now optional ([#14](https://github.com/prosoft-edv/components/issues/14)) ([fb77c84](https://github.com/prosoft-edv/components/commit/fb77c84))
+* **select:** css classes to style the search, empty input or options ([#11](https://github.com/prosoft-edv/components/issues/11)) ([56d792b](https://github.com/prosoft-edv/components/commit/56d792b))
+* **select:** custom trigger template ([#13](https://github.com/prosoft-edv/components/issues/13)) ([b920094](https://github.com/prosoft-edv/components/commit/b920094))
+
+
+
+
+
 ## [0.0.2-alpha.4](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.3...@prosoft/components@0.0.2-alpha.4) (2019-08-06)
 
 
