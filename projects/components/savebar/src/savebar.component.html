@@ -15,7 +15,7 @@
         [disabled]="saveDisabled"
         (click)="save.emit()"
       >
-        {{ intl.saveLabel }}
+        {{ intl?.saveLabel }}
       </button>
       <button
         *ngIf="hasObservers(saveAndClose)"
@@ -26,7 +26,7 @@
         [disabled]="saveDisabled"
         (click)="saveAndClose.emit()"
       >
-        {{ intl.saveAndCloseLabel }}
+        {{ intl?.saveAndCloseLabel }}
       </button>
 
       <ng-container *ngIf="customRightContent" [ngTemplateOutlet]="customRightContent"></ng-container>
@@ -39,7 +39,7 @@
         (click)="step.emit(-1)"
         [disabled]="!canStepBack"
       >
-        {{ intl.prevLabel }}
+        {{ intl?.prevLabel }}
       </button>
       <button
         *ngIf="hasObservers(step)"
@@ -50,11 +50,11 @@
         (click)="step.emit(1)"
         [disabled]="!canStepFwd"
       >
-        {{ intl.nextLabel }}
+        {{ intl?.nextLabel }}
       </button>
 
       <button *ngIf="hasObservers(cancel)" mat-stroked-button type="button" class="ps-savebar__button__cancel" (click)="cancel.emit()">
-        {{ intl.cancelLabel }}
+        {{ intl?.cancelLabel }}
       </button>
     </div>
   </mat-card>

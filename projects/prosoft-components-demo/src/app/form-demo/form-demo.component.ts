@@ -16,11 +16,12 @@ import { DemoPsFormActionService } from './form-demo.module';
       <mat-checkbox [(ngModel)]="preventDefault">prevent service events</mat-checkbox>
       <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
       <mat-checkbox [(ngModel)]="saveError">save error</mat-checkbox>
+      <mat-checkbox [(ngModel)]="setForm">set formGroup</mat-checkbox>
       <button mat-flat-button type="button" color="accent" (click)="reload()">reload</button>
     </mat-card>
     <div class="app-form-demo__grid">
       <ps-form
-        [form]="form"
+        [form]="setForm ? form : null"
         [formMode]="formMode"
         [loadFnc]="loadFnc"
         [saveFnc]="saveFnc"
@@ -89,6 +90,7 @@ export class FormDemoComponent implements OnDestroy {
   public hideSaveAndClose = false;
   public saveError = false;
   public loadError = false;
+  public setForm = true;
   public formMode = 'create';
   public form = new FormGroup(
     {

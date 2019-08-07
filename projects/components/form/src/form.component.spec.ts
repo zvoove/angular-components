@@ -145,6 +145,20 @@ describe('PsFormComponent', () => {
       expect(getCancelButton(fixture)).not.toBe(null);
     }));
 
+    it('should work without form', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
+      component.form = null;
+      expect(component).toBeDefined();
+      fixture.detectChanges();
+
+      tick(1);
+      fixture.detectChanges();
+
+      expect(getSaveButton(fixture)).not.toBe(null);
+      expect(() => component.formCmp.onSave(true)).not.toThrow();
+    }));
+
     it('should hide save button if hideSave is true', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestComponent);
       const component = fixture.componentInstance;

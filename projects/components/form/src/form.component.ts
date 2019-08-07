@@ -55,7 +55,7 @@ export class PsFormCancelEvent extends PsFormEvent {}
 @Component({
   selector: 'ps-form',
   template: `
-    <form [formGroup]="form" [autocomplete]="autocomplete">
+    <form [formGroup]="form || dummyForm" [autocomplete]="autocomplete">
       <ps-savebar [form]="form" [mode]="savebarMode" (cancel)="onCancel()" [canSave]="canSaveIntern" [intlOverride]="intlOverride">
         <div class="ps-form__cards-container">
           <ps-block-ui *ngIf="!hasLoadError" [blocked]="blocked">
@@ -111,7 +111,7 @@ export class PsFormCancelEvent extends PsFormEvent {}
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
-  @Input() public form: FormGroup;
+  @Input() public form: FormGroup | null;
   @Input() public formMode: 'create' | 'update';
   @Input() public autocomplete: 'on' | 'off' = 'off';
   @Input() public hideSaveAndClose = false;
@@ -128,7 +128,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   @Output() public saveError = new EventEmitter<PsFormSaveErrorEvent>();
   @Output() public cancel = new EventEmitter<PsFormCancelEvent>();
 
-  @ViewChild(PsSavebarComponent, { static: false }) public set savebar(value: PsSavebarComponent) {
+  @ViewChild(PsSavebarComponent, { static: true }) public set savebar(value: PsSavebarComponent) {
     if (value) {
       this._savebar = value;
       this.updateSaveBinding();
@@ -147,6 +147,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   public get savebarMode(): string {
     return this.hasLoadError ? 'hide' : 'auto';
   }
+  public dummyForm = new FormGroup({});
 
   private ngUnsubscribe$ = new Subject<void>();
   private _saveAndCloseSub: Subscription;
@@ -262,7 +263,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
     this.hasSaveError = false;
     this.cd.markForCheck();
 
-    const formValue = this.form.getRawValue();
+    const formValue = (this.form && this.form.getRawValue()) || null;
     const saveParams: IPsFormSaveParams = {
       close: close,
     };
