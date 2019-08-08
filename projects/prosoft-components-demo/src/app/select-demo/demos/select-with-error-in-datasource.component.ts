@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DynamicPsSelectDataSource } from '@prosoft/components/select';
-import { NEVER, throwError } from 'rxjs';
+import { DefaultPsSelectDataSource } from '@prosoft/components/select';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-select-with-error-in-datasource',
@@ -22,7 +22,12 @@ import { NEVER, throwError } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectWithErrorInDataSourceComponent {
-  public dataSource = new DynamicPsSelectDataSource(() => throwError('Failed to load items'));
+  public dataSource = new DefaultPsSelectDataSource({
+    mode: 'id',
+    labelKey: 'a',
+    idKey: 'b',
+    items: () => throwError('Failed to load items'),
+  });
   public form = new FormGroup({
     select: new FormControl('idx'),
   });

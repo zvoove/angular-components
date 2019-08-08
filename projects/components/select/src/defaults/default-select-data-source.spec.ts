@@ -1,11 +1,11 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { of, Subject, throwError } from 'rxjs';
 import { delay, switchMap, tap } from 'rxjs/operators';
-import { DynamicPsSelectDataSource, PsSelectLoadTrigger } from './dynamic-select-data-source';
+import { DefaultPsSelectDataSource, PsSelectDataSourceOptions, PsSelectLoadTrigger } from './default-select-data-source';
 
-describe('DynamicPsSelectDataSource', () => {
+describe('DefaultPsSelectDataSource', () => {
   it('should work with array data', fakeAsync(() => {
-    const dataSource = new DynamicPsSelectDataSource([createOption('item', 1)]);
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([createOption('item', 1)]));
 
     let currentRenderOptions;
     dataSource.connect().subscribe(options => {
@@ -31,7 +31,7 @@ describe('DynamicPsSelectDataSource', () => {
   }));
 
   it('should work with observable data', fakeAsync(() => {
-    const dataSource = new DynamicPsSelectDataSource(of([createOption('item', 1)]));
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([createOption('item', 1)])));
 
     let currentRenderOptions;
     dataSource.connect().subscribe(options => {
@@ -58,11 +58,13 @@ describe('DynamicPsSelectDataSource', () => {
 
   it('should subscribe only when connection to data, when it is an observable and no load trigger is configured', fakeAsync(() => {
     let loadDataCallCount = 0;
-    const dataSource = new DynamicPsSelectDataSource(
-      of([]).pipe(
-        tap(() => {
-          ++loadDataCallCount;
-        })
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(
+        of([]).pipe(
+          tap(() => {
+            ++loadDataCallCount;
+          })
+        )
       )
     );
 
@@ -77,7 +79,9 @@ describe('DynamicPsSelectDataSource', () => {
   }));
 
   it('should update loading flag', fakeAsync(() => {
-    const dataSource = new DynamicPsSelectDataSource(() => of([]).pipe(delay(1000)), { loadTrigger: PsSelectLoadTrigger.All });
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(() => of([]).pipe(delay(1000)), { loadTrigger: PsSelectLoadTrigger.All })
+    );
     expect(dataSource.loading).toBe(false);
 
     dataSource.connect().subscribe();
@@ -114,7 +118,9 @@ describe('DynamicPsSelectDataSource', () => {
     const halloWeltItemHidden = createOption('Hallo Welt', 1, true);
     const halloItemHidden = createOption('Hallo', 2, true);
     const weltItemHidden = createOption('Welt', 3, true);
-    const dataSource = new DynamicPsSelectDataSource(of([halloWeltItem, halloItem, weltItem]), { searchDebounceTime: 50 });
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(of([halloWeltItem, halloItem, weltItem]), { searchDebounce: 50 })
+    );
 
     let currentRenderOptions;
 
@@ -143,7 +149,7 @@ describe('DynamicPsSelectDataSource', () => {
   }));
 
   it('should debounce searchText', fakeAsync(() => {
-    const dataSource = new DynamicPsSelectDataSource(of([createOption('item', 1)]), { searchDebounceTime: 50 });
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([createOption('item', 1)]), { searchDebounce: 50 }));
 
     let currentRenderOptions;
 
@@ -177,7 +183,7 @@ describe('DynamicPsSelectDataSource', () => {
   }));
 
   it('should not refresh options when searchText changes to the same value', fakeAsync(() => {
-    const dataSource = new DynamicPsSelectDataSource(of([createOption('item', 1)]), { searchDebounceTime: 50 });
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([createOption('item', 1)]), { searchDebounce: 50 }));
 
     let optionsRefreshTime = 0;
     dataSource.connect().subscribe(() => {
@@ -200,7 +206,7 @@ describe('DynamicPsSelectDataSource', () => {
   }));
 
   it('should work with array data', fakeAsync(() => {
-    const dataSource = new DynamicPsSelectDataSource([createOption('item', 1)]);
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([createOption('item', 1)]));
 
     let currentRenderOptions;
     dataSource.connect().subscribe(options => {
@@ -227,10 +233,12 @@ describe('DynamicPsSelectDataSource', () => {
 
   it('should by default only load options when connecting', fakeAsync(() => {
     let loadDataCallCount = 0;
-    const dataSource = new DynamicPsSelectDataSource(() => {
-      ++loadDataCallCount;
-      return of([createOption('item', loadDataCallCount)]);
-    });
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(() => {
+        ++loadDataCallCount;
+        return of([createOption('item', loadDataCallCount)]);
+      })
+    );
 
     let currentRenderOptions;
     dataSource.connect().subscribe(options => {
@@ -255,12 +263,14 @@ describe('DynamicPsSelectDataSource', () => {
 
   it('should only load options on first panel open if loadTrigger is FirstPanelOpen', fakeAsync(() => {
     let loadDataCallCount = 0;
-    const dataSource = new DynamicPsSelectDataSource(
-      () => {
-        ++loadDataCallCount;
-        return of([createOption('item', loadDataCallCount)]);
-      },
-      { loadTrigger: PsSelectLoadTrigger.FirstPanelOpen }
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(
+        () => {
+          ++loadDataCallCount;
+          return of([createOption('item', loadDataCallCount)]);
+        },
+        { loadTrigger: PsSelectLoadTrigger.FirstPanelOpen }
+      )
     );
 
     dataSource.connect().subscribe();
@@ -286,12 +296,14 @@ describe('DynamicPsSelectDataSource', () => {
 
   it('should load options on every panel open if loadTrigger is EveryPanelOpen', fakeAsync(() => {
     let loadDataCallCount = 0;
-    const dataSource = new DynamicPsSelectDataSource(
-      () => {
-        ++loadDataCallCount;
-        return of([createOption('item', loadDataCallCount)]);
-      },
-      { loadTrigger: PsSelectLoadTrigger.EveryPanelOpen }
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(
+        () => {
+          ++loadDataCallCount;
+          return of([createOption('item', loadDataCallCount)]);
+        },
+        { loadTrigger: PsSelectLoadTrigger.EveryPanelOpen }
+      )
     );
 
     dataSource.connect().subscribe();
@@ -326,9 +338,11 @@ describe('DynamicPsSelectDataSource', () => {
 
   it('should add selected values to loaded options, if they are missing', fakeAsync(() => {
     const items$ = new Subject<any[]>();
-    const dataSource = new DynamicPsSelectDataSource<number>(() => {
-      return items$;
-    });
+    const dataSource = new DefaultPsSelectDataSource<number>(
+      createDataSourceOptions(() => {
+        return items$;
+      })
+    );
 
     let currentRenderOptions: any[] | null = null;
     dataSource.connect().subscribe(options => {
@@ -362,15 +376,17 @@ describe('DynamicPsSelectDataSource', () => {
 
   it('should handle errors', fakeAsync(() => {
     let shouldThrow = true;
-    const dataSource = new DynamicPsSelectDataSource(
-      () => {
-        let items$ = of([createOption('item', 1)]).pipe(delay(5));
-        if (shouldThrow) {
-          items$ = items$.pipe(switchMap(() => throwError('test error')));
-        }
-        return items$;
-      },
-      { loadTrigger: PsSelectLoadTrigger.All }
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(
+        () => {
+          let items$ = of([createOption('item', 1)]).pipe(delay(5));
+          if (shouldThrow) {
+            items$ = items$.pipe(switchMap(() => throwError('test error')));
+          }
+          return items$;
+        },
+        { loadTrigger: PsSelectLoadTrigger.All }
+      )
     );
 
     let currentRenderOptions: any[] | null = null;
@@ -402,9 +418,11 @@ describe('DynamicPsSelectDataSource', () => {
   }));
 
   it('should sort selected options to the top after panel close', fakeAsync(() => {
-    const dataSource = new DynamicPsSelectDataSource(() => {
-      return of([createOption('item 1', 1), createOption('item 2', 2), createOption('item 3', 3)]);
-    });
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(() => {
+        return of([createOption('item 1', 1), createOption('item 2', 2), createOption('item 3', 3)]);
+      })
+    );
 
     let currentRenderOptions;
     dataSource.connect().subscribe(options => {
@@ -429,11 +447,13 @@ describe('DynamicPsSelectDataSource', () => {
   }));
 
   it('should emit data only when needed', fakeAsync(() => {
-    const dataSource = new DynamicPsSelectDataSource(
-      () => {
-        return of([createOption('item 1', 1)]);
-      },
-      { loadTrigger: PsSelectLoadTrigger.All }
+    const dataSource = new DefaultPsSelectDataSource(
+      createDataSourceOptions(
+        () => {
+          return of([createOption('item 1', 1)]);
+        },
+        { loadTrigger: PsSelectLoadTrigger.All }
+      )
     );
 
     let dataEmitCount = 0;
@@ -466,6 +486,26 @@ describe('DynamicPsSelectDataSource', () => {
 
     dataSource.disconnect();
   }));
+
+  it('should respect sortCompare', fakeAsync(() => {
+    const item1 = createOption('1', 1);
+    const item2 = createOption('2', 2);
+    const item20 = createOption('20', 20);
+    const item3 = createOption('3', 3);
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([item1, item20, item2, item3]), { searchDebounce: 50 }));
+    dataSource.sortCompare = (a, b) => {
+      return a.value - b.value;
+    };
+    let currentRenderOptions;
+
+    // Beim connecten darf das debounce das laden nicht verzögern
+    dataSource.connect().subscribe(options => {
+      currentRenderOptions = options;
+    });
+    expect(currentRenderOptions).toEqual([item1, item2, item3, item20]);
+
+    dataSource.disconnect();
+  }));
 });
 
 function createOption(label: string, value: any, hidden = false): { label: string; value: any; hidden: boolean } {
@@ -474,4 +514,8 @@ function createOption(label: string, value: any, hidden = false): { label: strin
     value: value,
     hidden: hidden,
   };
+}
+
+function createDataSourceOptions(items: any, optionOverrides: Partial<PsSelectDataSourceOptions> = {}): PsSelectDataSourceOptions {
+  return Object.assign({ mode: 'id', idKey: 'value', labelKey: 'label', items: items }, optionOverrides);
 }

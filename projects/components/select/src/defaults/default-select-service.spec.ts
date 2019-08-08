@@ -1,10 +1,11 @@
 import { fakeAsync } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
-import { PsSelectLoadTrigger } from './dynamic-select-data-source';
-import { PsSelectDataSource, PsSelectItem } from './select.models';
-import { OptionsPsSelectService } from './select.service';
+import { PsSelectItem } from '../models';
+import { PsSelectDataSource } from '../select-data-source';
+import { PsSelectLoadTrigger } from './default-select-data-source';
+import { DefaultPsSelectService } from './default-select-service';
 
-describe('OptionsPsSelectService', () => {
+describe('DefaultPsSelectService', () => {
   it('should work with custom DataSource', fakeAsync(() => {
     class TestDataSource implements PsSelectDataSource {
       public loading: boolean;
@@ -28,7 +29,7 @@ describe('OptionsPsSelectService', () => {
         return [];
       }
     }
-    const service = new OptionsPsSelectService();
+    const service = new DefaultPsSelectService();
 
     const inDataSource = new TestDataSource();
     const dataSource = service.createDataSource(inDataSource, null);
@@ -39,7 +40,7 @@ describe('OptionsPsSelectService', () => {
   }));
 
   it('should work with data object in entity mode', fakeAsync(() => {
-    const service = new OptionsPsSelectService();
+    const service = new DefaultPsSelectService();
 
     const dataSource = service.createDataSource({ mode: 'entity', idKey: 'a', labelKey: 'b', items: [{ a: 1, b: 'item 1' }] }, null);
 
@@ -52,7 +53,7 @@ describe('OptionsPsSelectService', () => {
   }));
 
   it('should work with data object in id mode', fakeAsync(() => {
-    const service = new OptionsPsSelectService();
+    const service = new DefaultPsSelectService();
 
     const dataSource = service.createDataSource({ mode: 'id', idKey: 'a', labelKey: 'b', items: [{ a: 1, b: 'item 1' }] }, null);
 
@@ -65,7 +66,7 @@ describe('OptionsPsSelectService', () => {
   }));
 
   it('should work with data observable and custom options', fakeAsync(() => {
-    const service = new OptionsPsSelectService();
+    const service = new DefaultPsSelectService();
 
     const dataSource = service.createDataSource(
       {
@@ -88,7 +89,7 @@ describe('OptionsPsSelectService', () => {
   }));
 
   it('should work with data array', fakeAsync(() => {
-    const service = new OptionsPsSelectService();
+    const service = new DefaultPsSelectService();
 
     const dataSource = service.createDataSource([{ value: 1, label: 'item 1' }], null);
 
@@ -101,7 +102,7 @@ describe('OptionsPsSelectService', () => {
   }));
 
   it('should work with observable array', fakeAsync(() => {
-    const service = new OptionsPsSelectService();
+    const service = new DefaultPsSelectService();
 
     const dataSource = service.createDataSource(of([{ value: 1, label: 'item 1' }]), null);
 

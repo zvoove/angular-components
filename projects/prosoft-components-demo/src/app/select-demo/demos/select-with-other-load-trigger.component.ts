@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DynamicPsSelectDataSource, PsSelectDataSource, PsSelectLoadTrigger } from '@prosoft/components/select';
+import { DefaultPsSelectDataSource, PsSelectDataSource, PsSelectLoadTrigger } from '@prosoft/components/select';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
@@ -58,8 +58,11 @@ export class SelectWithOtherLoadTriggerComponent {
   }
 
   private createDataSource(loadTrigger: PsSelectLoadTrigger) {
-    return new DynamicPsSelectDataSource<number>(
-      () => {
+    return new DefaultPsSelectDataSource<number>({
+      mode: 'id',
+      idKey: 'value',
+      labelKey: 'label',
+      items: () => {
         this.loadCount++;
         const rnd1 = Math.random();
         const rnd2 = Math.random();
@@ -74,7 +77,7 @@ export class SelectWithOtherLoadTriggerComponent {
           },
         ]).pipe(delay(1000));
       },
-      { loadTrigger: loadTrigger }
-    );
+      loadTrigger: loadTrigger,
+    });
   }
 }

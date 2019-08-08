@@ -1,10 +1,5 @@
 import { Observable } from 'rxjs';
-
-export interface PsSelectItem<T = any> {
-  label: string;
-  value: T;
-  hidden?: boolean;
-}
+import { PsSelectItem } from './models';
 
 export abstract class PsSelectDataSource<T = any> {
   /** The flag that indicates if the select is currently loading data. */

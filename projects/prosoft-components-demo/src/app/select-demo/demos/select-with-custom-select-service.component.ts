@@ -1,17 +1,10 @@
 import { ChangeDetectionStrategy, Component, Injectable } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import {
-  OptionsPsSelectService,
-  PsSelectData,
-  PsSelectDataSource,
-  PsSelectLoadTrigger,
-  PsSelectOptionsData,
-  PsSelectService,
-} from '@prosoft/components/select';
+import { DefaultPsSelectService, PsSelectData, PsSelectDataSource, PsSelectLoadTrigger, PsSelectService } from '@prosoft/components/select';
 import { Observable, of } from 'rxjs';
 
 @Injectable()
-export class CustomPsSelectService extends OptionsPsSelectService {
+export class CustomPsSelectService extends DefaultPsSelectService {
   constructor() {
     super();
   }
@@ -83,7 +76,7 @@ export interface ILookup {
   Id?: string;
 }
 
-function getLookupData(lookup: string): PsSelectOptionsData<ILookup> {
+function getLookupData(lookup: string): PsSelectData<ILookup> {
   // lookup:<entityname> or idlookup:<entityname>
   if (!/^(id)?lookup:/.test(lookup)) {
     throw new Error(lookup);

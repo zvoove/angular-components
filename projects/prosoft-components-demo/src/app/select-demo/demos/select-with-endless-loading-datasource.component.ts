@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DynamicPsSelectDataSource } from '@prosoft/components/select';
+import { DefaultPsSelectDataSource } from '@prosoft/components/select';
 import { NEVER } from 'rxjs';
 
 @Component({
@@ -23,7 +23,7 @@ import { NEVER } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectWithEndlessLoadingDataSourceComponent {
-  public dataSource = new DynamicPsSelectDataSource(() => NEVER);
+  public dataSource = new DefaultPsSelectDataSource({ mode: 'id', labelKey: 'a', idKey: 'b', items: () => NEVER });
   public form = new FormGroup({
     select: new FormControl('idx'),
   });

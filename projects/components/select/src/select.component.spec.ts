@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
 import { PsSelectModule } from './select.module';
-import { OptionsPsSelectService } from './select.service';
+import { DefaultPsSelectService } from './defaults/default-select-service';
 
 function createMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -33,7 +33,7 @@ function createMatSelect(): MatSelect {
 describe('PsSelectComponent', () => {
   it('should create', () => {
     TestBed.configureTestingModule({
-      imports: [PsSelectModule.forRoot(OptionsPsSelectService)],
+      imports: [PsSelectModule.forRoot(DefaultPsSelectService)],
     });
     const fixture = TestBed.createComponent(PsSelectComponent);
     const component = fixture.componentInstance;
@@ -158,7 +158,7 @@ export class TestCustomTemplateComponent {
 describe('PsSelectComponent', () => {
   it('should work with ngModel', async(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), FormsModule],
       declarations: [TestMultipleComponent],
     });
     const fixture = TestBed.createComponent(TestMultipleComponent);
@@ -177,7 +177,7 @@ describe('PsSelectComponent', () => {
 
   it('should emit only once when selecting an option', () => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), ReactiveFormsModule],
       declarations: [TestComponent],
     });
     const fixture = TestBed.createComponent(TestComponent);
@@ -203,7 +203,7 @@ describe('PsSelectComponent', () => {
 
   it('should use the error state matcher input', () => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), ReactiveFormsModule],
       declarations: [TestComponent],
     });
     const fixture = TestBed.createComponent(TestComponent);
@@ -233,7 +233,7 @@ describe('PsSelectComponent', () => {
 
   it('should set the right css classes', async(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), ReactiveFormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), ReactiveFormsModule],
       declarations: [TestComponent],
     });
     const fixture = TestBed.createComponent(TestComponent);
@@ -302,7 +302,7 @@ describe('PsSelectComponent', () => {
 
   it('should set multiple css class for multiple mode', () => {
     TestBed.configureTestingModule({
-      imports: [PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
+      imports: [PsSelectModule.forRoot(DefaultPsSelectService), FormsModule],
       declarations: [TestMultipleComponent],
     });
     const fixture = TestBed.createComponent(TestMultipleComponent);
@@ -317,7 +317,7 @@ describe('PsSelectComponent', () => {
 
   it('should work with custom templates', () => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(OptionsPsSelectService), FormsModule],
+      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), FormsModule],
       declarations: [TestCustomTemplateComponent],
     });
     const fixture = TestBed.createComponent(TestCustomTemplateComponent);

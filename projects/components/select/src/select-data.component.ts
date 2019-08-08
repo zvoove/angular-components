@@ -9,9 +9,9 @@ import {
   OnDestroy,
   Optional,
   QueryList,
+  TemplateRef,
   ViewChildren,
   ViewEncapsulation,
-  TemplateRef,
 } from '@angular/core';
 import { AbstractControl, FormControl, NgControl } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
@@ -19,7 +19,8 @@ import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { getSelectUnknownDataSourceError } from './errors';
-import { isPsSelectDataSource, PsSelectDataSource, PsSelectItem } from './select.models';
+import { PsSelectItem } from './models';
+import { isPsSelectDataSource, PsSelectDataSource } from './select-data-source';
 import { PsSelectService } from './select.service';
 
 @Component({

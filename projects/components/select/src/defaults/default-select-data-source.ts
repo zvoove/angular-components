@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, merge, NEVER, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, isObservable, merge, NEVER, Observable, of, Subject } from 'rxjs';
 import {
   catchError,
   debounceTime,
@@ -13,7 +13,23 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
-import { PsSelectDataSource, PsSelectItem } from './select.models';
+import { PsSelectItem } from '../models';
+import { PsSelectDataSource } from '../select-data-source';
+
+export declare type MaybeObservable<T> = T | Observable<T>;
+
+export interface PsSelectDataSourceOptions<T = any> {
+  mode: 'id' | 'entity';
+  idKey: keyof T;
+  labelKey: keyof T;
+  items: MaybeObservable<T[]> | (() => MaybeObservable<T[]>);
+  searchDebounce?: number;
+  loadTrigger?: PsSelectLoadTrigger;
+}
+
+export function isPsSelectOptionsData(value: any): value is PsSelectDataSourceOptions {
+  return typeof value === 'object' && 'idKey' in value && 'labelKey' in value && 'items' in value && 'mode' in value;
+}
 
 export const enum PsSelectLoadTrigger {
   // tslint:disable-next-line: no-bitwise
@@ -25,12 +41,7 @@ export const enum PsSelectLoadTrigger {
   All = Initial + FirstPanelOpen + EveryPanelOpen,
 }
 
-export interface IDynamicPsSelectDataSourceOptions {
-  loadTrigger?: PsSelectLoadTrigger;
-  searchDebounceTime?: number;
-}
-
-export class DynamicPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
+export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   private _searchDebounceTime: number;
   private _loadTrigger: PsSelectLoadTrigger;
   private _isPanelOpen$ = new BehaviorSubject<boolean>(false);
@@ -39,15 +50,34 @@ export class DynamicPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   private _ngUnsubscribe$ = new Subject<string>();
   private _loadData: () => Observable<PsSelectItem<T>[]>;
 
-  constructor(
-    data: (() => Observable<PsSelectItem<T>[]>) | Observable<PsSelectItem<T>[]> | PsSelectItem<T>[],
-    options: IDynamicPsSelectDataSourceOptions = {}
-  ) {
+  constructor(options: PsSelectDataSourceOptions) {
     super();
-    this._searchDebounceTime = options.searchDebounceTime || 300;
+
+    this._searchDebounceTime = options.searchDebounce || 300;
     this._loadTrigger = options.loadTrigger || PsSelectLoadTrigger.Initial;
 
-    const loadData = typeof data === 'function' ? data : createClientLoadData(data, this._ngUnsubscribe$);
+    let loadData: () => Observable<PsSelectItem<T>[]>;
+    const entityToSelectItem = createEntityToSelectItemMapper(options.mode, options.idKey, options.labelKey);
+
+    const items = options.items;
+    if (typeof items !== 'function') {
+      const data$ = ensureObservable(items).pipe(
+        map(x => x.map(entityToSelectItem)),
+        takeUntil(this._ngUnsubscribe$)
+      );
+      loadData = () => data$;
+    } else {
+      const func: () => T[] | Observable<T[]> = items as any;
+      loadData = () => ensureObservable(func()).pipe(map(x => x.map(entityToSelectItem)));
+    }
+
+    if (options.mode === 'entity') {
+      this.compareWith = createEntityComparer(options.idKey);
+      this.getItemsForValues = (values: any[]) => {
+        return values.map(entityToSelectItem);
+      };
+    }
+
     this._loadData = () => {
       this.loading = true;
       this.error = null;
@@ -134,12 +164,12 @@ export class DynamicPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
             options.sort((a, b) => {
               const aSelected = !!selectedOptionsSet.has(a);
               const bSelected = !!selectedOptionsSet.has(b);
-              const different = +bSelected - +aSelected;
-              if (different) {
-                return different;
+              const selectedDifferent = +bSelected - +aSelected;
+              if (selectedDifferent) {
+                return selectedDifferent;
               }
 
-              return a.label.localeCompare(b.label);
+              return this.sortCompare(a, b);
             });
             return options;
           })
@@ -192,6 +222,14 @@ export class DynamicPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   }
 
   /**
+   * Sort comparer for the items.
+   * Note: Selected items will still be at the top.
+   */
+  public sortCompare = (a: PsSelectItem, b: PsSelectItem): number => {
+    return a.label.localeCompare(b.label);
+  };
+
+  /**
    * Extracts a error message from a given error object
    * @param error The error object.
    * @returns The error message
@@ -226,11 +264,48 @@ export class DynamicPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   }
 }
 
-function createClientLoadData<T>(data: Observable<PsSelectItem<T>[]> | PsSelectItem<T>[], destroy$: Observable<any>) {
-  const data$ = (Array.isArray(data) ? of(data) : data).pipe(
-    take(1),
-    takeUntil(destroy$),
-    shareReplay({ bufferSize: 1, refCount: false })
-  );
-  return () => data$;
+export function ensureObservable<T>(data: T | Observable<T>): Observable<T> {
+  if (!isObservable(data)) {
+    data = of(data);
+  }
+  return data;
+}
+
+function createEntityToSelectItemMapper(mode: 'id' | 'entity', idKey: keyof any, labelKey: keyof any): (item: any) => PsSelectItem<any> {
+  if (mode === 'id') {
+    return (item: any) => ({
+      value: item[idKey],
+      label: item[labelKey],
+    });
+  }
+  return (item: any) => ({
+    value: item,
+    label: item[labelKey],
+  });
+}
+
+function createEntityComparer(idKey: keyof any) {
+  return (entity1: any, entity2: any) => {
+    // Wenn sie gleich sind, sind sie wohl gleich :D
+    if (entity1 === entity2) {
+      return true;
+    }
+
+    // Wenn der typ ungleich ist, dann sind sie nicht gleich
+    if (typeof entity1 !== typeof entity2) {
+      return false;
+    }
+
+    // Wenn eins von beidem falsy ist, es aber nicht das gleiche falsy ist (check oben), dann sind sie nicht gleich
+    if (!entity1 || !entity2) {
+      return false;
+    }
+
+    // Wenn es kein Object ist, wird es nicht unterstützt und wir geben false zurück
+    if (typeof entity1 !== 'object') {
+      return false;
+    }
+
+    return entity1[idKey] === entity2[idKey];
+  };
 }

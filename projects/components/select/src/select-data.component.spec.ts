@@ -3,8 +3,9 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { MatSelect } from '@angular/material/select';
 import { of, Subject } from 'rxjs';
+import { PsSelectItem } from './models';
+import { PsSelectDataSource } from './select-data-source';
 import { PsSelectDataComponent } from './select-data.component';
-import { PsSelectDataSource, PsSelectItem } from './select.models';
 import { PsSelectService } from './select.service';
 
 function createMatSelect(): MatSelect {
