@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2-alpha.6](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.5...@prosoft/components@0.0.2-alpha.6) (2019-08-09)
+
+
+### Features
+
+* **select:** refactoring to allow custom sort for default data source ([#16](https://github.com/prosoft-edv/components/issues/16)) ([338269e](https://github.com/prosoft-edv/components/commit/338269e))
+
+
+### BREAKING CHANGES
+
+* **select:** class/interface renames:
+PsSelectOptionsData -> PsSelectDataSourceOptions
+OptionsPsSelectService -> DefaultPsSelectService
+DynamicPsSelectDataSource -> DefaultPsSelectDataSource
+constructor for DefaultPsSelectDataSource changed
+
+
+
+
+
 ## [0.0.2-alpha.5](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.4...@prosoft/components@0.0.2-alpha.5) (2019-08-07)
 
 
