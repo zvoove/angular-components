@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2-alpha.7](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.6...@prosoft/components@0.0.2-alpha.7) (2019-08-20)
+
+
+### Features
+
+* **form:** added blocked input ([#19](https://github.com/prosoft-edv/components/issues/19)) ([1710ed2](https://github.com/prosoft-edv/components/commit/1710ed2))
+
+
+
+
+
 ## [0.0.2-alpha.6](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.5...@prosoft/components@0.0.2-alpha.6) (2019-08-09)
 
 
