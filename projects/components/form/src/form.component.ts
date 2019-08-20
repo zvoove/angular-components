@@ -58,7 +58,7 @@ export class PsFormCancelEvent extends PsFormEvent {}
     <form [formGroup]="form || dummyForm" [autocomplete]="autocomplete">
       <ps-savebar [form]="form" [mode]="savebarMode" (cancel)="onCancel()" [canSave]="canSaveIntern" [intlOverride]="intlOverride">
         <div class="ps-form__cards-container">
-          <ps-block-ui *ngIf="!hasLoadError" [blocked]="blocked">
+          <ps-block-ui *ngIf="!hasLoadError" [blocked]="viewBlocked">
             <ng-content></ng-content>
           </ps-block-ui>
 
@@ -116,6 +116,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   @Input() public autocomplete: 'on' | 'off' = 'off';
   @Input() public hideSaveAndClose = false;
   @Input() public hideSave = false;
+  @Input() public blocked = false;
   @Input() public canSave: boolean | null = null;
   @Input() public intlOverride: IPsSavebarIntlTexts;
 
@@ -136,12 +137,16 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  public blocked = false;
+  public internalBlocked = false;
+  public get viewBlocked(): boolean | null {
+    return this.internalBlocked || this.blocked;
+  }
+
   public hasLoadError = false;
   public hasSaveError = false;
   public errorMessage: string;
   public get canSaveIntern(): boolean | null {
-    return this.blocked ? false : this.canSave;
+    return this.viewBlocked ? false : this.canSave;
   }
   public intl: IPsSavebarIntlTexts;
   public get savebarMode(): string {
@@ -210,7 +215,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   public loadData() {
-    this.blocked = true;
+    this.internalBlocked = true;
     this.errorMessage = null;
     this.hasLoadError = false;
     this.hasSaveError = false;
@@ -221,7 +226,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
     }
     this._loadSub = this.loadFnc().subscribe({
       next: (value: any) => {
-        this.blocked = false;
+        this.internalBlocked = false;
 
         const event = new PsFormLoadSuccessEvent(value);
         this.loadSuccess.emit(event);
@@ -237,7 +242,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
         this.cd.markForCheck();
       },
       error: (error: any) => {
-        this.blocked = false;
+        this.internalBlocked = false;
         this.errorMessage = this.errorExtractor.extractErrorMessage(error);
         this.hasLoadError = true;
 
@@ -258,7 +263,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   public onSave(close: boolean) {
-    this.blocked = true;
+    this.internalBlocked = true;
     this.errorMessage = null;
     this.hasSaveError = false;
     this.cd.markForCheck();
@@ -271,7 +276,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe({
         next: (saveResult: any) => {
-          this.blocked = false;
+          this.internalBlocked = false;
 
           const event = new PsFormSaveSuccessEvent(formValue, saveResult, close);
           this.saveSuccess.emit(event);
@@ -289,7 +294,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
           this.cd.markForCheck();
         },
         error: (error: any) => {
-          this.blocked = false;
+          this.internalBlocked = false;
           this.errorMessage = this.errorExtractor.extractErrorMessage(error);
           this.hasSaveError = true;
 

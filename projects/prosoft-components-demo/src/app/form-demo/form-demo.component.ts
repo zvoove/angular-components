@@ -10,6 +10,7 @@ import { DemoPsFormActionService } from './form-demo.module';
   selector: 'app-form-demo',
   template: `
     <mat-card class="app-form-demo__settings">
+      <mat-checkbox [(ngModel)]="blocked">blocked</mat-checkbox>
       <mat-checkbox [(ngModel)]="hideSave">hide save</mat-checkbox>
       <mat-checkbox [(ngModel)]="hideSaveAndClose">hide save & close</mat-checkbox>
       <mat-checkbox [(ngModel)]="canSave">can save</mat-checkbox>
@@ -28,6 +29,7 @@ import { DemoPsFormActionService } from './form-demo.module';
         [hideSave]="hideSave"
         [hideSaveAndClose]="hideSaveAndClose"
         [canSave]="canSave"
+        [blocked]="blocked"
         (loadSuccess)="onEvent($event, 'loadSuccess')"
         (loadError)="onEvent($event, 'loadError')"
         (saveSuccess)="onEvent($event, 'saveSuccess')"
@@ -85,6 +87,7 @@ import { DemoPsFormActionService } from './form-demo.module';
 })
 export class FormDemoComponent implements OnDestroy {
   public preventDefault = false;
+  public blocked = false;
   public canSave = true;
   public hideSave = false;
   public hideSaveAndClose = false;

@@ -71,6 +71,7 @@ export class TestPsFormActionService extends PsFormActionService {
       [hideSave]="hideSave"
       [hideSaveAndClose]="hideSaveAndClose"
       [canSave]="canSave"
+      [blocked]="blocked"
       (loadSuccess)="onEvent($event, 'loadSuccess')"
       (loadError)="onEvent($event, 'loadError')"
       (saveSuccess)="onEvent($event, 'saveSuccess')"
@@ -85,6 +86,7 @@ export class TestComponent {
   public canSave = true;
   public hideSave = false;
   public hideSaveAndClose = false;
+  public blocked = false;
   public formMode = 'create';
   public form = new FormGroup(
     {
@@ -442,6 +444,47 @@ describe('PsFormComponent', () => {
       tick(1);
       fixture.detectChanges();
       expect(blockUi.componentInstance.blocked).toBe(false);
+    }));
+
+    it('should not mix up blocked input with loading block', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      spyOn(component, 'loadFnc').and.returnValues(
+        of({}).pipe(delay(100)),
+        of({}).pipe(
+          delay(100),
+          switchMapTo(throwError('error'))
+        )
+      );
+
+      // loading view blocks the ui
+      fixture.detectChanges();
+      tick(1);
+      fixture.detectChanges();
+      const blockUi = getBlockUi(fixture);
+      expect(blockUi.componentInstance.blocked).toBe(true);
+      expect(component.formCmp.canSaveIntern).toBe(false);
+
+      // blocked input is also set to false - should not unblock the view
+      component.blocked = false;
+      fixture.detectChanges();
+      expect(blockUi.componentInstance.blocked).toBe(true);
+      expect(component.formCmp.canSaveIntern).toBe(false);
+
+      // blocked input is also set to true and loading completes - view should still be blocked
+      component.blocked = true;
+      tick(1000);
+      fixture.detectChanges();
+      expect(blockUi.componentInstance.blocked).toBe(true);
+      expect(component.formCmp.canSaveIntern).toBe(false);
+
+      // blocked input is also set to false - should now unblock the view
+      component.blocked = false;
+      fixture.detectChanges();
+      expect(blockUi.componentInstance.blocked).toBe(false);
+      expect(component.formCmp.canSaveIntern).toBe(true);
     }));
   });
 
