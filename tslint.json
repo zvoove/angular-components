@@ -55,7 +55,9 @@
     "one-line": false,
     "max-line-length": false,
     "semicolon": false,
-    "object-literal-shorthand": [true, "never"]
+    "object-literal-shorthand": [true, "never"],
+
+    "no-focused-test": true
   },
-  "rulesDirectory": ["codelyzer"]
+  "rulesDirectory": ["codelyzer", "tslint-no-focused-test"]
 }

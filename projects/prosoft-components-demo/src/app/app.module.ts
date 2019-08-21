@@ -44,6 +44,10 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./block-ui-demo/block-ui-demo.module').then(m => m.BlockUiDemoModule),
       },
       {
+        path: 'slider',
+        loadChildren: () => import('./slider-demo/slider-demo.module').then(m => m.SliderDemoModule),
+      },
+      {
         path: 'form',
         loadChildren: () => import('./form-demo/form-demo.module').then(m => m.FormDemoModule),
       },

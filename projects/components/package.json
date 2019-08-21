@@ -18,7 +18,8 @@
     "@angular/core": "^8.0.0",
     "@angular/forms": "~8.0.0",
     "@angular/material": "^8.0.0",
-    "ngx-mat-select-search": "^1.7.0"
+    "ngx-mat-select-search": "^1.7.0",
+    "nouislider": "^14.0.2"
   },
   "publishConfig": {
     "access": "public"
