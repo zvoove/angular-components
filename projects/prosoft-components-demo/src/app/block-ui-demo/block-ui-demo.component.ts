@@ -15,7 +15,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
     </ps-block-ui>
     <div style="height: 1em;"></div>
     <ps-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
-      <mat-card style="height: 100px">
+      <mat-card style="height: 30vh">
         this will also be blocked
       </mat-card>
     </ps-block-ui>
@@ -39,5 +39,5 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 })
 export class BlockUiDemoComponent {
   public blocked = true;
-  public spinnerText = 'some custom text';
+  public spinnerText = 'some custom text that will be displayed while the view is blocked';
 }
