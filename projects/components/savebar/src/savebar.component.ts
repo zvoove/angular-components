@@ -19,7 +19,7 @@ import { FormGroup } from '@angular/forms';
 import { merge, Subject, Subscription } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { PsSavebarRightContentDirective } from './savebar-right-content.directive';
-import { IPsSavebarIntlTexts, PsSavebarIntl } from './savebar.intl';
+import { IPsSavebarIntlTexts, PsIntlService } from '@prosoft/components/core';
 
 @Component({
   selector: 'ps-savebar',
@@ -34,7 +34,7 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   @Input() public canSave: boolean | null;
   @Input() public canStepFwd: boolean;
   @Input() public canStepBack: boolean;
-  @Input() public intlOverride: IPsSavebarIntlTexts;
+  @Input() public intlOverride: Partial<IPsSavebarIntlTexts>;
   @Input() public saveKey = 's';
 
   @Output() public save = new EventEmitter<void>();
@@ -75,7 +75,7 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   private _formSub: Subscription;
   private _stopListening: () => void;
 
-  constructor(private intlService: PsSavebarIntl, private renderer: Renderer2, private ngZone: NgZone, public cd: ChangeDetectorRef) {}
+  constructor(private intlService: PsIntlService, private renderer: Renderer2, private ngZone: NgZone, public cd: ChangeDetectorRef) {}
 
   public ngOnInit() {
     this.intlService.intlChanged$
@@ -134,7 +134,8 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private updateIntl() {
-    this.intl = this.intlService.mergeIntl(this.intlOverride);
+    const intl = this.intlService.get('savebar');
+    this.intl = this.intlService.merge(intl, this.intlOverride);
   }
 
   private updateSaveKeyListener() {

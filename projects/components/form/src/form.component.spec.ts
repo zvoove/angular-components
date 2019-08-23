@@ -7,21 +7,12 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { PsBlockUiComponent } from '@prosoft/components/block-ui';
-import { PsExceptionMessageExtractor } from '@prosoft/components/exception';
+import { PsExceptionMessageExtractor, PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
-import { PsSavebarIntl, PsSavebarIntlEn } from '@prosoft/components/savebar';
 import { DemoPsFormActionService } from 'projects/prosoft-components-demo/src/app/form-demo/form-demo.module';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, switchMapTo } from 'rxjs/operators';
-import {
-  IPsFormCancelParams,
-  IPsFormLoadErrorParams,
-  IPsFormLoadSuccessParams,
-  IPsFormSaveErrorParams,
-  IPsFormSaveParams,
-  IPsFormSaveSuccessParams,
-  PsFormActionService,
-} from '..';
+import { PsFormActionService } from './form-action.service';
 import {
   PsFormCancelEvent,
   PsFormComponent,
@@ -32,6 +23,14 @@ import {
   PsFormSaveSuccessEvent,
 } from './form.component';
 import { PsFormModule } from './form.module';
+import {
+  IPsFormCancelParams,
+  IPsFormLoadErrorParams,
+  IPsFormLoadSuccessParams,
+  IPsFormSaveErrorParams,
+  IPsFormSaveParams,
+  IPsFormSaveSuccessParams,
+} from './models';
 
 class TestPsFormService extends BasePsFormService {
   constructor() {
@@ -127,9 +126,13 @@ describe('PsFormComponent', () => {
   describe('integration', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, PsFormModule.forRoot(TestPsFormActionService)],
+        imports: [NoopAnimationsModule, CommonModule, PsFormModule],
         declarations: [TestComponent],
-        providers: [{ provide: PsFormService, useClass: TestPsFormService }, { provide: PsSavebarIntl, useClass: PsSavebarIntlEn }],
+        providers: [
+          { provide: PsFormService, useClass: TestPsFormService },
+          { provide: PsIntlService, useClass: PsIntlServiceEn },
+          { provide: PsFormActionService, useClass: TestPsFormActionService },
+        ],
       }).compileComponents();
     }));
 
@@ -491,13 +494,13 @@ describe('PsFormComponent', () => {
   describe('isolated', () => {
     let actionService: PsFormActionService;
     let errorExtractor: PsExceptionMessageExtractor;
-    let intlService: PsSavebarIntl;
+    let intlService: PsIntlService;
     let route: ActivatedRoute;
     let cd: ChangeDetectorRef;
     let component: PsFormComponent;
     beforeEach(async(() => {
       actionService = new DemoPsFormActionService();
-      intlService = new PsSavebarIntlEn();
+      intlService = new PsIntlServiceEn();
       errorExtractor = new PsExceptionMessageExtractor();
       route = {} as any;
       cd = {

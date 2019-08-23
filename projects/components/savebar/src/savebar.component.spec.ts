@@ -6,10 +6,10 @@ import { MatCard } from '@angular/material/card';
 import { MatChipList } from '@angular/material/chips';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { IPsSavebarIntlTexts, PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
 import { Observable, of } from 'rxjs';
 import { PsSavebarComponent } from './savebar.component';
-import { IPsSavebarIntlTexts, PsSavebarIntl, PsSavebarIntlEn } from './savebar.intl';
 import { PsSavebarModule } from './savebar.module';
 
 @Injectable()
@@ -75,7 +75,7 @@ describe('PsSavebarComponent', () => {
     TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, CommonModule, ReactiveFormsModule, PsSavebarModule],
       declarations: [TestComponent],
-      providers: [{ provide: PsFormService, useClass: TestPsFormService }, { provide: PsSavebarIntl, useClass: PsSavebarIntlEn }],
+      providers: [{ provide: PsFormService, useClass: TestPsFormService }, { provide: PsIntlService, useClass: PsIntlServiceEn }],
     }).compileComponents();
   }));
 

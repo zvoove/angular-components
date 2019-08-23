@@ -14,8 +14,8 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { PsExceptionMessageExtractor } from '@prosoft/components/exception';
-import { IPsSavebarIntlTexts, PsSavebarComponent, PsSavebarIntl } from '@prosoft/components/savebar';
+import { IPsFormIntlTexts, PsExceptionMessageExtractor, PsIntlService } from '@prosoft/components/core';
+import { PsSavebarComponent } from '@prosoft/components/savebar';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { PsFormActionService } from './form-action.service';
@@ -118,7 +118,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   @Input() public hideSave = false;
   @Input() public blocked = false;
   @Input() public canSave: boolean | null = null;
-  @Input() public intlOverride: IPsSavebarIntlTexts;
+  @Input() public intlOverride: Partial<IPsFormIntlTexts>;
 
   @Input() public loadFnc: () => Observable<any>;
   @Input() public saveFnc: (formRawValue: any, params: IPsFormSaveParams) => Observable<any>;
@@ -148,7 +148,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   public get canSaveIntern(): boolean | null {
     return this.viewBlocked ? false : this.canSave;
   }
-  public intl: IPsSavebarIntlTexts;
+  public intl: IPsFormIntlTexts;
   public get savebarMode(): string {
     return this.hasLoadError ? 'hide' : 'auto';
   }
@@ -161,8 +161,8 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   private _savebar: PsSavebarComponent;
 
   constructor(
-    public actionService: PsFormActionService,
-    public intlService: PsSavebarIntl,
+    @Optional() public actionService: PsFormActionService,
+    public intlService: PsIntlService,
     private errorExtractor: PsExceptionMessageExtractor,
     @Optional() private route: ActivatedRoute,
     private cd: ChangeDetectorRef
@@ -230,7 +230,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
 
         const event = new PsFormLoadSuccessEvent(value);
         this.loadSuccess.emit(event);
-        if (!event.defaultPrevented) {
+        if (this.actionService && !event.defaultPrevented) {
           this.actionService.defaultLoadSuccessHandler({
             value: value,
             form: this.form,
@@ -248,7 +248,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
 
         const event = new PsFormLoadErrorEvent(error);
         this.loadError.emit(event);
-        if (!event.defaultPrevented) {
+        if (this.actionService && !event.defaultPrevented) {
           this.actionService.defaultLoadErrorHandler({
             error: error,
             form: this.form,
@@ -280,7 +280,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
 
           const event = new PsFormSaveSuccessEvent(formValue, saveResult, close);
           this.saveSuccess.emit(event);
-          if (!event.defaultPrevented) {
+          if (this.actionService && !event.defaultPrevented) {
             this.actionService.defaultSaveSuccessHandler({
               value: formValue,
               saveResult: saveResult,
@@ -300,7 +300,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
 
           const event = new PsFormSaveErrorEvent(formValue, error);
           this.saveError.emit(event);
-          if (!event.defaultPrevented) {
+          if (this.actionService && !event.defaultPrevented) {
             this.actionService.defaultSaveErrorHandler({
               value: formValue,
               error: error,
@@ -319,7 +319,7 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   public onCancel() {
     const event = new PsFormCancelEvent();
     this.cancel.emit(event);
-    if (!event.defaultPrevented) {
+    if (this.actionService && !event.defaultPrevented) {
       this.actionService.defaultCancelHandler({
         formMode: this.formMode,
         route: this.route,
@@ -328,7 +328,8 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private updateIntl() {
-    this.intl = this.intlService.mergeIntl(this.intlOverride);
+    const intl = this.intlService.get('form');
+    this.intl = this.intlService.merge(intl, this.intlOverride);
   }
 
   private updateSaveBinding() {

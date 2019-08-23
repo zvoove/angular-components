@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormBaseModule } from '@prosoft/components/form-base';
-import { PsSavebarIntlEn, PsSavebarModule } from '@prosoft/components/savebar';
+import { PsSavebarModule } from '@prosoft/components/savebar';
 import { Observable, of } from 'rxjs';
 import { SavebarDemoComponent } from './savebar-demo.component';
 
@@ -30,7 +30,7 @@ export class DemoPsFormsService extends BasePsFormService {
     ReactiveFormsModule,
     CommonModule,
     PsFormBaseModule.forRoot(DemoPsFormsService),
-    PsSavebarModule.forRoot(PsSavebarIntlEn),
+    PsSavebarModule,
     RouterModule.forChild([
       {
         path: '',

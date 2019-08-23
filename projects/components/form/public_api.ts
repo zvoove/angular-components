@@ -17,3 +17,6 @@ export {
   IPsFormSaveParams,
   IPsFormSaveSuccessParams,
 } from './src/models';
+
+// reexport
+export { IPsFormIntlTexts } from '@prosoft/components/core';

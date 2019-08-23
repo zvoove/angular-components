@@ -6,6 +6,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
+import { PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -58,7 +59,7 @@ import { AppComponent } from './app.component';
       },
     ]),
   ],
-  providers: [{ provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }],
+  providers: [{ provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }, { provide: PsIntlService, useClass: PsIntlServiceEn }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

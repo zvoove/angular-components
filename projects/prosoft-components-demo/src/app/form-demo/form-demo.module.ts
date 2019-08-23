@@ -16,7 +16,7 @@ import {
   IPsFormSaveErrorParams,
   IPsFormSaveSuccessParams,
 } from '@prosoft/components/form/src/models';
-import { PsSavebarIntlEn, PsSavebarModule } from '@prosoft/components/savebar';
+import { PsSavebarModule } from '@prosoft/components/savebar';
 import { Observable, of, Subject } from 'rxjs';
 import { FormDemoComponent } from './form-demo.component';
 
@@ -64,8 +64,8 @@ export class DemoPsFormActionService extends PsFormActionService {
     ReactiveFormsModule,
     CommonModule,
     PsFormBaseModule.forRoot(DemoPsFormsService),
-    PsSavebarModule.forRoot(PsSavebarIntlEn),
-    PsFormModule.forRoot(DemoPsFormActionService),
+    PsSavebarModule,
+    PsFormModule,
     RouterModule.forChild([
       {
         path: '',
@@ -80,6 +80,6 @@ export class DemoPsFormActionService extends PsFormActionService {
     MatButtonModule,
   ],
   declarations: [FormDemoComponent],
-  providers: [],
+  providers: [{ provide: PsFormActionService, useClass: DemoPsFormActionService }],
 })
 export class FormDemoModule {}
