@@ -1,0 +1,96 @@
+<table mat-table multiTemplateDataRows class="ps-table-data__table" [class.mat-elevation-z3]="cardLayout" [dataSource]="dataSource">
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="onMasterToggleChange()" [checked]="isMasterToggleChecked()" [indeterminate]="isMasterToggleIndeterminate()">
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row" style="width: 55px;">
+      <mat-checkbox (click)="$event.stopPropagation()" (change)="onRowToggleChange(row)" [checked]="isRowSelected(row)"> </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <!-- Row Detail Expander Column-->
+  <ng-container matColumnDef="rowDetailExpander">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row" style="width: 70px;">
+      <button mat-icon-button color="primary" type="button" (click)="toggleRowDetail(row)">
+        <mat-icon *ngIf="!rowDetail.isExpanded(row)">chevron_right</mat-icon>
+        <mat-icon *ngIf="rowDetail.isExpanded(row)">expand_more</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <!-- Dynamic Columns -->
+  <ng-container *ngFor="let columnDef of columnDefs">
+    <ng-container [matColumnDef]="columnDef.property">
+      <th mat-header-cell *matHeaderCellDef [ngStyle]="columnDef.headerStyles" [style.width]="columnDef.width">
+        <ng-container *ngIf="!columnDef.headerTemplate">
+          {{ columnDef.header }}
+        </ng-container>
+        <ng-template *ngIf="columnDef.headerTemplate" [ngTemplateOutlet]="columnDef.headerTemplate"></ng-template>
+      </th>
+      <td mat-cell *matCellDef="let element" [ngStyle]="columnDef.columnStyles">
+        <ng-container *ngIf="!columnDef.columnTemplate">
+          {{ element[columnDef.property] }}
+        </ng-container>
+        <ng-template
+          *ngIf="columnDef.columnTemplate"
+          [ngTemplateOutlet]="columnDef.columnTemplate"
+          [ngTemplateOutletContext]="{ $implicit: element, expanded: rowDetail?.isExpanded(element) || false }"
+        >
+        </ng-template>
+      </td>
+    </ng-container>
+  </ng-container>
+
+  <!--Option Column-->
+  <ng-container matColumnDef="options">
+    <th class="ps-table-data__options-column-header" mat-header-cell *matHeaderCellDef>
+      <button *ngIf="showListActions" mat-icon-button type="button" [matMenuTriggerFor]="listMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #listMenu="matMenu">
+        <!--Dynamic ListActions-->
+        <ng-template [ngTemplateOutlet]="listActions" [ngTemplateOutletContext]="{ $implicit: getSelectedRows() }"></ng-template>
+
+        <button [hidden]="!refreshable" type="button" mat-menu-item (click)="onRefreshDataClicked()">
+          <mat-icon>refresh</mat-icon>
+          <span>{{ intl.refreshListLabel }}</span>
+        </button>
+        <button *ngIf="settingsEnabled" type="button" mat-menu-item (click)="onShowSettingsClicked()">
+          <mat-icon>settings</mat-icon>
+          <span>{{ intl.settingsLabel }}</span>
+        </button>
+      </mat-menu>
+    </th>
+    <td class="ps-table-data__options-column" mat-cell *matCellDef="let element">
+      <button *ngIf="rowActions" mat-icon-button type="button" [matMenuTriggerFor]="rowMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #rowMenu="matMenu">
+        <!--Dynamic RowActions-->
+        <ng-container [ngTemplateOutlet]="rowActions" [ngTemplateOutletContext]="{ $implicit: element }"></ng-container>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container *ngIf="rowDetail" matColumnDef="__rowDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length" class="ps-table-data__detail-cell">
+      <ps-table-row-detail [show]="rowDetail.isExpanded(element)" [element]="element" [rowDetail]="rowDetail"></ps-table-row-detail>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row class="ps-table-data__row" *matRowDef="let row; columns: displayedColumns"></tr>
+  <ng-container *ngIf="rowDetail">
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['__rowDetail']"
+      class="ps-table-data__detail-row"
+      [class.ps-table-data__detail-row--collapsed]="!rowDetail.isExpanded(row)"
+      [class.ps-table-data__detail-row--expanded]="rowDetail.isExpanded(row)"
+    ></tr>
+  </ng-container>
+</table>

@@ -1,0 +1,39 @@
+<mat-card *ngIf="settings$ | async as settings">
+  <!-- h1 is the table title -->
+  <h2>{{ intl.settingsLabel }}</h2>
+  <div class="ps-table-settings__form">
+    <div class="ps-table-settings__form__display-columns">
+      <strong>{{ intl.displayedColumnsLabel }}</strong>
+      <ng-container *ngFor="let columnDef of columnDefinitions">
+        <mat-checkbox
+          [disabled]="settings.sortColumn === columnDef.property || columnDef.mandatory"
+          *ngIf="columnDef.header && columnDef.property"
+          [checked]="columnVisible(settings, columnDef)"
+          (change)="onColumnVisibilityChange($event, settings, columnDef)"
+        >
+          {{ columnDef.header }}
+        </mat-checkbox>
+      </ng-container>
+    </div>
+
+    <ps-table-sort
+      *ngIf="sortDefinitions.length"
+      [sortColumn]="settings.sortColumn"
+      [sortDirection]="settings.sortDirection"
+      [sortDefinitions]="sortDefinitions"
+      [intl]="intl"
+      (sortChanged)="onSortChanged($event, settings)"
+    ></ps-table-sort>
+
+    <mat-form-field>
+      <mat-label>{{ intl.itemsPerPageLabel }}</mat-label>
+      <mat-select [(value)]="settings.pageSize">
+        <mat-option *ngFor="let pageSizeOption of pageSizeOptions" [value]="pageSizeOption">{{ pageSizeOption }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <mat-card-actions style="text-align: right">
+    <button mat-raised-button color="primary" (click)="onSaveClick(settings)">{{ intl.saveLabel }}</button>
+    <button style="margin-left: 1em" mat-stroked-button (click)="onCancelClick()">{{ intl.cancelLabel }}</button>
+  </mat-card-actions>
+</mat-card>

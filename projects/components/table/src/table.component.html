@@ -1,0 +1,65 @@
+<ps-flip-container>
+  <div *psFlipContainerFront>
+    <ps-table-header
+      [intl]="intl"
+      [caption]="caption"
+      [topButtonSection]="topButtonSection"
+      [selectedRows]="dataSource.selectionModel.selected"
+      [customHeader]="customHeader"
+      [showSorting]="showSorting"
+      [sortColumn]="sortColumn"
+      [sortDirection]="sortDirection"
+      [sortDefinitions]="sortDefinitions"
+      [filterable]="filterable"
+      [searchText]="filterText"
+      (sortChanged)="onSortChanged($event)"
+      (searchChanged)="onSearchChanged($event)"
+    ></ps-table-header>
+
+    <ps-table-data
+      [intl]="intl"
+      [dataSource]="dataSource"
+      [tableId]="tableId"
+      [rowActions]="rowActions"
+      [cardLayout]="cardLayout"
+      [rowDetail]="rowDetail"
+      [columnDefs]="columnDefs"
+      [listActions]="listActions"
+      [refreshable]="refreshable"
+      [settingsEnabled]="settingsEnabled"
+      [showListActions]="showListActions"
+      [displayedColumns]="displayedColumns"
+      (showSettingsClicked)="flipContainer.toggleFlip()"
+      (refreshDataClicked)="onRefreshDataClicked()"
+    ></ps-table-data>
+
+    <div class="ps-table__no-entries-text" *ngIf="showNoEntriesText">{{ intl.noEntriesLabel }}</div>
+    <div class="ps-table__error-text" *ngIf="showError">{{ errorMessage }}</div>
+    <div class="ps-table__loading-container" *ngIf="showLoading">
+      <mat-spinner class="ps-table__loading-spinner"></mat-spinner>
+    </div>
+    <mat-paginator
+      class="ps-table__paginator"
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [length]="dataSource.dataLength"
+      [showFirstLastButtons]="true"
+      (page)="onPage($event)"
+    >
+    </mat-paginator>
+  </div>
+  <div *psFlipContainerBack>
+    <ps-table-settings
+      *ngIf="settingsEnabled"
+      [tableId]="tableId"
+      [intl]="intl"
+      [columnDefinitions]="columnDefs"
+      [sortDefinitions]="sortDefinitions"
+      [pageSizeOptions]="pageSizeOptions"
+      (settingsAborted)="flipContainer.toggleFlip()"
+      (settingsSaved)="onSettingsSaved()"
+    >
+    </ps-table-settings>
+  </div>
+</ps-flip-container>

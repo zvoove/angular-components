@@ -1,0 +1,24 @@
+ps-table {
+  display: block;
+
+  .ps-table__paginator {
+    width: 100%;
+  }
+
+  .ps-table__loading-spinner {
+    margin: 1em auto;
+  }
+
+  .ps-table__no-entries-text,
+  .ps-table__error-text,
+  .ps-table__loading-container {
+    font-size: large;
+    background-color: white;
+    padding: 1em 0;
+    text-align: center;
+  }
+
+  .ps-table__error-text {
+    color: red;
+  }
+}

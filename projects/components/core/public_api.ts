@@ -1,2 +1,2 @@
 export { PsExceptionMessageExtractor } from './src/exception-message-extractor.service';
-export { PsIntlService, PsIntlKeys, IPsSavebarIntlTexts, IPsFormIntlTexts, PsIntlServiceEn } from './src/intl';
+export { IPsFormIntlTexts, IPsSavebarIntlTexts, IPsTableIntlTexts, PsIntlKeys, PsIntlService, PsIntlServiceEn } from './src/intl';
