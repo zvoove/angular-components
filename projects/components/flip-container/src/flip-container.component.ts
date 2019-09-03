@@ -1,13 +1,14 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ContentChild,
   ElementRef,
+  Input,
   TemplateRef,
   ViewChild,
-  ChangeDetectorRef,
-  Renderer2,
 } from '@angular/core';
 import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-container.directives';
 
@@ -35,7 +36,9 @@ import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-
     ]),
   ],
 })
-export class PsFlipContainerComponent {
+export class PsFlipContainerComponent implements AfterViewInit {
+  @Input() public removeHiddenNodes = true;
+
   @ContentChild(FlipContainerFrontDirective, { read: TemplateRef, static: false })
   public frontTemplate: TemplateRef<any> | null = null;
 
@@ -45,28 +48,40 @@ export class PsFlipContainerComponent {
   @ViewChild('frontside', { static: true }) public frontside: ElementRef<any>;
   @ViewChild('backside', { static: true }) public backside: ElementRef<any>;
 
-  public flip: 'back' | 'front' = 'front';
+  public show: 'back' | 'front' = 'front';
+  public attachFront = true;
+  public attachBack = false;
 
-  constructor(private cd: ChangeDetectorRef, private renderer: Renderer2) {}
+  constructor(private cd: ChangeDetectorRef) {}
+
+  public ngAfterViewInit() {
+    this.backside.nativeElement.hidden = true;
+  }
 
   public toggleFlip() {
-    this.flip = this.flip === 'front' ? 'back' : 'front';
+    this.show = this.show === 'front' ? 'back' : 'front';
     this.cd.markForCheck();
   }
 
   public flipStarted() {
-    if (this.flip === 'back') {
+    if (this.show === 'back') {
       this.backside.nativeElement.hidden = false;
+      this.attachBack = true;
     } else {
       this.frontside.nativeElement.hidden = false;
+      this.attachFront = true;
     }
+    this.cd.markForCheck();
   }
 
   public flipDone() {
-    if (this.flip === 'back') {
+    if (this.show === 'back') {
       this.frontside.nativeElement.hidden = true;
+      this.attachFront = false;
     } else {
       this.backside.nativeElement.hidden = true;
+      this.attachBack = false;
     }
+    this.cd.markForCheck();
   }
 }

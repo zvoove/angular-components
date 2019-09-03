@@ -612,7 +612,7 @@ describe('PsTableComponent', () => {
         flush();
         fixture.detectChanges();
         flush();
-        expect(component.table.flipContainer.flip).toEqual('back');
+        expect(component.table.flipContainer.show).toEqual('back');
       });
     }));
   });

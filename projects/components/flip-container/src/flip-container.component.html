@@ -1,10 +1,10 @@
 <div class="ps-flip-container__container">
-  <div class="ps-flip-container__flip-box" [@flipState]="flip" (@flipState.start)="flipStarted()" (@flipState.done)="flipDone()">
+  <div class="ps-flip-container__flip-box" [@flipState]="show" (@flipState.start)="flipStarted()" (@flipState.done)="flipDone()">
     <div #frontside class="ps-flip-container__side ps-flip-container__side__front">
-      <ng-container [ngTemplateOutlet]="frontTemplate"></ng-container>
+      <ng-container *ngIf="attachFront || !removeHiddenNodes" [ngTemplateOutlet]="frontTemplate"></ng-container>
     </div>
     <div #backside class="ps-flip-container__side ps-flip-container__side__back">
-      <ng-container [ngTemplateOutlet]="backTemplate"></ng-container>
+      <ng-container *ngIf="attachBack || !removeHiddenNodes" [ngTemplateOutlet]="backTemplate"></ng-container>
     </div>
   </div>
 </div>
