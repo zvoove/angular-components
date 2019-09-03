@@ -661,4 +661,8 @@ function closeBackdrop<T>(fixture: ComponentFixture<T>) {
   document.querySelector('.cdk-overlay-backdrop').dispatchEvent(new MouseEvent('click'));
   fixture.detectChanges();
   flush();
+
+  // Sometimes the mat-select oder mat-menu items aren't cleared and the tests fail. Hopefully this fixes that.
+  tick(1);
+  fixture.detectChanges();
 }
