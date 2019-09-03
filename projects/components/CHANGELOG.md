@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2-alpha.8](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.7...@prosoft/components@0.0.2-alpha.8) (2019-09-03)
+
+
+### Bug Fixes
+
+* **block-ui:** spinner position is now in the middle in more cases ([#21](https://github.com/prosoft-edv/components/issues/21)) ([80eba09](https://github.com/prosoft-edv/components/commit/80eba09))
+
+
+### Code Refactoring
+
+* simplified registering of the modules ([#20](https://github.com/prosoft-edv/components/issues/20)) ([34bd959](https://github.com/prosoft-edv/components/commit/34bd959))
+
+
+### Features
+
+* **flip-container:** remove dom nodes of the hidden side ([#23](https://github.com/prosoft-edv/components/issues/23)) ([74ca4d5](https://github.com/prosoft-edv/components/commit/74ca4d5))
+* **slider:** slider component ([#18](https://github.com/prosoft-edv/components/issues/18)) ([772b3de](https://github.com/prosoft-edv/components/commit/772b3de))
+* **table:** table component ([#22](https://github.com/prosoft-edv/components/issues/22)) ([0f01782](https://github.com/prosoft-edv/components/commit/0f01782))
+
+
+### BREAKING CHANGES
+
+* PsExceptionMessageExtractor was moved to @prosoft/components/core 
+and the forRoot() methods of PsFormModule and PsSavebarModule were removed.
+
+
+
+
+
 ## [0.0.2-alpha.7](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.6...@prosoft/components@0.0.2-alpha.7) (2019-08-20)
 
 
