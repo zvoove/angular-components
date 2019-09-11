@@ -56,11 +56,11 @@
 
         <button [hidden]="!refreshable" type="button" mat-menu-item (click)="onRefreshDataClicked()">
           <mat-icon>refresh</mat-icon>
-          <span>{{ intl.refreshListLabel }}</span>
+          {{ intl.refreshListLabel }}
         </button>
         <button *ngIf="settingsEnabled" type="button" mat-menu-item (click)="onShowSettingsClicked()">
           <mat-icon>settings</mat-icon>
-          <span>{{ intl.settingsLabel }}</span>
+          {{ intl.settingsLabel }}
         </button>
       </mat-menu>
     </th>

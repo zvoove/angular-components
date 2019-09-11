@@ -594,8 +594,8 @@ describe('PsTableComponent', () => {
         spyOn(component, 'onCustomListActionClick');
         expect(Array.from(listActionButtonEls).map(x => x.textContent.trim())).toEqual([
           'custom list actions',
-          'refreshRefresh list',
-          'settingsList settings',
+          'refresh Refresh list',
+          'settings List settings',
         ]);
         listActionButtonEls.item(0).dispatchEvent(new MouseEvent('click'));
         flush();
