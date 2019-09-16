@@ -24,6 +24,7 @@ import {
   PsTableRowDetailDirective,
   PsTableRowDetailTemplateDirective,
   PsTableTopButtonSectionDirective,
+  PsTableCustomSettingsDirective,
 } from './directives/table.directives';
 import { PsTableDataComponent } from './subcomponents/table-data.component';
 import { PsTableHeaderComponent } from './subcomponents/table-header.component';
@@ -51,6 +52,7 @@ import { PsTableComponent } from './table.component';
     PsTableCustomHeaderDirective,
     PsTableRowDetailDirective,
     PsTableRowDetailTemplateDirective,
+    PsTableCustomSettingsDirective,
   ],
   imports: [
     CommonModule,
@@ -80,6 +82,7 @@ import { PsTableComponent } from './table.component';
     PsTableCustomHeaderDirective,
     PsTableRowDetailDirective,
     PsTableRowDetailTemplateDirective,
+    PsTableCustomSettingsDirective,
   ],
 })
 export class PsTableModule {}

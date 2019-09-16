@@ -31,6 +31,7 @@ import { PsTableDataSource } from './data/table-data-source';
 import {
   PsTableColumnDirective,
   PsTableCustomHeaderDirective,
+  PsTableCustomSettingsDirective,
   PsTableListActionsDirective,
   PsTableRowActionsDirective,
   PsTableRowDetailDirective,
@@ -93,6 +94,9 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   @ContentChild(PsTableCustomHeaderDirective, { read: TemplateRef, static: false })
   public customHeader: TemplateRef<any> | null = null;
+
+  @ContentChild(PsTableCustomSettingsDirective, { read: TemplateRef, static: false })
+  public customSettings: TemplateRef<any> | null = null;
 
   @ContentChild(PsTableTopButtonSectionDirective, { read: TemplateRef, static: false })
   public topButtonSection: TemplateRef<any> | null = null;

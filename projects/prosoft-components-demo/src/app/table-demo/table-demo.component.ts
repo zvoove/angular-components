@@ -114,6 +114,7 @@ export class TableDemoComponent {
   public columnColumnStyles = false;
 
   public customHeader = false;
+  public customSettings = false;
   public customTopButton = false;
   public customListActions = false;
   public customRowActions = false;

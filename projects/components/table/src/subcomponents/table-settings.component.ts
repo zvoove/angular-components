@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { IPsTableIntlTexts } from '@prosoft/components/core';
 import { combineLatest, Observable, Subscription } from 'rxjs';
@@ -33,6 +33,7 @@ export class PsTableSettingsComponent implements OnInit {
   @Input() public columnDefinitions: PsTableColumnDirective[] = [];
   @Input() public sortDefinitions: IPsTableSortDefinition[] = [];
   @Input() public pageSizeOptions: number[];
+  @Input() public customSettings: TemplateRef<any> | null = null;
 
   @Output() public settingsSaved = new EventEmitter<void>();
   @Output() public settingsAborted = new EventEmitter<void>();

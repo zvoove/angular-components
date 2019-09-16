@@ -16,6 +16,7 @@ import { PsTableHeaderComponent } from './subcomponents/table-header.component';
 import { PsTableSearchComponent } from './subcomponents/table-search.component';
 import { PsTableComponent } from './table.component';
 import { PsTableModule } from './table.module';
+import { PsTableSettingsComponent } from './subcomponents/table-settings.component';
 
 class TestSettingsService extends PsTableSettingsService {
   public readonly defaultPageSize$ = new BehaviorSubject<number>(15);
@@ -90,6 +91,8 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
       <div *psTableCustomHeader>
         custom header
       </div>
+
+      <div *psTableCustomSettings="let settings">custom settings {{ settings.pageSize }}</div>
 
       <div *psTableTopButtonSection>
         custom button section
@@ -613,6 +616,11 @@ describe('PsTableComponent', () => {
         fixture.detectChanges();
         flush();
         expect(component.table.flipContainer.show).toEqual('back');
+        fixture.whenRenderingDone().then(() => {
+          const tableSettingsDbg = psTableDbg.query(By.directive(PsTableSettingsComponent));
+          // *psTableCustomSettings
+          expect(tableSettingsDbg.nativeElement.textContent).toContain('custom settings 2');
+        });
       });
     }));
   });

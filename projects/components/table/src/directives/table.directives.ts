@@ -56,6 +56,13 @@ export class PsTableCustomHeaderDirective {
   constructor(public el: ElementRef) {}
 }
 
+@Directive({
+  selector: '[psTableCustomSettings]',
+})
+export class PsTableCustomSettingsDirective {
+  constructor(public el: ElementRef) {}
+}
+
 @Directive({ selector: '[psTableRowDetailTemplate]' })
 export class PsTableRowDetailTemplateDirective {
   constructor(public templateRef: TemplateRef<any>) {}

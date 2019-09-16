@@ -32,6 +32,7 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <ng-container [ngTemplateOutlet]="customSettings" [ngTemplateOutletContext]="{ $implicit: settings }"></ng-container>
   <mat-card-actions style="text-align: right">
     <button mat-raised-button color="primary" (click)="onSaveClick(settings)">{{ intl.saveLabel }}</button>
     <button style="margin-left: 1em" mat-stroked-button (click)="onCancelClick()">{{ intl.cancelLabel }}</button>
