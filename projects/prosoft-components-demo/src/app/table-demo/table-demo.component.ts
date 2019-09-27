@@ -101,6 +101,7 @@ export class TableDemoComponent {
   public cardLayout = true;
   public striped = true;
   public sortDefinitions = true;
+  public pageDebounce = 1000;
   public dataSourceType: 'client' | 'loading' | 'error' | 'empty' = 'client';
   public dataSource: PsTableDataSource<ISampleData> = this.clientSampleDataSource;
 

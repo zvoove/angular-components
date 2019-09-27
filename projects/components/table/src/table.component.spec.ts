@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, QueryList, SimpleChange, ViewChild } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, ParamMap, Params, Router } from '@angular/router';
@@ -425,6 +425,23 @@ describe('PsTableComponent', () => {
       };
       expect(router.navigate).toHaveBeenCalledWith([], { queryParams: expectedQueryParams, relativeTo: route });
       tick(1);
+    }));
+
+    it('should debounce pageEvent, if pageDebounce-Property is set', fakeAsync(() => {
+      const table = createTableInstance();
+      table.pageDebounce = 300;
+
+      spyOn(table.page, 'emit');
+      spyOn(table as any, 'requestUpdate');
+
+      table.onPage({ length: 9999 } as PageEvent);
+
+      expect(table.page.emit).not.toHaveBeenCalled();
+      expect((table as any).requestUpdate).not.toHaveBeenCalled();
+      tick(301);
+      expect(table.page.emit).toHaveBeenCalledTimes(1);
+      expect(table.page.emit).toHaveBeenCalledWith({ length: 9999 } as PageEvent);
+      expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
     }));
   });
 

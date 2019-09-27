@@ -25,8 +25,8 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPsTableIntlTexts, PsIntlService, PsExceptionMessageExtractor } from '@prosoft/components/core';
 import { PsFlipContainerComponent } from '@prosoft/components/flip-container';
-import { combineLatest, Subject, Subscription } from 'rxjs';
-import { debounceTime, map, startWith } from 'rxjs/operators';
+import { combineLatest, Subject, Subscription, of, timer } from 'rxjs';
+import { debounceTime, map, startWith, debounce, takeUntil } from 'rxjs/operators';
 import { PsTableDataSource } from './data/table-data-source';
 import {
   PsTableColumnDirective,
@@ -70,6 +70,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   @Input() public refreshable = true;
   @Input() public filterable = true;
   @Input() public showSettings = true;
+  @Input() public pageDebounce: number;
 
   @Input()
   @HostBinding('class.mat-elevation-z3')
@@ -187,6 +188,9 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   private _mergedSortDefinitions: IPsTableSortDefinition[] = [];
   private _intlChangesSub: Subscription;
 
+  private onPage$ = new Subject<PageEvent>();
+  private ngUnsubscribe$ = new Subject<void>();
+
   constructor(
     public intlService: PsIntlService,
     public settingsService: PsTableSettingsService,
@@ -195,7 +199,24 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     private route: ActivatedRoute,
     private router: Router,
     @Inject(LOCALE_ID) private _locale: string
-  ) {}
+  ) {
+    this.onPage$
+      .pipe(
+        debounce(() => {
+          if (this.pageDebounce == null) {
+            return of(null);
+          }
+          return timer(this.pageDebounce);
+        }),
+        takeUntil(this.ngUnsubscribe$)
+      )
+      .subscribe(pageEvent => {
+        this.pageIndex = pageEvent.pageIndex;
+        this.pageSize = pageEvent.pageSize;
+        this.page.emit(pageEvent);
+        this.requestUpdate();
+      });
+  }
 
   public ngOnInit() {
     this._intlChangesSub = this.intlService.intlChanged$.pipe(startWith(null as any)).subscribe(() => {
@@ -232,6 +253,11 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     if (this._intlChangesSub) {
       this._intlChangesSub.unsubscribe();
     }
+
+    this.onPage$.complete();
+
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
   }
 
   public onSearchChanged(value: string) {
@@ -246,10 +272,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
 
   public onPage(event: PageEvent) {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.page.emit(event);
-    this.requestUpdate();
+    this.onPage$.next(event);
   }
 
   public onRefreshDataClicked() {

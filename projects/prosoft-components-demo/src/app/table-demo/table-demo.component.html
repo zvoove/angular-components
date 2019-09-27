@@ -23,6 +23,10 @@
         <mat-option [value]="'empty'">no data</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-form-field>
+      <input matInput type="number" [(ngModel)]="pageDebounce" />
+      <mat-label>Page debounce in ms</mat-label>
+    </mat-form-field>
     <div>(page) $event = &#x7B; pageIndex: number; previousPageIndex?: number; pageSize: number; length: number; &#x7D;</div>
 
     <mat-checkbox [(ngModel)]="disableAllSortable" (change)="rebuildTable()"
@@ -81,6 +85,7 @@
   [showSettings]="showSettings"
   [cardLayout]="cardLayout"
   [striped]="striped"
+  [pageDebounce]="pageDebounce"
   (page)="onPage($event)"
 >
   <ps-table-column [header]="'id'" property="id" [sortable]="!disableAllSortable"></ps-table-column>
