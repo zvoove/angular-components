@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.0](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.8...@prosoft/components@0.1.0-alpha.0) (2019-10-11)
+
+
+### Bug Fixes
+
+* **slider:** nouislider css is now bundled with the component ([#26](https://github.com/prosoft-edv/components/issues/26)) ([4da289a](https://github.com/prosoft-edv/components/commit/4da289a))
+* **table:** sort ascending button style fix ([29cd546](https://github.com/prosoft-edv/components/commit/29cd546))
+
+
+### Features
+
+* **table:** Added a debounce to pagination ([#32](https://github.com/prosoft-edv/components/issues/32)) ([778d9d5](https://github.com/prosoft-edv/components/commit/778d9d5))
+* **table:** settings of ps-table can be customized ([#28](https://github.com/prosoft-edv/components/issues/28)) ([c758131](https://github.com/prosoft-edv/components/commit/c758131))
+
+
+### Performance Improvements
+
+* **table:** removed unnecessary Dom-Nodes from Option-Buttons ([#27](https://github.com/prosoft-edv/components/issues/27)) ([30e0880](https://github.com/prosoft-edv/components/commit/30e0880))
+
+
+
+
+
 ## [0.0.2-alpha.8](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.7...@prosoft/components@0.0.2-alpha.8) (2019-09-03)
 
 
