@@ -19,7 +19,7 @@ import { IPsTableSortDefinition } from '../models';
       type="button"
       (click)="onSortSirectionChange('desc')"
       class="ps-table-sort__dir-button"
-      [class.ps-table__button-inactive]="sortDirection === 'asc'"
+      [class.ps-table-sort__dir-button--inactive]="sortDirection === 'asc'"
     >
       <mat-icon>arrow_downward</mat-icon>
     </button>
