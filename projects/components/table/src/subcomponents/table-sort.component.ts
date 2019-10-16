@@ -45,6 +45,7 @@ import { IPsTableSortDefinition } from '../models';
         height: 28px;
         line-height: 28px;
         margin-top: 16px;
+        margin-left: 0.2em;
       }
 
       .ps-table-sort__dir-button .mat-button-wrapper {
