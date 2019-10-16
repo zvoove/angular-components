@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 import { FloatLabelType } from '@angular/material/core';
-import { MatFormField, MatFormFieldControl, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
+import { MatFormField, MatFormFieldControl, MatLabel, MatPrefix, MatSuffix, MatFormFieldAppearance } from '@angular/material/form-field';
 import { Observable, Subscription, of } from 'rxjs';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
 import { IPsFormError, PsFormService, hasRequiredField } from '@prosoft/components/form-base';
@@ -28,6 +28,7 @@ import { IPsFormError, PsFormService, hasRequiredField } from '@prosoft/componen
       [class.mat-form-field--no-underline]="noUnderline"
       [floatLabel]="floatLabel"
       [hintLabel]="hint"
+      [appearance]="appearance"
     >
       <mat-label *ngIf="_labelChild">
         <ng-content select="mat-label"></ng-content>
@@ -87,6 +88,7 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
   @Input() public createLabel = true;
   @Input() public floatLabel: FloatLabelType = 'auto';
   @Input() public hint: string = null;
+  @Input() public appearance: MatFormFieldAppearance = 'legacy';
 
   @ViewChild(MatFormField, { static: true }) public _matFormField: MatFormField;
 

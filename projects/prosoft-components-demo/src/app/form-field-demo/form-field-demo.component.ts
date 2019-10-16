@@ -20,6 +20,28 @@ export class ReferenceColumnComponent {
   template: `
     <div>
       <div>
+        <h2>Appearances</h2>
+        For more detail please visit
+        <a href="https://material.angular.io/components/form-field/overview#form-field-appearance-variants"
+          >https://material.angular.io/components/form-field/overview#form-field-appearance-variants</a
+        >
+        <ps-form-field style="margin: .5em;" [appearance]="'legacy'" [hint]="'hint text'">
+          <mat-label>Legacy</mat-label>
+          <input matInput type="text" />
+        </ps-form-field>
+        <ps-form-field style="margin: .5em;" [appearance]="'standard'" [hint]="'hint text'">
+          <mat-label>Standard</mat-label>
+          <input matInput type="text" />
+        </ps-form-field>
+        <ps-form-field style="margin: .5em;" [appearance]="'fill'" [hint]="'hint text'">
+          <mat-label>Fill</mat-label>
+          <input matInput type="text" />
+        </ps-form-field>
+        <ps-form-field style="margin: .5em;" [appearance]="'outline'" [hint]="'hint text'">
+          <mat-label>Outline</mat-label>
+          <input matInput type="text" />
+        </ps-form-field>
+
         <h2>No form binding</h2>
         <ps-form-field [hint]="'hint text'">
           <mat-label>Referenz Column</mat-label>
