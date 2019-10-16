@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.1](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.0...@prosoft/components@0.1.0-alpha.1) (2019-10-16)
+
+
+### Features
+
+* **form-field:** recognize the [appearence] property of mat-form-field ([#38](https://github.com/prosoft-edv/components/issues/38)) ([cf83c4f](https://github.com/prosoft-edv/components/commit/cf83c4f)), closes [#37](https://github.com/prosoft-edv/components/issues/37)
+
+
+
+
+
 # [0.1.0-alpha.0](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.0.2-alpha.8...@prosoft/components@0.1.0-alpha.0) (2019-10-11)
 
 
