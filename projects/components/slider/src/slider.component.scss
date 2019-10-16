@@ -26,6 +26,9 @@ ps-slider {
     border-color: var(--ps-primary);
     box-shadow: none;
     transform: translate(-50%, 30%);
+    &:hover {
+      cursor: grab;
+    }
 
     &::after {
       content: unset;
@@ -49,6 +52,11 @@ ps-slider {
 
   .noUi-active .noUi-tooltip {
     display: block;
+    cursor: grabbing;
+  }
+
+  .noUi-active {
+    cursor: grabbing;
   }
 
   &.ps-slider-invalid {
