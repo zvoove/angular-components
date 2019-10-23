@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.2](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.1...@prosoft/components@0.1.0-alpha.2) (2019-10-23)
+
+
+### Features
+
+* **form-errors:** inculdeControls customizable ([#44](https://github.com/prosoft-edv/components/issues/44)) ([4f245f2](https://github.com/prosoft-edv/components/commit/4f245f2))
+
+
+
+
+
 # [0.1.0-alpha.1](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.0...@prosoft/components@0.1.0-alpha.1) (2019-10-16)
 
 
