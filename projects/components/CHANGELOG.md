@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.3](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.2...@prosoft/components@0.1.0-alpha.3) (2019-10-23)
+
+
+### Features
+
+* **form-errors:** customizable filter for errors ([#45](https://github.com/prosoft-edv/components/issues/45)) ([ca6addc](https://github.com/prosoft-edv/components/commit/ca6addc))
+
+
+
+
+
 # [0.1.0-alpha.2](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.1...@prosoft/components@0.1.0-alpha.2) (2019-10-23)
 
 
