@@ -26,7 +26,7 @@ import { Observable } from 'rxjs';
 })
 export class PsFormErrorsComponent implements OnChanges {
   @Input() public form!: FormGroup;
-  @Input() public includeControls = true;
+  @Input() public includeControls: boolean = null;
 
   public errors$!: Observable<IPsFormError[]>;
 

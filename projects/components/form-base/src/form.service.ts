@@ -24,6 +24,7 @@ export abstract class PsFormService {
 export abstract class BasePsFormService extends PsFormService {
   public options = {
     debounceTime: 100,
+    includeControlsDefault: false,
   };
   public tryDetectRequired = true;
 
@@ -33,7 +34,10 @@ export abstract class BasePsFormService extends PsFormService {
     return this.getErrors(control, true);
   }
 
-  public getFormErrors(form: FormGroup, includeControls: boolean): Observable<IPsFormError[]> {
+  public getFormErrors(form: FormGroup, includeControls: boolean | null): Observable<IPsFormError[]> {
+    if (includeControls == null) {
+      includeControls = this.options.includeControlsDefault;
+    }
     return this.getErrors(form, includeControls);
   }
 

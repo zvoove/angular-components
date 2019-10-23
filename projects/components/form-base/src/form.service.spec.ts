@@ -1,9 +1,10 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+
 import { BasePsFormService } from './form.service';
-import { IPsFormErrorData, IPsFormError } from './models';
 import { getControlType } from './helpers';
+import { IPsFormError, IPsFormErrorData } from './models';
 
 class TestPsFormService extends BasePsFormService {
   public getLabel(formControl: FormControl): Observable<string> | null {
@@ -75,79 +76,22 @@ describe('BasePsFormService', () => {
       service = new TestPsFormService();
     });
 
-    it('should return errors in the right order', fakeAsync(() => {
-      const form = new FormGroup(
-        {
-          array: new FormArray(
-            [
-              // array with error
-              new FormGroup(
-                {
-                  // group with error
-                  nested1: new FormControl('', [Validators.required]), // control with error
-                  nested2: new FormControl('a', [Validators.minLength(2), Validators.pattern('test')]), // control with 2 errors
-                },
-                [Validators.pattern('test')]
-              ),
-            ],
-            [Validators.maxLength(0)]
-          ),
-        },
-        [Validators.pattern('test')]
-      );
+    it('should return errors in the right order', fakeAsync(() =>
+      validateGetFormErrors(true, [
+        'array.0.nested1:required',
+        'array.0.nested2:minlength',
+        'array.0.nested2:pattern',
+        'array.0:pattern',
+        'array:maxlength',
+        ':pattern',
+      ])));
 
-      let resultChecked = false;
-      service.getFormErrors(form, true).subscribe(errors => {
-        // Everything in the order they are in the form, but parents after their children
-        const errorTexts = errors.map(x => x.errorText);
-        expect(errorTexts).toEqual([
-          'array.0.nested1:required',
-          'array.0.nested2:minlength',
-          'array.0.nested2:pattern',
-          'array.0:pattern',
-          'array:maxlength',
-          ':pattern',
-        ]);
-        resultChecked = true;
-      });
+    it('shouldnt return control errors if includeControls is false', fakeAsync(() =>
+      validateGetFormErrors(false, ['array.0:pattern', 'array:maxlength', ':pattern'])));
 
-      tick(100);
-
-      expect(resultChecked).toBeTruthy();
-    }));
-
-    it('shouldnt return control errors if includeControls is false', fakeAsync(() => {
-      const form = new FormGroup(
-        {
-          array: new FormArray(
-            [
-              // array with error
-              new FormGroup(
-                {
-                  // group with error
-                  nested1: new FormControl('', [Validators.required]), // control with error
-                  nested2: new FormControl('a', [Validators.minLength(2), Validators.pattern('test')]), // control with 2 errors
-                },
-                [Validators.pattern('test')]
-              ),
-            ],
-            [Validators.maxLength(0)]
-          ),
-        },
-        [Validators.pattern('test')]
-      );
-
-      let resultChecked = false;
-      service.getFormErrors(form, false).subscribe(errors => {
-        // Everything in the order they are in the form, but parents after their children
-        const errorTexts = errors.map(x => x.errorText);
-        expect(errorTexts).toEqual(['array.0:pattern', 'array:maxlength', ':pattern']);
-        resultChecked = true;
-      });
-
-      tick(100);
-
-      expect(resultChecked).toBeTruthy();
+    it('should fall back to options.includeControlsDefault if includeControls is null', fakeAsync(() => {
+      service.options.includeControlsDefault = false;
+      validateGetFormErrors(null, ['array.0:pattern', 'array:maxlength', ':pattern']);
     }));
 
     it('should set data property with right values', fakeAsync(() => {
@@ -192,5 +136,39 @@ describe('BasePsFormService', () => {
 
       expect(resultChecked).toBeTruthy();
     }));
+
+    function validateGetFormErrors(includeControls: boolean | null, expected: string[]) {
+      const form = new FormGroup(
+        {
+          array: new FormArray(
+            [
+              // array with error
+              new FormGroup(
+                {
+                  // group with error
+                  nested1: new FormControl('', [Validators.required]), // control with error
+                  nested2: new FormControl('a', [Validators.minLength(2), Validators.pattern('test')]), // control with 2 errors
+                },
+                [Validators.pattern('test')]
+              ),
+            ],
+            [Validators.maxLength(0)]
+          ),
+        },
+        [Validators.pattern('test')]
+      );
+
+      let resultChecked = false;
+      service.getFormErrors(form, includeControls).subscribe(errors => {
+        // Everything in the order they are in the form, but parents after their children
+        const errorTexts = errors.map(x => x.errorText);
+        expect(errorTexts).toEqual(expected);
+        resultChecked = true;
+      });
+
+      tick(100);
+
+      expect(resultChecked).toBeTruthy();
+    }
   });
 });
