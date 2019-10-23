@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { objectToKeyValueArray } from '@prosoft/components/utils';
-import { merge, Observable } from 'rxjs';
+import { merge, Observable, of } from 'rxjs';
 import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 import { getControlType } from './helpers';
 import { IPsFormError, IPsFormErrorData } from './models';
@@ -31,23 +31,30 @@ export abstract class BasePsFormService extends PsFormService {
   public getControlType = getControlType;
 
   public getControlErrors(control: FormControl): Observable<IPsFormError[]> {
-    return this.getErrors(control, true);
+    return this.getErrors(control, true, 'control');
   }
 
   public getFormErrors(form: FormGroup, includeControls: boolean | null): Observable<IPsFormError[]> {
     if (includeControls == null) {
       includeControls = this.options.includeControlsDefault;
     }
-    return this.getErrors(form, includeControls);
+    return this.getErrors(form, includeControls, 'form');
   }
 
+  /**
+   * Provided to be overwritten to filter the errors.
+   */
+  public filterErrors(errorData: IPsFormErrorData[], includeControls: boolean, source: 'form' | 'control'): Observable<IPsFormErrorData[]> {
+    return of(errorData);
+  }
   protected abstract mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]>;
 
-  private getErrors(control: AbstractControl, includeControls: boolean): Observable<IPsFormError[]> {
+  private getErrors(control: AbstractControl, includeControls: boolean, source: 'form' | 'control'): Observable<IPsFormError[]> {
     const update$ = this.createUpdateTrigger(control);
 
     return update$.pipe(
       map(() => this.getErrorInfo(control, includeControls)),
+      switchMap(errorData => this.filterErrors(errorData, includeControls, source)),
       switchMap(errorData => this.mapDataToError(errorData))
     );
   }

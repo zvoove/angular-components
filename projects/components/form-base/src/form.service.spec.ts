@@ -28,6 +28,57 @@ describe('BasePsFormService', () => {
     });
   });
 
+  describe('filterErrors', () => {
+    let service: TestPsFormService;
+    beforeEach(() => {
+      service = new TestPsFormService();
+    });
+
+    it('should call filterErrors for getFormErrors', fakeAsync(() => {
+      spyOn(service, 'filterErrors').and.callThrough();
+      const form = new FormGroup({});
+
+      service.getFormErrors(form, false).subscribe();
+
+      tick(100);
+
+      expect(service.filterErrors).toHaveBeenCalledWith([], false, 'form');
+    }));
+
+    it('should call filterErrors for getControlErrors', fakeAsync(() => {
+      spyOn(service, 'filterErrors').and.callThrough();
+      const form = new FormControl({});
+
+      service.getControlErrors(form).subscribe();
+
+      tick(100);
+
+      expect(service.filterErrors).toHaveBeenCalledWith([], true, 'control');
+    }));
+
+    it('result should be used', fakeAsync(() => {
+      const expected = <IPsFormErrorData>{
+        errorKey: 'key',
+        controlPath: null,
+        errorValue: {
+          LocalizationKey: 'loca_key',
+        },
+        isControl: false,
+      };
+
+      service.filterErrors = () => of([expected]);
+      const form = new FormControl({});
+      let result: IPsFormError[];
+      service.getControlErrors(form).subscribe(errors => {
+        result = errors;
+      });
+
+      tick(100);
+      expect(result.length).toBe(1);
+      expect(result[0].data).toBe(expected);
+    }));
+  });
+
   describe('getControlErrors', () => {
     let service: TestPsFormService;
     beforeEach(() => {
