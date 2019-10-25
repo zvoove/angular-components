@@ -1,13 +1,21 @@
 language: node_js
+dist: xenial
 node_js:
-  - "10.16.0"
-sudo: true
+  - "12"
+sudo: false
 
 addons:
-  chrome: stable
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+
+branches:
+  only:
+  - master
 
 before_script:
-  - npm ci
   # Install commitlint cli for travis
   - npm install @commitlint/travis-cli
 
@@ -16,5 +24,18 @@ script:
   - commitlint-travis
   - ng lint
   - ng build components
-  - ng test components --watch false --browsers ChromeHeadless
-  - ng build --prod --baseHref=/components/
+  - ng test components --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+  - ng build --prod --baseHref=https://prosoft-edv.github.io/components/
+
+notifications:
+  email:
+    on_failure: change
+    on_success: change
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: dist/prosoft-components-demo
+  on:
+    branch: master
