@@ -19,15 +19,16 @@ import {
   PsTableColumnHeaderTemplateDirective,
   PsTableColumnTemplateDirective,
   PsTableCustomHeaderDirective,
+  PsTableCustomSettingsDirective,
   PsTableListActionsDirective,
   PsTableRowActionsDirective,
   PsTableRowDetailDirective,
   PsTableRowDetailTemplateDirective,
   PsTableTopButtonSectionDirective,
-  PsTableCustomSettingsDirective,
 } from './directives/table.directives';
 import { PsTableDataComponent } from './subcomponents/table-data.component';
 import { PsTableHeaderComponent } from './subcomponents/table-header.component';
+import { PsTablePaginationComponent } from './subcomponents/table-pagination.component';
 import { TableRowDetailComponent } from './subcomponents/table-row-detail.component';
 import { PsTableSearchComponent } from './subcomponents/table-search.component';
 import { PsTableSettingsComponent } from './subcomponents/table-settings.component';
@@ -43,6 +44,7 @@ import { PsTableComponent } from './table.component';
     PsTableSortComponent,
     PsTableSearchComponent,
     TableRowDetailComponent,
+    PsTablePaginationComponent,
     PsTableColumnDirective,
     PsTableColumnTemplateDirective,
     PsTableColumnHeaderTemplateDirective,

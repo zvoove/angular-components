@@ -275,7 +275,6 @@ export class PsTableDataSource<T> extends DataSource<T> {
 
           this.dataLength = filterResult.TotalItems;
           this.data = filterResult.Items;
-
           this._checkPageValidity(filterResult.TotalItems);
         }
       });

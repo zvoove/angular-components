@@ -1,5 +1,5 @@
 import {
-  AfterViewInit,
+  AfterContentInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -19,14 +19,13 @@ import {
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
-  AfterContentInit,
 } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IPsTableIntlTexts, PsIntlService, PsExceptionMessageExtractor } from '@prosoft/components/core';
+import { IPsTableIntlTexts, PsExceptionMessageExtractor, PsIntlService } from '@prosoft/components/core';
 import { PsFlipContainerComponent } from '@prosoft/components/flip-container';
-import { combineLatest, Subject, Subscription, of, timer } from 'rxjs';
-import { debounceTime, map, startWith, debounce, takeUntil } from 'rxjs/operators';
+import { combineLatest, Subject, Subscription } from 'rxjs';
+import { debounceTime, map, startWith } from 'rxjs/operators';
 import { PsTableDataSource } from './data/table-data-source';
 import {
   PsTableColumnDirective,
@@ -81,15 +80,6 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public striped = false;
 
   @Output() public page = new EventEmitter<PageEvent>();
-
-  @ViewChild(MatPaginator, { static: false }) public set paginator(value: MatPaginator | null) {
-    this._paginator = value;
-    this.updatePaginatorIntl();
-  }
-  public get paginator(): MatPaginator | null {
-    return this._paginator;
-  }
-  private _paginator: MatPaginator | null = null;
 
   @ViewChild(PsFlipContainerComponent, { static: true }) public flipContainer: PsFlipContainerComponent | null = null;
 
@@ -151,6 +141,10 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this.dataSource.pageSize = value;
   }
 
+  public get dataLength(): number {
+    return this.dataSource.dataLength;
+  }
+
   public get filterText(): string {
     return this.dataSource.filter;
   }
@@ -188,7 +182,6 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   private _mergedSortDefinitions: IPsTableSortDefinition[] = [];
   private _intlChangesSub: Subscription;
 
-  private onPage$ = new Subject<PageEvent>();
   private ngUnsubscribe$ = new Subject<void>();
 
   constructor(
@@ -199,24 +192,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     private route: ActivatedRoute,
     private router: Router,
     @Inject(LOCALE_ID) private _locale: string
-  ) {
-    this.onPage$
-      .pipe(
-        debounce(() => {
-          if (this.pageDebounce == null) {
-            return of(null);
-          }
-          return timer(this.pageDebounce);
-        }),
-        takeUntil(this.ngUnsubscribe$)
-      )
-      .subscribe(pageEvent => {
-        this.pageIndex = pageEvent.pageIndex;
-        this.pageSize = pageEvent.pageSize;
-        this.page.emit(pageEvent);
-        this.requestUpdate();
-      });
-  }
+  ) {}
 
   public ngOnInit() {
     this._intlChangesSub = this.intlService.intlChanged$.pipe(startWith(null as any)).subscribe(() => {
@@ -254,8 +230,6 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
       this._intlChangesSub.unsubscribe();
     }
 
-    this.onPage$.complete();
-
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();
   }
@@ -272,7 +246,10 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
 
   public onPage(event: PageEvent) {
-    this.onPage$.next(event);
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.page.emit(event);
+    this.requestUpdate();
   }
 
   public onRefreshDataClicked() {
@@ -358,8 +335,8 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
               this.displayedColumns.push('options');
             }
 
-            this.cd.markForCheck();
             this.dataSource.updateData(false);
+            this.cd.markForCheck();
           },
           error: (err: Error | any) => {
             this.dataSource.error = err;
@@ -399,19 +376,5 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   private updateIntl() {
     const intl = this.intlService.get('table');
     this.intl = this.intlService.merge(intl, this.intlOverride);
-
-    this.updatePaginatorIntl();
-  }
-
-  private updatePaginatorIntl() {
-    if (this.paginator && this.intl) {
-      this.paginator._intl.firstPageLabel = this.intl.firstPageLabel;
-      this.paginator._intl.lastPageLabel = this.intl.lastPageLabel;
-      this.paginator._intl.previousPageLabel = this.intl.previousPageLabel;
-      this.paginator._intl.nextPageLabel = this.intl.nextPageLabel;
-      this.paginator._intl.itemsPerPageLabel = this.intl.itemsPerPageLabel;
-      this.paginator._intl.getRangeLabel = this.intl.getRangeLabel;
-      this.paginator._intl.changes.next();
-    }
   }
 }

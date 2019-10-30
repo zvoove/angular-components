@@ -38,16 +38,15 @@
     <div class="ps-table__loading-container" *ngIf="showLoading">
       <mat-spinner class="ps-table__loading-spinner"></mat-spinner>
     </div>
-    <mat-paginator
-      class="ps-table__paginator"
-      [pageIndex]="pageIndex"
+    <ps-table-pagination
       [pageSize]="pageSize"
+      [dataLength]="dataLength"
+      [pageIndex]="pageIndex"
       [pageSizeOptions]="pageSizeOptions"
-      [length]="dataSource.dataLength"
-      [showFirstLastButtons]="true"
+      [intl]="intl"
+      [pageDebounce]="pageDebounce"
       (page)="onPage($event)"
-    >
-    </mat-paginator>
+    ></ps-table-pagination>
   </div>
   <div *psFlipContainerBack>
     <ps-table-settings

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, QueryList, SimpleChange, ViewChild } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { MatPaginator, MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSelect } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, ParamMap, Params, Router } from '@angular/router';
@@ -13,10 +14,11 @@ import { IPsTableSortDefinition } from './models';
 import { IPsTableSetting, PsTableSettingsService } from './services/table-settings.service';
 import { PsTableDataComponent } from './subcomponents/table-data.component';
 import { PsTableHeaderComponent } from './subcomponents/table-header.component';
+import { PsTablePaginationComponent } from './subcomponents/table-pagination.component';
 import { PsTableSearchComponent } from './subcomponents/table-search.component';
+import { PsTableSettingsComponent } from './subcomponents/table-settings.component';
 import { PsTableComponent } from './table.component';
 import { PsTableModule } from './table.module';
-import { PsTableSettingsComponent } from './subcomponents/table-settings.component';
 
 class TestSettingsService extends PsTableSettingsService {
   public readonly defaultPageSize$ = new BehaviorSubject<number>(15);
@@ -133,6 +135,7 @@ export class TestComponent {
   public showToggleColumn = true;
 
   @ViewChild(PsTableComponent, { static: true }) table: PsTableComponent;
+  @ViewChild(PsTablePaginationComponent, { static: true }) paginator: PsTablePaginationComponent;
 
   public onPage(event: any) {}
   public onCustomListActionClick(slectedItems: any[]) {}
@@ -150,7 +153,6 @@ describe('PsTableComponent', () => {
       const table = new PsTableComponent(intlService, settingsService, null, cd, route, router, 'de');
       table.tableId = 'tableid';
       table.dataSource = new PsTableDataSource<any>(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
-      table.paginator = new MatPaginator(new MatPaginatorIntl(), cd);
       return table;
     }
 
@@ -426,23 +428,6 @@ describe('PsTableComponent', () => {
       expect(router.navigate).toHaveBeenCalledWith([], { queryParams: expectedQueryParams, relativeTo: route });
       tick(1);
     }));
-
-    it('should debounce pageEvent, if pageDebounce-Property is set', fakeAsync(() => {
-      const table = createTableInstance();
-      table.pageDebounce = 300;
-
-      spyOn(table.page, 'emit');
-      spyOn(table as any, 'requestUpdate');
-
-      table.onPage({ length: 9999 } as PageEvent);
-
-      expect(table.page.emit).not.toHaveBeenCalled();
-      expect((table as any).requestUpdate).not.toHaveBeenCalled();
-      tick(301);
-      expect(table.page.emit).toHaveBeenCalledTimes(1);
-      expect(table.page.emit).toHaveBeenCalledWith({ length: 9999 } as PageEvent);
-      expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
-    }));
   });
 
   describe('intgration', () => {
@@ -469,28 +454,19 @@ describe('PsTableComponent', () => {
       const intlService: PsIntlServiceEn = TestBed.get(PsIntlService);
       const defaultTableIntl = intlService.get('table');
       fixture.detectChanges();
-      const paginator = component.table.paginator;
 
       expect(component.table.intl).toEqual(defaultTableIntl);
-      expect(paginator._intl.getRangeLabel(null, null, null)).toEqual(defaultTableIntl.getRangeLabel(null, null, null));
-      expect(paginator._intl.itemsPerPageLabel).toEqual(defaultTableIntl.itemsPerPageLabel);
-      expect(paginator._intl.nextPageLabel).toEqual(defaultTableIntl.nextPageLabel);
-      expect(paginator._intl.previousPageLabel).toEqual(defaultTableIntl.previousPageLabel);
-      expect(paginator._intl.firstPageLabel).toEqual(defaultTableIntl.firstPageLabel);
-      expect(paginator._intl.lastPageLabel).toEqual(defaultTableIntl.lastPageLabel);
 
       component.intlOverride = {
         lastPageLabel: 'asdf',
       };
       fixture.detectChanges();
       expect(component.table.intl.lastPageLabel).toEqual('asdf');
-      expect(paginator._intl.lastPageLabel).toEqual('asdf');
 
       (<any>intlService).tableIntl.previousPageLabel = 'x';
       intlService.intlChanged$.next();
       fixture.detectChanges();
       expect(component.table.intl.previousPageLabel).toEqual('x');
-      expect(paginator._intl.previousPageLabel).toEqual('x');
     });
 
     it('should bind the right properties and events to the ui', fakeAsync(() => {
@@ -587,15 +563,6 @@ describe('PsTableComponent', () => {
         sortDirection: 'asc',
       });
 
-      // pageing
-      const paginatorNextButtonEl = fixture.debugElement
-        .query(By.directive(MatPaginator))
-        .nativeElement.querySelectorAll('.mat-paginator-navigation-next')
-        .item(0) as HTMLButtonElement;
-      spyOn(component.table, 'onPage');
-      paginatorNextButtonEl.dispatchEvent(new MouseEvent('click'));
-      expect(component.table.onPage).toHaveBeenCalledWith({ previousPageIndex: 0, pageIndex: 1, pageSize: 2, length: 3 });
-
       // *psTableRowActions
       useMatMenu(fixture, '.ps-table-data__options-column button', rowActionButtonEls => {
         spyOn(component, 'onCustomRowActionClick');
@@ -640,6 +607,76 @@ describe('PsTableComponent', () => {
         });
       });
     }));
+
+    it('should show "GoToPage"-Select, if there are more then 2 pages', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
+      component.dataSource = new PsTableDataSource(
+        () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
+        'client'
+      );
+      component.dataSource.updateData();
+      fixture.detectChanges();
+
+      tick(1);
+      fixture.detectChanges();
+
+      const paginationComponent = fixture.debugElement.query(By.directive(PsTablePaginationComponent));
+      const pageSelect = paginationComponent.queryAll(By.directive(MatSelect));
+
+      expect(pageSelect.length).toEqual(2);
+      expect(pageSelect.find(x => (x.nativeElement as HTMLElement).classList.contains('ps-table-pagination__page-select'))).toBeDefined();
+    }));
+
+    it('should not show "GoToPage"-Select, if there are less then 3 pages', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
+      component.dataSource = new PsTableDataSource(
+        () => of(Array.from({ length: 5 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
+        'client'
+      );
+      component.dataSource.updateData();
+      fixture.detectChanges();
+      tick(1);
+      fixture.detectChanges();
+
+      const paginationComponent = fixture.debugElement.query(By.directive(PsTablePaginationComponent));
+      const pageSelect = paginationComponent.queryAll(By.directive(MatSelect));
+
+      expect(pageSelect.length).toEqual(1);
+      expect(
+        pageSelect.find(x => (x.nativeElement as HTMLElement).classList.contains('ps-table-pagination__page-select'))
+      ).not.toBeDefined();
+    }));
+
+    it('should go to selected page chosen with "GoToPage"-Select', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
+      spyOn(component.table, 'onPage');
+      component.dataSource = new PsTableDataSource(
+        () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
+        'client'
+      );
+      component.dataSource.updateData();
+      fixture.detectChanges();
+      tick(1);
+      fixture.detectChanges();
+
+      useMatSelect(fixture, '.ps-table-pagination__page-select', matOptionNodes => {
+        expect(Array.from(matOptionNodes).map(x => x.textContent.trim())).toEqual(['1', '2', '3', '4']);
+
+        const itemNode = matOptionNodes.item(2);
+        itemNode.dispatchEvent(new Event('click'));
+      });
+
+      expect(component.table.onPage).toHaveBeenCalledTimes(1);
+      expect(component.table.onPage).toHaveBeenCalledWith({
+        length: 50,
+        pageIndex: 2,
+        pageSize: 15,
+        previousPageIndex: 1,
+      } as PageEvent);
+    }));
   });
 });
 
@@ -676,7 +713,7 @@ function closeMatSelect<T>(fixture: ComponentFixture<T>) {
   closeBackdrop(fixture);
 }
 
-function useMatSelect<T>(fixture: ComponentFixture<T>, selector: string, useFnc: (options: NodeListOf<HTMLElement>) => void) {
+export function useMatSelect<T>(fixture: ComponentFixture<T>, selector: string, useFnc: (options: NodeListOf<HTMLElement>) => void) {
   openMatSelect(fixture, selector);
   useFnc(getMatOptionsNodes());
   closeMatSelect(fixture);
