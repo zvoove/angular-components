@@ -45,6 +45,7 @@ import { IPsTableSortDefinition } from '../models';
         display: flex;
         flex-wrap: wrap;
         align-items: flex-end;
+        justify-content: space-between;
       }
 
       .ps-table-header__caption {
@@ -57,7 +58,6 @@ import { IPsTableSortDefinition } from '../models';
 
       .ps-table-header__search {
         flex: 0 1 800px;
-        margin: auto;
       }
 
       .ps-table-header__actions {
