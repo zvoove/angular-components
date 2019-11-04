@@ -273,6 +273,14 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this.flipContainer.toggleFlip();
   }
 
+  public toggleRowDetail(item: any, open?: boolean) {
+    if (!this.rowDetail) {
+      return;
+    }
+
+    this.rowDetail.toggle(item, open);
+  }
+
   private requestUpdate() {
     const newQueryParams: { [id: string]: any } = {};
 

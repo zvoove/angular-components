@@ -122,6 +122,7 @@ export class TableDemoComponent {
   public expandable = false;
   public expanded = false;
   public showToggleColumn = true;
+  public showCustomToggleColumn = false;
 
   public disableAllSortable = false;
 

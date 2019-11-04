@@ -59,6 +59,7 @@
     <mat-checkbox [(ngModel)]="expandable" (change)="rebuildTable()">use</mat-checkbox>
     <mat-checkbox [(ngModel)]="expanded" (change)="rebuildTable()">[expanded]</mat-checkbox>
     <mat-checkbox [(ngModel)]="showToggleColumn" (change)="rebuildTable()">[showToggleColumn]</mat-checkbox>
+    <mat-checkbox [(ngModel)]="showCustomToggleColumn" (change)="rebuildTable()">Use custom toggle column</mat-checkbox>
     <span>*psTableRowDetailTemplate="let item"</span>
   </mat-card>
 
@@ -73,6 +74,7 @@
 </div>
 
 <ps-table
+  #table
   *ngIf="show"
   tableId="example"
   [dataSource]="dataSource"
@@ -112,6 +114,16 @@
     </ng-container>
   </ps-table-column>
   <ps-table-column [header]="'string'" property="string" [sortable]="!disableAllSortable"></ps-table-column>
+  <ps-table-column
+    [header]="'Custom row detail toggle'"
+    property="__custom"
+    [sortable]="false"
+    *ngIf="showCustomToggleColumn && expandable"
+  >
+    <ng-container *psTableColumnTemplate="let item; let expanded = expanded">
+      <button (click)="table.toggleRowDetail(item)">Custom row detail expand button</button>
+    </ng-container>
+  </ps-table-column>
   <ps-table-column [header]="'virtual column'" property="__virtual" [sortable]="false">
     <ng-container *psTableColumnTemplate="let item; let expanded = expanded"> expanded: {{ expanded }} </ng-container>
   </ps-table-column>

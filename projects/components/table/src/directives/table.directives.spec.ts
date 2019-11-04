@@ -1,28 +1,44 @@
 import { PsTableRowDetailDirective } from './table.directives';
 
 describe('PsTableRowDetailDirective', () => {
-  it('should toggle isExpandable when toggle() is called', () => {
-    const directive = new PsTableRowDetailDirective();
+  let dir: PsTableRowDetailDirective;
+  let item: any;
+  beforeEach(() => {
+    dir = new PsTableRowDetailDirective();
+    item = {};
+  });
 
-    const item = {};
+  it('should toggle isExpandable when toggle() is called with open = true', () => {
+    expect(dir.isExpanded(item)).toBeFalsy();
+    expect(dir.toggle(item, true));
+    expect(dir.isExpanded(item)).toBeTruthy();
+    expect(dir.toggle(item, true));
+    expect(dir.isExpanded(item)).toBeTruthy();
+  });
 
-    expect(directive.isExpanded(item)).toBe(false);
-    expect(directive.toggle(item));
-    expect(directive.isExpanded(item)).toBe(true);
-    expect(directive.toggle(item));
-    expect(directive.isExpanded(item)).toBe(false);
+  it('should toggle isExpandable when toggle() is called with open = false', () => {
+    expect(dir.isExpanded(item)).toBeFalsy();
+    expect(dir.toggle(item, false));
+    expect(dir.isExpanded(item)).toBeFalsy();
+    expect(dir.toggle(item, false));
+    expect(dir.isExpanded(item)).toBeFalsy();
+  });
+
+  it('should toggle isExpandable when toggle() is called with open = null|undefined', () => {
+    expect(dir.isExpanded(item)).toBeFalsy();
+    expect(dir.toggle(item));
+    expect(dir.isExpanded(item)).toBeTruthy();
+    expect(dir.toggle(item));
+    expect(dir.isExpanded(item)).toBeFalsy();
   });
 
   it('should set initial expandable status for an item to true if expanded is true', () => {
-    const directive = new PsTableRowDetailDirective();
-    directive.expanded = true;
+    dir.expanded = true;
 
-    const item = {};
-
-    expect(directive.isExpanded(item)).toBe(true);
-    expect(directive.toggle(item));
-    expect(directive.isExpanded(item)).toBe(false);
-    expect(directive.toggle(item));
-    expect(directive.isExpanded(item)).toBe(true);
+    expect(dir.isExpanded(item)).toBeTruthy();
+    expect(dir.toggle(item));
+    expect(dir.isExpanded(item)).toBeFalsy();
+    expect(dir.toggle(item));
+    expect(dir.isExpanded(item)).toBeTruthy();
   });
 });

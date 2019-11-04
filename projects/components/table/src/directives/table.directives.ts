@@ -83,10 +83,18 @@ export class PsTableRowDetailDirective {
   private expandedItems = new WeakSet();
   private seenItems = new WeakSet();
 
-  public toggle(item: any) {
+  public toggle(item: any, open?: boolean) {
     if (this.expandedItems.has(item)) {
+      if (open === true) {
+        return;
+      }
+
       this.expandedItems.delete(item);
     } else {
+      if (open === false) {
+        return;
+      }
+
       this.expandedItems.add(item);
     }
   }

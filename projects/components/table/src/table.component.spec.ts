@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, QueryList, SimpleChange, ViewChild } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import { MatSelect } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -63,6 +63,7 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
   selector: 'ps-test-component',
   template: `
     <ps-table
+      #table
       [caption]="caption"
       [dataSource]="dataSource"
       [tableId]="tableId"
@@ -88,6 +89,12 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
           <i>custom</i>
         </ng-container>
         <ng-container *psTableColumnTemplate="let item"> custom {{ item.id }} </ng-container>
+      </ps-table-column>
+
+      <ps-table-column [sortable]="false" property="__custom" [width]="'100px'">
+        <ng-container *psTableColumnTemplate="let item">
+          <button (click)="table.toggleRowDetail(item)">customToggle</button>
+        </ng-container>
       </ps-table-column>
 
       <div *psTableCustomHeader>
@@ -676,6 +683,39 @@ describe('PsTableComponent', () => {
         pageSize: 15,
         previousPageIndex: 1,
       } as PageEvent);
+    }));
+
+    it('should work with custom row detail toggle', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
+      component.dataSource = new PsTableDataSource(
+        () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
+        'client'
+      );
+      component.dataSource.updateData();
+      fixture.detectChanges();
+
+      tick(1);
+      fixture.detectChanges();
+
+      const tableDataEl: HTMLElement = fixture.debugElement.query(By.directive(PsTableDataComponent)).nativeElement;
+      const rowEls = tableDataEl.querySelectorAll('.ps-table-data__row');
+
+      const detailRowEls = tableDataEl.querySelectorAll('.ps-table-data__detail-row');
+      expect(detailRowEls[5].clientHeight).toEqual(0);
+      expect(detailRowEls[5].textContent.trim()).toEqual('');
+
+      const toggleSpy = spyOn(component.table, 'toggleRowDetail').and.callThrough();
+      const customExpandButtonFifthRow: HTMLElement = rowEls[5].querySelectorAll('.mat-column-__custom button').item(0) as HTMLElement;
+      customExpandButtonFifthRow.dispatchEvent(new MouseEvent('click'));
+      fixture.detectChanges();
+      flush();
+      fixture.detectChanges();
+
+      expect(toggleSpy).toHaveBeenCalledTimes(1);
+      expect(toggleSpy).toHaveBeenCalledWith({ id: 5, str: 'item 5' });
+      expect(detailRowEls[5].clientHeight > 0).toEqual(true);
+      expect(detailRowEls[5].textContent.trim()).toEqual('item: 5');
     }));
   });
 });
