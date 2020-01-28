@@ -228,8 +228,12 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
     this._matSelect.ngDoCheck();
   }
 
-  public onContainerClick(_: MouseEvent): void {}
-  public setDescribedByIds(_: string[]): void {}
+  public onContainerClick(_: MouseEvent): void {
+    this._matSelect.onContainerClick();
+  }
+  public setDescribedByIds(ids: string[]): void {
+    this._matSelect.setDescribedByIds(ids);
+  }
 
   public writeValue(_: any) {
     // This method is overwritten in setMatSelect
