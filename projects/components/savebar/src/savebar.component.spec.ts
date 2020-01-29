@@ -441,6 +441,7 @@ describe('PsSavebarComponent', () => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
+    component.canSave = true;
     fixture.detectChanges();
 
     let outputTriggered = false;
@@ -476,6 +477,11 @@ describe('PsSavebarComponent', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { ctrlKey: true, key: 'a' }));
     expect(outputTriggered).toBe(true);
     outputTriggered = false;
+
+    component.canSave = false;
+    fixture.detectChanges();
+    document.dispatchEvent(new KeyboardEvent('keydown', { ctrlKey: true, key: 'a' }));
+    expect(outputTriggered).toBe(false);
 
     outputSubscription.unsubscribe();
   }));

@@ -151,7 +151,7 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private onKeydown(event: KeyboardEvent) {
-    if (event.ctrlKey && event.key === this.saveKey) {
+    if (event.ctrlKey && event.key === this.saveKey && !this.saveDisabled) {
       if (this.hasObservers(this.save)) {
         event.preventDefault();
         this.ngZone.run(() => this.save.emit());
