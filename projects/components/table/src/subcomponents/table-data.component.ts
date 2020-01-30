@@ -27,7 +27,6 @@ export class PsTableDataComponent implements OnChanges {
   @Input() public tableId: string;
   @Input() public intl: IPsTableIntlTexts;
   @Input() public rowActions: TemplateRef<any> | null = null;
-  @Input() public cardLayout: boolean;
   @Input() public rowDetail: PsTableRowDetailDirective | null;
   @Input() public listActions: TemplateRef<any> | null = null;
   @Input() public columnDefs: PsTableColumnDirective[];

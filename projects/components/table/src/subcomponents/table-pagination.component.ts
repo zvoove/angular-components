@@ -20,30 +20,29 @@ import { debounce, takeUntil, switchMap } from 'rxjs/operators';
 @Component({
   selector: 'ps-table-pagination',
   template: `
-    <mat-card class="mat-elevation-z0" class="ps-table-pagination__card">
-      <mat-paginator
-        [pageIndex]="pageIndex"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
-        [length]="dataLength"
-        [showFirstLastButtons]="true"
-        (page)="onPage($event)"
-      >
-      </mat-paginator>
-      <div class="mat-paginator-page-size" style="font-size: 12px;">
-        <mat-form-field *ngIf="pages.length > 2" class="mat-paginator-page-size-select">
-          <mat-select class="ps-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
-            <mat-option *ngFor="let page of pages" [value]="page"> {{ page }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </mat-card>
+    <mat-paginator
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [length]="dataLength"
+      [showFirstLastButtons]="true"
+      (page)="onPage($event)"
+    >
+    </mat-paginator>
+    <div class="mat-paginator-page-size" style="font-size: 12px;">
+      <mat-form-field *ngIf="pages.length > 2" class="mat-paginator-page-size-select">
+        <mat-select class="ps-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
+          <mat-option *ngFor="let page of pages" [value]="page"> {{ page }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   `,
   styles: [
     `
-      .ps-table-pagination__card {
+      ps-table-pagination {
         display: flex;
         justify-content: flex-end;
+        background-color: #fff;
       }
     `,
   ],
