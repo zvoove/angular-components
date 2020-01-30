@@ -6,6 +6,7 @@ import {
   ContentChild,
   ContentChildren,
   ElementRef,
+  HostBinding,
   Input,
   OnDestroy,
   QueryList,
@@ -14,10 +15,11 @@ import {
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 import { FloatLabelType } from '@angular/material/core';
-import { MatFormField, MatFormFieldControl, MatLabel, MatPrefix, MatSuffix, MatFormFieldAppearance } from '@angular/material/form-field';
-import { Observable, Subscription, of } from 'rxjs';
+import { MatFormField, MatFormFieldAppearance, MatFormFieldControl, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
+import { hasRequiredField, IPsFormError, PsFormService } from '@prosoft/components/form-base';
+import { Observable, of, Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
-import { IPsFormError, PsFormService, hasRequiredField } from '@prosoft/components/form-base';
 
 @Component({
   selector: 'ps-form-field',
@@ -27,7 +29,7 @@ import { IPsFormError, PsFormService, hasRequiredField } from '@prosoft/componen
       [class.mat-form-field--emulated]="emulated"
       [class.mat-form-field--no-underline]="noUnderline"
       [floatLabel]="floatLabel"
-      [hintLabel]="hint"
+      [hintLabel]="showHint ? hint : null"
       [appearance]="appearance"
     >
       <mat-label *ngIf="_labelChild">
@@ -43,6 +45,9 @@ import { IPsFormError, PsFormService, hasRequiredField } from '@prosoft/componen
       <ng-container matSuffix *ngIf="_suffixChildren.length">
         <ng-content select="[matSuffix]"></ng-content>
       </ng-container>
+      <button mat-icon-button matSuffix (click)="toggleHint($event)" *ngIf="hint">
+        <mat-icon>info_outline</mat-icon>
+      </button>
 
       <mat-error *ngFor="let error of errors$ | async">{{ error.errorText }}</mat-error>
     </mat-form-field>
@@ -65,8 +70,10 @@ import { IPsFormError, PsFormService, hasRequiredField } from '@prosoft/componen
         border-color: var(--ps-error) !important;
       }
 
-      .ps-form-field-type-mat-checkbox .mat-form-field-infix,
       .ps-form-field-type-mat-radio-group .mat-form-field-infix {
+        padding: 0.35em 0;
+      }
+      .ps-form-field-type-mat-checkbox .mat-form-field-infix {
         padding: 0.25em 0;
       }
 
@@ -79,6 +86,113 @@ import { IPsFormError, PsFormService, hasRequiredField } from '@prosoft/componen
         color: var(--ps-error) !important;
       }
       */
+
+      /* hint/error bubble container */
+      .ps-form-field--bubble .mat-form-field-subscript-wrapper {
+        padding-top: 1.25em !important;
+        overflow: visible;
+        z-index: 1;
+        margin-top: 0.25em;
+      }
+
+      /* hint/error bubble */
+      .ps-form-field--bubble .mat-form-field-subscript-wrapper > div {
+        display: block;
+        position: absolute;
+        top: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        bottom: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        padding: 0 8px;
+        box-shadow: 1px 1px 3px #ccc;
+      }
+
+      /* hint bubble position */
+      .ps-form-field--bubble .mat-form-field-subscript-wrapper > .mat-form-field-hint-wrapper {
+        left: auto;
+        right: 0;
+      }
+      /* error bubble position */
+      .ps-form-field--bubble .mat-form-field-subscript-wrapper > div:not(.mat-form-field-hint-wrapper) {
+        left: 0;
+        right: auto;
+      }
+
+      /* hint/error bubble anchor */
+      .ps-form-field--bubble .mat-form-field-subscript-wrapper:before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        width: 6px;
+        height: 6px;
+        border-right: none;
+        border-bottom: none;
+        border-bottom-right-radius: 999px;
+        transform: rotate(45deg) skew(-10deg, -10deg);
+        z-index: 100;
+        border-width: 1px 0 0 1px;
+        border-style: solid;
+      }
+
+      /* hint bubble anchor position */
+      .ps-form-field--bubble .mat-form-field-subscript-wrapper:before {
+        left: auto;
+        right: 10px;
+      }
+      /* error bubble anchor position */
+      .ps-form-field--error-bubble .mat-form-field-subscript-wrapper:before {
+        left: 10px;
+        right: auto;
+      }
+
+      /* hint bubble colors */
+      .ps-form-field--bubble .mat-form-field-subscript-wrapper > div,
+      .ps-form-field--bubble .mat-form-field-subscript-wrapper:before {
+        border-color: rgba(0, 0, 0, 0.2);
+        background-color: #fff;
+      }
+
+      /* error bubble colors */
+      .ps-form-field--error-bubble .mat-form-field-subscript-wrapper > div,
+      .ps-form-field--error-bubble .mat-form-field-subscript-wrapper:before {
+        border-color: #f99;
+        background-color: #fcc;
+      }
+
+      .ps-form-field--bubble .mat-error {
+        display: inline;
+        color: black;
+      }
+
+      .ps-form-field--bubble .mat-hint {
+        display: inline;
+        color: rgba(0, 0, 0, 0.54);
+      }
+
+      .ps-form-field--bubble:hover .mat-form-field-subscript-wrapper > div,
+      .ps-form-field--bubble .mat-focused .mat-form-field-subscript-wrapper > div {
+        bottom: initial !important;
+        white-space: initial;
+      }
+
+      .ps-form-field--bubble:hover .mat-form-field-subscript-wrapper,
+      .ps-form-field--bubble .mat-focused .mat-form-field-subscript-wrapper {
+        z-index: 10;
+      }
+
+      .ps-form-field--bubble:hover .mat-error,
+      .ps-form-field--bubble .mat-focused .mat-error,
+      .ps-form-field--bubble:hover .mat-hint,
+      .ps-form-field--bubble .mat-focused .mat-hint {
+        display: block;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -111,6 +225,13 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
   @ContentChildren(MatPrefix) public _prefixChildren: QueryList<MatPrefix>;
   @ContentChildren(MatSuffix) public _suffixChildren: QueryList<MatSuffix>;
 
+  @HostBinding('class.ps-form-field--bubble') public get showBubble() {
+    return (!!this.hint && this.showHint) || this.hasError;
+  }
+  @HostBinding('class.ps-form-field--error-bubble') public get showErrorBubble() {
+    return this.hasError;
+  }
+
   // mat-form-field childs, that we dont support:
   // @ContentChild(MatPlaceholder) _placeholderChild: MatPlaceholder; // Deprecated, placeholder attribute of the form field control should be used instead!
   // @ContentChildren(MatError) public _errorChildren: QueryList<MatError>; // Will be created automatically
@@ -124,6 +245,7 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
 
   /** ide the underline for the control */
   public noUnderline = false;
+  public showHint = false;
   public calculatedLabel: string = null;
 
   private formControl: FormControl;
@@ -136,6 +258,8 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
 
   /** The control type. Most of the time this is the same as the selector */
   private controlType: string;
+
+  private hasError = false;
 
   private labelTextSubscription: Subscription;
 
@@ -161,7 +285,11 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
         (<any>this.matFormFieldControl).required = hasRequiredField(this.formControl);
       }
 
-      this.errors$ = this.formsService.getControlErrors(this.formControl);
+      this.errors$ = this.formsService.getControlErrors(this.formControl).pipe(
+        tap(errors => {
+          this.hasError = !!errors.length;
+        })
+      );
 
       this.updateLabel();
     }
@@ -175,6 +303,11 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
     if (this.labelTextSubscription) {
       this.labelTextSubscription.unsubscribe();
     }
+  }
+
+  public toggleHint(event: MouseEvent) {
+    this.showHint = !this.showHint;
+    event.stopPropagation();
   }
 
   private updateLabel() {

@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, Injectable, ViewChild } from '@angular/core';
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ChangeDetectorRef, Component, Injectable, ViewChild, DebugElement } from '@angular/core';
+import { async, fakeAsync, TestBed, tick, ComponentFixture } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
@@ -75,7 +75,7 @@ export class TestNgModelComponent {
 @Component({
   selector: 'ps-test-component',
   template: `
-    <ps-form-field>
+    <ps-form-field [hint]="hint">
       <mat-label *ngIf="customLabel">{{ customLabel }}</mat-label>
       <input type="text" [formControl]="formControl" matInput />
     </ps-form-field>
@@ -84,6 +84,7 @@ export class TestNgModelComponent {
 export class TestFormComponent {
   formControl = new FormControl('', [Validators.pattern('pattern'), Validators.minLength(5)]);
   customLabel: string = null;
+  hint: string = null;
 
   @ViewChild(PsFormFieldComponent, { static: true }) formField: PsFormFieldComponent;
 
@@ -199,6 +200,52 @@ describe('PsFormFieldComponent', () => {
       tick(1);
       expect(errorsChecked).toBeTruthy();
     }));
+
+    it('should show hints', () => {
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+      fixture.detectChanges();
+
+      // no hint -> no hint button
+      expect(getHelpButton(fixture)).toBeFalsy();
+
+      // hint -> hint button but initially no hint text
+      component.hint = 'myhint';
+      fixture.detectChanges();
+
+      const helpButton = getHelpButton(fixture);
+      expect(helpButton).toBeTruthy();
+      expect(getShownHelpText(fixture)).toBeFalsy();
+
+      // 1. hint button click -> hint text
+      helpButton.triggerEventHandler('click', {});
+      detectChangesAndIgnoreChangeAfterChecked();
+      expect(getShownHelpText(fixture)).toEqual('myhint');
+
+      // 2. hint button click -> no hint text
+      helpButton.triggerEventHandler('click', {});
+      detectChangesAndIgnoreChangeAfterChecked();
+      expect(getShownHelpText(fixture)).toBeFalsy();
+
+      // no hint -> no hint button/text
+      component.hint = null;
+      fixture.detectChanges();
+      expect(getHelpButton(fixture)).toBeFalsy();
+      expect(getShownHelpText(fixture)).toBeFalsy();
+
+      function detectChangesAndIgnoreChangeAfterChecked() {
+        try {
+          fixture.detectChanges();
+        } catch (e) {
+          // Expression has changed after it was checked. Previous value: 'aria-describedby: null'. Current value: 'aria-describedby: mat-hint-0'.
+          if (e.message.indexOf('Expression has changed after it was checked') === -1) {
+            throw e;
+          }
+        }
+        fixture.detectChanges();
+      }
+    });
   });
 
   describe('ngModel', () => {
@@ -268,3 +315,16 @@ describe('PsFormFieldComponent', () => {
     }));
   });
 });
+
+function getHelpButton(fixture: ComponentFixture<any>): DebugElement {
+  const button = fixture.debugElement.query(By.css('.mat-icon-button'));
+  if (button && button.nativeElement.textContent.indexOf('info_outline') !== -1) {
+    return button;
+  }
+  return null;
+}
+
+function getShownHelpText(fixture: ComponentFixture<any>): string {
+  const bubble = fixture.debugElement.query(By.css('.mat-form-field-hint-wrapper'));
+  return bubble && bubble.nativeElement.textContent.trim();
+}

@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 @Component({
   selector: 'app-reference-column',
   template: `
-    <ps-form-field [hint]="'hint text'">
+    <ps-form-field [hint]="'hint text asdf foo bar and other things like this'">
       <mat-label>Referenz Column</mat-label>
       <input matInput [(ngModel)]="value" type="text" />
     </ps-form-field>
@@ -42,8 +42,8 @@ export class ReferenceColumnComponent {
           <input matInput type="text" />
         </ps-form-field>
 
-        <h2>No form binding</h2>
-        <ps-form-field [hint]="'hint text'">
+        <h2>No form binding and no hint</h2>
+        <ps-form-field>
           <mat-label>Referenz Column</mat-label>
           <input matInput type="text" />
         </ps-form-field>
@@ -99,7 +99,7 @@ export class ReferenceColumnComponent {
             <app-reference-column></app-reference-column>
           </div>
           <div>
-            <ps-form-field hint="hint text">
+            <ps-form-field hint="hint text" [appearance]="'fill'">
               <mat-label *ngIf="customLabel">Custom Label</mat-label>
               <mat-select formControlName="Select">
                 <mat-option [value]="null"><i>keine Auswahl</i></mat-option>
@@ -167,9 +167,9 @@ export class ReferenceColumnComponent {
                   mat-icon-button
                   [disabled]="form.get('Radio').disabled || form.get('Radio').value === null"
                   (click)="form.get('Radio').patchValue(null)"
-                  style="height:24px;width:24px;line-height:24px;"
+                  style="height:20px;width:20px;line-height:20px"
                 >
-                  <mat-icon>clear</mat-icon>
+                  <mat-icon style="line-height: 20px;">clear</mat-icon>
                 </button>
               </mat-radio-group>
             </ps-form-field>
@@ -217,7 +217,10 @@ export class FormFieldDemoComponent {
       }
       const ctrl = this.form.controls[ctrlName];
       if (value) {
-        ctrl.setValidators(() => ({ error1: 'value1', error2: 'value2' }));
+        ctrl.setValidators(() => ({
+          error1: 'error value 1',
+          error2: 'this is a very long error is will be truncated in this demo',
+        }));
       } else {
         ctrl.setValidators(null);
       }
