@@ -54,7 +54,7 @@
         <!--Dynamic ListActions-->
         <ng-template [ngTemplateOutlet]="listActions" [ngTemplateOutletContext]="{ $implicit: getSelectedRows() }"></ng-template>
 
-        <button [hidden]="!refreshable" type="button" mat-menu-item (click)="onRefreshDataClicked()">
+        <button *ngIf="refreshable" type="button" mat-menu-item (click)="onRefreshDataClicked()">
           <mat-icon>refresh</mat-icon>
           {{ intl.refreshListLabel }}
         </button>

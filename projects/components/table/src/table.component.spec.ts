@@ -612,6 +612,16 @@ describe('PsTableComponent', () => {
           // *psTableCustomSettings
           expect(tableSettingsDbg.nativeElement.textContent).toContain('custom settings 2');
         });
+
+        // hide refresh button
+        component.refreshable = false;
+        fixture.detectChanges();
+        listActionButtonEls = getMatMenuNodes();
+        expect(
+          Array.from(listActionButtonEls)
+            .map(x => x.textContent.trim())
+            .filter(x => x.includes('refresh'))
+        ).toEqual([]);
       });
     }));
 
