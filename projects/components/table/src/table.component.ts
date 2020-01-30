@@ -36,7 +36,7 @@ import {
   PsTableRowDetailDirective,
   PsTableTopButtonSectionDirective,
 } from './directives/table.directives';
-import { asQueryParams, fromQueryParams } from './helper/table.helper';
+import { PsTableStateManager, PsTableUrlStateManager } from './helper/state-manager';
 import { IPsTableSortDefinition, IPsTableUpdateDataInfo } from './models';
 import { IPsTableSetting, PsTableSettingsService } from './services/table-settings.service';
 
@@ -78,6 +78,8 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   @Input()
   @HostBinding('class.ps-table--striped')
   public striped = false;
+
+  @Input() stateManager: PsTableStateManager = new PsTableUrlStateManager(this.router, this.route);
 
   @Output() public page = new EventEmitter<PageEvent>();
 
@@ -257,19 +259,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
 
   public onSettingsSaved() {
-    const currentParams = this.route.snapshot.queryParamMap;
-    const newQueryParams: { [id: string]: any } = {};
-    for (const key of currentParams.keys) {
-      if (key !== this.tableId) {
-        newQueryParams[key] = currentParams.get(key);
-      }
-    }
-
-    this.router.navigate([], {
-      queryParams: newQueryParams,
-      relativeTo: this.route,
-    });
-
+    this.stateManager.remove(this.tableId);
     this.flipContainer.toggleFlip();
   }
 
@@ -282,22 +272,8 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
 
   private requestUpdate() {
-    const newQueryParams: { [id: string]: any } = {};
-
-    const currentParams = this.route.snapshot.queryParamMap;
-    for (const key of currentParams.keys) {
-      newQueryParams[key] = currentParams.get(key);
-    }
-
-    if (this.tableId) {
-      const updateInfo = this.dataSource.getUpdateDataInfo();
-      newQueryParams[this.tableId] = asQueryParams(updateInfo);
-    }
-
-    this.router.navigate([], {
-      queryParams: newQueryParams,
-      relativeTo: this.route,
-    });
+    const updateInfo = this.dataSource.getUpdateDataInfo();
+    this.stateManager.requestUpdate(this.tableId, updateInfo);
   }
 
   private initListSettingsSubscription() {
@@ -309,16 +285,9 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
         return null;
       })
     );
-    const urlSettings$ = this.route.queryParamMap.pipe(
-      map(queryParamMap => {
-        if (this.tableId && queryParamMap.has(this.tableId)) {
-          return fromQueryParams(queryParamMap.get(this.tableId));
-        }
-        return null;
-      })
-    );
+    const stateSettings$ = this.stateManager.createStateSource(this.tableId);
     this.subscriptions.push(
-      combineLatest([urlSettings$, tableSettings$, this.settingsService.defaultPageSize$])
+      combineLatest([stateSettings$, tableSettings$, this.settingsService.defaultPageSize$])
         .pipe(
           // guards agains multiple data updates, when multiple emits happen at the same time.
           debounceTime(0)
