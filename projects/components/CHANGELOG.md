@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.6](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.4...@prosoft/components@0.1.0-alpha.6) (2020-01-30)
+
+
+### Bug Fixes
+
+* **savebar:** ctrl+s wonn't trigger save if saveing is disabled ([#64](https://github.com/prosoft-edv/components/issues/64)) ([79a321b](https://github.com/prosoft-edv/components/commit/79a321b))
+* **select:** form-field container click now opens select ([#58](https://github.com/prosoft-edv/components/issues/58)) ([ac1498d](https://github.com/prosoft-edv/components/commit/ac1498d))
+* **table:** cardLayout and pagination styling ([#68](https://github.com/prosoft-edv/components/issues/68)) ([a3cad50](https://github.com/prosoft-edv/components/commit/a3cad50)), closes [#60](https://github.com/prosoft-edv/components/issues/60)
+* **table:** fixed layout of table-header items ([#48](https://github.com/prosoft-edv/components/issues/48)) ([9bbb805](https://github.com/prosoft-edv/components/commit/9bbb805))
+* **table:** refreshable input is now working again ([#67](https://github.com/prosoft-edv/components/issues/67)) ([dc1f283](https://github.com/prosoft-edv/components/commit/dc1f283)), closes [#62](https://github.com/prosoft-edv/components/issues/62)
+
+
+### Features
+
+* **form-field:** hint/error are shown in an expandable bubble ([#66](https://github.com/prosoft-edv/components/issues/66)) ([899d42b](https://github.com/prosoft-edv/components/commit/899d42b))
+* **table:** current table state can be controlled with a state manager ([#65](https://github.com/prosoft-edv/components/issues/65)) ([ab507eb](https://github.com/prosoft-edv/components/commit/ab507eb))
+* **table:** Implemented an option to use a custom row detail toggle ([#51](https://github.com/prosoft-edv/components/issues/51)) ([00ed0e5](https://github.com/prosoft-edv/components/commit/00ed0e5)), closes [#49](https://github.com/prosoft-edv/components/issues/49)
+
+
+
+
+
 # 0.1.0-alpha.5 (2019-11-04)
 
 
