@@ -1,17 +1,23 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { of } from 'rxjs';
+import { PsFormFieldSubscriptType } from '@prosoft/components/form-field';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-reference-column',
   template: `
-    <ps-form-field [hint]="'hint text asdf foo bar and other things like this'">
+    <ps-form-field [appearance]="appearance" [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
       <mat-label>Referenz Column</mat-label>
       <input matInput [(ngModel)]="value" type="text" />
     </ps-form-field>
   `,
 })
 export class ReferenceColumnComponent {
+  @Input() public subscriptType: PsFormFieldSubscriptType = 'single-line';
+  @Input() public hintToggle = false;
+  @Input() public hint = 'hint text';
+  @Input() public appearance: MatFormFieldAppearance = 'legacy';
   public value = '';
 }
 
@@ -71,7 +77,28 @@ export class ReferenceColumnComponent {
         <mat-checkbox [(ngModel)]="disabled" style="margin: .5em;">disabled</mat-checkbox>
         <mat-checkbox [(ngModel)]="customLabel" style="margin: .5em;">custom label</mat-checkbox>
         <mat-checkbox [(ngModel)]="error" style="margin: .5em;">error</mat-checkbox>
-
+        <mat-checkbox [(ngModel)]="hintToggle" style="margin: .5em;">hint toggle button</mat-checkbox>
+        <mat-form-field style="margin: .5em;">
+          <mat-label>subscriptType</mat-label>
+          <mat-select [(ngModel)]="subscriptType">
+            <mat-option [value]="'single-line'">material default</mat-option>
+            <mat-option [value]="'resize'">auto height</mat-option>
+            <mat-option [value]="'bubble'">bubble</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field style="margin: .5em;">
+          <mat-label>appearance</mat-label>
+          <mat-select [(ngModel)]="appearance">
+            <mat-option [value]="'legacy'">legacy</mat-option>
+            <mat-option [value]="'standard'">standard</mat-option>
+            <mat-option [value]="'fill'">fill</mat-option>
+            <mat-option [value]="'outline'">outline</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field style="margin: .5em;">
+          <mat-label>hint text</mat-label>
+          <input type="text" matInput [(ngModel)]="hintText" />
+        </mat-form-field>
         <ul>
           <li>
             Checkbox can't dynamically switch from/to custom label, therefore both are shown separate below.
@@ -91,15 +118,25 @@ export class ReferenceColumnComponent {
         <div>Control Column</div>
         <div>
           <div *ngFor="let i of ctrlCountNumbers">
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
         </div>
         <div>
           <div>
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
           <div>
-            <ps-form-field hint="hint text" [appearance]="'fill'">
+            <ps-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
               <mat-label *ngIf="customLabel">Custom Label</mat-label>
               <mat-select formControlName="Select">
                 <mat-option [value]="null"><i>keine Auswahl</i></mat-option>
@@ -109,10 +146,15 @@ export class ReferenceColumnComponent {
             </ps-form-field>
           </div>
           <div>
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
           <div>
-            <ps-form-field hint="hint text">
+            <ps-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
               <mat-label *ngIf="customLabel">Custom Label</mat-label>
               <mat-icon matPrefix class="app-form-example__icon">home</mat-icon>
               <input matInput formControlName="Prefix_Text" type="text" />
@@ -120,45 +162,75 @@ export class ReferenceColumnComponent {
             </ps-form-field>
           </div>
           <div>
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
           <div>
-            <ps-form-field hint="hint text">
+            <ps-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
               <mat-label *ngIf="customLabel">Custom Label</mat-label>
               <mat-slider formControlName="Slider"></mat-slider>
             </ps-form-field>
           </div>
           <div>
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
         </div>
         <div>
           <div *ngFor="let i of ctrlCountNumbers">
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
         </div>
         <div>
           <div>
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
           <div>
-            <ps-form-field hint="hint text">
+            <ps-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
               <mat-checkbox formControlName="Checkbox"></mat-checkbox>
             </ps-form-field>
           </div>
           <div>
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
           <div>
-            <ps-form-field hint="hint text">
+            <ps-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
               <mat-checkbox formControlName="Checkbox">{{ asyncLabel$ | async }}</mat-checkbox>
             </ps-form-field>
           </div>
           <div>
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
           <div>
-            <ps-form-field hint="hint text">
+            <ps-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
               <mat-label *ngIf="customLabel">Custom Label</mat-label>
               <mat-radio-group formControlName="Radio" style="display: flex;place-content: end space-between;">
                 <mat-radio-button [value]="true" style="padding-right: 8px;">Ja</mat-radio-button>
@@ -175,7 +247,12 @@ export class ReferenceColumnComponent {
             </ps-form-field>
           </div>
           <div>
-            <app-reference-column></app-reference-column>
+            <app-reference-column
+              [appearance]="appearance"
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+            ></app-reference-column>
           </div>
         </div>
       </div>
@@ -185,6 +262,10 @@ export class ReferenceColumnComponent {
   encapsulation: ViewEncapsulation.None,
 })
 export class FormFieldDemoComponent {
+  public subscriptType: PsFormFieldSubscriptType = 'single-line';
+  public hintToggle = false;
+  public hintText = 'hint text';
+  public appearance: MatFormFieldAppearance = 'legacy';
   public asyncLabel$ = of('Custom Label');
   public ctrlCountNumbers = Array(7).fill(1);
   public value = '';

@@ -7,7 +7,7 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
 import { Observable, of } from 'rxjs';
-import { PsFormFieldComponent } from './form-field.component';
+import { PsFormFieldComponent, PsFormFieldSubscriptType } from './form-field.component';
 import { PsFormFieldModule } from './form-field.module';
 import { delay } from 'rxjs/operators';
 
@@ -75,7 +75,7 @@ export class TestNgModelComponent {
 @Component({
   selector: 'ps-test-component',
   template: `
-    <ps-form-field [hint]="hint">
+    <ps-form-field [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
       <mat-label *ngIf="customLabel">{{ customLabel }}</mat-label>
       <input type="text" [formControl]="formControl" matInput />
     </ps-form-field>
@@ -85,6 +85,8 @@ export class TestFormComponent {
   formControl = new FormControl('', [Validators.pattern('pattern'), Validators.minLength(5)]);
   customLabel: string = null;
   hint: string = null;
+  subscriptType: PsFormFieldSubscriptType = null;
+  hintToggle = false;
 
   @ViewChild(PsFormFieldComponent, { static: true }) formField: PsFormFieldComponent;
 
@@ -201,10 +203,11 @@ describe('PsFormFieldComponent', () => {
       expect(errorsChecked).toBeTruthy();
     }));
 
-    it('should show hints', () => {
+    it('should work with hint toggle button', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      component.hintToggle = true;
       fixture.detectChanges();
 
       // no hint -> no hint button
@@ -212,7 +215,7 @@ describe('PsFormFieldComponent', () => {
 
       // hint -> hint button but initially no hint text
       component.hint = 'myhint';
-      fixture.detectChanges();
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
 
       const helpButton = getHelpButton(fixture);
       expect(helpButton).toBeTruthy();
@@ -220,32 +223,84 @@ describe('PsFormFieldComponent', () => {
 
       // 1. hint button click -> hint text
       helpButton.triggerEventHandler('click', {});
-      detectChangesAndIgnoreChangeAfterChecked();
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
       expect(getShownHelpText(fixture)).toEqual('myhint');
 
       // 2. hint button click -> no hint text
       helpButton.triggerEventHandler('click', {});
-      detectChangesAndIgnoreChangeAfterChecked();
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
       expect(getShownHelpText(fixture)).toBeFalsy();
 
       // no hint -> no hint button/text
       component.hint = null;
-      fixture.detectChanges();
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
       expect(getHelpButton(fixture)).toBeFalsy();
       expect(getShownHelpText(fixture)).toBeFalsy();
-
-      function detectChangesAndIgnoreChangeAfterChecked() {
-        try {
-          fixture.detectChanges();
-        } catch (e) {
-          // Expression has changed after it was checked. Previous value: 'aria-describedby: null'. Current value: 'aria-describedby: mat-hint-0'.
-          if (e.message.indexOf('Expression has changed after it was checked') === -1) {
-            throw e;
-          }
-        }
-        fixture.detectChanges();
-      }
     });
+
+    it('should work without hint toggle button', () => {
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+      component.hintToggle = false;
+      fixture.detectChanges();
+
+      // no hint -> no hint button
+      expect(getHelpButton(fixture)).toBeFalsy();
+
+      // hint -> hint text but still no hint button
+      component.hint = 'myhint';
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
+
+      const helpButton = getHelpButton(fixture);
+      expect(helpButton).toBeFalsy();
+      expect(getShownHelpText(fixture)).toEqual('myhint');
+    });
+
+    it('should set correct classes for subscriptType', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      component.hintToggle = false;
+      component.hint = 'hint';
+      component.subscriptType = 'single-line';
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
+
+      let classes = getFormFieldClasses(fixture);
+      expect(classes.contains('ps-form-field--bubble')).toBeFalsy();
+      expect(classes.contains('ps-form-field--error-bubble')).toBeFalsy();
+      expect(classes.contains('ps-form-field--subscript-resize')).toBeFalsy();
+
+      component.subscriptType = 'resize';
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      classes = getFormFieldClasses(fixture);
+      expect(classes.contains('ps-form-field--bubble')).toBeFalsy();
+      expect(classes.contains('ps-form-field--error-bubble')).toBeFalsy();
+      expect(classes.contains('ps-form-field--subscript-resize')).toBeTruthy();
+
+      component.subscriptType = 'bubble';
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      classes = getFormFieldClasses(fixture);
+      expect(classes.contains('ps-form-field--bubble')).toBeTruthy();
+      expect(classes.contains('ps-form-field--error-bubble')).toBeFalsy();
+      expect(classes.contains('ps-form-field--subscript-resize')).toBeFalsy();
+
+      component.formControl.setErrors({ a: 'b' });
+      tick(1);
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      classes = getFormFieldClasses(fixture);
+      expect(classes.contains('ps-form-field--bubble')).toBeTruthy();
+      expect(classes.contains('ps-form-field--error-bubble')).toBeTruthy();
+      expect(classes.contains('ps-form-field--subscript-resize')).toBeFalsy();
+
+      component.subscriptType = 'resize';
+      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      classes = getFormFieldClasses(fixture);
+      expect(classes.contains('ps-form-field--bubble')).toBeFalsy();
+      expect(classes.contains('ps-form-field--error-bubble')).toBeFalsy();
+      expect(classes.contains('ps-form-field--subscript-resize')).toBeTruthy();
+    }));
   });
 
   describe('ngModel', () => {
@@ -327,4 +382,24 @@ function getHelpButton(fixture: ComponentFixture<any>): DebugElement {
 function getShownHelpText(fixture: ComponentFixture<any>): string {
   const bubble = fixture.debugElement.query(By.css('.mat-form-field-hint-wrapper'));
   return bubble && bubble.nativeElement.textContent.trim();
+}
+
+function getFormFieldClasses(fixture: ComponentFixture<any>): DOMTokenList {
+  const node = fixture.debugElement.query(By.directive(PsFormFieldComponent));
+  if (node) {
+    return node.nativeElement.classList;
+  }
+  return null;
+}
+
+function detectChangesAndIgnoreChangeAfterChecked(fixture: ComponentFixture<any>) {
+  try {
+    fixture.detectChanges();
+  } catch (e) {
+    // Expression has changed after it was checked. Previous value: 'aria-describedby: null'. Current value: 'aria-describedby: mat-hint-0'.
+    if (e.message.indexOf('Expression has changed after it was checked') === -1) {
+      throw e;
+    }
+  }
+  fixture.detectChanges();
 }

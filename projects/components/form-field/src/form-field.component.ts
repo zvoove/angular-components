@@ -12,6 +12,11 @@ import {
   QueryList,
   ViewChild,
   ViewEncapsulation,
+  InjectionToken,
+  Inject,
+  Optional,
+  SimpleChanges,
+  OnChanges,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 import { FloatLabelType } from '@angular/material/core';
@@ -21,6 +26,15 @@ import { Observable, of, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
 
+export declare type PsFormFieldSubscriptType = 'bubble' | 'resize' | 'single-line';
+
+export interface PsFormFieldConfig {
+  subscriptType?: PsFormFieldSubscriptType;
+  hintToggle?: boolean;
+}
+
+export const PS_FORM_FIELD_CONFIG = new InjectionToken<PsFormFieldConfig>('PS_FORM_FIELD_CONFIG');
+
 @Component({
   selector: 'ps-form-field',
   template: `
@@ -29,7 +43,7 @@ import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
       [class.mat-form-field--emulated]="emulated"
       [class.mat-form-field--no-underline]="noUnderline"
       [floatLabel]="floatLabel"
-      [hintLabel]="showHint ? hint : null"
+      [hintLabel]="visibleHint"
       [appearance]="appearance"
     >
       <mat-label *ngIf="_labelChild">
@@ -45,7 +59,7 @@ import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
       <ng-container matSuffix *ngIf="_suffixChildren.length">
         <ng-content select="[matSuffix]"></ng-content>
       </ng-container>
-      <button mat-icon-button matSuffix (click)="toggleHint($event)" *ngIf="hint">
+      <button mat-icon-button matSuffix (click)="toggleHint($event)" *ngIf="showHintToggle">
         <mat-icon>info_outline</mat-icon>
       </button>
 
@@ -86,6 +100,15 @@ import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
         color: var(--ps-error) !important;
       }
       */
+
+      /* Mehrzeilige errors/hints erlauben */
+      .ps-form-field--subscript-resize .mat-form-field-underline,
+      .ps-form-field--subscript-resize .mat-form-field-subscript-wrapper {
+        position: static;
+      }
+      .ps-form-field--subscript-resize .mat-form-field-wrapper {
+        padding-bottom: 0;
+      }
 
       /* hint/error bubble container */
       .ps-form-field--bubble .mat-form-field-subscript-wrapper {
@@ -198,11 +221,13 @@ import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
+export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDestroy {
   @Input() public createLabel = true;
   @Input() public floatLabel: FloatLabelType = 'auto';
   @Input() public hint: string = null;
   @Input() public appearance: MatFormFieldAppearance = 'legacy';
+  @Input() public subscriptType: PsFormFieldSubscriptType = this.defaults ? this.defaults.subscriptType : 'resize';
+  @Input() public hintToggle: boolean | null = null;
 
   @ViewChild(MatFormField, { static: true }) public _matFormField: MatFormField;
 
@@ -226,16 +251,31 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
   @ContentChildren(MatSuffix) public _suffixChildren: QueryList<MatSuffix>;
 
   @HostBinding('class.ps-form-field--bubble') public get showBubble() {
-    return (!!this.hint && this.showHint) || this.hasError;
+    return this.subscriptType === 'bubble' && (!!this.visibleHint || this.hasError);
   }
   @HostBinding('class.ps-form-field--error-bubble') public get showErrorBubble() {
-    return this.hasError;
+    return this.subscriptType === 'bubble' && this.hasError;
+  }
+  @HostBinding('class.ps-form-field--subscript-resize') public get autoResizeHintError() {
+    return this.subscriptType === 'resize';
   }
 
   // mat-form-field childs, that we dont support:
   // @ContentChild(MatPlaceholder) _placeholderChild: MatPlaceholder; // Deprecated, placeholder attribute of the form field control should be used instead!
   // @ContentChildren(MatError) public _errorChildren: QueryList<MatError>; // Will be created automatically
   // @ContentChildren(MatHint) public _hintChildren: QueryList<MatHint>; // No idea how to make this work...
+
+  public get hintToggleOptionActive(): boolean {
+    return typeof this.hintToggle === 'boolean' ? this.hintToggle : this.defaults.hintToggle;
+  }
+
+  public get showHintToggle(): boolean {
+    return !!this.hint && this.hintToggleOptionActive;
+  }
+
+  public get visibleHint(): string | null {
+    return this.showHint || !this.hintToggleOptionActive ? this.hint : null;
+  }
 
   /** The error messages to show */
   public errors$: Observable<IPsFormError[]> = of([]);
@@ -263,7 +303,24 @@ export class PsFormFieldComponent implements AfterContentInit, OnDestroy {
 
   private labelTextSubscription: Subscription;
 
-  constructor(private _elementRef: ElementRef, private formsService: PsFormService, private cd: ChangeDetectorRef) {}
+  constructor(
+    private _elementRef: ElementRef,
+    private formsService: PsFormService,
+    @Optional() @Inject(PS_FORM_FIELD_CONFIG) private defaults?: PsFormFieldConfig
+  ) {
+    if (!this.defaults) {
+      this.defaults = {
+        hintToggle: false,
+        subscriptType: 'resize',
+      };
+    }
+  }
+
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes.hintToggle) {
+      this.showHint = !this.hintToggleOptionActive;
+    }
+  }
 
   public ngAfterContentInit(): void {
     this.formControl = this._ngControl && (this._ngControl.control as FormControl);
