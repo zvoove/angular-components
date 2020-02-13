@@ -1,0 +1,61 @@
+<ng-template #content><ng-content></ng-content></ng-template>
+
+<form [formGroup]="boundForm" [autocomplete]="autocomplete">
+  <ps-savebar
+    *ngIf="!dataSource"
+    [form]="boundForm"
+    [mode]="savebarMode"
+    (cancel)="onCancel()"
+    [canSave]="canSaveIntern"
+    [intlOverride]="intlOverride"
+  >
+    <div class="ps-form__cards-container">
+      <ps-block-ui *ngIf="!hasLoadError" [blocked]="viewBlocked">
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+      </ps-block-ui>
+
+      <mat-card *ngIf="hasLoadError" class="ps-form__error-container ps-form__error-container--center">
+        <mat-icon class="ps-form__error-icon">sentiment_very_dissatisfied</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </mat-card>
+
+      <mat-card *ngIf="hasSaveError" class="ps-form__error-container">
+        <span>{{ errorMessage }}</span>
+      </mat-card>
+
+      <mat-card *ngIf="hasLoadError" class="ps-form__error-actions">
+        <button mat-stroked-button type="button" (click)="onCancel()">
+          {{ intl.cancelLabel }}
+        </button>
+      </mat-card>
+    </div>
+  </ps-savebar>
+
+  <ps-savebar *ngIf="dataSource" [form]="boundForm" [mode]="savebarMode">
+    <div class="ps-form__cards-container">
+      <ps-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+      </ps-block-ui>
+
+      <mat-card *ngIf="exception" class="ps-form__error-container" [class.ps-form__error-container--center]="exception.alignCenter">
+        <mat-icon *ngIf="exception.icon" class="ps-form__error-icon">{{ exception.icon }}</mat-icon>
+        <span>{{ exceptionMessage }}</span>
+      </mat-card>
+    </div>
+    <div *psSavebarRightContent class="ps-form__buttons">
+      <ng-content select="[psFormSavebarButtons]"></ng-content>
+      <button
+        *ngFor="let btn of buttons"
+        mat-button
+        [class.mat-raised-button]="btn.type === 'raised'"
+        [class.mat-stroked-button]="btn.type === 'stroked'"
+        type="button"
+        [color]="btn.color"
+        [disabled]="btn.disabled()"
+        (click)="btn.click()"
+      >
+        {{ btn.label }}
+      </button>
+    </div>
+  </ps-savebar>
+</form>

@@ -8,6 +8,14 @@ export class PsExceptionMessageExtractor {
    * @returns The error message
    */
   public extractErrorMessage(error: any): string {
-    return error ? error.message : null;
+    if (!error) {
+      return null;
+    }
+
+    if (typeof error === 'string') {
+      return error;
+    }
+
+    return error.message;
   }
 }

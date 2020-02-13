@@ -7,6 +7,7 @@ import {
   IPsFormSaveSuccessParams,
 } from './models';
 
+/** @deprecated */
 @Injectable()
 export abstract class PsFormActionService {
   public abstract defaultCancelHandler(params: IPsFormCancelParams): void;

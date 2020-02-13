@@ -18,34 +18,62 @@ import { PsFormModule } from '@prosoft/components/form';
 
 ## PsFormComponent <a name="PsFormComponent"></a>
 
-### Properties <a name="PsFormComponentProperties"></a>
+### Inputs <a name="PsFormComponentProperties"></a>
 
 | Name                                                                     | Description                                                                                                                                                                   |
 | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `form: FormGroup`                                                        | Angular's `FormGroup`                                                                                                                                                         |
-| `formMode: 'create' \| 'update'`                                         | Tells the PsForm if you are currently creating or editing data.                                                                                                               |
-| `autocomplete: 'on' \| 'off'` (default: `off`)                           | Sets the HTML autocomplete attribute on `<input>` elements. See [HTML-autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) for more info. |
-| `hideSaveAndClose: boolean`                                              | `true` to hide the "Save & close"-button.                                                                                                                                     |
-| `hideSave: boolean`                                                      | `true` to hide the "Save"-button.                                                                                                                                             |
-| `blocked: boolean`                                                       | `true` to manually block the `<ps-form>`'s content via `<ps-block-ui>`.                                                                                                       |
-| `canSave: boolean \| null`                                               | `true` to enable the "Save" and "Save & close" buttons. If no value is provided, this defaults to form.pristine \|\| form.invalid;                                            |
-| `intlOverride: Partial<IPsFormIntlTexts>`                                | `IPsFormIntlTexts` if you want to override displayed labels.                                                                                                                  |
-| `loadFnc(): Observable<any>`                                             | A function for loading data. this will be called when the PsForm is initialized.                                                                                              |
-| `saveFnc(formRawValue: any, params: IPsFormSaveParams): Observable<any>` | A function for saving data. this will be called when the "Save"- or "Save & Close"-Button is clicked.                                                                         |
+| `dataSource: IPsFormDataSource`| DataSource which controls the view.|
+| `form: FormGroup`                                                        | Angular's `FormGroup` (deprecated)                                                                                                                                                         |
+| `formMode: 'create' \| 'update'`                                         | Tells the PsForm if you are currently creating or editing data. (deprecated)                                                                                                               |
+| `autocomplete: 'on' \| 'off'` (default: `off`)                           | Sets the HTML autocomplete attribute on `<input>` elements. See [HTML-autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) for more info. (deprecated) |
+| `hideSaveAndClose: boolean`                                              | `true` to hide the "Save & close"-button. (deprecated)                                                                                                                                     |
+| `hideSave: boolean`                                                      | `true` to hide the "Save"-button. (deprecated)                                                                                                                                             |
+| `blocked: boolean`                                                       | `true` to manually block the `<ps-form>`'s content via `<ps-block-ui>`. (deprecated)                                                                                                       |
+| `canSave: boolean \| null`                                               | `true` to enable the "Save" and "Save & close" buttons. If no value is provided, this defaults to form.pristine \|\| form.invalid; (deprecated)                                            |
+| `intlOverride: Partial<IPsFormIntlTexts>`                                | `IPsFormIntlTexts` if you want to override displayed labels. (deprecated)                                                                                                                  |
+| `loadFnc(): Observable<any>`                                             | A function for loading data. this will be called when the PsForm is initialized. (deprecated)                                                                                              |
+| `saveFnc(formRawValue: any, params: IPsFormSaveParams): Observable<any>` | A function for saving data. this will be called when the "Save"- or "Save & Close"-Button is clicked. (deprecated)                                                                         |
 
-### Events <a name="PsFormComponentEvents"></a>
+### Outputs <a name="PsFormComponentEvents"></a>
 
 | Name                                                | Description                                                   |
 | --------------------------------------------------- | ------------------------------------------------------------- |
-| `loadSuccess: EventEmitter<PsFormLoadSuccessEvent>` | Emitted if `loadFnc` was successful.                          |
-| `loadError: EventEmitter<PsFormLoadErrorEvent>`     | Emitted if an error occured during `loadFnc`.                 |
-| `saveSuccess: EventEmitter<PsFormSaveSuccessEvent>` | Emitted if `saveFnc` was successful.                          |
-| `saveError: EventEmitter<PsFormSaveErrorEvent>`     | Emitted if an error occured during `saveFnc`.                 |
-| `cancel: EventEmitter<PsFormCancelEvent>`           | Emitted if an cancellation was requested via "Cancel"-button. |
+| `loadSuccess: EventEmitter<PsFormLoadSuccessEvent>` | Emitted if `loadFnc` was successful. (deprecated)                          |
+| `loadError: EventEmitter<PsFormLoadErrorEvent>`     | Emitted if an error occured during `loadFnc`. (deprecated)                 |
+| `saveSuccess: EventEmitter<PsFormSaveSuccessEvent>` | Emitted if `saveFnc` was successful. (deprecated)                          |
+| `saveError: EventEmitter<PsFormSaveErrorEvent>`     | Emitted if an error occured during `saveFnc`. (deprecated)                 |
+| `cancel: EventEmitter<PsFormCancelEvent>`           | Emitted if an cancellation was requested via "Cancel"-button. (deprecated) |
 
 ---
 
-## PsFormEvent <a name="PsFormEvent"></a>
+## IPsFormDataSource <a name="IPsFormDataSource"></a>
+
+### Properties <a name="IPsFormDataSourceProperties"></a>
+
+| Name                        | Description                                          |
+| --------------------------- | ---------------------------------------------------- |
+| `form: FormGroup` | The `FormGroup` to be forwarded to the `ps-savebar`. |
+| `buttons: IPsFormButton[]` | The buttons to show in the `ps-savebar`. |
+| `contentVisible: boolean` | `false` to hide the transcluded `ng-content`. |
+| `contentBlocked: boolean` | `true` to show a loading spinner over the transcluded `ng-content`. |
+| `exception: IPsFormException` | When set, shows an error view with the provided information. |
+| `savebarMode: IPsSavebarMode` | The mode to be forwarded to the `ps-savebar`. |
+
+### Functions <a name="IPsFormDataSourceFunctions"></a>
+
+| Name | Description |
+| - | - |
+| `connect(): Observable<void>` | Called when `ps-form` connects to the datasource. Emits of the returned `Observable` will mark `ps-form` for a check of the change detection.|
+| `disconnect(): void` | Called when `ps-form` disconnects from the datasource. |
+
+### ng-content Slots
+
+| Name | Description |
+| - | - |
+| `psFormSavebarButtons` | Additional buttons to show left of the buttons provided by the datasource.|
+
+---
+## PsFormEvent (deprecated) <a name="PsFormEvent"></a>
 
 ### Properties <a name="PsFormEventProperties"></a>
 
@@ -61,7 +89,7 @@ import { PsFormModule } from '@prosoft/components/form';
 
 ---
 
-## PsFormLoadSuccessEvent (extends PsFormEvent) <a name="PsFormLoadSuccessEvent"></a>
+## PsFormLoadSuccessEvent (extends PsFormEvent) (deprecated) <a name="PsFormLoadSuccessEvent"></a>
 
 ### Properties <a name="PsFormLoadSuccessEventProperties"></a>
 
@@ -71,7 +99,7 @@ import { PsFormModule } from '@prosoft/components/form';
 
 ---
 
-## PsFormLoadErrorEvent (extends PsFormEvent) <a name="PsFormLoadErrorEvent"></a>
+## PsFormLoadErrorEvent (extends PsFormEvent) (deprecated) <a name="PsFormLoadErrorEvent"></a>
 
 ### Properties <a name="PsFormLoadErrorEventProperties"></a>
 
@@ -81,7 +109,7 @@ import { PsFormModule } from '@prosoft/components/form';
 
 ---
 
-## PsFormSaveSuccessEvent (extends PsFormEvent) <a name="PsFormSaveSuccessEvent"></a>
+## PsFormSaveSuccessEvent (extends PsFormEvent) (deprecated) <a name="PsFormSaveSuccessEvent"></a>
 
 ### Properties <a name="PsFormSaveSuccessEventProperties"></a>
 
@@ -93,7 +121,7 @@ import { PsFormModule } from '@prosoft/components/form';
 
 ---
 
-## PsFormSaveErrorEvent (extends PsFormEvent) <a name="PsFormSaveErrorEvent"></a>
+## PsFormSaveErrorEvent (extends PsFormEvent) (deprecated) <a name="PsFormSaveErrorEvent"></a>
 
 ### Properties <a name="PsFormSaveErrorEventProperties"></a>
 
@@ -104,7 +132,7 @@ import { PsFormModule } from '@prosoft/components/form';
 
 ---
 
-## PsFormCancelEvent (extends PsFormEvent) <a name="PsFormCancelEvent"></a>
+## PsFormCancelEvent (extends PsFormEvent) (deprecated) <a name="PsFormCancelEvent"></a>
 
 ---
 
@@ -135,21 +163,7 @@ export class MyModule {}
 Now you can use it in your components like this:
 
 ```html
-<ps-form
-  [form]="setForm ? form : null"
-  [formMode]="formMode"
-  [loadFnc]="loadFnc"
-  [saveFnc]="saveFnc"
-  [hideSave]="hideSave"
-  [hideSaveAndClose]="hideSaveAndClose"
-  [canSave]="canSave"
-  [blocked]="blocked"
-  (loadSuccess)="onEvent($event, 'loadSuccess')"
-  (loadError)="onEvent($event, 'loadError')"
-  (saveSuccess)="onEvent($event, 'saveSuccess')"
-  (saveError)="onEvent($event, 'saveError')"
-  (cancel)="onEvent($event, 'cancel')"
->
+<ps-form [dataSource]="dataSource">
   <mat-card>
     <form [formGroup]="form">
       <mat-form-field>
@@ -162,5 +176,11 @@ Now you can use it in your components like this:
       </mat-form-field>
     </form>
   </mat-card>
+  <ng-container psFormSavebarButtons>
+    <button mat-stroked-button type="button">demo button 1</button>
+    <button mat-stroked-button type="button">demo button 2</button>
+  </ng-container>
 </ps-form>
 ```
+
+Currently no default implementation of `IPsFormDataSource` exists, but could be added in a following release. For guidance on how to implement one yourself, you can take a look at the code of the demo application.

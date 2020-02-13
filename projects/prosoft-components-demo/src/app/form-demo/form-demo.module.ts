@@ -18,7 +18,9 @@ import {
 } from '@prosoft/components/form/src/models';
 import { PsSavebarModule } from '@prosoft/components/savebar';
 import { Observable, of, Subject } from 'rxjs';
+import { FormDataSourceDemoComponent } from './form-data-source-demo.component';
 import { FormDemoComponent } from './form-demo.component';
+import { FormInputsDemoComponent } from './form-inputs-demo.component';
 
 export class DemoPsFormsService extends BasePsFormService {
   public getLabel(formControl: any): Observable<string> {
@@ -79,7 +81,7 @@ export class DemoPsFormActionService extends PsFormActionService {
     MatSelectModule,
     MatButtonModule,
   ],
-  declarations: [FormDemoComponent],
+  declarations: [FormDemoComponent, FormInputsDemoComponent, FormDataSourceDemoComponent],
   providers: [{ provide: PsFormActionService, useClass: DemoPsFormActionService }],
 })
 export class FormDemoModule {}

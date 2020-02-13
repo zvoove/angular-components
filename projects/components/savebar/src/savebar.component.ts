@@ -16,10 +16,11 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { IPsSavebarIntlTexts, PsIntlService } from '@prosoft/components/core';
 import { merge, Subject, Subscription } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
+import { IPsSavebarMode } from './models';
 import { PsSavebarRightContentDirective } from './savebar-right-content.directive';
-import { IPsSavebarIntlTexts, PsIntlService } from '@prosoft/components/core';
 
 @Component({
   selector: 'ps-savebar',
@@ -29,7 +30,7 @@ import { IPsSavebarIntlTexts, PsIntlService } from '@prosoft/components/core';
   encapsulation: ViewEncapsulation.None,
 })
 export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() public mode: 'sticky' | 'fixed' | 'auto' | 'hide' = 'auto';
+  @Input() public mode: IPsSavebarMode = 'auto';
   @Input() public form: FormGroup;
   @Input() public canSave: boolean | null;
   @Input() public canStepFwd: boolean;
