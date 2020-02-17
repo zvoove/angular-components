@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.8](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.7...@prosoft/components@0.1.0-alpha.8) (2020-02-17)
+
+
+### Bug Fixes
+
+* **form-field:** help button has now type button ([5eaf5a1](https://github.com/prosoft-edv/components/commit/5eaf5a1))
+
+
+
+
+
 # [0.1.0-alpha.7](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.6...@prosoft/components@0.1.0-alpha.7) (2020-02-17)
 
 
