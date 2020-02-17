@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.7](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.6...@prosoft/components@0.1.0-alpha.7) (2020-02-17)
+
+
+### Features
+
+* **form:** added dataSource input ([#70](https://github.com/prosoft-edv/components/issues/70)) ([c49f93f](https://github.com/prosoft-edv/components/commit/c49f93f))
+* **form-field:** subscriptType and hintToggle inputs ([#69](https://github.com/prosoft-edv/components/issues/69)) ([10ee428](https://github.com/prosoft-edv/components/commit/10ee428))
+
+
+### BREAKING CHANGES
+
+* **form-field:** Hint toggle button is now off by default and form-field resizes for multiline
+hint/error by default
+
+
+
+
+
 # [0.1.0-alpha.6](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.4...@prosoft/components@0.1.0-alpha.6) (2020-01-30)
 
 
