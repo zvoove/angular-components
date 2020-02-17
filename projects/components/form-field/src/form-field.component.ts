@@ -59,7 +59,7 @@ export const PS_FORM_FIELD_CONFIG = new InjectionToken<PsFormFieldConfig>('PS_FO
       <ng-container matSuffix *ngIf="_suffixChildren.length">
         <ng-content select="[matSuffix]"></ng-content>
       </ng-container>
-      <button mat-icon-button matSuffix (click)="toggleHint($event)" *ngIf="showHintToggle">
+      <button type="button" mat-icon-button matSuffix (click)="toggleHint($event)" *ngIf="showHintToggle">
         <mat-icon>info_outline</mat-icon>
       </button>
 
