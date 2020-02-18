@@ -188,10 +188,14 @@ describe('PsSelectDataComponent', () => {
     component.ngOnDestroy();
   }));
   it('should pass selectedValue from MatSelect to DataSource', fakeAsync(() => {
+    spyOn(dataSource, 'selectedValuesChanged');
+
+    const initialSelectedValue = { value: 42, label: 'init' };
+    (<FormControl>(<unknown>matSelect.ngControl)).patchValue(initialSelectedValue);
     component.ngAfterViewInit();
+    expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([initialSelectedValue]);
 
     const newSelectedValue = { value: 1, label: '1' };
-    spyOn(dataSource, 'selectedValuesChanged');
 
     (<FormControl>(<unknown>matSelect.ngControl)).patchValue(newSelectedValue);
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([newSelectedValue]);

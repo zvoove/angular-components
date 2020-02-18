@@ -174,9 +174,13 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
     this.filterCtrl.valueChanges
       .pipe(takeUntil(this._ngUnsubscribe$))
       .subscribe(searchText => this.dataSource.searchTextChanged(searchText));
-    this.select.ngControl.valueChanges
-      .pipe(takeUntil(this._ngUnsubscribe$))
-      .subscribe(value => this._pushSelectedValuesToDataSource(value));
+
+    const ngControl = this.select.ngControl;
+    let valueChanges = ngControl.valueChanges;
+    if (ngControl.value) {
+      valueChanges = valueChanges.pipe(startWith(ngControl.value));
+    }
+    valueChanges.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(value => this._pushSelectedValuesToDataSource(value));
   }
 
   public ngOnDestroy() {
