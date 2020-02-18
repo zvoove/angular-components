@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.9](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.8...@prosoft/components@0.1.0-alpha.9) (2020-02-18)
+
+
+### Bug Fixes
+
+* **select:** values set before AfterViewInit are now working correctly ([#71](https://github.com/prosoft-edv/components/issues/71)) ([bf14362](https://github.com/prosoft-edv/components/commit/bf14362))
+
+
+
+
+
 # [0.1.0-alpha.8](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.7...@prosoft/components@0.1.0-alpha.8) (2020-02-17)
 
 
