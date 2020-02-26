@@ -1,6 +1,8 @@
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
+import { TrackByFunction } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
+
 import { _isNumberValue } from '../helper/table.helper';
 import { IPsTableUpdateDataInfo } from '../models';
 
@@ -101,6 +103,14 @@ export class PsTableDataSource<T> extends DataSource<T> {
 
     this._initDataChangeSubscription();
   }
+
+  /**
+   * Tracking function that will be used to check the differences in data changes.
+   * Used similarly to ngFor trackBy function. Optimize row operations by identifying a row based
+   * on its data relative to the function to know if a row should be added/removed/moved.
+   * Accepts a function that takes two parameters, index and item.
+   */
+  public trackBy: TrackByFunction<T> = (index, item) => item;
 
   /**
    * Returns the names of the property that should be used in filterPredicate.
@@ -238,46 +248,47 @@ export class PsTableDataSource<T> extends DataSource<T> {
    * Reloads the data
    */
   public updateData(forceReload: boolean = true) {
-    this.loading = true;
+    this._loadDataSubscription.unsubscribe();
+
     this.error = null;
     this.selectionModel.clear();
-    this._renderData.next([]);
-    this._loadDataSubscription.unsubscribe();
-    this._internalDetectChanges.next();
 
-    let data$: Observable<T[] | IPsTableFilterResult<T>>;
     if (this.mode === 'server' || forceReload || !this._hasData) {
-      const filter = this.getUpdateDataInfo();
-      data$ = this._loadData(filter);
-    } else {
-      data$ = of(this.data);
-    }
-    this._loadDataSubscription = data$
-      .pipe(
-        take(1),
-        tap(() => (this._hasData = true)),
-        catchError((err: Error | any) => {
-          this._hasData = false;
-          this.error = err;
-          return of([] as T[]);
-        }),
-        finalize(() => {
-          this.loading = false;
-          this._internalDetectChanges.next();
-        })
-      )
-      .subscribe(data => {
-        if (Array.isArray(data)) {
-          this.dataLength = data.length;
-          this.data = data;
-        } else {
-          const filterResult = data;
+      this.loading = true;
+      this._renderData.next([]);
+      this._internalDetectChanges.next();
 
-          this.dataLength = filterResult.TotalItems;
-          this.data = filterResult.Items;
-          this._checkPageValidity(filterResult.TotalItems);
-        }
-      });
+      const filter = this.getUpdateDataInfo();
+      this._loadDataSubscription = this._loadData(filter)
+        .pipe(
+          take(1),
+          tap(() => (this._hasData = true)),
+          catchError((err: Error | any) => {
+            this._hasData = false;
+            this.error = err;
+            return of([] as T[]);
+          }),
+          finalize(() => {
+            this.loading = false;
+            this._internalDetectChanges.next();
+          })
+        )
+        .subscribe(data => {
+          if (Array.isArray(data)) {
+            this.dataLength = data.length;
+            this.data = data;
+          } else {
+            const filterResult = data;
+
+            this.dataLength = filterResult.TotalItems;
+            this.data = filterResult.Items;
+            this._checkPageValidity(filterResult.TotalItems);
+          }
+        });
+    } else {
+      this._data.next(this.data);
+      this._internalDetectChanges.next();
+    }
   }
 
   /**

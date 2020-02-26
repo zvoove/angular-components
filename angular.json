@@ -140,5 +140,8 @@
       }
     }
   },
-  "defaultProject": "prosoft-components-demo"
+  "defaultProject": "prosoft-components-demo",
+  "cli": {
+    "analytics": false
+  }
 }

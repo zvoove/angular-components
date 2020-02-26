@@ -1,6 +1,7 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { NEVER, of, throwError } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
+
 import { PsTableDataSource } from '../data/table-data-source';
 import { IPsTableUpdateDataInfo } from '../models';
 
@@ -50,47 +51,106 @@ describe('PsTableDataSource', () => {
   }));
 
   it('should reset error/loading/data/selection before updateData and after', fakeAsync(() => {
+    let doThrowError: Error = null;
+    const beforeDataItem = {};
     const loadedData = [{ prop: 'x' }, { prop: 'y' }];
-    const dataSource = new PsTableDataSource<any>(() => of(loadedData).pipe(delay(500)));
+    const dataSource = new PsTableDataSource<any>(() => {
+      let result = of(loadedData).pipe(delay(500));
+      if (doThrowError) {
+        result = result.pipe(
+          map(() => {
+            throw doThrowError;
+          })
+        );
+      }
+      return result;
+    });
 
     let renderDataUpdates: any[] = [];
     dataSource.connect().subscribe(data => {
       renderDataUpdates.push(data);
     });
 
-    const beforeDataItem = {};
-    dataSource.loading = false;
-    dataSource.error = new Error();
-    dataSource.data = [beforeDataItem];
-    dataSource.dataLength = 1;
-    dataSource.selectionModel.select(beforeDataItem);
-    renderDataUpdates = [];
-
-    dataSource.updateData();
-
-    // state should be resetted
-    expect(dataSource.loading).toBe(true);
-    expect(dataSource.error).toBe(null);
-    expect(dataSource.selectionModel.selected).toEqual([]);
-    expect(renderDataUpdates.length).toEqual(1);
-    expect(renderDataUpdates.pop()).toEqual([]);
-
-    // data shouldn't have changed, otherwise pagination breaks
-    expect(dataSource.data).toEqual([beforeDataItem]);
-    expect(dataSource.dataLength).toEqual(1);
-
-    // but visible rows should be empty, so the table doesn't show only entries while loading
-    expect(dataSource.visibleRows).toEqual([]);
-
+    // first load should load data from the server
+    doThrowError = new Error('oh no');
+    initDirtyState([beforeDataItem]);
+    dataSource.updateData(false);
+    expectAsyncLoadingState();
     tick(500);
-    expect(dataSource.loading).toBe(false);
-    expect(dataSource.error).toBe(null);
-    expect(dataSource.data).toEqual(loadedData);
-    expect(dataSource.dataLength).toEqual(2);
-    expect(dataSource.visibleRows).toEqual(loadedData);
-    expect(dataSource.selectionModel.selected).toEqual([]);
-    expect(renderDataUpdates.length).toEqual(1);
-    expect(renderDataUpdates.pop()).toEqual(loadedData);
+    expectErrorState();
+
+    // as long as no data is successfullyloaded, it should load data from the server
+    doThrowError = null;
+    initDirtyState([beforeDataItem]);
+    dataSource.updateData(false);
+    expectAsyncLoadingState();
+    tick(500);
+    expectLoadedState(loadedData, loadedData.length, loadedData);
+
+    // when data is already loaded, just update the visible items
+    initDirtyState(loadedData);
+    dataSource.filter = 'x';
+    dataSource.updateData(false);
+    expectLoadedState(
+      loadedData,
+      1,
+      loadedData.filter(x => x.prop === 'x')
+    );
+    dataSource.filter = '';
+
+    // with force reload, it should load data from the server
+    initDirtyState([beforeDataItem]);
+    dataSource.updateData(true);
+    expectAsyncLoadingState();
+    tick(500);
+    expectLoadedState(loadedData, loadedData.length, loadedData);
+
+    function initDirtyState(data: any[]) {
+      dataSource.loading = false;
+      dataSource.error = new Error();
+      dataSource.data = data;
+      dataSource.dataLength = data.length;
+      dataSource.selectionModel.select(data[0]);
+      renderDataUpdates = [];
+    }
+
+    function expectAsyncLoadingState() {
+      // state should be resetted
+      expect(dataSource.loading).toBe(true);
+      expect(dataSource.error).toBe(null);
+      expect(dataSource.selectionModel.selected).toEqual([]);
+      expect(renderDataUpdates.length).toEqual(1);
+      expect(renderDataUpdates.pop()).toEqual([]);
+
+      // data shouldn't have changed, otherwise pagination breaks
+      expect(dataSource.data).toEqual([beforeDataItem]);
+      expect(dataSource.dataLength).toEqual(1);
+
+      // but visible rows should be empty, so the table doesn't show only entries while loading
+      expect(dataSource.visibleRows).toEqual([]);
+    }
+
+    function expectLoadedState(data: any[], dataLength: number, visibleData: any[]) {
+      expect(dataSource.loading).toBe(false);
+      expect(dataSource.error).toBe(null);
+      expect(dataSource.data).toEqual(data);
+      expect(dataSource.dataLength).toEqual(dataLength);
+      expect(dataSource.visibleRows).toEqual(visibleData);
+      expect(dataSource.selectionModel.selected).toEqual([]);
+      expect(renderDataUpdates.length).toEqual(1);
+      expect(renderDataUpdates.pop()).toEqual(visibleData);
+    }
+
+    function expectErrorState() {
+      expect(dataSource.loading).toBe(false);
+      expect(dataSource.error).toBe(doThrowError);
+      expect(dataSource.data).toEqual([]);
+      expect(dataSource.dataLength).toEqual(0);
+      expect(dataSource.visibleRows).toEqual([]);
+      expect(dataSource.selectionModel.selected).toEqual([]);
+      expect(renderDataUpdates.length).toEqual(1);
+      expect(renderDataUpdates.pop()).toEqual([]);
+    }
   }));
 
   it('should not sort/filter/page, but provide info to loadData when mode is server', () => {
