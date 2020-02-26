@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.10](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.9...@prosoft/components@0.1.0-alpha.10) (2020-02-26)
+
+
+### Performance Improvements
+
+* **table:** less layout trashing on data update ([#72](https://github.com/prosoft-edv/components/issues/72)) ([b5ebfe9](https://github.com/prosoft-edv/components/commit/b5ebfe9))
+
+
+
+
+
 # [0.1.0-alpha.9](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.8...@prosoft/components@0.1.0-alpha.9) (2020-02-18)
 
 
