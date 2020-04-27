@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.11](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.5...@prosoft/components@0.1.0-alpha.11) (2020-04-27)
+
+
+### Bug Fixes
+
+* **form-field:** help button has now type button ([5eaf5a1](https://github.com/prosoft-edv/components/commit/5eaf5a1))
+* **savebar:** ctrl+s wonn't trigger save if saveing is disabled ([#64](https://github.com/prosoft-edv/components/issues/64)) ([79a321b](https://github.com/prosoft-edv/components/commit/79a321b))
+* **select:** form-field container click now opens select ([#58](https://github.com/prosoft-edv/components/issues/58)) ([ac1498d](https://github.com/prosoft-edv/components/commit/ac1498d))
+* **select:** values set before AfterViewInit are now working correctly ([#71](https://github.com/prosoft-edv/components/issues/71)) ([bf14362](https://github.com/prosoft-edv/components/commit/bf14362))
+* **table:** cardLayout and pagination styling ([#68](https://github.com/prosoft-edv/components/issues/68)) ([a3cad50](https://github.com/prosoft-edv/components/commit/a3cad50)), closes [#60](https://github.com/prosoft-edv/components/issues/60)
+* **table:** refreshable input is now working again ([#67](https://github.com/prosoft-edv/components/issues/67)) ([dc1f283](https://github.com/prosoft-edv/components/commit/dc1f283)), closes [#62](https://github.com/prosoft-edv/components/issues/62)
+
+
+### Features
+
+* **form:** added dataSource input ([#70](https://github.com/prosoft-edv/components/issues/70)) ([c49f93f](https://github.com/prosoft-edv/components/commit/c49f93f))
+* **form-field:** hint/error are shown in an expandable bubble ([#66](https://github.com/prosoft-edv/components/issues/66)) ([899d42b](https://github.com/prosoft-edv/components/commit/899d42b))
+* **form-field:** subscriptType and hintToggle inputs ([#69](https://github.com/prosoft-edv/components/issues/69)) ([10ee428](https://github.com/prosoft-edv/components/commit/10ee428))
+* **table:** a loadTrigger can be provided to the data source ([#75](https://github.com/prosoft-edv/components/issues/75)) ([51fa7ec](https://github.com/prosoft-edv/components/commit/51fa7ec))
+* **table:** current table state can be controlled with a state manager ([#65](https://github.com/prosoft-edv/components/issues/65)) ([ab507eb](https://github.com/prosoft-edv/components/commit/ab507eb))
+
+
+### Performance Improvements
+
+* **table:** less layout trashing on data update ([#72](https://github.com/prosoft-edv/components/issues/72)) ([b5ebfe9](https://github.com/prosoft-edv/components/commit/b5ebfe9))
+
+
+### BREAKING CHANGES
+
+* **form-field:** Hint toggle button is now off by default and form-field resizes for multiline
+hint/error by default
+
+
+
+
+
+
 # [0.1.0-alpha.10](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.9...@prosoft/components@0.1.0-alpha.10) (2020-02-26)
 
 
