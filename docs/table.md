@@ -59,35 +59,54 @@ import { PsTableModule } from '@prosoft/components/table';
 
 ---
 
+## PsTableDataSourceOptions <a name="PsTableDataSourceOptions"></a>
+
+### Properties <a name="PsTableDataSourceProperties"></a>
+
+| Name | Description |
+| - | - |
+| `loadTrigger$?: Observable<any>`| Observable that triggers `updateData()`. |
+| `loadDataFn: (filter: IPsTableUpdateDataInfo) => Observable<TData[] | IPsTableFilterResult<TData>>`| Data loading function. |
+| `mode?: PsTableMode`| Sets the mode of the data source. |
+
 ## PsTableDataSource <a name="PsTableDataSource"></a>
 
 ### Usage <a name="PsTableDataSourceUsage"></a>
 
 ```ts | js
-const dataSource = new PsTableDataSource<MyDataType>((filter: IPsTableUpdateDataInfo) => myDataService.getListData(filter, 'client'));
+const dataSource = new PsTableDataSource<MyDataType>((filter: IPsTableUpdateDataInfo) => myDataService.getListData(filter), 'client');
+```
+or
+```ts | js
+const dataSource = new PsTableDataSource<MyDataType>({
+  loadTrigger$: this.route.paramsMap,
+  loadDataFn: (filter: IPsTableUpdateDataInfo) => myDataService.getListData(filter),
+  mode: 'client'
+});
 ```
 
 ### Properties <a name="PsTableDataSourceProperties"></a>
 
 | Name                                                                                                   | Description                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `_internalDetectChanges: Subject<void>`                                                                | Subject that emits, when the table should be checked by the change detection.                                                                                                                                                                                                                                                                                                     |
-| `data: T[]`                                                                                            | Array of data that should be rendered by the table, where each object represents one row.                                                                                                                                                                                                                                                                                         |
-| `visibleRows: T[]`                                                                                     | The currently visible rows.                                                                                                                                                                                                                                                                                                                                                       |
-| `allVisibleRowsSelected: boolean`                                                                      | Indicates if all visible rows are selected.                                                                                                                                                                                                                                                                                                                                       |
-| `loading: boolean`                                                                                     | Indicates if the table is currently loading data.                                                                                                                                                                                                                                                                                                                                 |
-| `error: any`                                                                                           | The error that occured in the last observable returned by loadData.                                                                                                                                                                                                                                                                                                               |
-| `locale: string`                                                                                       | Used for filtering in the locales correct format (e.g. date formats).                                                                                                                                                                                                                                                                                                             |
-| `dataLength: number`                                                                                   | The length of the total number of items that are being paginated.                                                                                                                                                                                                                                                                                                                 |
-| `sortColumn: string`                                                                                   | The name of the column, after which the rows should be sorted.                                                                                                                                                                                                                                                                                                                    |
-| `sortDirection: 'asc' | 'desc'`                                                                        | The sort direction.                                                                                                                                                                                                                                                                                                                                                               |
-| `pageIndex: number`                                                                                    | The zero-based page index of the displayed list of items.                                                                                                                                                                                                                                                                                                                         |
-| `pageSize: number`                                                                                     | Number of items to display on a page.                                                                                                                                                                                                                                                                                                                                             |
-| `filter: string`                                                                                       | Filter term that should be used to filter out objects from the data array. To override how data objects match to this filter string, provide a custom function for filterPredicate.                                                                                                                                                                                               |
+| `_internalDetectChanges: Subject<void>`                                                                | Subject that emits, when the table should be checked by the change detection. |
+| `data: T[]`                                                                                            | Array of data that should be rendered by the table, where each object represents one row. |
+| `visibleRows: T[]`                                                                                     | The currently visible rows. |
+| `allVisibleRowsSelected: boolean`                                                                      | Indicates if all visible rows are selected. |
+| `loading: boolean`                                                                                     | Indicates if the table is currently loading data. |
+| `error: any`                                                                                           | The error that occured in the last observable returned by loadData. |
+| `locale: string`                                                                                       | Used for filtering in the locales correct format (e.g. date formats). |
+| `dataLength: number`                                                                                   | The length of the total number of items that are being paginated. |
+| `mode: PsTableMode`                                                                                    | Controls if the data sould be paged, filtered and sorted on the client or the server. |
+| `sortColumn: string`                                                                                   | The name of the column, after which the rows should be sorted. |
+| `sortDirection: 'asc' | 'desc'`                                                                        | The sort direction. |
+| `pageIndex: number`                                                                                    | The zero-based page index of the displayed list of items. |
+| `pageSize: number`                                                                                     | Number of items to display on a page. |
+| `filter: string`                                                                                       | Filter term that should be used to filter out objects from the data array. To override how data objects match to this filter string, provide a custom function for filterPredicate. |
 | `filterPredicate: (row: { [key: string]: any }, filter: string) => boolean`                            | Checks if a data object matches the data source's filter string. By default, each data object is converted to a string of its properties and returns true if the filter has at least one occurrence in that string. By default, the filter string has its whitespace trimmed and the match is case-insensitive. May be overridden for a custom implementation of filter matching. |
-| `sortingDataAccessor: (data: T[], sort: { sortColumn: string; sortDirection: 'asc' | 'desc' }) => T[]` | This default function assumes that the sort header IDs (which defaults to the column name) matches the data's properties (e.g. column Xyz represents data['Xyz']). May be set to a custom function for different behavior.                                                                                                                                                        |
-| `filterProperties: (row: { [key: string]: any }) => string[]`                                          | Returns the names of the properties that should be used in filterPredicate.                                                                                                                                                                                                                                                                                                       |
-| `filterValues: (row: { [key: string]: any }) => any[]`                                                 | Returns all values that should be used for filtering.                                                                                                                                                                                                                                                                                                                             |
+| `sortingDataAccessor: (data: T[], sort: { sortColumn: string; sortDirection: 'asc' | 'desc' }) => T[]` | This default function assumes that the sort header IDs (which defaults to the column name) matches the data's properties (e.g. column Xyz represents data['Xyz']). May be set to a custom function for different behavior. |
+| `filterProperties: (row: { [key: string]: any }) => string[]`                                          | Returns the names of the properties that should be used in filterPredicate. |
+| `filterValues: (row: { [key: string]: any }) => any[]`                                                 | Returns all values that should be used for filtering. |
 
 ### Functions <a name="PsTableDataSourceFunctions"></a>
 
