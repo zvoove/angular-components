@@ -78,7 +78,7 @@ describe('PsTableSettingsComponent', () => {
       expect(component.onSettingsAborted).toHaveBeenCalled();
     }));
 
-    it('should emit call service save and emit settingsSaved on save click', fakeAsync(() => {
+    it('should call service save and emit settingsSaved on save click', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestComponent);
       const component = fixture.componentInstance;
 
@@ -89,9 +89,7 @@ describe('PsTableSettingsComponent', () => {
         sortDirection: 'desc',
       };
       component.tableId = 'tableA';
-      component.tableSearch.settingsService.settings$ = of({
-        tableA: settings,
-      });
+      component.tableSearch.settingsService.getStream = () => of(settings);
       fixture.detectChanges();
 
       spyOn(component, 'onSettingsSaved');
@@ -120,9 +118,7 @@ describe('PsTableSettingsComponent', () => {
       const settingsService = new PsTableSettingsService();
       const component = new PsTableSettingsComponent(settingsService);
       component.tableId = 'table.1';
-      settingsService.settings$ = of({
-        'table.1': tableSetting,
-      });
+      spyOn(settingsService, 'getStream').and.returnValue(of(tableSetting));
       component.ngOnInit();
 
       let asyncSettings: IPsTableSetting;
@@ -131,13 +127,13 @@ describe('PsTableSettingsComponent', () => {
       });
 
       expect(asyncSettings).toEqual(tableSetting);
+      expect(settingsService.getStream).toHaveBeenCalledWith('table.1', true);
     }));
 
     it("should use default settings if service doesn't return settings", fakeAsync(() => {
       const settingsService = new PsTableSettingsService();
       const component = new PsTableSettingsComponent(settingsService);
       component.tableId = 'table.1';
-      settingsService.defaultPageSize$ = of(9);
       component.ngOnInit();
 
       let asyncSettings: IPsTableSetting;
@@ -147,7 +143,7 @@ describe('PsTableSettingsComponent', () => {
 
       expect(asyncSettings).toEqual({
         columnBlacklist: [],
-        pageSize: 9,
+        pageSize: 15,
         sortColumn: null,
         sortDirection: 'asc',
       });

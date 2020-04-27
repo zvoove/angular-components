@@ -9,17 +9,23 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
 import { IPsTableSetting, PsTableModule, PsTableSettingsService } from '@prosoft/components/table';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { TableDemoComponent } from './table-demo.component';
 
 export class DemoPsTableSettingsService extends PsTableSettingsService {
+  private settings$ = new BehaviorSubject<{ [id: string]: IPsTableSetting }>({});
   constructor() {
     super();
     this.settingsEnabled = true;
-    this.settings$ = new BehaviorSubject<{ [id: string]: IPsTableSetting }>({});
+  }
+
+  public getStream(tableId: string): Observable<IPsTableSetting> {
+    return this.settings$.pipe(map(settings => settings[tableId]));
   }
   public save(tableId: string, settings: IPsTableSetting): Observable<void> {
-    (this.settings$ as Subject<{ [id: string]: IPsTableSetting }>).next({ [tableId]: settings });
+    this.settings$.next({ [tableId]: settings });
     return of(null);
   }
 }

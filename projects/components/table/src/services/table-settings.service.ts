@@ -10,11 +10,16 @@ export interface IPsTableSetting {
 
 @Injectable({ providedIn: 'root' })
 export class PsTableSettingsService {
-  public defaultPageSize$: Observable<number> = of(15);
-  public settings$: Observable<{ [id: string]: IPsTableSetting }> = of({});
-
   public settingsEnabled = false;
   public pageSizeOptions = [5, 10, 25, 50];
+  public getStream(tableId: string, onlySaved: boolean): Observable<IPsTableSetting> {
+    return of({
+      columnBlacklist: [],
+      sortColumn: null,
+      sortDirection: null,
+      pageSize: 15,
+    });
+  }
 
   public save(_: string, __: IPsTableSetting): Observable<void> {
     return EMPTY;

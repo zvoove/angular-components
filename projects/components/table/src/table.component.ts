@@ -25,7 +25,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IPsTableIntlTexts, PsExceptionMessageExtractor, PsIntlService } from '@prosoft/components/core';
 import { PsFlipContainerComponent } from '@prosoft/components/flip-container';
 import { combineLatest, Subject, Subscription } from 'rxjs';
-import { debounceTime, map, startWith } from 'rxjs/operators';
+import { debounceTime, startWith } from 'rxjs/operators';
+
 import { PsTableDataSource } from './data/table-data-source';
 import {
   PsTableColumnDirective,
@@ -277,25 +278,18 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
 
   private initListSettingsSubscription() {
-    const tableSettings$ = this.settingsService.settings$.pipe(
-      map(settings => {
-        if (this.tableId && settings && settings[this.tableId]) {
-          return settings[this.tableId];
-        }
-        return null;
-      })
-    );
+    const tableSettings$ = this.settingsService.getStream(this.tableId, false);
     const stateSettings$ = this.stateManager.createStateSource(this.tableId);
     this.subscriptions.push(
-      combineLatest([stateSettings$, tableSettings$, this.settingsService.defaultPageSize$])
+      combineLatest([stateSettings$, tableSettings$])
         .pipe(
           // guards agains multiple data updates, when multiple emits happen at the same time.
           debounceTime(0)
         )
         .subscribe({
-          next: ([urlSettings, savedSettings, defaultPageSize]) => {
+          next: ([urlSettings, tableSettings]) => {
             // Paging, Sorting, Filter und Display Columns updaten
-            this.updateTableState(savedSettings, urlSettings, defaultPageSize);
+            this.updateTableState(tableSettings, urlSettings);
 
             // Row Detail Expander aktivieren
             if (this.rowDetail && this.rowDetail.showToggleColumn) {
@@ -322,12 +316,12 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     );
   }
 
-  private updateTableState(tableSettings: Partial<IPsTableSetting>, urlSettings: Partial<IPsTableUpdateDataInfo>, defaultPageSize: number) {
+  private updateTableState(tableSettings: Partial<IPsTableSetting>, urlSettings: Partial<IPsTableUpdateDataInfo>) {
     tableSettings = tableSettings || {};
     urlSettings = urlSettings || {};
 
     this.pageIndex = Math.max(urlSettings.currentPage || 0, 0);
-    this.pageSize = Math.max(urlSettings.pageSize || tableSettings.pageSize || defaultPageSize, 1);
+    this.pageSize = Math.max(urlSettings.pageSize || tableSettings.pageSize || 15, 1);
     this.sortColumn = urlSettings.sortColumn || tableSettings.sortColumn || null;
     this.sortDirection = urlSettings.sortDirection || tableSettings.sortDirection || 'asc';
     this.filterText = urlSettings.searchText || '';

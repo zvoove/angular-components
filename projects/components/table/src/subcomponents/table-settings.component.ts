@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { IPsTableIntlTexts } from '@prosoft/components/core';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { PsTableColumnDirective } from '../directives/table.directives';
 import { IPsTableSortDefinition } from '../models';
 import { IPsTableSetting, PsTableSettingsService } from '../services/table-settings.service';
@@ -45,17 +46,14 @@ export class PsTableSettingsComponent implements OnInit {
   constructor(public settingsService: PsTableSettingsService) {}
 
   public ngOnInit(): void {
-    this.settings$ = combineLatest([this.settingsService.settings$, this.settingsService.defaultPageSize$]).pipe(
-      map(([allSettings, defaultPageSize]) => {
-        if (allSettings[this.tableId]) {
-          return allSettings[this.tableId];
-        }
-
+    this.settings$ = this.settingsService.getStream(this.tableId, true).pipe(
+      map(settings => {
+        settings = settings || ({} as IPsTableSetting);
         return <IPsTableSetting>{
-          columnBlacklist: [],
-          pageSize: defaultPageSize || 15,
-          sortColumn: null,
-          sortDirection: 'asc',
+          columnBlacklist: settings.columnBlacklist || [],
+          pageSize: settings.pageSize || 15,
+          sortColumn: settings.sortColumn,
+          sortDirection: settings.sortDirection || 'asc',
         };
       })
     );

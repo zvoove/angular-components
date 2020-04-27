@@ -132,10 +132,10 @@ const dataSource = new PsTableDataSource<MyDataType>({
 
 1. You have to override `PsTableSettingsService` and implement the following functions:
 
-- > `constructor` to define the loading of the settings for each table.
-- > `save(tableId: string, settings: IPsTableSetting): Observable<void>` to tell the table service where to store the settings for each table.
+- > `getStream(tableId: string, onlySaved: boolean): Observable<IPsTableSetting>` to get the settings for the table with the given id. If `onlySaved` is `true`, then only the saved settings should be returned. Otherwise the result can be a combination of saved an default settings.
+- > `save(tableId: string, settings: IPsTableSetting): Observable<void>` to save the settings for then table with the given id.
 
-2. Import the PsFormBaseModule using `.forRoot()` with the created service in your AppModule. Like this:
+1. Import the PsFormBaseModule using `.forRoot()` with the created service in your AppModule. Like this:
    `PsFormBaseModule.forRoot(DemoPsFormsService)`
 
 ---

@@ -19,11 +19,16 @@ import { PsTableSearchComponent } from './subcomponents/table-search.component';
 import { PsTableSettingsComponent } from './subcomponents/table-settings.component';
 import { PsTableComponent } from './table.component';
 import { PsTableModule } from './table.module';
+import { map } from 'rxjs/operators';
 
 class TestSettingsService extends PsTableSettingsService {
-  public readonly defaultPageSize$ = new BehaviorSubject<number>(15);
-  public readonly settings$ = new BehaviorSubject<{ [id: string]: IPsTableSetting }>({});
+  public settings$ = new BehaviorSubject<{ [id: string]: IPsTableSetting }>({});
   public pageSizeOptions = [1, 5, 25, 50];
+  public settingsEnabled = false;
+
+  public getStream(tableId: string): Observable<IPsTableSetting> {
+    return this.settings$.pipe(map(settings => settings[tableId]));
+  }
 
   public save(id: string, settings: IPsTableSetting): Observable<void> {
     const currentSettings = this.settings$.getValue();
@@ -166,7 +171,7 @@ describe('PsTableComponent', () => {
     it('should update table state from the settings service and the query params', fakeAsync(() => {
       const table = createTableInstance();
       settingsService.settings$.next({});
-      settingsService.defaultPageSize$.next(7);
+      spyOn(settingsService, 'getStream').and.callThrough();
       table.columnDefs = [createColDef({ property: 'prop1' }), createColDef({ property: 'prop2' })];
       table.rowDetail = <any>{ showToggleColumn: true };
       table.listActions = <any>{};
@@ -176,12 +181,13 @@ describe('PsTableComponent', () => {
       table.ngAfterContentInit();
       tick(1);
 
-      expect(table.pageSize).toEqual(7);
+      expect(table.pageSize).toEqual(15);
       expect(table.pageIndex).toEqual(0);
       expect(table.filterText).toEqual('');
       expect(table.sortColumn).toEqual(null);
       expect(table.sortDirection).toEqual('asc');
       expect(table.displayedColumns).toEqual(['select', 'rowDetailExpander', 'prop1', 'prop2', 'options']);
+      expect(settingsService.getStream).toHaveBeenCalledWith(table.tableId, false);
 
       settingsService.settings$.next({
         tableid: <IPsTableSetting>{
@@ -239,9 +245,9 @@ describe('PsTableComponent', () => {
 
     it('should initialize page size options from the service', fakeAsync(() => {
       const table = createTableInstance();
-      table.settingsService.pageSizeOptions = [3, 7, 9];
+      settingsService.pageSizeOptions = [3, 7, 9];
       table.ngOnInit();
-      expect(table.pageSizeOptions).toBe(table.settingsService.pageSizeOptions);
+      expect(table.pageSizeOptions).toBe(settingsService.pageSizeOptions);
     }));
 
     it('should show right content depending on the datatable state', fakeAsync(() => {
@@ -268,12 +274,12 @@ describe('PsTableComponent', () => {
 
       table.tableId = 'test';
       table.showSettings = true;
-      table.settingsService.settingsEnabled = true;
+      settingsService.settingsEnabled = true;
       expect(table.settingsEnabled).toBe(true);
 
-      table.settingsService.settingsEnabled = false;
+      settingsService.settingsEnabled = false;
       expect(table.settingsEnabled).toBe(false);
-      table.settingsService.settingsEnabled = true;
+      settingsService.settingsEnabled = true;
 
       table.showSettings = false;
       expect(table.settingsEnabled).toBe(false);
@@ -287,7 +293,7 @@ describe('PsTableComponent', () => {
       const table = createTableInstance();
       table.tableId = 'test';
       table.showSettings = true;
-      table.settingsService.settingsEnabled = true;
+      settingsService.settingsEnabled = true;
 
       table.listActions = null;
       table.refreshable = false;
@@ -480,7 +486,14 @@ describe('PsTableComponent', () => {
       const fixture = TestBed.createComponent(TestComponent);
       const component = fixture.componentInstance;
       component.table.settingsService.settingsEnabled = true;
-      component.table.settingsService.defaultPageSize$ = of(2);
+      (component.table.settingsService as TestSettingsService).settings$.next({
+        [component.tableId]: {
+          pageSize: 2,
+          sortColumn: null,
+          sortDirection: null,
+          columnBlacklist: [],
+        },
+      });
       fixture.detectChanges();
 
       const psTableDbg = fixture.debugElement.query(By.directive(PsTableComponent));
