@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.12](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.11...@prosoft/components@0.1.0-alpha.12) (2020-05-04)
+
+
+### Bug Fixes
+
+* **table:** no more double loading for queryParam bound loadTrigger$ ([#78](https://github.com/prosoft-edv/components/issues/78)) ([0fda724](https://github.com/prosoft-edv/components/commit/0fda724))
+
+
+### Code Refactoring
+
+* **table:** table settings cleanup ([#76](https://github.com/prosoft-edv/components/issues/76)) ([75b863b](https://github.com/prosoft-edv/components/commit/75b863b))
+
+
+### BREAKING CHANGES
+
+* **table:** The PsTableSettingsService now has a getStream method instead of the settings$ and defaultPageSize$ observables
+
+
+
+
+
 # [0.1.0-alpha.11](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.5...@prosoft/components@0.1.0-alpha.11) (2020-04-27)
 
 
