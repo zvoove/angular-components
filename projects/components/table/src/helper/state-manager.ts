@@ -1,6 +1,6 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, distinctUntilChanged } from 'rxjs/operators';
 import { IPsTableUpdateDataInfo } from '../models';
 import { asQueryParams, fromQueryParams } from './table.helper';
 
@@ -32,9 +32,11 @@ export class PsTableUrlStateManager extends PsTableStateManager {
 
   public createStateSource(tableId: string) {
     return this.route.queryParamMap.pipe(
-      map(queryParamMap => {
-        if (tableId && queryParamMap.has(tableId)) {
-          return fromQueryParams(queryParamMap.get(tableId));
+      map(queryParamMap => queryParamMap.get(tableId)),
+      distinctUntilChanged(),
+      map(stateString => {
+        if (tableId && stateString) {
+          return fromQueryParams(stateString);
         }
         return null;
       })

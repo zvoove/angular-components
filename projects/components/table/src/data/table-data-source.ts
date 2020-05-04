@@ -79,6 +79,9 @@ export class PsTableDataSource<T> extends DataSource<T> {
    */
   public filter = '';
 
+  /** Indicates if the table is ready. As long as this is false, any updateData calls can be ignored */
+  public tableReady = false;
+
   /** Controls if the data sould be paged, filtered and sorted on the client or the server */
   public readonly mode: PsTableMode;
 
@@ -272,6 +275,9 @@ export class PsTableDataSource<T> extends DataSource<T> {
    * Reloads the data
    */
   public updateData(forceReload: boolean = true) {
+    if (!this.tableReady) {
+      return;
+    }
     this._loadDataSubscription.unsubscribe();
 
     this.error = null;

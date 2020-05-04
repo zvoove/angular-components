@@ -306,6 +306,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
               this.displayedColumns.push('options');
             }
 
+            this.dataSource.tableReady = true;
             this.dataSource.updateData(false);
             this.cd.markForCheck();
           },

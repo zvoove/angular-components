@@ -1,7 +1,8 @@
+import { ActivatedRoute, convertToParamMap, NavigationExtras, ParamMap } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+
 import { IPsTableUpdateDataInfo } from '../models';
 import { PsTableMemoryStateManager, PsTableUrlStateManager } from './state-manager';
-import { Router, ParamMap, convertToParamMap, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 
 describe('PsTableStateManager', () => {
   it('PsTableUrlStateManager', () => {
@@ -35,6 +36,7 @@ describe('PsTableStateManager', () => {
 
     stateManager.requestUpdate('tableId', update1);
     stateManager.requestUpdate('tableId', update2);
+    stateManager.requestUpdate('tableId', update2);
     stateManager.remove('tableId');
 
     expect(states).toEqual([null, update1, update2, null]);
@@ -61,6 +63,7 @@ describe('PsTableStateManager', () => {
   });
 });
 
+let count = 0;
 function createTableUpdateDataInfo(): IPsTableUpdateDataInfo {
-  return { currentPage: 0, pageSize: 5, searchText: 'test', sortColumn: 'a', sortDirection: 'asc' };
+  return { currentPage: ++count, pageSize: 5, searchText: 'test', sortColumn: 'a', sortDirection: 'asc' };
 }

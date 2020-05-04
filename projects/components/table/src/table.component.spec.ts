@@ -226,19 +226,19 @@ describe('PsTableComponent', () => {
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
       table.rowDetail = null;
-      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬1◬asdf◬Column1◬desc' }));
+      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬2◬asdf◬Column1◬desc' }));
       tick(1);
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
       table.listActions = null;
-      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬1◬asdf◬Column1◬desc' }));
+      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬3◬asdf◬Column1◬desc' }));
       tick(1);
       expect(table.displayedColumns).toEqual(['prop1', 'options']);
 
       table.rowActions = null;
       table.showSettings = false;
       table.refreshable = false;
-      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬1◬asdf◬Column1◬desc' }));
+      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬4◬asdf◬Column1◬desc' }));
       tick(1);
       expect(table.displayedColumns).toEqual(['prop1']);
     }));
