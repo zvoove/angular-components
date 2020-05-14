@@ -222,12 +222,12 @@ describe('PsFormFieldComponent', () => {
       expect(getShownHelpText(fixture)).toBeFalsy();
 
       // 1. hint button click -> hint text
-      helpButton.triggerEventHandler('click', {});
+      helpButton.triggerEventHandler('click', new Event('click'));
       detectChangesAndIgnoreChangeAfterChecked(fixture);
       expect(getShownHelpText(fixture)).toEqual('myhint');
 
       // 2. hint button click -> no hint text
-      helpButton.triggerEventHandler('click', {});
+      helpButton.triggerEventHandler('click', new Event('click'));
       detectChangesAndIgnoreChangeAfterChecked(fixture);
       expect(getShownHelpText(fixture)).toBeFalsy();
 
