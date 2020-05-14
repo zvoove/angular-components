@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.13](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.12...@prosoft/components@0.1.0-alpha.13) (2020-05-14)
+
+
+### Bug Fixes
+
+* **form:** save errors should be more recognizable for the user ([#80](https://github.com/prosoft-edv/components/issues/80)) ([6bd4b59](https://github.com/prosoft-edv/components/commit/6bd4b59))
+
+
+
+
+
 # [0.1.0-alpha.12](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.11...@prosoft/components@0.1.0-alpha.12) (2020-05-04)
 
 
