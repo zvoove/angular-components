@@ -37,10 +37,12 @@
         <ng-container *ngTemplateOutlet="content"></ng-container>
       </ps-block-ui>
 
-      <mat-card *ngIf="exception" class="ps-form__error-container" [class.ps-form__error-container--center]="exception.alignCenter">
-        <mat-icon *ngIf="exception.icon" class="ps-form__error-icon">{{ exception.icon }}</mat-icon>
-        <span>{{ exceptionMessage }}</span>
-      </mat-card>
+      <div #errorCardWrapper [style.display]="exception ? 'block' : 'none'">
+        <mat-card *ngIf="exception" class="ps-form__error-container" [class.ps-form__error-container--center]="exception.alignCenter">
+          <mat-icon *ngIf="exception.icon" class="ps-form__error-icon">{{ exception.icon }}</mat-icon>
+          <span>{{ exceptionMessage }}</span>
+        </mat-card>
+      </div>
     </div>
     <div *psSavebarRightContent class="ps-form__buttons">
       <ng-content select="[psFormSavebarButtons]"></ng-content>
@@ -49,11 +51,13 @@
         mat-button
         [class.mat-raised-button]="btn.type === 'raised'"
         [class.mat-stroked-button]="btn.type === 'stroked'"
+        [class.mat-icon-button]="btn.type === 'icon'"
         type="button"
         [color]="btn.color"
-        [disabled]="btn.disabled()"
+        [disabled]="btn.disabled && btn.disabled()"
         (click)="btn.click()"
       >
+        <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
         {{ btn.label }}
       </button>
     </div>

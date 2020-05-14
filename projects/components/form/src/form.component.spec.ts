@@ -9,11 +9,12 @@ import { ActivatedRoute } from '@angular/router';
 import { PsBlockUiComponent } from '@prosoft/components/block-ui';
 import { PsExceptionMessageExtractor, PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
+import { PsSavebarComponent } from '@prosoft/components/savebar';
 import { DemoPsFormActionService } from 'projects/prosoft-components-demo/src/app/form-demo/form-demo.module';
-import { Observable, of, throwError, Subject } from 'rxjs';
+import { Observable, of, Subject, throwError, Subscription } from 'rxjs';
 import { delay, switchMapTo } from 'rxjs/operators';
 import { PsFormActionService } from './form-action.service';
-import { IPsFormDataSource, IPsFormException } from './form-data-source';
+import { IPsFormDataSource, IPsFormDataSourceConnectOptions } from './form-data-source';
 import {
   PsFormCancelEvent,
   PsFormComponent,
@@ -22,6 +23,7 @@ import {
   PsFormLoadSuccessEvent,
   PsFormSaveErrorEvent,
   PsFormSaveSuccessEvent,
+  dependencies,
 } from './form.component';
 import { PsFormModule } from './form.module';
 import {
@@ -32,7 +34,6 @@ import {
   IPsFormSaveParams,
   IPsFormSaveSuccessParams,
 } from './models';
-import { PsSavebarComponent } from '@prosoft/components/savebar';
 
 class TestPsFormService extends BasePsFormService {
   constructor() {
@@ -129,6 +130,7 @@ export class TestComponent {
   template: `
     <ps-form [dataSource]="dataSource">
       <div id="content">content text</div>
+      <div id="hight-strech" style="height: 2000px;">hight strech</div>
       <ng-container psFormSavebarButtons>
         <button type="button">btnCus</button>
       </ng-container>
@@ -137,6 +139,7 @@ export class TestComponent {
 })
 export class TestDataSourceComponent {
   public dataSource: IPsFormDataSource;
+  @ViewChild(PsFormComponent, { static: false }) formComponent: PsFormComponent;
 }
 
 describe('PsFormComponent', () => {
@@ -308,6 +311,86 @@ describe('PsFormComponent', () => {
       fixture.detectChanges();
 
       expect(savebar.mode).toBe(dataSource.savebarMode);
+    });
+
+    it("should call dataSource's connect() once per new dataSource", () => {
+      const fixture = TestBed.createComponent(TestDataSourceComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      const ds1 = createDataSource();
+      component.dataSource = ds1;
+      spyOn(ds1, 'connect').and.callThrough();
+
+      fixture.detectChanges();
+
+      expect(ds1.connect).toHaveBeenCalledTimes(1);
+
+      const ds2 = createDataSource();
+      component.dataSource = ds2;
+      spyOn(ds1, 'disconnect').and.callThrough();
+      spyOn(ds2, 'connect').and.callThrough();
+
+      fixture.detectChanges();
+
+      expect(ds2.connect).toHaveBeenCalledTimes(1);
+      expect(ds1.disconnect).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle scrolling to error card and visibility updates correctly', async () => {
+      let intersectCallback: (x: any) => void;
+      let observedEl: any;
+      let observerOptions: any;
+      dependencies.IntersectionObserver = function MockIO(callback: any, options: any) {
+        intersectCallback = callback;
+        observerOptions = options;
+
+        return {
+          observe: (el: any) => {
+            observedEl = el;
+          },
+          disconnect: () => {},
+        };
+      } as any;
+
+      const fixture = TestBed.createComponent(TestDataSourceComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      const ds = createDataSource();
+      const errorInViewValues: boolean[] = [];
+      let opts: IPsFormDataSourceConnectOptions;
+      let errorInViewSub: Subscription;
+      ds.connect = options => {
+        opts = options;
+        expect(errorInViewSub).not.toBeDefined();
+        errorInViewSub = options.errorInView$.subscribe(value => errorInViewValues.push(value));
+        return ds.cdTrigger$;
+      };
+      ds.exception = { errorObject: new Error('asdf') };
+
+      component.dataSource = ds;
+      fixture.detectChanges();
+
+      expect(opts).toBeDefined();
+      expect(observerOptions).toEqual({
+        root: null as any,
+        rootMargin: '-100px',
+        threshold: 1.0,
+      });
+      expect(getErrorContainer(fixture)).not.toBe(null);
+      expect(observedEl).toBe(component.formComponent.errorCardWrapper.nativeElement);
+      spyOn(component.formComponent.errorCardWrapper.nativeElement, 'scrollIntoView').and.callThrough();
+
+      opts.scrollToError();
+      expect(component.formComponent.errorCardWrapper.nativeElement.scrollIntoView).toHaveBeenCalledTimes(1);
+
+      intersectCallback([{ intersectionRatio: 1 }]);
+      intersectCallback([{ intersectionRatio: 1 }]);
+      intersectCallback([{ intersectionRatio: 0 }]);
+
+      expect(errorInViewValues).toEqual([false, true, false]);
+      errorInViewSub.unsubscribe();
     });
   });
 

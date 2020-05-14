@@ -1,7 +1,9 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
@@ -16,10 +18,11 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { IPsFormIntlTexts, PsExceptionMessageExtractor, PsIntlService } from '@prosoft/components/core';
 import { PsSavebarComponent } from '@prosoft/components/savebar';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, startWith, takeUntil } from 'rxjs/operators';
+
 import { PsFormActionService } from './form-action.service';
-import { IPsFormButton, IPsFormDataSource, IPsFormException } from './form-data-source';
+import { IPsFormButton, IPsFormDataSource, IPsFormDataSourceConnectOptions, IPsFormException } from './form-data-source';
 import { IPsFormSaveParams } from './models';
 
 /** @deprecated */
@@ -60,13 +63,17 @@ export class PsFormSaveErrorEvent extends PsFormEvent {
 /** @deprecated */
 export class PsFormCancelEvent extends PsFormEvent {}
 
+export const dependencies = {
+  IntersectionObserver: IntersectionObserver,
+};
+
 @Component({
   selector: 'ps-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
+export class PsFormComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
   @Input() public set dataSource(value: IPsFormDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
@@ -75,12 +82,13 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
 
     this._dataSource = value;
 
+    this.updateErrorCardObserver();
+
     if (this._dataSource) {
-      this._dataSourceSub = this._dataSource.connect().subscribe(() => {
-        this.cd.markForCheck();
-      });
+      this.activateDataSource();
     }
   }
+
   public get dataSource(): IPsFormDataSource {
     return this._dataSource;
   }
@@ -156,6 +164,8 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  @ViewChild('errorCardWrapper', { static: false }) public errorCardWrapper: ElementRef | null;
+
   /** @deprecated */
   public internalBlocked = false;
   /** @deprecated */
@@ -183,6 +193,9 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
   private _loadSub: Subscription;
   private _savebar: PsSavebarComponent;
   private _dataSourceSub = Subscription.EMPTY;
+  private _errorCardObserver: IntersectionObserver;
+  private _viewReady = false;
+  private _errrorInView$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     @Optional() public actionService: PsFormActionService,
@@ -228,6 +241,12 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  public ngAfterViewInit() {
+    this._viewReady = true;
+    this.updateErrorCardObserver();
+    this.activateDataSource();
+  }
+
   public ngOnDestroy() {
     this.ngUnsubscribe$.next();
     this.ngUnsubscribe$.complete();
@@ -241,6 +260,13 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
     if (this._saveAndCloseSub) {
       this._saveAndCloseSub.unsubscribe();
     }
+
+    if (this._errorCardObserver) {
+      this._errorCardObserver.disconnect();
+      this._errorCardObserver = null;
+    }
+
+    this._errrorInView$.complete();
 
     this._dataSourceSub.unsubscribe();
     if (this._dataSource) {
@@ -389,5 +415,43 @@ export class PsFormComponent implements OnChanges, OnInit, OnDestroy {
       this._saveAndCloseSub = this._savebar.saveAndClose.subscribe(() => this.onSave(true));
     }
     this._savebar.cd.markForCheck();
+  }
+
+  private activateDataSource() {
+    if (!this._viewReady || !this._dataSource) {
+      return;
+    }
+
+    const options = {
+      errorInView$: this._errrorInView$.pipe(distinctUntilChanged()),
+      scrollToError: () => {
+        this.errorCardWrapper.nativeElement.scrollIntoView({ behavior: 'smooth' });
+      },
+    } as IPsFormDataSourceConnectOptions;
+
+    this._dataSourceSub = this._dataSource.connect(options).subscribe(() => {
+      this.cd.markForCheck();
+    });
+  }
+
+  private updateErrorCardObserver() {
+    if (!this._errorCardObserver && this._dataSource && this._viewReady) {
+      const options = {
+        root: null as any, // relative to document viewport
+        rootMargin: '-100px', // margin around root. Values are similar to css property. Unitless values not allowed
+        threshold: 1.0, // visible amount of item shown in relation to root
+      } as IntersectionObserverInit;
+
+      this._errorCardObserver = new dependencies.IntersectionObserver((changes, _) => {
+        const isErrorCardInView = changes[0].intersectionRatio > 0;
+        this._errrorInView$.next(isErrorCardInView);
+        this.cd.markForCheck();
+      }, options);
+
+      this._errorCardObserver.observe(this.errorCardWrapper.nativeElement);
+    } else if (this._errorCardObserver && !this._dataSource) {
+      this._errorCardObserver.disconnect();
+      this._errorCardObserver = null;
+    }
   }
 }

@@ -17,7 +17,7 @@ export {
   IPsFormSaveParams,
   IPsFormSaveSuccessParams,
 } from './src/models';
-export { IPsFormDataSource, IPsFormButton, IPsFormException } from './src/form-data-source';
+export { IPsFormDataSource, IPsFormDataSourceConnectOptions, IPsFormButton, IPsFormException } from './src/form-data-source';
 
 // reexport
 export { IPsFormIntlTexts } from '@prosoft/components/core';

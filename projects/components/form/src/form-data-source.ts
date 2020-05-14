@@ -4,10 +4,11 @@ import { IPsSavebarMode } from '@prosoft/components/savebar';
 import { Observable } from 'rxjs';
 
 export interface IPsFormButton {
-  label: string;
-  type: 'raised' | 'stroked';
+  label?: string;
+  type: 'raised' | 'stroked' | 'icon';
   color: ThemePalette;
-  disabled: () => boolean;
+  icon?: string;
+  disabled?: () => boolean;
   click: () => void;
 }
 
@@ -17,6 +18,11 @@ export interface IPsFormException {
   alignCenter?: boolean;
 }
 
+export interface IPsFormDataSourceConnectOptions {
+  errorInView$: Observable<boolean>;
+  scrollToError(): void;
+}
+
 export interface IPsFormDataSource {
   readonly form: FormGroup;
   readonly buttons: IPsFormButton[];
@@ -24,6 +30,6 @@ export interface IPsFormDataSource {
   readonly contentBlocked: boolean;
   readonly exception: IPsFormException;
   readonly savebarMode: IPsSavebarMode;
-  connect(): Observable<void>;
+  connect(options: IPsFormDataSourceConnectOptions): Observable<void>;
   disconnect(): void;
 }

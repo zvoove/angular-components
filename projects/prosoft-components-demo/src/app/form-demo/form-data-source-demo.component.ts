@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import { IPsFormButton, IPsFormDataSource, IPsFormException } from '@prosoft/components/form';
+import { IPsFormButton, IPsFormDataSource, IPsFormDataSourceConnectOptions, IPsFormException } from '@prosoft/components/form';
 import { IPsSavebarMode } from '@prosoft/components/savebar';
 import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 import { delay, map, take, tap } from 'rxjs/operators';
@@ -34,10 +34,13 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
   private _saving = false;
   private _blockView = false;
   private _isEditMode = false;
+  private _errorInView = false;
   private stateChanges$ = new Subject<void>();
   private _loadParams: TParams = null;
+  public _scrollToError: () => void;
 
   private buttonDefs: { [key: string]: IPsFormButton } = {
+    scrollToError: { type: 'icon', icon: 'error_outline', color: 'warn', click: () => this._scrollToError() },
     edit: { label: 'bearbeiten', type: 'raised', color: 'primary', disabled: () => this.contentBlocked, click: () => this.edit() },
     save: {
       label: 'speichern',
@@ -51,9 +54,17 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
 
   private _loadingSub = Subscription.EMPTY;
   private _connectSub = Subscription.EMPTY;
+  private _errorInViewSub = Subscription.EMPTY;
   constructor(private options: PsFormDataSourceOptions<TParams, TData>) {}
 
-  public connect(): Observable<void> {
+  public connect(options: IPsFormDataSourceConnectOptions): Observable<void> {
+    this._scrollToError = () => setTimeout(() => options.scrollToError(), 0); // Warten bis der error gerendert ist
+    this._errorInViewSub = options.errorInView$.subscribe(value => {
+      this._errorInView = value;
+      this.updateButtons();
+      this.stateChanges$.next();
+    });
+
     this._connectSub = this.options.loadTrigger$.subscribe(params => {
       this._loadParams = params;
       this.loadData(params);
@@ -63,6 +74,8 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
 
   public disconnect(): void {
     this._connectSub.unsubscribe();
+    this._errorInViewSub.unsubscribe();
+    this._loadingSub.unsubscribe();
   }
 
   public setViewBlocked(value: boolean) {
@@ -95,6 +108,12 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
           this.exception = {
             errorObject: err,
           };
+
+          if (!this._errorInView) {
+            this._scrollToError();
+          }
+
+          this.updateButtons();
           this.stateChanges$.next();
         },
       });
@@ -174,6 +193,9 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
       if (!this._isEditMode) {
         this.buttons.push(this.buttonDefs.edit);
       } else {
+        if (this.exception && !this._errorInView) {
+          this.buttons.push(this.buttonDefs.scrollToError);
+        }
         this.buttons.push(this.buttonDefs.save);
         this.buttons.push(this.buttonDefs.cancel);
       }
@@ -203,6 +225,7 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
             </mat-form-field>
           </form>
         </mat-card>
+        <mat-card style="height: 500px; margin-top: 1em;">dummy card</mat-card>
         <ng-container psFormSavebarButtons>
           <button mat-stroked-button type="button">dummy button 1</button>
           <button mat-stroked-button type="button">dummy button 2</button>
