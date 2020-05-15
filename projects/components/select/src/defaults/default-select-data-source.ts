@@ -276,11 +276,13 @@ function createEntityToSelectItemMapper(mode: 'id' | 'entity', idKey: keyof any,
     return (item: any) => ({
       value: item[idKey],
       label: item[labelKey],
+      entity: item,
     });
   }
   return (item: any) => ({
     value: item,
     label: item[labelKey],
+    entity: item,
   });
 }
 

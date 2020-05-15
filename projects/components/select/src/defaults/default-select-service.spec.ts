@@ -42,38 +42,41 @@ describe('DefaultPsSelectService', () => {
   it('should work with data object in entity mode', fakeAsync(() => {
     const service = new DefaultPsSelectService();
 
-    const dataSource = service.createDataSource({ mode: 'entity', idKey: 'a', labelKey: 'b', items: [{ a: 1, b: 'item 1' }] }, null);
+    const item = { a: 1, b: 'item 1' };
+    const dataSource = service.createDataSource({ mode: 'entity', idKey: 'a', labelKey: 'b', items: [item] }, null);
 
     expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
     expectEntityEqualComparer(dataSource, 'a');
     expectEntityGetItemsForValues(dataSource, 'a', 'b');
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: { a: 1, b: 'item 1' }, label: 'item 1', hidden: false }]);
+    expect(renderOptions).toEqual([{ value: item, label: 'item 1', hidden: false, entity: item }]);
   }));
 
   it('should work with data object in id mode', fakeAsync(() => {
     const service = new DefaultPsSelectService();
 
-    const dataSource = service.createDataSource({ mode: 'id', idKey: 'a', labelKey: 'b', items: [{ a: 1, b: 'item 1' }] }, null);
+    const item = { a: 1, b: 'item 1' };
+    const dataSource = service.createDataSource({ mode: 'id', idKey: 'a', labelKey: 'b', items: [item] }, null);
 
     expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
     expectStrictEqualComparer(dataSource);
     expectIdGetItemsForValues(dataSource);
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false }]);
+    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false, entity: item }]);
   }));
 
   it('should work with data observable and custom options', fakeAsync(() => {
     const service = new DefaultPsSelectService();
 
+    const item = { x: 1, y: 'item 1' };
     const dataSource = service.createDataSource(
       {
         mode: 'entity',
         idKey: 'x',
         labelKey: 'y',
-        items: of([{ x: 1, y: 'item 1' }]),
+        items: of([item]),
         searchDebounce: 100,
         loadTrigger: PsSelectLoadTrigger.FirstPanelOpen,
       },
@@ -85,33 +88,35 @@ describe('DefaultPsSelectService', () => {
     expectEntityGetItemsForValues(dataSource, 'x', 'y');
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: { x: 1, y: 'item 1' }, label: 'item 1', hidden: false }]);
+    expect(renderOptions).toEqual([{ value: item, label: 'item 1', hidden: false, entity: item }]);
   }));
 
   it('should work with data array', fakeAsync(() => {
     const service = new DefaultPsSelectService();
 
-    const dataSource = service.createDataSource([{ value: 1, label: 'item 1' }], null);
+    const item = { value: 1, label: 'item 1' };
+    const dataSource = service.createDataSource([item], null);
 
     expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
     expectStrictEqualComparer(dataSource);
     expectIdGetItemsForValues(dataSource);
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false }]);
+    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false, entity: item }]);
   }));
 
   it('should work with observable array', fakeAsync(() => {
     const service = new DefaultPsSelectService();
 
-    const dataSource = service.createDataSource(of([{ value: 1, label: 'item 1' }]), null);
+    const item = { value: 1, label: 'item 1' };
+    const dataSource = service.createDataSource(of([item]), null);
 
     expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
     expectStrictEqualComparer(dataSource);
     expectIdGetItemsForValues(dataSource);
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false }]);
+    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false, entity: item }]);
   }));
 });
 
