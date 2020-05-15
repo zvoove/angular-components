@@ -375,7 +375,7 @@ describe('PsFormComponent', () => {
       expect(observerOptions).toEqual({
         root: null as any,
         rootMargin: '-100px',
-        threshold: 1.0,
+        threshold: 0,
       });
       expect(getErrorContainer(fixture)).not.toBe(null);
       expect(observedEl).toBe(component.formComponent.errorCardWrapper.nativeElement);

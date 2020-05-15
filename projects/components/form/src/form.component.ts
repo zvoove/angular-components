@@ -439,7 +439,7 @@ export class PsFormComponent implements OnChanges, OnInit, AfterViewInit, OnDest
       const options = {
         root: null as any, // relative to document viewport
         rootMargin: '-100px', // margin around root. Values are similar to css property. Unitless values not allowed
-        threshold: 1.0, // visible amount of item shown in relation to root
+        threshold: 0, // visible amount of item shown in relation to root
       } as IntersectionObserverInit;
 
       this._errorCardObserver = new dependencies.IntersectionObserver((changes, _) => {
