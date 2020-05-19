@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.14](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.13...@prosoft/components@0.1.0-alpha.14) (2020-05-19)
+
+
+### Bug Fixes
+
+* **form:** changed IntersectionObserver treshold from 1.0 to 0 ([#85](https://github.com/prosoft-edv/components/issues/85)) ([57d92cb](https://github.com/prosoft-edv/components/commit/57d92cb))
+
+
+### Features
+
+* **select:** add original item to PsSelectItem ([#87](https://github.com/prosoft-edv/components/issues/87)) ([f854380](https://github.com/prosoft-edv/components/commit/f854380))
+
+
+
+
+
 # [0.1.0-alpha.13](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.12...@prosoft/components@0.1.0-alpha.13) (2020-05-14)
 
 
