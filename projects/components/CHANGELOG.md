@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.15](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.14...@prosoft/components@0.1.0-alpha.15) (2020-05-20)
+
+**Note:** Version bump only for package @prosoft/components
+
+
+
+
+
 # [0.1.0-alpha.14](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.13...@prosoft/components@0.1.0-alpha.14) (2020-05-19)
 
 
