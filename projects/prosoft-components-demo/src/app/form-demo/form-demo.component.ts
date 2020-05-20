@@ -7,13 +7,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       <mat-form-field>
         <mat-select [(ngModel)]="demoType">
           <mat-option [value]="'dataSource'">dataSource</mat-option>
-          <mat-option [value]="'inputs'">inputs (deprecated)</mat-option>
         </mat-select>
       </mat-form-field>
     </mat-card>
     <ng-container [ngSwitch]="demoType">
       <app-form-data-source-demo *ngSwitchCase="'dataSource'"></app-form-data-source-demo>
-      <app-form-inputs-demo *ngSwitchCase="'inputs'"></app-form-inputs-demo>
     </ng-container>
   `,
   styles: [

@@ -1,65 +1,38 @@
-<ng-template #content><ng-content></ng-content></ng-template>
+<form *ngIf="dataSource" class="ps-form__main-container" [formGroup]="form" [autocomplete]="autocomplete">
+  <div class="ps-form__cards-container">
+    <ps-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
+      <ng-content></ng-content>
+    </ps-block-ui>
 
-<form [formGroup]="boundForm" [autocomplete]="autocomplete">
-  <ps-savebar
-    *ngIf="!dataSource"
-    [form]="boundForm"
-    [mode]="savebarMode"
-    (cancel)="onCancel()"
-    [canSave]="canSaveIntern"
-    [intlOverride]="intlOverride"
-  >
-    <div class="ps-form__cards-container">
-      <ps-block-ui *ngIf="!hasLoadError" [blocked]="viewBlocked">
-        <ng-container *ngTemplateOutlet="content"></ng-container>
-      </ps-block-ui>
-
-      <mat-card *ngIf="hasLoadError" class="ps-form__error-container ps-form__error-container--center">
-        <mat-icon class="ps-form__error-icon">sentiment_very_dissatisfied</mat-icon>
-        <span>{{ errorMessage }}</span>
-      </mat-card>
-
-      <mat-card *ngIf="hasSaveError" class="ps-form__error-container">
-        <span>{{ errorMessage }}</span>
-      </mat-card>
-
-      <mat-card *ngIf="hasLoadError" class="ps-form__error-actions">
-        <button mat-stroked-button type="button" (click)="onCancel()">
-          {{ intl.cancelLabel }}
-        </button>
+    <div #errorCardWrapper [style.display]="exception ? 'block' : 'none'">
+      <mat-card *ngIf="exception" class="ps-form__error-container" [class.ps-form__error-container--center]="exception.alignCenter">
+        <mat-icon *ngIf="exception.icon" class="ps-form__error-icon">{{ exception.icon }}</mat-icon>
+        <span>{{ exception.errorObject | psErrorMessage }}</span>
       </mat-card>
     </div>
-  </ps-savebar>
+  </div>
 
-  <ps-savebar *ngIf="dataSource" [form]="boundForm" [mode]="savebarMode">
-    <div class="ps-form__cards-container">
-      <ps-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
-        <ng-container *ngTemplateOutlet="content"></ng-container>
-      </ps-block-ui>
-
-      <div #errorCardWrapper [style.display]="exception ? 'block' : 'none'">
-        <mat-card *ngIf="exception" class="ps-form__error-container" [class.ps-form__error-container--center]="exception.alignCenter">
-          <mat-icon *ngIf="exception.icon" class="ps-form__error-icon">{{ exception.icon }}</mat-icon>
-          <span>{{ exceptionMessage }}</span>
-        </mat-card>
+  <mat-card *ngIf="!savebarHidden" class="ps-form__savebar mat-elevation-z2" [class.ps-form__savebar--sticky]="savebarSticky">
+    <div class="ps-form__savebar-container">
+      <ps-form-errors [form]="form"></ps-form-errors>
+      <div class="ps-form__savebar-spacer"></div>
+      <div class="ps-form__buttons">
+        <ng-content select="[psFormSavebarButtons]"></ng-content>
+        <button
+          *ngFor="let btn of buttons"
+          mat-button
+          [class.mat-raised-button]="btn.type === 'raised'"
+          [class.mat-stroked-button]="btn.type === 'stroked'"
+          [class.mat-icon-button]="btn.type === 'icon'"
+          type="button"
+          [color]="btn.color"
+          [disabled]="btn.disabled && btn.disabled()"
+          (click)="btn.click()"
+        >
+          <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
+          {{ btn.label }}
+        </button>
       </div>
     </div>
-    <div *psSavebarRightContent class="ps-form__buttons">
-      <ng-content select="[psFormSavebarButtons]"></ng-content>
-      <button
-        *ngFor="let btn of buttons"
-        mat-button
-        [class.mat-raised-button]="btn.type === 'raised'"
-        [class.mat-stroked-button]="btn.type === 'stroked'"
-        [class.mat-icon-button]="btn.type === 'icon'"
-        type="button"
-        [color]="btn.color"
-        [disabled]="btn.disabled && btn.disabled()"
-        (click)="btn.click()"
-      >
-        <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
-        {{ btn.label }}
-      </button>
-    </div>
-  </ps-savebar>
+  </mat-card>
 </form>

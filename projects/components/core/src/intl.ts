@@ -10,9 +10,6 @@ export interface IPsSavebarIntlTexts {
   prevLabel: string;
 }
 
-// tslint:disable-next-line: no-empty-interface
-export interface IPsFormIntlTexts extends IPsSavebarIntlTexts {}
-
 // Can be removed with Typescript 3.5
 type Pick<T, K extends keyof T> = { [P in K]: T[P] };
 type Exclude<T, U> = T extends U ? never : T;
@@ -36,9 +33,8 @@ export abstract class PsIntlService {
   public intlChanged$ = new Subject<void>();
 
   public abstract get(intlKey: 'table'): IPsTableIntlTexts;
-  public abstract get(intlKey: 'form'): IPsFormIntlTexts;
   public abstract get(intlKey: 'savebar'): IPsSavebarIntlTexts;
-  public abstract get(intlKey: PsIntlKeys): IPsSavebarIntlTexts | IPsFormIntlTexts | IPsTableIntlTexts;
+  public abstract get(intlKey: PsIntlKeys): IPsSavebarIntlTexts | IPsTableIntlTexts;
 
   public merge<T extends {}>(intl1: T, overrides: Partial<T>): T {
     if (!overrides) {
@@ -56,7 +52,7 @@ export abstract class PsIntlService {
 
 export class PsIntlServiceEn extends PsIntlService {
   private paginatorIntl = new MatPaginatorIntl();
-  private formSavebarIntl: IPsSavebarIntlTexts & IPsFormIntlTexts = {
+  private formSavebarIntl: IPsSavebarIntlTexts = {
     saveLabel: 'Save',
     saveAndCloseLabel: 'Save & close',
     cancelLabel: 'Cancel',
@@ -83,13 +79,11 @@ export class PsIntlServiceEn extends PsIntlService {
   };
 
   public get(intlKey: 'table'): IPsTableIntlTexts;
-  public get(intlKey: 'form'): IPsFormIntlTexts;
   public get(intlKey: 'savebar'): IPsSavebarIntlTexts;
-  public get(intlKey: PsIntlKeys): IPsSavebarIntlTexts | IPsFormIntlTexts | IPsTableIntlTexts {
+  public get(intlKey: PsIntlKeys): IPsSavebarIntlTexts | IPsTableIntlTexts {
     switch (intlKey) {
       case 'table':
         return this.tableIntl;
-      case 'form':
       case 'savebar':
         return this.formSavebarIntl;
       default:

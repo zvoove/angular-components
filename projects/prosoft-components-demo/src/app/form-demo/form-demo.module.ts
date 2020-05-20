@@ -8,19 +8,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
-import { IPsFormCancelParams, PsFormActionService, PsFormModule } from '@prosoft/components/form';
+import { PsFormModule } from '@prosoft/components/form';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormBaseModule } from '@prosoft/components/form-base';
-import {
-  IPsFormLoadErrorParams,
-  IPsFormLoadSuccessParams,
-  IPsFormSaveErrorParams,
-  IPsFormSaveSuccessParams,
-} from '@prosoft/components/form/src/models';
 import { PsSavebarModule } from '@prosoft/components/savebar';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of } from 'rxjs';
+
 import { FormDataSourceDemoComponent } from './form-data-source-demo.component';
 import { FormDemoComponent } from './form-demo.component';
-import { FormInputsDemoComponent } from './form-inputs-demo.component';
 
 export class DemoPsFormsService extends BasePsFormService {
   public getLabel(formControl: any): Observable<string> {
@@ -33,30 +27,6 @@ export class DemoPsFormsService extends BasePsFormService {
         data: data,
       }))
     );
-  }
-}
-
-export class DemoPsFormActionService extends PsFormActionService {
-  public static logStream$ = new Subject<string>();
-  public defaultLoadSuccessHandler(params: IPsFormLoadSuccessParams): void {
-    this.log('action service load success handler', params);
-  }
-  public defaultLoadErrorHandler(params: IPsFormLoadErrorParams): void {
-    this.log('action service load error handler', params);
-  }
-  public defaultSaveSuccessHandler(params: IPsFormSaveSuccessParams): void {
-    this.log('action service save success handler', params);
-  }
-  public defaultSaveErrorHandler(params: IPsFormSaveErrorParams): void {
-    this.log('action service save error handler', params);
-  }
-  public defaultCancelHandler(params: IPsFormCancelParams): void {
-    this.log('action service cancel handler', params);
-  }
-
-  private log(message: string, params: any) {
-    console.log(message, params);
-    DemoPsFormActionService.logStream$.next(message);
   }
 }
 
@@ -81,7 +51,6 @@ export class DemoPsFormActionService extends PsFormActionService {
     MatSelectModule,
     MatButtonModule,
   ],
-  declarations: [FormDemoComponent, FormInputsDemoComponent, FormDataSourceDemoComponent],
-  providers: [{ provide: PsFormActionService, useClass: DemoPsFormActionService }],
+  declarations: [FormDemoComponent, FormDataSourceDemoComponent],
 })
 export class FormDemoModule {}

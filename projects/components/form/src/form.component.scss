@@ -1,3 +1,7 @@
+.ps-form__main-container {
+  box-sizing: border-box;
+}
+
 .ps-form__cards-container {
   display: grid;
   grid-gap: 1em;
@@ -23,11 +27,43 @@
   margin: 0.25em;
 }
 
-.ps-form__error-actions {
-  text-align: right;
-}
-
 .ps-form__error-notfier-button {
   vertical-align: middle;
   cursor: pointer;
+}
+
+.ps-form__savebar {
+  bottom: -1px;
+  margin: 1em 0 1em 0;
+  z-index: 5;
+  padding: 1em !important;
+  display: flex;
+  justify-content: space-between;
+  border-top: solid var(--ps-accent) 5px;
+}
+
+mat-card.ps-form__savebar--sticky {
+  position: sticky;
+}
+
+.ps-form__savebar-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin: -0.25em;
+  width: 100%; /* Muss wegen display: flex auf 100% gestretched werden */
+
+  button {
+    margin: 0.25em;
+  }
+}
+
+.ps-form__savebar-spacer {
+  margin-right: auto;
+}
+
+@media only screen and (max-width: 35em) {
+  mat-card.ps-form__savebar--sticky {
+    position: initial;
+  }
 }

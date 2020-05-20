@@ -13,6 +13,7 @@ export interface PsFormDataSourceOptions<TParams, TData> {
 }
 
 class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
+  public autocomplete: 'off' = 'off';
   public get form(): FormGroup {
     return this.options.form;
   }
