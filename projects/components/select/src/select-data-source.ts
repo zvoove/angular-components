@@ -8,8 +8,6 @@ export abstract class PsSelectDataSource<T = any> {
   /** The error that occured in the last observable returned by _loadItems or null. */
   public error: any = null;
 
-  /** The error message for the error or null. */
-  public errorMessage: string | null = null;
   public compareWith: (value1: T, value2: T) => boolean = (a, b) => a === b;
 
   /**

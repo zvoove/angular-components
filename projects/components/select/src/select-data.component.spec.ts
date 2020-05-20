@@ -113,13 +113,9 @@ describe('PsSelectDataComponent', () => {
     matSelect.multiple = true;
     expect(component.multiple).toEqual(true);
   }));
-  it('should use errorMessage of dataSource', fakeAsync(() => {
-    dataSource.errorMessage = 'error 123';
-    expect(component.errorMessage).toEqual('error 123');
-  }));
-  it('should use errorMessage of dataSource', fakeAsync(() => {
-    dataSource.errorMessage = 'error 123';
-    expect(component.errorMessage).toEqual('error 123');
+  it('should use error of dataSource', fakeAsync(() => {
+    dataSource.error = 'error 123';
+    expect(component.error).toEqual('error 123');
   }));
   it('should have hasError true when dataSource has an error', fakeAsync(() => {
     dataSource.error = null;

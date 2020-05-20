@@ -33,7 +33,7 @@ import { PsSelectService } from './select.service';
       --
     </mat-option>
     <mat-option *ngIf="hasError" [disabled]="true" class="ps-select-data__error">
-      <span class="ps-select-data__error-message">{{ errorMessage }}</span>
+      <span class="ps-select-data__error-message">{{ error | psErrorMessage }}</span>
     </mat-option>
     <mat-option
       *ngFor="let item of items; trackBy: trackByOptions"
@@ -89,41 +89,41 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
     this._updateCompareWithBindings();
   }
 
-  /** Gibt an, ob im singleselect Modus eine leere Option auswählbar sein soll */
+  /** If true, then there will be a empty option available to deselect any values (only singel select mode) */
   @Input() public clearable = true;
 
   @Input() public optionTemplate: TemplateRef<any> | null = null;
 
-  /** Die MatOptions für MatSelect */
+  /** The MatOptions for MatSelect */
   @ViewChildren(MatOption) public options: QueryList<MatOption>;
 
   /** FormControl for the search filter */
   public filterCtrl = new FormControl('');
 
-  /** Die anzuzeigenden Items */
+  /** The items to display */
   public items: PsSelectItem<T>[] | ReadonlyArray<PsSelectItem<T>> = [];
 
-  /** Gibt an, ob die Items gerade geladen werden */
+  /** true while the options are loading */
   public get loading() {
     return this.dataSource && this.dataSource.loading;
   }
 
-  /** Gibt an, ob es beim Items Laden einen Fehler gab */
+  /** true when there was an error while loading the options */
   public get hasError() {
     return this.dataSource && !!this.dataSource.error;
   }
 
-  /** Die Fehlernachricht, wenn es beim Items Laden einen Fehler gab */
-  public get errorMessage() {
-    return this.dataSource && this.dataSource.errorMessage;
+  /** the error that occured while loading the options */
+  public get error() {
+    return this.dataSource && this.dataSource.error;
   }
 
-  /** Gibt an, ob der multiselect Modus aktiv ist */
+  /** true if the ps-select is in multiple mode */
   public get multiple() {
     return this.select && this.select.multiple;
   }
 
-  /** Gibt an, ob die MatOption ohne value (zum Auswahl Löschen) angezeigt werden soll. */
+  /** If true, then the empty option should be shown. */
   public get showEmptyInput() {
     if (this.multiple || !this.clearable) {
       return false;
@@ -157,7 +157,7 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
   ) {}
 
   public ngAfterViewInit() {
-    // MatOptions weiter reichen
+    // forward MatOptions to MatSelect
     this.options.changes
       .pipe(
         startWith(null as any),
@@ -169,7 +169,7 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
         this.select.options.notifyOnChanges();
       });
 
-    // panel open/close, filter und selectedValue an DataSource weiter geben
+    // forward panel open/close, filter and selectedValue to the DataSource
     this.select.openedChange.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(open => this.dataSource.panelOpenChanged(open));
     this.filterCtrl.valueChanges
       .pipe(takeUntil(this._ngUnsubscribe$))
@@ -194,7 +194,7 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
   }
 
   public trackByOptions(_: number, item: PsSelectItem<T>) {
-    return item.value;
+    return `${item.value}#${item.label}`;
   }
 
   private _updateCompareWithBindings() {
@@ -202,16 +202,16 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
       return;
     }
 
-    // compareWith angegeben -> mat select und datasource updaten
+    // compareWith set -> update MatSelect and datasource
     if (this._compareWith) {
       this._dataSource.compareWith = this._compareWith;
       this.select.compareWith = this._compareWith;
     }
-    // keine angegeben, aber datasource hat eine default -> select updaten
+    // compareWith not set, but datasource has one -> update MatSelect
     else if (this._dataSource.compareWith) {
       this.select.compareWith = this._dataSource.compareWith;
     }
-    // keine angegeben und datasource hat keine default -> datasource updaten
+    // compareWith not set and datasource doesn't have one -> update datasource with the one of MatSelect
     else {
       this._dataSource.compareWith = this.select.compareWith;
     }

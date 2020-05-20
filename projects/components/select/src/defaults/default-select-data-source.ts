@@ -81,12 +81,10 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     this._loadData = () => {
       this.loading = true;
       this.error = null;
-      this.errorMessage = null;
 
       return loadData().pipe(
         catchError((err: Error | any) => {
           this.error = err;
-          this.errorMessage = this.extractErrorMessage(err);
           return of([] as PsSelectItem<T>[]);
         }),
         tap(() => {
@@ -101,50 +99,38 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     const loadedOptions$ = optionsLoadTrigger$.pipe(
       switchMap(() => this._loadData()),
       startWith<PsSelectItem<T>[]>([]),
+      map(options => options.map(normalizeLabel)),
       shareReplay({ bufferSize: 1, refCount: true })
     );
 
-    // Values die nicht in den Options sind, generieren wir hier
+    // generate values as options, that aren't in the loaded options
     const missingOptions$ = loadedOptions$.pipe(
       switchMap(options =>
-        this._currentValues$.pipe(
-          map(values => {
-            const missingValues = values.filter(value => !options.find(o => this.compareWith(o.value, value)));
-            const missingOptions = this.getItemsForValues(missingValues);
-            return missingOptions;
-          })
-        )
+        this._currentValues$.pipe(map(values => values.filter(value => !options.find(o => this.compareWith(o.value, value)))))
       ),
       distinctUntilChanged((a, b) => {
         if (a.length !== b.length) {
           return false;
         }
-        for (const option of a) {
-          if (!b.find(o => this.compareWith(o.value, option.value))) {
+        for (const value of a) {
+          if (!b.find(o => this.compareWith(o, value))) {
             return false;
           }
         }
         return true;
-      })
+      }),
+      map(missingValues => this.getItemsForValues(missingValues).map(normalizeLabel))
     );
 
     const options$ = combineLatest([loadedOptions$, missingOptions$]).pipe(
-      map(([options, missingOptions]) =>
-        missingOptions.concat(options).map(option => {
-          if (!option.label) {
-            option.label = '';
-          } else if (!(typeof option.label === 'string')) {
-            option.label = `${option.label}`;
-          }
-          return option;
-        })
-      )
+      debounceTime(0),
+      map(([options, missingOptions]) => missingOptions.concat(options))
     );
 
     const panelCloseEvent$ = this._isPanelOpen$.pipe(
-      skip(1), // Wir wollen nur Close-Events, nicht den initialen Zustand des Panels
+      skip(1), // we don't need the initial value
       distinctUntilChanged(),
-      filter(x => !x)
+      filter(x => !x) // we only care about close-events
     );
     const valueChangedWhileClosed$ = this._isPanelOpen$.pipe(
       distinctUntilChanged(),
@@ -152,7 +138,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     );
     const sortTrigger$ = merge(panelCloseEvent$, valueChangedWhileClosed$);
     const renderOptions$ = options$.pipe(
-      // Initial und wenn sich das Panel schließt, müssen wir die selektierten Options nach oben sortieren
+      // initially and on panel close we must sort the selected options to the top
       switchMap(options =>
         sortTrigger$.pipe(
           startWith(!this._isPanelOpen$.value),
@@ -162,9 +148,9 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
             );
             const selectedOptionsSet = new WeakSet(selectedOptions);
             options.sort((a, b) => {
-              const aSelected = !!selectedOptionsSet.has(a);
-              const bSelected = !!selectedOptionsSet.has(b);
-              const selectedDifferent = +bSelected - +aSelected;
+              const aSelected = +selectedOptionsSet.has(a);
+              const bSelected = +selectedOptionsSet.has(b);
+              const selectedDifferent = bSelected - aSelected;
               if (selectedDifferent) {
                 return selectedDifferent;
               }
@@ -175,7 +161,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
           })
         )
       ),
-      // Suchtext handling
+      // searchtext handling
       switchMap(options =>
         this._searchText$.pipe(
           debounceTime(this._searchDebounceTime),
@@ -227,18 +213,6 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
    */
   public sortCompare = (a: PsSelectItem, b: PsSelectItem): number => {
     return a.label.localeCompare(b.label);
-  };
-
-  /**
-   * Extracts a error message from a given error object
-   * @param error The error object.
-   * @returns The error message
-   */
-  public extractErrorMessage = (error: any): string => {
-    if (error instanceof Error) {
-      return error.message;
-    }
-    return error;
   };
 
   private createOptionsLoadTrigger(): Observable<void> {
@@ -310,4 +284,13 @@ function createEntityComparer(idKey: keyof any) {
 
     return entity1[idKey] === entity2[idKey];
   };
+}
+
+function normalizeLabel(option: PsSelectItem) {
+  if (!option.label) {
+    option.label = '';
+  } else if (!(typeof option.label === 'string')) {
+    option.label = `${option.label}`;
+  }
+  return option;
 }

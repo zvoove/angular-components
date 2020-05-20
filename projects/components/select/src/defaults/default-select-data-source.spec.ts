@@ -1,5 +1,5 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { of, Subject, throwError } from 'rxjs';
+import { of, Subject, throwError, BehaviorSubject } from 'rxjs';
 import { delay, switchMap, tap } from 'rxjs/operators';
 
 import { PsSelectItem } from '../models';
@@ -14,6 +14,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([createIdOption(item)]);
 
     dataSource.selectedValuesChanged([]);
@@ -41,6 +42,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([createIdOption(item)]);
 
     dataSource.selectedValuesChanged([]);
@@ -73,6 +75,7 @@ describe('DefaultPsSelectDataSource', () => {
     );
 
     dataSource.connect().subscribe();
+    tick(1);
     expect(loadDataCallCount).toBe(1);
     dataSource.selectedValuesChanged([]);
     dataSource.searchTextChanged('hallo');
@@ -89,6 +92,7 @@ describe('DefaultPsSelectDataSource', () => {
     expect(dataSource.loading).toBe(false);
 
     dataSource.connect().subscribe();
+    tick(1);
     expect(dataSource.loading).toBe(true);
 
     tick(1001);
@@ -135,6 +139,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([halloOption, halloWeltOption, weltOption]);
 
     // Testen, ob exakt übereinstimmender Text gefunden wird
@@ -165,6 +170,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([createIdOption(item)]);
 
     // Testen, das die options wirklich erst nach der debounce time neu geladen werden
@@ -197,6 +203,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(() => {
       ++optionsRefreshTime;
     });
+    tick(1);
 
     // Search Text setzen, warten bis reloaded wurde und den call count resetten
     dataSource.searchTextChanged('text');
@@ -209,33 +216,6 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.searchTextChanged('text');
     tick(50);
     expect(optionsRefreshTime).toEqual(0);
-
-    dataSource.disconnect();
-  }));
-
-  it('should work with array data', fakeAsync(() => {
-    const item = createItem('item', 1);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([item]));
-
-    let currentRenderOptions;
-    dataSource.connect().subscribe(options => {
-      currentRenderOptions = options;
-    });
-    expect(currentRenderOptions).toEqual([createIdOption(item)]);
-
-    dataSource.selectedValuesChanged([]);
-    expect(currentRenderOptions).toEqual([createIdOption(item)]);
-
-    dataSource.searchTextChanged('hallo');
-    tick(300);
-    expect(currentRenderOptions).toEqual([createIdOption(item, true)]);
-
-    dataSource.searchTextChanged('item');
-    tick(300);
-    expect(currentRenderOptions).toEqual([createIdOption(item)]);
-
-    dataSource.panelOpenChanged(true);
-    expect(currentRenderOptions).toEqual([createIdOption(item)]);
 
     dataSource.disconnect();
   }));
@@ -253,6 +233,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([createIdOption(createItem('item', 1))]);
 
     dataSource.selectedValuesChanged([]);
@@ -283,6 +264,7 @@ describe('DefaultPsSelectDataSource', () => {
     );
 
     dataSource.connect().subscribe();
+    tick(1);
 
     dataSource.selectedValuesChanged([]);
     dataSource.selectedValuesChanged([7]);
@@ -316,6 +298,7 @@ describe('DefaultPsSelectDataSource', () => {
     );
 
     dataSource.connect().subscribe();
+    tick(1);
 
     dataSource.selectedValuesChanged([]);
     dataSource.selectedValuesChanged([7]);
@@ -357,9 +340,11 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
 
     // Selected Items sollten sofort gerendert werden, obwohl die options noch laden (items$ subject is noch leer)
     dataSource.selectedValuesChanged([1, 5]);
+    tick(1);
     expect(currentRenderOptions).toEqual([createMissingOption(1), createMissingOption(5)]);
 
     const item = createItem('item', 1);
@@ -367,21 +352,26 @@ describe('DefaultPsSelectDataSource', () => {
     const item3 = createItem('9', 11);
 
     items$.next([item]);
+    tick(1);
     expect(currentRenderOptions).toEqual([createMissingOption(5), createIdOption(item)]);
 
     dataSource.selectedValuesChanged([7]);
+    tick(1);
     expect(currentRenderOptions).toEqual([createMissingOption(7), createIdOption(item)]);
 
     dataSource.selectedValuesChanged([9, 10]);
+    tick(1);
     expect(currentRenderOptions).toEqual([createMissingOption(10), createMissingOption(9), createIdOption(item)]);
 
     items$.next([item, item2]);
+    tick(1);
     expect(currentRenderOptions).toEqual([createMissingOption(10), createIdOption(item2), createIdOption(item)]);
 
     // Sollte auch mit custom compareWith function gehen (value 9 und value 11 identisch)
     dataSource.compareWith = (a: number, b: number) => (a === 11 && b === 9) || (a === 9 && b === 11);
 
     items$.next([item, item3]);
+    tick(1);
     expect(currentRenderOptions).toEqual([createIdOption(item3), createMissingOption(10), createIdOption(item)]);
 
     dataSource.disconnect();
@@ -408,26 +398,24 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([]);
     expect(dataSource.error).toBeNull();
-    expect(dataSource.errorMessage).toBeNull();
 
     tick(5);
     expect(currentRenderOptions).toEqual([]);
     expect(dataSource.error).toBeDefined();
-    expect(dataSource.errorMessage).toEqual('test error');
 
     dataSource.selectedValuesChanged([5]);
+    tick(1);
     expect(currentRenderOptions).toEqual([createMissingOption(5)]);
     expect(dataSource.error).toBeDefined();
-    expect(dataSource.errorMessage).toEqual('test error');
 
     shouldThrow = false;
     dataSource.panelOpenChanged(true);
     tick(5);
     expect(currentRenderOptions).toEqual([createMissingOption(5), createIdOption(item)]);
     expect(dataSource.error).toBeNull();
-    expect(dataSource.errorMessage).toBeNull();
 
     dataSource.disconnect();
   }));
@@ -446,6 +434,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([createIdOption(item1), createIdOption(item2), createIdOption(item3)]);
 
     // Wenn Panel offen, nicht umsortieren
@@ -465,34 +454,33 @@ describe('DefaultPsSelectDataSource', () => {
   }));
 
   it('should emit data only when needed', fakeAsync(() => {
-    const dataSource = new DefaultPsSelectDataSource(
-      createDataSourceOptions(
-        () => {
-          return of([createItem('item 1', 1)]);
-        },
-        { loadTrigger: PsSelectLoadTrigger.All }
-      )
-    );
+    const items$ = new BehaviorSubject([createItem('item 1', 1)]);
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(() => items$, { loadTrigger: PsSelectLoadTrigger.All }));
 
     let dataEmitCount = 0;
     dataSource.connect().subscribe(() => {
       ++dataEmitCount;
     });
+    tick(1);
     expect(dataEmitCount).toBe(1);
 
     dataSource.panelOpenChanged(true);
+    tick(1);
     dataSource.panelOpenChanged(true);
     expect(dataEmitCount).toBe(2);
 
     dataSource.panelOpenChanged(false);
+    tick(1);
     dataSource.panelOpenChanged(false);
     expect(dataEmitCount).toBe(3);
 
     dataSource.panelOpenChanged(true);
+    tick(1);
     dataSource.panelOpenChanged(true);
     expect(dataEmitCount).toBe(4);
 
     dataSource.selectedValuesChanged(['item 1', 'x']);
+    tick(1);
     dataSource.selectedValuesChanged(['item 1', 'x']);
     expect(dataEmitCount).toBe(5);
 
@@ -501,6 +489,10 @@ describe('DefaultPsSelectDataSource', () => {
     expect(dataEmitCount).toBe(5);
     tick(300);
     expect(dataEmitCount).toBe(6);
+
+    items$.next([createItem('item 1', 1), createItem('item 2', 2), createItem('item x', 'x')]);
+    tick(1);
+    expect(dataEmitCount).toBe(7);
 
     dataSource.disconnect();
   }));
@@ -520,6 +512,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([createIdOption(item1), createIdOption(item2), createIdOption(item3), createIdOption(item20)]);
 
     dataSource.disconnect();
@@ -533,6 +526,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([createIdOption(item)]);
     const currentOption = currentRenderOptions[0];
     expect(currentOption.entity).toBe(item);
@@ -548,6 +542,7 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.connect().subscribe(options => {
       currentRenderOptions = options;
     });
+    tick(1);
     expect(currentRenderOptions).toEqual([createEntityOption(item)]);
     const currentOption = currentRenderOptions[0];
     expect(currentOption.entity).toBe(item);

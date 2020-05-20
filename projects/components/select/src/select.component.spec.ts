@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, ViewChild, Type } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -155,17 +155,28 @@ export class TestCustomTemplateComponent {
   public value: any = null;
 }
 
-describe('PsSelectComponent', () => {
-  it('should work with ngModel', async(() => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), FormsModule],
-      declarations: [TestMultipleComponent],
-    });
-    const fixture = TestBed.createComponent(TestMultipleComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
+async function initTest<T>(type: Type<T>): Promise<{ fixture: ComponentFixture<T>; component: T }> {
+  TestBed.configureTestingModule({
+    imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), FormsModule, ReactiveFormsModule],
+    declarations: [TestComponent, TestMultipleComponent, TestCustomTemplateComponent],
+  });
+  const fixture = TestBed.createComponent(type);
+  const component = fixture.componentInstance;
+  expect(component).toBeDefined();
 
-    fixture.detectChanges();
+  fixture.detectChanges();
+  await fixture.whenStable();
+  fixture.detectChanges();
+
+  return {
+    fixture: fixture,
+    component: component,
+  };
+}
+
+describe('PsSelectComponent', () => {
+  it('should work with ngModel', async () => {
+    const { fixture, component } = await initTest(TestMultipleComponent);
 
     // Update value from ps-select
     const options = ((component.select as any)._matSelect as MatSelect).options;
@@ -173,18 +184,10 @@ describe('PsSelectComponent', () => {
     fixture.detectChanges();
     expect(component.value).toEqual([2]);
     expect(getSelectedValueText(fixture)).toEqual('item2');
-  }));
+  });
 
-  it('should emit only once when selecting an option', () => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), ReactiveFormsModule],
-      declarations: [TestComponent],
-    });
-    const fixture = TestBed.createComponent(TestComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
-
-    fixture.detectChanges();
+  it('should emit only once when selecting an option', async () => {
+    const { fixture, component } = await initTest(TestComponent);
 
     const options = ((component.select as any)._matSelect as MatSelect).options;
 
@@ -201,16 +204,8 @@ describe('PsSelectComponent', () => {
     // expect(component.emittedValues).toEqual([undefined]);
   });
 
-  it('should use the error state matcher input', () => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), ReactiveFormsModule],
-      declarations: [TestComponent],
-    });
-    const fixture = TestBed.createComponent(TestComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
-
-    fixture.detectChanges();
+  it('should use the error state matcher input', async () => {
+    const { fixture, component } = await initTest(TestComponent);
 
     // Default matcher
     expect(component.control.value).toBe(null);
@@ -231,14 +226,9 @@ describe('PsSelectComponent', () => {
     expect(component.select.errorState).toBe(false);
   });
 
-  it('should set the right css classes', async(() => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), ReactiveFormsModule],
-      declarations: [TestComponent],
-    });
-    const fixture = TestBed.createComponent(TestComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
+  it('should set the right css classes', async () => {
+    const { fixture, component } = await initTest(TestComponent);
+
     let errorState = false;
     component.errorStateMatcher = {
       isErrorState: (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean => {
@@ -298,33 +288,18 @@ describe('PsSelectComponent', () => {
 
     // items
     expect(matOptionNodes.item(2).classList.contains('ps-select-data__option')).toBeTruthy();
-  }));
+  });
 
-  it('should set multiple css class for multiple mode', () => {
-    TestBed.configureTestingModule({
-      imports: [PsSelectModule.forRoot(DefaultPsSelectService), FormsModule],
-      declarations: [TestMultipleComponent],
-    });
-    const fixture = TestBed.createComponent(TestMultipleComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
-
-    fixture.detectChanges();
+  it('should set multiple css class for multiple mode', async () => {
+    const { fixture, component } = await initTest(TestMultipleComponent);
 
     const classes = getPsSelectCssClasses(fixture);
     expect(classes).toContain('ps-select-multiple');
   });
 
-  it('should work with custom templates', () => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), FormsModule],
-      declarations: [TestCustomTemplateComponent],
-    });
-    const fixture = TestBed.createComponent(TestCustomTemplateComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
+  it('should work with custom templates', async () => {
+    const { fixture, component } = await initTest(TestCustomTemplateComponent);
 
-    fixture.detectChanges();
     const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
     matSelectTrigger.triggerEventHandler('click', new Event('click'));
     fixture.detectChanges();

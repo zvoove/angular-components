@@ -10,7 +10,6 @@ describe('DefaultPsSelectService', () => {
     class TestDataSource implements PsSelectDataSource {
       public loading: boolean;
       public error: any;
-      public errorMessage: string;
       public compareWith: () => true;
       public connect(): Observable<PsSelectItem<any>[]> {
         return of<PsSelectItem<any>[]>([
