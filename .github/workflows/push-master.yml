@@ -24,19 +24,19 @@ jobs:
       env:
         CI: true
 
-    - name: Publish
+    - name: Publish to npm
       id: publish
       uses: JS-DevTools/npm-publish@v1
       with:
-        token: ${{ secrets.NPM_TOKEN }}
+        token: ${{ secrets.NPM_AUTH_TOKEN }}
         package: ./dist/components/package.json
       
     - if: steps.publish.type != 'none'
-      name: Deploy gh-pages
+      name: Deploy demo to gh-pages
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ACCESS_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages # The branch the action should deploy to.
         FOLDER: dist/prosoft-components-demo # The folder the action should deploy.
         CLEAN: true
