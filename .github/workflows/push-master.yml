@@ -1,4 +1,4 @@
-name: Build and Deploy to gh-pages
+name: publish to npm and deploy demo to gh-pages
 on:
   push:
     branches:
@@ -9,6 +9,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
+      
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
@@ -17,12 +18,21 @@ jobs:
     - name: Build
       run: |
         npm ci
+        npm run ng -- build components
         npm run ng -- build --prod --baseHref=https://prosoft-edv.github.io/components/
         cp dist/prosoft-components-demo/index.html dist/prosoft-components-demo/404.html
       env:
         CI: true
 
-    - name: Deploy
+    - name: Publish
+      id: publish
+      uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+        package: ./dist/components/package.json
+      
+    - if: steps.publish.type != 'none'
+      name: Deploy gh-pages
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
