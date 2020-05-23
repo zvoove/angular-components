@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.16](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.15...@prosoft/components@0.1.0-alpha.16) (2020-05-23)
+
+
+### Bug Fixes
+
+* **select:** missing option becoming available shows wrong label ([#90](https://github.com/prosoft-edv/components/issues/90)) ([a865ada](https://github.com/prosoft-edv/components/commit/a865ada))
+
+
+
+
+
+
 # [0.1.0-alpha.15](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.14...@prosoft/components@0.1.0-alpha.15) (2020-05-20)
 
 **Note:** Version bump only for package @prosoft/components
