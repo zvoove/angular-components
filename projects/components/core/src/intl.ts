@@ -6,8 +6,6 @@ export interface IPsSavebarIntlTexts {
   saveLabel: string;
   saveAndCloseLabel: string;
   cancelLabel: string;
-  nextLabel: string;
-  prevLabel: string;
 }
 
 // Can be removed with Typescript 3.5
@@ -56,8 +54,6 @@ export class PsIntlServiceEn extends PsIntlService {
     saveLabel: 'Save',
     saveAndCloseLabel: 'Save & close',
     cancelLabel: 'Cancel',
-    nextLabel: 'Next',
-    prevLabel: 'Previous',
   };
 
   private tableIntl: IPsTableIntlTexts = {

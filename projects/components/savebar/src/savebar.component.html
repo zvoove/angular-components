@@ -31,28 +31,6 @@
 
       <ng-container *ngIf="customRightContent" [ngTemplateOutlet]="customRightContent"></ng-container>
 
-      <button
-        *ngIf="hasObservers(step)"
-        mat-stroked-button
-        type="button"
-        class="ps-savebar__button__prev"
-        (click)="step.emit(-1)"
-        [disabled]="!canStepBack"
-      >
-        {{ intl?.prevLabel }}
-      </button>
-      <button
-        *ngIf="hasObservers(step)"
-        mat-raised-button
-        type="button"
-        color="primary"
-        class="ps-savebar__button__next"
-        (click)="step.emit(1)"
-        [disabled]="!canStepFwd"
-      >
-        {{ intl?.nextLabel }}
-      </button>
-
       <button *ngIf="hasObservers(cancel)" mat-stroked-button type="button" class="ps-savebar__button__cancel" (click)="cancel.emit()">
         {{ intl?.cancelLabel }}
       </button>

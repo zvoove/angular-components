@@ -35,15 +35,7 @@ class TestPsFormService extends BasePsFormService {
 @Component({
   selector: 'ps-test-component',
   template: `
-    <ps-savebar
-      [form]="form"
-      [mode]="mode"
-      [canSave]="canSave"
-      [canStepFwd]="canStepFwd"
-      [canStepBack]="canStepBack"
-      [intlOverride]="intlOverride"
-      [saveKey]="saveKey"
-    >
+    <ps-savebar [form]="form" [mode]="mode" [canSave]="canSave" [intlOverride]="intlOverride" [saveKey]="saveKey">
       <div [formGroup]="form">
         <input type="text" [formControlName]="'input'" />
       </div>
@@ -60,8 +52,6 @@ export class TestComponent {
   });
   public mode: 'sticky' | 'fixed' | 'auto' | 'hide' = null;
   public canSave: boolean | null = null;
-  public canStepFwd: boolean;
-  public canStepBack: boolean;
   public intlOverride: Partial<IPsSavebarIntlTexts>;
   public saveKey: string = null;
 
@@ -308,76 +298,6 @@ describe('PsSavebarComponent', () => {
     outputSubscription.unsubscribe();
   }));
 
-  it('prev button should work', async(() => {
-    const fixture = TestBed.createComponent(TestComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
-    fixture.detectChanges();
-
-    // button not visible without subscription
-    expect(fixture.debugElement.query(By.css('.ps-savebar__button__prev'))).toBe(null);
-
-    // subscription to output should activate the button
-    let outputValue = null;
-    const outputSubscription = component.savebar.step.subscribe((x: number) => {
-      outputValue = x;
-    });
-    component.mode = 'fixed'; // change some input to trigger change detection
-    fixture.detectChanges();
-
-    const buttonEl = fixture.debugElement.query(By.css('.ps-savebar__button__prev')).nativeElement;
-    expect(buttonEl).toBeDefined();
-
-    component.canStepBack = true;
-    fixture.detectChanges();
-    expect(buttonEl.disabled).toBe(false);
-
-    component.canStepBack = false;
-    fixture.detectChanges();
-    expect(buttonEl.disabled).toBe(true);
-
-    expect(outputValue).toBe(null);
-    buttonEl.dispatchEvent(new Event('click'));
-    expect(outputValue).toBe(-1);
-
-    outputSubscription.unsubscribe();
-  }));
-
-  it('next button should work', async(() => {
-    const fixture = TestBed.createComponent(TestComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
-    fixture.detectChanges();
-
-    // button not visible without subscription
-    expect(fixture.debugElement.query(By.css('.ps-savebar__button__next'))).toBe(null);
-
-    // subscription to output should activate the button
-    let outputValue = null;
-    const outputSubscription = component.savebar.step.subscribe((x: number) => {
-      outputValue = x;
-    });
-    component.mode = 'fixed'; // change some input to trigger change detection
-    fixture.detectChanges();
-
-    const buttonEl = fixture.debugElement.query(By.css('.ps-savebar__button__next')).nativeElement;
-    expect(buttonEl).toBeDefined();
-
-    component.canStepFwd = true;
-    fixture.detectChanges();
-    expect(buttonEl.disabled).toBe(false);
-
-    component.canStepFwd = false;
-    fixture.detectChanges();
-    expect(buttonEl.disabled).toBe(true);
-
-    expect(outputValue).toBe(null);
-    buttonEl.dispatchEvent(new Event('click'));
-    expect(outputValue).toBe(1);
-
-    outputSubscription.unsubscribe();
-  }));
-
   it('should show psSavebarRightContent', async(() => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
@@ -399,8 +319,6 @@ describe('PsSavebarComponent', () => {
       saveLabel: 'Save',
       saveAndCloseLabel: 'Save & close',
       cancelLabel: 'Cancel',
-      prevLabel: 'Previous',
-      nextLabel: 'Next',
     });
 
     // Full override
@@ -408,8 +326,6 @@ describe('PsSavebarComponent', () => {
       saveLabel: 's',
       saveAndCloseLabel: 'sac',
       cancelLabel: 'c',
-      prevLabel: 'p',
-      nextLabel: 'n',
     };
     fixture.detectChanges();
 
@@ -417,8 +333,6 @@ describe('PsSavebarComponent', () => {
       saveLabel: 's',
       saveAndCloseLabel: 'sac',
       cancelLabel: 'c',
-      prevLabel: 'p',
-      nextLabel: 'n',
     });
 
     // Partial override
@@ -432,8 +346,6 @@ describe('PsSavebarComponent', () => {
       saveLabel: 's',
       saveAndCloseLabel: 'sac',
       cancelLabel: 'Cancel',
-      prevLabel: 'Previous',
-      nextLabel: 'Next',
     });
   }));
 

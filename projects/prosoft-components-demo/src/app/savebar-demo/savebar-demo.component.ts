@@ -6,12 +6,9 @@ import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/fo
   template: `
     <ps-savebar
       [form]="form"
-      [canStepFwd]="true"
-      [canStepBack]="true"
       (save)="onButtonClick('save')"
       (saveAndClose)="onButtonClick('saveAndClose')"
       (cancel)="onButtonClick('cancel')"
-      (step)="onButtonClick($event < 0 ? 'prev' : 'next')"
     >
       <mat-card>
         <form [formGroup]="form">

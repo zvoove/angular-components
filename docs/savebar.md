@@ -34,8 +34,6 @@ import { PsSavebarModule } from '@prosoft/components/savebar';
 | `form: FormGroup`                               | Angular's `FormGroup`                                                                           |
 | `mode: 'sticky' \| 'fixed' \| 'auto' \| 'hide'` | Sets the mode of the savebar.                                                                   |
 | `canSave: boolean \| null`                      | If set, the savebar checks this value instead of the `FormGroups` state.                        |
-| `canStepFwd: boolean`                           | (In wizard) Checks, if you can step to the next part of the wizard.                             |
-| `canStepBack: boolean`                          | (In wizard) Checks, if you can step to the previous part of the wizard.                         |
 | `intlOverride: Partial<IPsSavebarIntlTexts>`    | If you want to override displayed labels.                                                       |
 | `saveKey: string`                               | The keyboard key to use as a save shortcut in combination with 'ctrl' (default 's' => ctrl + s) |
 
@@ -45,7 +43,6 @@ import { PsSavebarModule } from '@prosoft/components/savebar';
 | ---------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `save: EventEmitter<void>`         | If you handle this, a 'Save' button is shown.                                                       |
 | `saveAndClose: EventEmitter<void>` | If you handle this, a 'Save & close' button is shown.                                               |
-| `step: EventEmitter<number>`       | If you handle this, 'Next' and 'Previous' buttons are shown. The `number` is the next steps number. |
 | `cancel: EventEmitter<void>`       | If you handle this, a 'Cancel' button is shown.                                                     |
 
 ### Types <a name="PsSavebarComponentTypes"></a>
@@ -90,12 +87,9 @@ Now you can use it in your components like this:
 ```html
 <ps-savebar
   [form]="form"
-  [canStepFwd]="true"
-  [canStepBack]="true"
   (save)="onButtonClick('save')"
   (saveAndClose)="onButtonClick('saveAndClose')"
   (cancel)="onButtonClick('cancel')"
-  (step)="onButtonClick($event < 0 ? 'prev' : 'next')"
 >
   <mat-card>
     <form [formGroup]="form">

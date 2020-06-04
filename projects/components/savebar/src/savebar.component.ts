@@ -33,14 +33,11 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   @Input() public mode: IPsSavebarMode = 'auto';
   @Input() public form: FormGroup;
   @Input() public canSave: boolean | null;
-  @Input() public canStepFwd: boolean;
-  @Input() public canStepBack: boolean;
   @Input() public intlOverride: Partial<IPsSavebarIntlTexts>;
   @Input() public saveKey = 's';
 
   @Output() public save = new EventEmitter<void>();
   @Output() public saveAndClose = new EventEmitter<void>();
-  @Output() public step = new EventEmitter<number>();
   @Output() public cancel = new EventEmitter<void>();
 
   @ContentChild(PsSavebarRightContentDirective, { read: TemplateRef, static: false })
