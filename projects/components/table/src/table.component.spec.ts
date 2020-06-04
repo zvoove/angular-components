@@ -503,7 +503,7 @@ describe('PsTableComponent', () => {
       expect(fixture.debugElement.query(By.css('h2')).nativeElement.textContent.trim()).toEqual('title');
 
       // ps-table[cardLayout]
-      expect(psTableDbg.classes['mat-elevation-z3']).toEqual(true);
+      expect(psTableDbg.classes['mat-elevation-z1']).toEqual(true);
 
       // ps-table[striped]
       expect(psTableDbg.classes['ps-table--striped']).toEqual(true);

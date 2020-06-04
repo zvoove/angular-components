@@ -43,6 +43,10 @@ import { debounce, takeUntil, switchMap } from 'rxjs/operators';
         display: flex;
         justify-content: flex-end;
         background-color: #fff;
+        border-radius: 0 0 4px 4px;
+      }
+      ps-table-pagination .mat-paginator {
+        background: transparent;
       }
     `,
   ],

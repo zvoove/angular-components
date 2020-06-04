@@ -73,7 +73,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   @Input() public pageDebounce: number;
 
   @Input()
-  @HostBinding('class.mat-elevation-z3')
+  @HostBinding('class.mat-elevation-z1')
   public cardLayout = true;
 
   @Input()
