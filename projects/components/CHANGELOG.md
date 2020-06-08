@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.17](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.16...@prosoft/components@0.1.0-alpha.17) (2020-06-08)
+
+
+### Bug Fixes
+
+* elevation and border radius adjustments ([#94](https://github.com/prosoft-edv/components/issues/94)) ([448ba16](https://github.com/prosoft-edv/components/commit/448ba16)), closes [#93](https://github.com/prosoft-edv/components/issues/93)
+
+
+### Code Refactoring
+
+* **savebar:** remove prev/next button support ([#83](https://github.com/prosoft-edv/components/issues/83)) ([9904423](https://github.com/prosoft-edv/components/commit/9904423))
+
+
+### Features
+
+* **select:** added sortBy option to default datasource ([#98](https://github.com/prosoft-edv/components/issues/98)) ([1d8e92f](https://github.com/prosoft-edv/components/commit/1d8e92f))
+
+
+### BREAKING CHANGES
+
+* **savebar:** removed prev/next button support
+
+
+
+
+
+
 # [0.1.0-alpha.16](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.15...@prosoft/components@0.1.0-alpha.16) (2020-05-23)
 
 
