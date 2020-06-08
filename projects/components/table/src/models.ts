@@ -10,3 +10,7 @@ export interface IPsTableUpdateDataInfo {
   sortDirection: 'asc' | 'desc' | null;
   sortColumn: string | null;
 }
+
+export interface IExtendedPsTableUpdateDataInfo<TTrigger> extends IPsTableUpdateDataInfo {
+  triggerData: TTrigger;
+}

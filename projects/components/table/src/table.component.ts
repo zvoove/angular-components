@@ -203,19 +203,13 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
       this.cd.markForCheck();
     });
 
+    this.dataSource.locale = this._locale;
     this.pageSizeOptions = this.settingsService.pageSizeOptions;
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.intlOverride) {
       this.updateIntl();
-    }
-
-    if (changes.dataSource) {
-      this.dataSource.locale = this._locale;
-      if (!changes.dataSource.firstChange) {
-        this.dataSource.updateData();
-      }
     }
   }
 

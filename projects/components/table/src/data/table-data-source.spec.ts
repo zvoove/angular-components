@@ -3,7 +3,7 @@ import { NEVER, of, Subject, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 
 import { PsTableDataSource, PsTableDataSourceOptions } from '../data/table-data-source';
-import { IPsTableUpdateDataInfo } from '../models';
+import { IExtendedPsTableUpdateDataInfo } from '../models';
 
 describe('PsTableDataSource', () => {
   it('should have sensible default values', fakeAsync(() => {
@@ -223,7 +223,7 @@ describe('PsTableDataSource', () => {
 
   it('should not sort/filter/page, but provide info to loadData when mode is server', () => {
     const loadedData = Array.from(new Array(20).keys()).map(x => ({ prop: x }));
-    let lastUpdateInfo: IPsTableUpdateDataInfo = null;
+    let lastUpdateInfo: IExtendedPsTableUpdateDataInfo<any> = null;
     const dataSource = new PsTableDataSource<any>(updateInfo => {
       lastUpdateInfo = updateInfo;
       return of(loadedData);
@@ -254,6 +254,7 @@ describe('PsTableDataSource', () => {
       searchText: 'a',
       sortColumn: 'prop',
       sortDirection: 'desc',
+      triggerData: null,
     });
     expect(renderData).toBe(loadedData);
 
@@ -476,7 +477,14 @@ describe('PsTableDataSource', () => {
 
   describe('getUpdateDataInfo', () => {
     it('should work', () => {
-      const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
+      const loadTrigger$ = new Subject<string>();
+      const dataSource = new PsTableDataSource({
+        loadTrigger$: loadTrigger$,
+        loadDataFn: () => of([]),
+        mode: 'client',
+      });
+      dataSource.connect().subscribe();
+      loadTrigger$.next('triggered');
       dataSource.tableReady = true;
 
       dataSource.pageSize = 33;
@@ -506,6 +514,17 @@ describe('PsTableDataSource', () => {
         sortColumn: 'a',
         sortDirection: 'asc',
       });
+
+      expect(dataSource.getUpdateDataInfo(true)).toEqual({
+        pageSize: 5,
+        currentPage: 3,
+        searchText: null,
+        sortColumn: 'a',
+        sortDirection: 'asc',
+        triggerData: 'triggered',
+      });
+
+      dataSource.disconnect();
     });
   });
 
@@ -636,6 +655,40 @@ describe('PsTableDataSource', () => {
     expect(dataSource.visibleRows).toBe(renderData);
     expect(dataSource.data).toEqual([{ prop: 0 }]);
     expect(dataSource.dataLength).toEqual(1);
+
+    sub.unsubscribe();
+  });
+
+  it('should pass last loadTrigger$ value to loadDataFn', () => {
+    const loadTrigger$ = new Subject<string>();
+    const loadTriggerValues: string[] = [];
+    const dataSource = new PsTableDataSource<any>({
+      loadTrigger$: loadTrigger$,
+      loadDataFn: filter => {
+        loadTriggerValues.push(filter.triggerData);
+        return of([]);
+      },
+    });
+    dataSource.tableReady = true;
+
+    let renderData: any[] = [];
+    const sub = dataSource.connect().subscribe(data => {
+      renderData = data;
+    });
+
+    expect(loadTriggerValues).toEqual([]);
+
+    // updateData should call loadDataFn even if loadTrigger$ didn't emit yet
+    dataSource.updateData();
+    expect(loadTriggerValues).toEqual([null]);
+
+    // loadTrigger$ emit should call loadDataFn with the emitted value
+    loadTrigger$.next('test');
+    expect(loadTriggerValues).toEqual([null, 'test']);
+
+    // updateData should call loadDataFn with the last emitted loadTrigger$ value
+    dataSource.updateData();
+    expect(loadTriggerValues).toEqual([null, 'test', 'test']);
 
     sub.unsubscribe();
   });

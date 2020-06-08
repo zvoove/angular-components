@@ -370,7 +370,7 @@ describe('PsTableComponent', () => {
       expect(router.navigate).toHaveBeenCalledWith([], { queryParams: expectedQueryParams, relativeTo: route });
     });
 
-    it('should set locale and update data if data source changes', fakeAsync(() => {
+    it('should set locale on the data source', fakeAsync(() => {
       const initialDataSource = new PsTableDataSource(() => of([]), 'client');
       spyOn(initialDataSource, 'updateData');
       const newDataSource = new PsTableDataSource(() => of([]), 'client');
@@ -378,21 +378,12 @@ describe('PsTableComponent', () => {
 
       const table = createTableInstance();
       table.dataSource = initialDataSource;
-      table.ngOnChanges({ dataSource: new SimpleChange(null, initialDataSource, true) });
       table.ngOnInit();
       table.ngAfterContentInit();
 
       tick(1);
 
       expect(initialDataSource.locale).toBe('de');
-
-      table.dataSource = newDataSource;
-      table.ngOnChanges({ dataSource: new SimpleChange(null, newDataSource, false) });
-
-      expect(newDataSource.locale).toBe('de');
-
-      expect(initialDataSource.updateData).toHaveBeenCalledTimes(1);
-      expect(newDataSource.updateData).toHaveBeenCalledTimes(1);
     }));
 
     it('should update state when sort changes', fakeAsync(() => {
