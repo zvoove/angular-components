@@ -25,6 +25,7 @@ export interface PsSelectDataSourceOptions<T = any> {
   items: MaybeObservable<T[]> | (() => MaybeObservable<T[]>);
   searchDebounce?: number;
   loadTrigger?: PsSelectLoadTrigger;
+  sortBy?: PsSelectSortBy;
 }
 
 export function isPsSelectOptionsData(value: any): value is PsSelectDataSourceOptions {
@@ -41,9 +42,20 @@ export const enum PsSelectLoadTrigger {
   All = Initial + FirstPanelOpen + EveryPanelOpen,
 }
 
+export const enum PsSelectSortBy {
+  // tslint:disable-next-line: no-bitwise
+  None = 0,
+  // tslint:disable-next-line: no-bitwise
+  Selected = 1 << 0,
+  // tslint:disable-next-line: no-bitwise
+  Comparer = 1 << 1,
+  Both = Selected + Comparer,
+}
+
 export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   private _searchDebounceTime: number;
   private _loadTrigger: PsSelectLoadTrigger;
+  private _sortBy: PsSelectSortBy;
   private _isPanelOpen$ = new BehaviorSubject<boolean>(false);
   private _searchText$ = new BehaviorSubject<string>('');
   private _currentValues$ = new BehaviorSubject<T[]>([]);
@@ -55,6 +67,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
 
     this._searchDebounceTime = options.searchDebounce || 300;
     this._loadTrigger = options.loadTrigger || PsSelectLoadTrigger.Initial;
+    this._sortBy = options.sortBy == null ? PsSelectSortBy.Both : options.sortBy;
 
     let loadData: () => Observable<PsSelectItem<T>[]>;
     const entityToSelectItem = createEntityToSelectItemMapper(options.mode, options.idKey, options.labelKey);
@@ -95,7 +108,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   }
 
   public connect(): Observable<PsSelectItem<T>[]> {
-    const optionsLoadTrigger$ = this.createOptionsLoadTrigger();
+    const optionsLoadTrigger$ = this._createOptionsLoadTrigger();
     const loadedOptions$ = optionsLoadTrigger$.pipe(
       switchMap(() => this._loadData()),
       startWith<PsSelectItem<T>[]>([]),
@@ -122,46 +135,18 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
       map(missingValues => this.getItemsForValues(missingValues).map(normalizeLabel))
     );
 
-    const options$ = combineLatest([loadedOptions$, missingOptions$]).pipe(
+    let renderOptions$ = combineLatest([loadedOptions$, missingOptions$]).pipe(
       debounceTime(0),
       map(([options, missingOptions]) => missingOptions.concat(options))
     );
 
-    const panelCloseEvent$ = this._isPanelOpen$.pipe(
-      skip(1), // we don't need the initial value
-      distinctUntilChanged(),
-      filter(x => !x) // we only care about close-events
-    );
-    const valueChangedWhileClosed$ = this._isPanelOpen$.pipe(
-      distinctUntilChanged(),
-      switchMap(panelOpen => (panelOpen ? NEVER : this._currentValues$.pipe(skip(1))))
-    );
-    const sortTrigger$ = merge(panelCloseEvent$, valueChangedWhileClosed$);
-    const renderOptions$ = options$.pipe(
-      // initially and on panel close we must sort the selected options to the top
-      switchMap(options =>
-        sortTrigger$.pipe(
-          startWith(!this._isPanelOpen$.value),
-          map(() => {
-            const selectedOptions = options.filter(option =>
-              this._currentValues$.value.find(value => this.compareWith(option.value, value))
-            );
-            const selectedOptionsSet = new WeakSet(selectedOptions);
-            options.sort((a, b) => {
-              const aSelected = +selectedOptionsSet.has(a);
-              const bSelected = +selectedOptionsSet.has(b);
-              const selectedDifferent = bSelected - aSelected;
-              if (selectedDifferent) {
-                return selectedDifferent;
-              }
+    if (this._sortBy) {
+      const sortTrigger$ = this._createSortTrigger();
+      renderOptions$ = renderOptions$.pipe(switchMap(unsortedOptions => sortTrigger$.pipe(map(() => this._cloneAndSort(unsortedOptions)))));
+    }
 
-              return this.sortCompare(a, b);
-            });
-            return options;
-          })
-        )
-      ),
-      // searchtext handling
+    // searchtext handling
+    renderOptions$ = renderOptions$.pipe(
       switchMap(options =>
         this._searchText$.pipe(
           debounceTime(this._searchDebounceTime),
@@ -170,7 +155,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
           distinctUntilChanged(),
           map(searchText => {
             options.forEach(option => {
-              option.hidden = option.label.toLowerCase().indexOf(searchText) === -1;
+              option.hidden = this.searchCompare(option, searchText);
             });
             return options;
           })
@@ -215,7 +200,14 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     return a.label.localeCompare(b.label);
   };
 
-  private createOptionsLoadTrigger(): Observable<void> {
+  /**
+   * Search comparer for the items.
+   */
+  public searchCompare = (option: PsSelectItem, searchText: string): boolean => {
+    return option.label.toLowerCase().indexOf(searchText) === -1;
+  };
+
+  private _createOptionsLoadTrigger(): Observable<void> {
     const loadTriggers: Observable<any>[] = [];
     // tslint:disable-next-line: no-bitwise
     if (this._loadTrigger & PsSelectLoadTrigger.Initial) {
@@ -235,6 +227,47 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     }
 
     return merge(...loadTriggers);
+  }
+
+  private _createSortTrigger() {
+    const panelCloseEvent$ = this._isPanelOpen$.pipe(
+      skip(1), // we don't need the initial value
+      distinctUntilChanged(),
+      filter(x => !x) // we only care about close-events
+    );
+    const valueChangedWhileClosed$ = this._isPanelOpen$.pipe(
+      distinctUntilChanged(),
+      switchMap(panelOpen => (panelOpen ? NEVER : this._currentValues$.pipe(skip(1))))
+    );
+
+    // initially and on panel close we must sort the selected options to the top
+    return merge(panelCloseEvent$, valueChangedWhileClosed$).pipe(startWith(0));
+  }
+
+  private _cloneAndSort(unsortedOptions: PsSelectItem<T>[]) {
+    let selectedOptionsSet: WeakSet<PsSelectItem> = null;
+    // tslint:disable-next-line: no-bitwise
+    if (this._sortBy & PsSelectSortBy.Selected) {
+      const selectedOptions = unsortedOptions.filter(option =>
+        this._currentValues$.value.find(value => this.compareWith(option.value, value))
+      );
+      selectedOptionsSet = new WeakSet(selectedOptions);
+    }
+    const sortedOptions = unsortedOptions.slice().sort((a, b) => {
+      // tslint:disable-next-line: no-bitwise
+      if (this._sortBy & PsSelectSortBy.Selected) {
+        const aSelected = +selectedOptionsSet.has(a);
+        const bSelected = +selectedOptionsSet.has(b);
+        const selectedDifferent = bSelected - aSelected;
+        if (selectedDifferent) {
+          return selectedDifferent;
+        }
+      }
+
+      // tslint:disable-next-line: no-bitwise
+      return this._sortBy & PsSelectSortBy.Comparer ? this.sortCompare(a, b) : 0;
+    });
+    return sortedOptions;
   }
 }
 

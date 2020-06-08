@@ -3,7 +3,7 @@ import { of, Subject, throwError, BehaviorSubject } from 'rxjs';
 import { delay, switchMap, tap } from 'rxjs/operators';
 
 import { PsSelectItem } from '../models';
-import { DefaultPsSelectDataSource, PsSelectDataSourceOptions, PsSelectLoadTrigger } from './default-select-data-source';
+import { DefaultPsSelectDataSource, PsSelectDataSourceOptions, PsSelectLoadTrigger, PsSelectSortBy } from './default-select-data-source';
 
 describe('DefaultPsSelectDataSource', () => {
   it('should work with array data', fakeAsync(() => {
@@ -497,27 +497,6 @@ describe('DefaultPsSelectDataSource', () => {
     dataSource.disconnect();
   }));
 
-  it('should respect sortCompare', fakeAsync(() => {
-    const item1 = createItem('1', 1);
-    const item2 = createItem('2', 2);
-    const item20 = createItem('20', 20);
-    const item3 = createItem('3', 3);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([item1, item20, item2, item3]), { searchDebounce: 50 }));
-    dataSource.sortCompare = (a, b) => {
-      return a.value - b.value;
-    };
-    let currentRenderOptions;
-
-    // Beim connecten darf das debounce das laden nicht verzögern
-    dataSource.connect().subscribe(options => {
-      currentRenderOptions = options;
-    });
-    tick(1);
-    expect(currentRenderOptions).toEqual([createIdOption(item1), createIdOption(item2), createIdOption(item3), createIdOption(item20)]);
-
-    dataSource.disconnect();
-  }));
-
   it('should set entity of SelectItem in mode id', fakeAsync(() => {
     const item = createItem('1', 1);
     const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([item]));
@@ -549,6 +528,115 @@ describe('DefaultPsSelectDataSource', () => {
 
     dataSource.disconnect();
   }));
+
+  describe('should respect sort options', () => {
+    let dataSource: DefaultPsSelectDataSource;
+    const item1Label1 = createItem('1', 1);
+    const item3Label2Selected = createItem('2', 2);
+    const item4Label3 = createItem('3', 3);
+    const item2Label4 = createItem('4', 4);
+    const item6Label5Selected = createItem('5', 5);
+    const item5Label6Selected = createItem('6', 6);
+    const initialItems = [item1Label1, item2Label4, item3Label2Selected, item4Label3, item5Label6Selected, item6Label5Selected];
+    let currentRenderOptions: PsSelectItem<number>[];
+
+    function initDataSource(sort: PsSelectSortBy, sortCompare?: (a: PsSelectItem, b: PsSelectItem) => number) {
+      dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of(initialItems), { sortBy: sort }));
+      if (sortCompare) {
+        dataSource.sortCompare = sortCompare;
+      }
+      spyOn(dataSource, 'sortCompare').and.callThrough();
+      dataSource.selectedValuesChanged([item3Label2Selected.value, item5Label6Selected.value, item6Label5Selected.value]);
+
+      currentRenderOptions = null;
+      dataSource.connect().subscribe(options => {
+        currentRenderOptions = options;
+      });
+      tick(1);
+    }
+
+    it('null', fakeAsync(() => {
+      initDataSource(null);
+
+      const expectedOptions = [item3Label2Selected, item6Label5Selected, item5Label6Selected, item1Label1, item4Label3, item2Label4].map(
+        x => createIdOption(x)
+      );
+      expect(currentRenderOptions).toEqual(expectedOptions);
+      expect(dataSource.sortCompare).toHaveBeenCalled();
+
+      dataSource.disconnect();
+    }));
+
+    it('PsSelectSort.None', fakeAsync(() => {
+      initDataSource(PsSelectSortBy.None);
+
+      const expectedOptions = initialItems.map(x => createIdOption(x));
+      expect(currentRenderOptions).toEqual(expectedOptions);
+      expect(dataSource.sortCompare).not.toHaveBeenCalled();
+
+      dataSource.disconnect();
+    }));
+
+    it('PsSelectSort.Selected', fakeAsync(() => {
+      initDataSource(PsSelectSortBy.Selected);
+
+      const expectedOptions = [item3Label2Selected, item5Label6Selected, item6Label5Selected, item1Label1, item2Label4, item4Label3].map(
+        x => createIdOption(x)
+      );
+      expect(currentRenderOptions).toEqual(expectedOptions);
+      expect(dataSource.sortCompare).not.toHaveBeenCalled();
+
+      dataSource.disconnect();
+    }));
+
+    it('PsSelectSort.Comparer', fakeAsync(() => {
+      initDataSource(PsSelectSortBy.Comparer);
+
+      const expectedOptions = [item1Label1, item3Label2Selected, item4Label3, item2Label4, item6Label5Selected, item5Label6Selected].map(
+        x => createIdOption(x)
+      );
+      expect(currentRenderOptions).toEqual(expectedOptions);
+      expect(dataSource.sortCompare).toHaveBeenCalled();
+
+      dataSource.disconnect();
+    }));
+
+    it('PsSelectSort.Comparer with custom reverse sorting', fakeAsync(() => {
+      initDataSource(PsSelectSortBy.Comparer, (a, b) => b.value - a.value); // reverse sort
+
+      const expectedOptions = [item5Label6Selected, item6Label5Selected, item2Label4, item4Label3, item3Label2Selected, item1Label1].map(
+        x => createIdOption(x)
+      );
+      expect(currentRenderOptions).toEqual(expectedOptions);
+      expect(dataSource.sortCompare).toHaveBeenCalled();
+
+      dataSource.disconnect();
+    }));
+
+    it('PsSelectSort.Both', fakeAsync(() => {
+      initDataSource(PsSelectSortBy.Both);
+
+      const expectedOptions = [item3Label2Selected, item6Label5Selected, item5Label6Selected, item1Label1, item4Label3, item2Label4].map(
+        x => createIdOption(x)
+      );
+      expect(currentRenderOptions).toEqual(expectedOptions);
+      expect(dataSource.sortCompare).toHaveBeenCalled();
+
+      dataSource.disconnect();
+    }));
+
+    it('PsSelectSort.Both with custom reverse sorting', fakeAsync(() => {
+      initDataSource(PsSelectSortBy.Both, (a, b) => b.value - a.value); // reverse sort
+
+      const expectedOptions = [item5Label6Selected, item6Label5Selected, item3Label2Selected, item2Label4, item4Label3, item1Label1].map(
+        x => createIdOption(x)
+      );
+      expect(currentRenderOptions).toEqual(expectedOptions);
+      expect(dataSource.sortCompare).toHaveBeenCalled();
+
+      dataSource.disconnect();
+    }));
+  });
 });
 
 interface Item {

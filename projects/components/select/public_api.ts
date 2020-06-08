@@ -7,6 +7,7 @@ export { PsSelectService } from './src/select.service';
 export {
   DefaultPsSelectDataSource,
   PsSelectLoadTrigger,
+  PsSelectSortBy,
   PsSelectDataSourceOptions,
   isPsSelectOptionsData,
 } from './src/defaults/default-select-data-source';
