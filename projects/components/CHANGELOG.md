@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.18](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.17...@prosoft/components@0.1.0-alpha.18) (2020-06-09)
+
+
+### Bug Fixes
+
+* style fixes for table and form ([#102](https://github.com/prosoft-edv/components/issues/102)) ([559b257](https://github.com/prosoft-edv/components/commit/559b257))
+
+
+### Features
+
+* **table:** pass loadTrigger data to loadFn ([#95](https://github.com/prosoft-edv/components/issues/95)) ([0224210](https://github.com/prosoft-edv/components/commit/0224210))
+
+
+
+
+
+
 # [0.1.0-alpha.17](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.16...@prosoft/components@0.1.0-alpha.17) (2020-06-08)
 
 
