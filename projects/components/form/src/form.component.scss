@@ -7,16 +7,16 @@
   grid-gap: 1em;
 }
 
-.ps-form__error-container {
+mat-card.ps-form__error-container {
   color: var(--ps-error);
 }
 
-.ps-form__error-container--center {
+mat-card.ps-form__error-container--center {
   display: grid;
   justify-items: center;
 }
 
-.ps-form__error-icon {
+mat-icon.ps-form__error-icon {
   color: var(--ps-error);
   font-size: 72px;
   height: 72px;

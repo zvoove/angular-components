@@ -76,6 +76,11 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   @HostBinding('class.mat-elevation-z1')
   public cardLayout = true;
 
+  @HostBinding('class.ps-table--card')
+  public get cardLayoutBinding() {
+    return this.cardLayout;
+  }
+
   @Input()
   @HostBinding('class.ps-table--striped')
   public striped = false;

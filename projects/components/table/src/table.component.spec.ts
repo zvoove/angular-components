@@ -495,6 +495,7 @@ describe('PsTableComponent', () => {
 
       // ps-table[cardLayout]
       expect(psTableDbg.classes['mat-elevation-z1']).toEqual(true);
+      expect(psTableDbg.classes['ps-table--card']).toEqual(true);
 
       // ps-table[striped]
       expect(psTableDbg.classes['ps-table--striped']).toEqual(true);
