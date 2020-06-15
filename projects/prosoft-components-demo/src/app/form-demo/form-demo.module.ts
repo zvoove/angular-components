@@ -9,26 +9,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { PsFormModule } from '@prosoft/components/form';
-import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormBaseModule } from '@prosoft/components/form-base';
+import { PsFormBaseModule } from '@prosoft/components/form-base';
 import { PsSavebarModule } from '@prosoft/components/savebar';
-import { Observable, of } from 'rxjs';
 
+import { DemoPsFormsService } from '../common/demo-ps-form-service';
 import { FormDataSourceDemoComponent } from './form-data-source-demo.component';
 import { FormDemoComponent } from './form-demo.component';
-
-export class DemoPsFormsService extends BasePsFormService {
-  public getLabel(formControl: any): Observable<string> {
-    return formControl.psLabel ? of(formControl.psLabel) : null;
-  }
-  protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
-    return of(
-      errorData.map(data => ({
-        errorText: `${data.controlPath} - ${data.errorKey} - ${JSON.stringify(data.errorValue)}`,
-        data: data,
-      }))
-    );
-  }
-}
 
 @NgModule({
   imports: [

@@ -49,6 +49,10 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./slider-demo/slider-demo.module').then(m => m.SliderDemoModule),
       },
       {
+        path: 'number-input',
+        loadChildren: () => import('./number-input-demo/number-input-demo.module').then(m => m.NumberInputDemoModule),
+      },
+      {
         path: 'form',
         loadChildren: () => import('./form-demo/form-demo.module').then(m => m.FormDemoModule),
       },

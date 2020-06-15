@@ -1,0 +1,44 @@
+<div class="ps-number-input__wrapper">
+  <input
+    #inputfield
+    type="text"
+    [value]="_formattedValue || null"
+    [attr.aria-valumin]="min"
+    [attr.aria-valuemax]="max"
+    [attr.aria-valuenow]="value"
+    [attr.tabindex]="tabindex"
+    [attr.placeholder]="placeholder"
+    [disabled]="disabled"
+    [readonly]="readonly"
+    [attr.required]="required"
+    (keydown)="_onInputKeydown($event)"
+    (input)="_onInput($event)"
+    (focus)="_onFocusChanged(true)"
+    (blur)="_onFocusChanged(false)"
+    class="ps-number-input__input mat-input-element"
+  />
+  <button
+    type="button"
+    class="ps-number-input__button-up"
+    [disabled]="disabled || readonly"
+    tabindex="-1"
+    [attr.readonly]="readonly"
+    (mouseleave)="_onUpButtonMouseleave($event)"
+    (mousedown)="_onUpButtonMousedown($event)"
+    (mouseup)="_onUpButtonMouseup($event)"
+  >
+    <mat-icon>keyboard_arrow_up</mat-icon>
+  </button>
+  <button
+    type="button"
+    class="ps-number-input__button-down"
+    [disabled]="disabled || readonly"
+    tabindex="-1"
+    [attr.readonly]="readonly"
+    (mouseleave)="_onDownButtonMouseleave($event)"
+    (mousedown)="_onDownButtonMousedown($event)"
+    (mouseup)="_onDownButtonMouseup($event)"
+  >
+    <mat-icon>keyboard_arrow_down</mat-icon>
+  </button>
+</div>

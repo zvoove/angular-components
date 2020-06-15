@@ -1,0 +1,52 @@
+.ps-number-input__wrapper {
+  overflow: visible;
+  position: relative;
+}
+
+.ps-number-input__input {
+  box-sizing: border-box;
+  width: 100%;
+  padding-right: 1.5em;
+}
+
+.ps-number-input__button-up,
+.ps-number-input__button-down {
+  cursor: pointer;
+  display: block;
+  height: 50%;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  width: 1.5em;
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.54);
+
+  mat-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -0.5em;
+    margin-left: -0.5em;
+    width: 1em;
+  }
+
+  &:not([disabled]):hover {
+    color: var(--ps-primary);
+  }
+
+  &[disabled] {
+    cursor: default;
+  }
+}
+
+.ps-number-input__button-up {
+  top: 0;
+}
+
+.ps-number-input__button-down {
+  bottom: 0;
+}
