@@ -54,6 +54,7 @@ import { IPsTableSortDefinition } from '../models';
 
       .ps-table-header__sort {
         flex: 0 1 350px;
+        margin-right: auto; /* This counters the margin of the actions to push the search back to the middle */
       }
 
       .ps-table-header__search {
@@ -65,6 +66,7 @@ import { IPsTableSortDefinition } from '../models';
         margin: 0.3em 8px 1em;
         text-align: end;
         align-self: flex-end;
+        margin-left: auto; /* This ensures that the actions are always right, even if there is no other flex item */
       }
     `,
   ],
