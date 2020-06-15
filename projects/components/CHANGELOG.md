@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.19](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.18...@prosoft/components@0.1.0-alpha.19) (2020-06-15)
+
+
+### Bug Fixes
+
+* **block-ui:** no flickering in fixed size parents with overflow auto ([#105](https://github.com/prosoft-edv/components/issues/105)) ([7e589e6](https://github.com/prosoft-edv/components/commit/7e589e6))
+* **table:** actions always stay right aligned ([#104](https://github.com/prosoft-edv/components/issues/104)) ([aed0d6a](https://github.com/prosoft-edv/components/commit/aed0d6a)), closes [#103](https://github.com/prosoft-edv/components/issues/103)
+
+
+### Features
+
+* **number-input:** new input for number values ([#101](https://github.com/prosoft-edv/components/issues/101)) ([9e81016](https://github.com/prosoft-edv/components/commit/9e81016))
+
+
+
+
+
+
 # [0.1.0-alpha.18](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.17...@prosoft/components@0.1.0-alpha.18) (2020-06-09)
 
 
