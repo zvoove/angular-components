@@ -8,6 +8,23 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
       <mat-label>Text for the block ui</mat-label>
       <input type="text" matInput [(ngModel)]="spinnerText" />
     </mat-form-field>
+    <div style="height: 1em;"></div>
+    <div style="height: 50px; overflow: auto;">
+      <ps-block-ui [blocked]="blocked">
+        <div style="height: 50px;">
+          this box with overflow auto will be blocked without flickering
+        </div>
+      </ps-block-ui>
+    </div>
+    <div style="height: 1em;"></div>
+    <div style="height: 50px; overflow: auto;">
+      <ps-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
+        <div style="height: 50px;">
+          this box with overflow auto will be blocked without flickering
+        </div>
+      </ps-block-ui>
+    </div>
+    <div style="height: 1em;"></div>
     <ps-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
       <mat-card>
         this will be blocked

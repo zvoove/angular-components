@@ -18,7 +18,9 @@ import {
     <ng-container *ngIf="blocked">
       <div class="ps-block-ui__overlay">
         <div class="ps-block-ui__overlay-content">
-          <mat-spinner class="ps-block-ui__spinner" [diameter]="spinnerDiameter"></mat-spinner>
+          <div class="ps-block-ui__spinner-container">
+            <mat-spinner class="ps-block-ui__spinner" [diameter]="spinnerDiameter"></mat-spinner>
+          </div>
           <div *ngIf="spinnerText">{{ spinnerText }}</div>
         </div>
       </div>
@@ -45,6 +47,10 @@ import {
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+
+      .ps-block-ui__spinner-container {
+        overflow: hidden;
       }
 
       .ps-block-ui__spinner {
