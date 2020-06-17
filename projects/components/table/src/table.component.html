@@ -29,7 +29,7 @@
         [settingsEnabled]="settingsEnabled"
         [showListActions]="showListActions"
         [displayedColumns]="displayedColumns"
-        (showSettingsClicked)="flipContainer.toggleFlip()"
+        (showSettingsClicked)="flipContainer.showBack()"
         (refreshDataClicked)="onRefreshDataClicked()"
       ></ps-table-data>
 
@@ -57,7 +57,7 @@
       [columnDefinitions]="columnDefs"
       [sortDefinitions]="sortDefinitions"
       [pageSizeOptions]="pageSizeOptions"
-      (settingsAborted)="flipContainer.toggleFlip()"
+      (settingsAborted)="flipContainer.showFront()"
       (settingsSaved)="onSettingsSaved()"
       [customSettings]="customSettings"
     >

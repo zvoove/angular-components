@@ -260,7 +260,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   public onSettingsSaved() {
     this.stateManager.remove(this.tableId);
-    this.flipContainer.toggleFlip();
+    this.flipContainer.showFront();
   }
 
   public toggleRowDetail(item: any, open?: boolean) {

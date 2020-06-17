@@ -39,48 +39,66 @@ import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-
 export class PsFlipContainerComponent implements AfterViewInit {
   @Input() public removeHiddenNodes = true;
 
+  public get active(): 'back' | 'front' {
+    return this._active;
+  }
+
   @ContentChild(FlipContainerFrontDirective, { read: TemplateRef, static: false })
-  public frontTemplate: TemplateRef<any> | null = null;
+  public _frontTemplate: TemplateRef<any> | null = null;
 
   @ContentChild(FlipContainerBackDirective, { read: TemplateRef, static: false })
-  public backTemplate: TemplateRef<any> | null = null;
+  public _backTemplate: TemplateRef<any> | null = null;
 
-  @ViewChild('frontside', { static: true }) public frontside: ElementRef<any>;
-  @ViewChild('backside', { static: true }) public backside: ElementRef<any>;
+  @ViewChild('frontside', { static: true }) public _frontside: ElementRef<any>;
+  @ViewChild('backside', { static: true }) public _backside: ElementRef<any>;
 
-  public show: 'back' | 'front' = 'front';
-  public attachFront = true;
-  public attachBack = false;
+  public _active: 'back' | 'front' = 'front';
+  public _attachFront = true;
+  public _attachBack = false;
 
   constructor(private cd: ChangeDetectorRef) {}
 
   public ngAfterViewInit() {
-    this.backside.nativeElement.hidden = true;
+    this._backside.nativeElement.hidden = true;
+  }
+
+  public showFront() {
+    this.show('front');
+  }
+
+  public showBack() {
+    this.show('back');
+  }
+
+  public show(show: 'back' | 'front') {
+    if (this._active !== show) {
+      this._active = show;
+      this.cd.markForCheck();
+    }
   }
 
   public toggleFlip() {
-    this.show = this.show === 'front' ? 'back' : 'front';
-    this.cd.markForCheck();
+    this.show(this._active === 'front' ? 'back' : 'front');
   }
 
-  public flipStarted() {
-    if (this.show === 'back') {
-      this.backside.nativeElement.hidden = false;
-      this.attachBack = true;
+  public _flipStart() {
+    if (this._active === 'back') {
+      this._backside.nativeElement.hidden = false;
+      this._attachBack = true;
     } else {
-      this.frontside.nativeElement.hidden = false;
-      this.attachFront = true;
+      this._frontside.nativeElement.hidden = false;
+      this._attachFront = true;
     }
     this.cd.markForCheck();
   }
 
-  public flipDone() {
-    if (this.show === 'back') {
-      this.frontside.nativeElement.hidden = true;
-      this.attachFront = false;
+  public _flipDone() {
+    if (this._active === 'back') {
+      this._frontside.nativeElement.hidden = true;
+      this._attachFront = false;
     } else {
-      this.backside.nativeElement.hidden = true;
-      this.attachBack = false;
+      this._backside.nativeElement.hidden = true;
+      this._attachBack = false;
     }
     this.cd.markForCheck();
   }

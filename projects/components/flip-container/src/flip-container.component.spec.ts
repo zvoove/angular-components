@@ -29,21 +29,86 @@ describe('PsFlipContainerComponent', () => {
     }).compileComponents();
   }));
 
-  it('should initially show front and switch to back after toggle', fakeAsync(() => {
+  it('should initially show front and correctly switch between front and back', fakeAsync(() => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
     const flipBoxDbg = fixture.debugElement.query(By.css('.ps-flip-container__flip-box'));
     expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
+    expect(component.cmp.active).toEqual('front');
 
     component.cmp.toggleFlip();
+    expect(component.cmp.active).toEqual('back');
     fixture.detectChanges();
-
     tick(300);
     fixture.detectChanges();
-
     expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
+    expect(component.cmp.active).toEqual('back');
+
+    component.cmp.toggleFlip();
+    expect(component.cmp.active).toEqual('front');
+    fixture.detectChanges();
+    tick(300);
+    fixture.detectChanges();
+    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
+    expect(component.cmp.active).toEqual('front');
+
+    component.cmp.showFront();
+    expect(component.cmp.active).toEqual('front');
+    fixture.detectChanges();
+    tick(300);
+    fixture.detectChanges();
+    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
+    expect(component.cmp.active).toEqual('front');
+
+    component.cmp.showBack();
+    expect(component.cmp.active).toEqual('back');
+    fixture.detectChanges();
+    tick(300);
+    fixture.detectChanges();
+    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
+    expect(component.cmp.active).toEqual('back');
+
+    component.cmp.showBack();
+    expect(component.cmp.active).toEqual('back');
+    fixture.detectChanges();
+    tick(300);
+    fixture.detectChanges();
+    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
+    expect(component.cmp.active).toEqual('back');
+
+    component.cmp.show('back');
+    expect(component.cmp.active).toEqual('back');
+    fixture.detectChanges();
+    tick(300);
+    fixture.detectChanges();
+    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
+    expect(component.cmp.active).toEqual('back');
+
+    component.cmp.show('front');
+    expect(component.cmp.active).toEqual('front');
+    fixture.detectChanges();
+    tick(300);
+    fixture.detectChanges();
+    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
+    expect(component.cmp.active).toEqual('front');
+
+    component.cmp.show('front');
+    expect(component.cmp.active).toEqual('front');
+    fixture.detectChanges();
+    tick(300);
+    fixture.detectChanges();
+    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
+    expect(component.cmp.active).toEqual('front');
+
+    component.cmp.show('back');
+    expect(component.cmp.active).toEqual('back');
+    fixture.detectChanges();
+    tick(300);
+    fixture.detectChanges();
+    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
+    expect(component.cmp.active).toEqual('back');
   }));
 
   it('should hide DOM nodes with removeHiddenNodes false', fakeAsync(() => {

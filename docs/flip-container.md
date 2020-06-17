@@ -37,7 +37,10 @@ import { PsFlipContainerModule } from '@prosoft/components/flip-container';
 
 | Name                 | Description                                                                    |
 | -------------------- | ------------------------------------------------------------------------------ |
-| `toggleFlip(): void` | Toggles the flip animation and shows the opposite side of the PsFlipContainer. |
+| `toggleFlip(): void` | Shows the opposite side of the PsFlipContainer. |
+| `show(show: 'front' \| 'back'): void` | Shows the given side of the PsFlipContainer. |
+| `showFront(): void` | Shows the front side of the PsFlipContainer. |
+| `showBack(): void` | Shows the back side of the PsFlipContainer. |
 
 ---
 

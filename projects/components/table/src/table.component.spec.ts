@@ -420,12 +420,12 @@ describe('PsTableComponent', () => {
 
       const table = createTableInstance();
       table.tableId = 'tableId';
-      table.flipContainer = { toggleFlip: () => {} } as any;
-      spyOn(table.flipContainer, 'toggleFlip');
+      table.flipContainer = { showFront: () => {} } as any;
+      spyOn(table.flipContainer, 'showFront');
 
       table.onSettingsSaved();
 
-      expect(table.flipContainer.toggleFlip).toHaveBeenCalledTimes(1);
+      expect(table.flipContainer.showFront).toHaveBeenCalledTimes(1);
       const expectedQueryParams = {
         existingParam: '0815',
       };
@@ -611,7 +611,7 @@ describe('PsTableComponent', () => {
         flush();
         fixture.detectChanges();
         flush();
-        expect(component.table.flipContainer.show).toEqual('back');
+        expect(component.table.flipContainer.active).toEqual('back');
         fixture.whenRenderingDone().then(() => {
           const tableSettingsDbg = psTableDbg.query(By.directive(PsTableSettingsComponent));
           // *psTableCustomSettings
