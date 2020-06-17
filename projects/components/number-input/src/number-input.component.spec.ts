@@ -72,7 +72,7 @@ describe('PsNumberInputComponent', () => {
     expect(spinner.value).toEqual(0.75);
   });
 
-  it('Should display the formated value with thousand and decimal separator when input is filled by value 1234.1234', () => {
+  it('Should display the formatted value with thousand and decimal separator when input is filled by value 1234.1234', () => {
     fixture.detectChanges();
 
     spinner.decimals = 4;
@@ -168,13 +168,13 @@ describe('PsNumberInputComponent', () => {
   });
 
   it('should change placeholder tabindex and required', () => {
-    spinner.placeholder = 'Primeng ROCKS!';
+    spinner.placeholder = 'PLACEHOLDER';
     spinner.tabindex = 13;
     spinner.required = true;
     fixture.detectChanges();
 
     const inputEl = fixture.debugElement.query(By.css('input'));
-    expect(inputEl.nativeElement.placeholder).toEqual('Primeng ROCKS!');
+    expect(inputEl.nativeElement.placeholder).toEqual('PLACEHOLDER');
     expect(inputEl.nativeElement.tabIndex).toEqual(13);
     expect(inputEl.nativeElement.required).toEqual(true);
   });
@@ -201,7 +201,6 @@ describe('PsNumberInputComponent', () => {
   it('should format input', () => {
     spinner._thousandSeparator = ',';
     spinner._decimalSeparator = '.';
-    spinner.formatInput = true;
     spinner.stepSize = 0.25;
     spinner.value = 10000;
     fixture.detectChanges();

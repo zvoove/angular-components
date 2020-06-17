@@ -27,7 +27,6 @@ import { PsNumberInputModule } from '@prosoft/components/number-input';
 | `max: number`                          | Sets the highest selectable number.                                   |
 | `stepSize: number`                     | Sets the step size of each click on the up/down buttons.              |
 | `decimals: number`                     | Sets the number of allowed decimal places.                            |
-| `formatInput: boolean`                 | `true` if the shown value should be formated on blur.                 |
 | `placeholder: string`                  | The input placeholder.                                                |
 | `required: boolean`                    | `true` if the input should be required (for ngModel binding).         |
 | `disabled: boolean`                    | `true` if the input should be disabled (for ngModel binding).         |
@@ -58,5 +57,5 @@ export class MyModule {}
 Now you can use it in your components like this:
 
 ```html
-<ps-number-input formControlName="ControlName" [min]="min" [max]="max" [stepSize]="stepSize" [decimals]="2" [formatInput]="true"></ps-number-input>
+<ps-number-input formControlName="ControlName" [min]="min" [max]="max" [stepSize]="stepSize" [decimals]="2"></ps-number-input>
 ```

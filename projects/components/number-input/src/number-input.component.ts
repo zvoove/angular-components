@@ -80,9 +80,6 @@ export class PsNumberInputComponent extends _PsNumberInputMixinBase
   /** Index of the element in tabbing order. */
   @Input() tabindex: number;
 
-  /** When present, formats the user input at blur event. */
-  @Input() formatInput: boolean;
-
   /** Number of allowed decimal places. */
   @Input() decimals: number;
 
@@ -231,11 +228,8 @@ export class PsNumberInputComponent extends _PsNumberInputMixinBase
 
   _formattedValue: string;
   _timer: any;
-  _browserDecimalSeparator: string;
-  _browserThousandSeparator: string;
   _decimalSeparator: string;
   _thousandSeparator: string;
-  _browserThousandRegExp: RegExp;
   _calculatedDecimals: number;
 
   @ViewChild('inputfield', { static: true })
@@ -264,14 +258,8 @@ export class PsNumberInputComponent extends _PsNumberInputMixinBase
     // Force setter to be called in case id was not specified.
     this.id = this.id;
 
-    if (this.formatInput) {
-      this._browserDecimalSeparator = (1.1).toLocaleString().substring(1, 2);
-      this._browserThousandSeparator = (1000).toLocaleString().substring(1, 2);
-      this._browserThousandRegExp = new RegExp(`[${this._browserThousandSeparator}]`, 'gim');
-
-      this._decimalSeparator = getLocaleNumberSymbol(this.localeId, NumberSymbol.Decimal);
-      this._thousandSeparator = getLocaleNumberSymbol(this.localeId, NumberSymbol.Group);
-    }
+    this._decimalSeparator = getLocaleNumberSymbol(this.localeId, NumberSymbol.Decimal);
+    this._thousandSeparator = getLocaleNumberSymbol(this.localeId, NumberSymbol.Group);
   }
 
   ngOnChanges() {
@@ -375,11 +363,9 @@ export class PsNumberInputComponent extends _PsNumberInputMixinBase
     const value: any = this.value;
     if (value == null) {
       this._formattedValue = null;
-    } else if (this.formatInput) {
+    } else {
       const decimals = this._getDecimals();
       this._formattedValue = value.toLocaleString(this.localeId, { maximumFractionDigits: decimals });
-    } else {
-      this._formattedValue = value.toString();
     }
 
     if (this._inputfieldViewChild && this._inputfieldViewChild.nativeElement) {

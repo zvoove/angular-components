@@ -14,7 +14,6 @@ import { ErrorStateMatcher } from '@angular/material/core';
           <mat-checkbox [(ngModel)]="readonly">readonly</mat-checkbox>
           <mat-checkbox [(ngModel)]="required">required</mat-checkbox>
           <mat-checkbox [(ngModel)]="validatorRequired" (change)="onValidatorChange()">required validator</mat-checkbox>
-          <mat-checkbox [(ngModel)]="formatInput">formatInput</mat-checkbox>
           <mat-checkbox [(ngModel)]="useErrorStateMatcher" (change)="onUseErrorStateMatcherChange()"
             >errorStateMatcher (always invalid)</mat-checkbox
           >
@@ -52,7 +51,6 @@ import { ErrorStateMatcher } from '@angular/material/core';
               [max]="max"
               [stepSize]="stepSize"
               [decimals]="decimals"
-              [formatInput]="formatInput"
               [placeholder]="placeholder"
               [required]="required"
               [disabled]="disabled"
@@ -73,7 +71,6 @@ import { ErrorStateMatcher } from '@angular/material/core';
               [max]="max"
               [stepSize]="stepSize"
               [decimals]="decimals"
-              [formatInput]="formatInput"
               [placeholder]="placeholder"
               [required]="required"
               [disabled]="disabled"
@@ -94,7 +91,6 @@ import { ErrorStateMatcher } from '@angular/material/core';
               [max]="max"
               [stepSize]="stepSize"
               [decimals]="decimals"
-              [formatInput]="formatInput"
               [placeholder]="placeholder"
               [required]="required"
               [disabled]="disabled"
@@ -146,7 +142,6 @@ export class NumberInputDemoComponent {
   public max = 20;
   public stepSize = 1;
   public decimals = 1;
-  public formatInput = true;
   public placeholder = '';
   public required = false;
   public disabled = false;
@@ -211,7 +206,7 @@ export class NumberInputDemoComponent {
     }
     return `  <ps-number-input
     [min]="${this.min}" [max]="${this.max}" [stepSize]="${this.stepSize}" [decimals]="${this.decimals}"
-    [formatInput]="${this.formatInput}" [placeholder]="${this.placeholder}" [required]="${this.required}"
+    [placeholder]="${this.placeholder}" [required]="${this.required}"
     [disabled]="${this.disabled}" [readonly]="${this.readonly}" [errorStateMatcher]="${
       this.errorStateMatcher ? 'errorStateMatcher' : 'null'
     }"
