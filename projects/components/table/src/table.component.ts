@@ -55,11 +55,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   @Input() public intlOverride: Partial<IPsTableIntlTexts>;
   @Input()
   public set sortDefinitions(value: IPsTableSortDefinition[]) {
-    if (!value) {
-      return;
-    }
-
-    this._sortDefinitions = [...value];
+    this._sortDefinitions = value ? [...value] : [];
     this.mergeSortDefinitions();
   }
 
@@ -92,29 +88,72 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   @ViewChild(PsFlipContainerComponent, { static: true }) public flipContainer: PsFlipContainerComponent | null = null;
 
   @ContentChild(PsTableCustomHeaderDirective, { read: TemplateRef, static: false })
-  public customHeader: TemplateRef<any> | null = null;
+  public set customHeader(value: TemplateRef<any> | null) {
+    this._customHeader = value;
+    this.cd.markForCheck();
+  }
+  public get customHeader() {
+    return this._customHeader;
+  }
+  private _customHeader: TemplateRef<any> | null = null;
 
   @ContentChild(PsTableCustomSettingsDirective, { read: TemplateRef, static: false })
-  public customSettings: TemplateRef<any> | null = null;
+  public set customSettings(value: TemplateRef<any> | null) {
+    this._customSettings = value;
+    this.cd.markForCheck();
+  }
+  public get customSettings() {
+    return this._customSettings;
+  }
+  private _customSettings: TemplateRef<any> | null = null;
 
   @ContentChild(PsTableTopButtonSectionDirective, { read: TemplateRef, static: false })
-  public topButtonSection: TemplateRef<any> | null = null;
+  public set topButtonSection(value: TemplateRef<any> | null) {
+    this._topButtonSection = value;
+    this.cd.markForCheck();
+  }
+  public get topButtonSection() {
+    return this._topButtonSection;
+  }
+  private _topButtonSection: TemplateRef<any> | null = null;
 
   @ContentChild(PsTableListActionsDirective, { read: TemplateRef, static: false })
-  public listActions: TemplateRef<any> | null = null;
+  public set listActions(value: TemplateRef<any> | null) {
+    this._listActions = value;
+    this.updateTableState();
+  }
+  public get listActions() {
+    return this._listActions;
+  }
+  private _listActions: TemplateRef<any> | null = null;
 
   @ContentChild(PsTableRowActionsDirective, { read: TemplateRef, static: false })
-  public rowActions: TemplateRef<any> | null = null;
+  public set rowActions(value: TemplateRef<any> | null) {
+    this._rowActions = value;
+    this.updateTableState();
+  }
+  public get rowActions() {
+    return this._rowActions;
+  }
+  private _rowActions: TemplateRef<any> | null = null;
 
   @ContentChildren(PsTableColumnDirective)
   public set columnDefsSetter(queryList: QueryList<PsTableColumnDirective>) {
     this.columnDefs = [...queryList.toArray()];
     this.mergeSortDefinitions();
+    this.updateTableState();
   }
 
   @HostBinding('class.ps-table--row-detail')
   @ContentChild(PsTableRowDetailDirective, { static: false })
-  public rowDetail: PsTableRowDetailDirective | null = null;
+  public set rowDetail(value: PsTableRowDetailDirective | null) {
+    this._rowDetail = value;
+    this.updateTableState();
+  }
+  public get rowDetail() {
+    return this._rowDetail;
+  }
+  private _rowDetail: PsTableRowDetailDirective | null = null;
 
   public pageSizeOptions: number[];
   public columnDefs: PsTableColumnDirective[] = [];
@@ -188,6 +227,8 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   private subscriptions: Subscription[] = [];
   private _sortDefinitions: IPsTableSortDefinition[] = [];
   private _mergedSortDefinitions: IPsTableSortDefinition[] = [];
+  private _tableSettings: Partial<IPsTableSetting> = {};
+  private _urlSettings: Partial<IPsTableUpdateDataInfo> = {};
   private _intlChangesSub: Subscription;
 
   private ngUnsubscribe$ = new Subject<void>();
@@ -216,6 +257,8 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     if (changes.intlOverride) {
       this.updateIntl();
     }
+
+    this.updateTableState();
   }
 
   public ngAfterContentInit(): void {
@@ -287,27 +330,14 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
         )
         .subscribe({
           next: ([urlSettings, tableSettings]) => {
+            this._urlSettings = urlSettings || {};
+            this._tableSettings = tableSettings || {};
+
             // Paging, Sorting, Filter und Display Columns updaten
-            this.updateTableState(tableSettings, urlSettings);
-
-            // Row Detail Expander aktivieren
-            if (this.rowDetail && this.rowDetail.showToggleColumn) {
-              this.displayedColumns.splice(0, 0, 'rowDetailExpander');
-            }
-
-            // Selektierung der Rows aktivieren
-            if (this.listActions) {
-              this.displayedColumns.splice(0, 0, 'select');
-            }
-
-            // Selektierungs- und Row-Aktionen aktivieren
-            if (this.showListActions || this.rowActions) {
-              this.displayedColumns.push('options');
-            }
+            this.updateTableState();
 
             this.dataSource.tableReady = true;
             this.dataSource.updateData(false);
-            this.cd.markForCheck();
           },
           error: (err: Error | any) => {
             this.dataSource.error = err;
@@ -316,9 +346,9 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     );
   }
 
-  private updateTableState(tableSettings: Partial<IPsTableSetting>, urlSettings: Partial<IPsTableUpdateDataInfo>) {
-    tableSettings = tableSettings || {};
-    urlSettings = urlSettings || {};
+  private updateTableState() {
+    const tableSettings = this._tableSettings;
+    const urlSettings = this._urlSettings;
 
     this.pageIndex = Math.max(urlSettings.currentPage || 0, 0);
     this.pageSize = Math.max(urlSettings.pageSize || tableSettings.pageSize || 15, 1);
@@ -330,6 +360,23 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     if (tableSettings.columnBlacklist && tableSettings.columnBlacklist.length) {
       this.displayedColumns = this.displayedColumns.filter(x => !tableSettings.columnBlacklist.includes(x));
     }
+
+    // Row Detail Expander aktivieren
+    if (this.rowDetail && this.rowDetail.showToggleColumn) {
+      this.displayedColumns.splice(0, 0, 'rowDetailExpander');
+    }
+
+    // Selektierung der Rows aktivieren
+    if (this.listActions) {
+      this.displayedColumns.splice(0, 0, 'select');
+    }
+
+    // Selektierungs- und Row-Aktionen aktivieren
+    if (this.showListActions || this.rowActions) {
+      this.displayedColumns.push('options');
+    }
+
+    this.cd.markForCheck();
   }
 
   private mergeSortDefinitions() {
@@ -341,7 +388,6 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
       .concat(this._sortDefinitions)
       .filter((value, index, self) => self.indexOf(value) === index)
       .sort((a, b) => a.displayName.toLocaleLowerCase().localeCompare(b.displayName.toLocaleLowerCase()));
-    this.cd.markForCheck();
   }
 
   private updateIntl() {

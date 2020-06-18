@@ -343,7 +343,7 @@ describe('PsTableComponent', () => {
       expect(table.showSorting).toBe(true);
       expect(table.sortDefinitions).toEqual([customSortDef]);
 
-      table.sortDefinitions = [];
+      table.sortDefinitions = null;
       expect(table.showSorting).toBe(false);
       expect(table.sortDefinitions).toEqual([]);
     }));
@@ -431,6 +431,37 @@ describe('PsTableComponent', () => {
       };
       expect(router.navigate).toHaveBeenCalledWith([], { queryParams: expectedQueryParams, relativeTo: route });
       tick(1);
+    }));
+
+    it('should update view when view/content children change', fakeAsync(() => {
+      spyOn(cd, 'markForCheck');
+      const table = createTableInstance() as PsTableComponent & { updateTableState: () => void };
+      spyOn(table, 'updateTableState').and.callThrough();
+
+      table.customHeader = null;
+      expect(cd.markForCheck).toHaveBeenCalledTimes(1);
+
+      table.customSettings = null;
+      expect(cd.markForCheck).toHaveBeenCalledTimes(2);
+
+      table.topButtonSection = null;
+      expect(cd.markForCheck).toHaveBeenCalledTimes(3);
+
+      table.listActions = null;
+      expect((table as any).updateTableState).toHaveBeenCalledTimes(1);
+      expect(cd.markForCheck).toHaveBeenCalledTimes(4);
+
+      table.rowActions = null;
+      expect((table as any).updateTableState).toHaveBeenCalledTimes(2);
+      expect(cd.markForCheck).toHaveBeenCalledTimes(5);
+
+      table.columnDefsSetter = new QueryList();
+      expect((table as any).updateTableState).toHaveBeenCalledTimes(3);
+      expect(cd.markForCheck).toHaveBeenCalledTimes(6);
+
+      table.rowDetail = null;
+      expect((table as any).updateTableState).toHaveBeenCalledTimes(4);
+      expect(cd.markForCheck).toHaveBeenCalledTimes(7);
     }));
   });
 

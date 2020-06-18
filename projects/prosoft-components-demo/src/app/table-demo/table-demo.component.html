@@ -65,11 +65,11 @@
 
   <mat-card class="app-table-demo__settings-box">
     <strong>template directives (only initially defineable)</strong>
-    <mat-checkbox [(ngModel)]="customHeader" (change)="rebuildTable()">*psTableCustomHeader</mat-checkbox>
-    <mat-checkbox [(ngModel)]="customSettings" (change)="rebuildTable()">*psTableCustomSettings</mat-checkbox>
-    <mat-checkbox [(ngModel)]="customTopButton" (change)="rebuildTable()">*psTableTopButtonSection</mat-checkbox>
-    <mat-checkbox [(ngModel)]="customListActions" (change)="rebuildTable()">*psTableListActions="let selection"</mat-checkbox>
-    <mat-checkbox [(ngModel)]="customRowActions" (change)="rebuildTable()">*psTableRowActions="let item"</mat-checkbox>
+    <mat-checkbox [(ngModel)]="customHeader">*psTableCustomHeader</mat-checkbox>
+    <mat-checkbox [(ngModel)]="customSettings">*psTableCustomSettings</mat-checkbox>
+    <mat-checkbox [(ngModel)]="customTopButton">*psTableTopButtonSection</mat-checkbox>
+    <mat-checkbox [(ngModel)]="customListActions">*psTableListActions="let selection"</mat-checkbox>
+    <mat-checkbox [(ngModel)]="customRowActions">*psTableRowActions="let item"</mat-checkbox>
   </mat-card>
 </div>
 
