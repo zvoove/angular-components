@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.20](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.19...@prosoft/components@0.1.0-alpha.20) (2020-06-18)
+
+
+### Bug Fixes
+
+* **number-input:** formatting permanently active in apps locale ([#110](https://github.com/prosoft-edv/components/issues/110)) ([328a5e4](https://github.com/prosoft-edv/components/commit/328a5e4))
+* **table:** view now updates when view/content children change ([#111](https://github.com/prosoft-edv/components/issues/111)) ([1fe4d4f](https://github.com/prosoft-edv/components/commit/1fe4d4f)), closes [#108](https://github.com/prosoft-edv/components/issues/108)
+
+
+### Features
+
+* **flip-container:** added methods to flip to back/front ([#109](https://github.com/prosoft-edv/components/issues/109)) ([113d6ab](https://github.com/prosoft-edv/components/commit/113d6ab)), closes [#107](https://github.com/prosoft-edv/components/issues/107)
+
+
+### BREAKING CHANGES
+
+* **flip-container:** show property is now named active
+* **number-input:** formatInput removed
+
+
+
+
+
 # [0.1.0-alpha.19](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.18...@prosoft/components@0.1.0-alpha.19) (2020-06-15)
 
 

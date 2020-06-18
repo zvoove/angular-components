@@ -11,7 +11,7 @@
     "url": "https://github.com/prosoft-edv/components/issues"
   },
   "license": "MIT",
-  "version": "0.1.0-alpha.19",
+  "version": "0.1.0-alpha.20",
   "peerDependencies": {
     "@angular/cdk": ">=8.0.0",
     "@angular/common": ">=8.0.0",
