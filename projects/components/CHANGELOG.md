@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.21](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.20...@prosoft/components@0.1.0-alpha.21) (2020-06-19)
+
+
+### Features
+
+* **select:** items can be disabled ([#112](https://github.com/prosoft-edv/components/issues/112)) ([2cfd6e0](https://github.com/prosoft-edv/components/commit/2cfd6e0))
+
+
+
+
+
+
 # [0.1.0-alpha.20](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.19...@prosoft/components@0.1.0-alpha.20) (2020-06-18)
 
 
