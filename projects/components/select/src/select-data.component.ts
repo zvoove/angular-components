@@ -39,6 +39,7 @@ import { PsSelectService } from './select.service';
       *ngFor="let item of items; trackBy: trackByOptions"
       [value]="item.value"
       [class.ps-option-hidden]="item.hidden"
+      [disabled]="item.disabled"
       class="ps-select-data__option"
     >
       <ng-container *ngIf="!optionTemplate">

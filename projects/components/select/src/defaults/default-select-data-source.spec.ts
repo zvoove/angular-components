@@ -644,14 +644,14 @@ interface Item {
   value: any;
 }
 
-function createItem(label: string, value: any): Item {
+export function createItem(label: string, value: any): Item {
   return {
     label: label,
     value: value,
   };
 }
 
-function createMissingOption(id: number, hidden = false): PsSelectItem {
+export function createMissingOption(id: number, hidden = false): PsSelectItem {
   return {
     label: `??? (ID: ${id})`,
     hidden: hidden,
@@ -659,21 +659,23 @@ function createMissingOption(id: number, hidden = false): PsSelectItem {
   };
 }
 
-function createIdOption(item: Item, hidden = false): PsSelectItem {
+export function createIdOption(item: Item, hidden = false, disabled = false): PsSelectItem {
   return {
     label: item.label,
     value: item.value,
     hidden: hidden,
     entity: item,
+    disabled: disabled,
   };
 }
 
-function createEntityOption(item: Item, hidden = false): PsSelectItem {
+export function createEntityOption(item: Item, hidden = false, disabled = false): PsSelectItem {
   return {
     label: item.label,
     value: item,
     hidden: hidden,
     entity: item,
+    disabled: disabled,
   };
 }
 

@@ -9,6 +9,8 @@ import { Subject, Subscription } from 'rxjs';
 import { PsSelectComponent } from './select.component';
 import { PsSelectModule } from './select.module';
 import { DefaultPsSelectService } from './defaults/default-select-service';
+import { PsSelectItem } from './models';
+import { DefaultPsSelectDataSource } from './defaults/default-select-data-source';
 
 function createMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -114,7 +116,7 @@ export class TestComponent implements OnDestroy {
   `,
 })
 export class TestMultipleComponent {
-  dataSource = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
+  dataSource: any = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
   value: any = null;
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
@@ -316,6 +318,29 @@ describe('PsSelectComponent', () => {
 
     // trigger text
     expect(matSelectTrigger.nativeElement.textContent.trim()).toEqual('trigger:blue:color:blue:Blue'); // static trigger text + value + mat-option viewValue
+  });
+  it('should disable matOption for item with disable', async () => {
+    const { fixture, component } = await initTest(TestMultipleComponent);
+    component.dataSource = new DefaultPsSelectDataSource({
+      mode: 'id',
+      labelKey: 'label',
+      idKey: 'value',
+      disabledKey: 'disabled',
+      items: [
+        { label: 'disabled', value: 1, disabled: true },
+        { label: 'active', value: 2, disabled: false },
+        { label: 'default', value: 3 },
+      ],
+    });
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const options = ((component.select as any)._matSelect as MatSelect).options.toArray();
+    expect(options.find(o => o.value === 1).disabled).toBeTruthy();
+    expect(options.find(o => o.value === 2).disabled).toBeFalsy();
+    expect(options.find(o => o.value === 3).disabled).toBeFalsy();
   });
 });
 

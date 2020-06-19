@@ -172,6 +172,7 @@ export class SelectDemoComponent implements OnInit {
     strId: `id${i}`,
     labelA: `Label A ${i}`,
     labelB: `Label B ${i}`,
+    disabled: i % 5 === 4,
   }));
   public unknowIitem = {
     id: -1,
@@ -218,6 +219,7 @@ export class SelectDemoComponent implements OnInit {
       mode: this.dataSourceMode,
       idKey: this.dataSourceIdKey,
       labelKey: this.dataSourceLabelKey,
+      disabledKey: 'disabled',
       items: this.getDataSourceItems(logs),
       searchDebounce: this.dataSourceSearchDebounce,
       loadTrigger: this.getPsSelectLoadTrigger(),

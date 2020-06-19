@@ -3,4 +3,5 @@ export interface PsSelectItem<T = any> {
   value: T;
   entity?: any;
   hidden?: boolean;
+  disabled?: boolean;
 }

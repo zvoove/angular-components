@@ -49,7 +49,7 @@ describe('DefaultPsSelectService', () => {
     expectEntityGetItemsForValues(dataSource, 'a', 'b');
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: item, label: 'item 1', hidden: false, entity: item }]);
+    expect(renderOptions).toEqual([createOption('item 1', item, item)]);
   }));
 
   it('should work with data object in id mode', fakeAsync(() => {
@@ -63,7 +63,7 @@ describe('DefaultPsSelectService', () => {
     expectIdGetItemsForValues(dataSource);
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false, entity: item }]);
+    expect(renderOptions).toEqual([createOption('item 1', 1, item)]);
   }));
 
   it('should work with data observable and custom options', fakeAsync(() => {
@@ -87,7 +87,7 @@ describe('DefaultPsSelectService', () => {
     expectEntityGetItemsForValues(dataSource, 'x', 'y');
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: item, label: 'item 1', hidden: false, entity: item }]);
+    expect(renderOptions).toEqual([createOption('item 1', item, item)]);
   }));
 
   it('should work with data array', fakeAsync(() => {
@@ -101,7 +101,7 @@ describe('DefaultPsSelectService', () => {
     expectIdGetItemsForValues(dataSource);
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false, entity: item }]);
+    expect(renderOptions).toEqual([createOption('item 1', 1, item)]);
   }));
 
   it('should work with observable array', fakeAsync(() => {
@@ -115,7 +115,17 @@ describe('DefaultPsSelectService', () => {
     expectIdGetItemsForValues(dataSource);
 
     const renderOptions = getRenderData(dataSource);
-    expect(renderOptions).toEqual([{ value: 1, label: 'item 1', hidden: false, entity: item }]);
+    expect(renderOptions).toEqual([createOption('item 1', 1, item)]);
+  }));
+
+  it('should set disabled to value of item[disabledKey]', fakeAsync(() => {
+    const service = new DefaultPsSelectService();
+
+    const item = { a: 1, b: 'item 1', d: true };
+    const dataSource = service.createDataSource({ mode: 'entity', idKey: 'a', labelKey: 'b', disabledKey: 'd', items: [item] }, null);
+
+    const renderOptions = getRenderData(dataSource);
+    expect(renderOptions).toEqual([createOption('item 1', item, item, false, true)]);
   }));
 });
 
@@ -167,4 +177,14 @@ function expectEntityGetItemsForValues(dataSource: PsSelectDataSource, idKey: st
 function expectDataSourceOptions(dataSource: any, loadTrigger: PsSelectLoadTrigger, debounceTime: number) {
   expect(dataSource._loadTrigger).toEqual(loadTrigger);
   expect(dataSource._searchDebounceTime).toEqual(debounceTime);
+}
+
+function createOption(label: string, value: any, entity: any, hidden = false, disabled = false): PsSelectItem {
+  return {
+    label: label,
+    value: value,
+    entity: entity,
+    hidden: hidden,
+    disabled: disabled,
+  };
 }

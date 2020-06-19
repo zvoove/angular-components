@@ -22,6 +22,7 @@ export interface PsSelectDataSourceOptions<T = any> {
   mode: 'id' | 'entity';
   idKey: keyof T;
   labelKey: keyof T;
+  disabledKey?: keyof T;
   items: MaybeObservable<T[]> | (() => MaybeObservable<T[]>);
   searchDebounce?: number;
   loadTrigger?: PsSelectLoadTrigger;
@@ -70,7 +71,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     this._sortBy = options.sortBy == null ? PsSelectSortBy.Both : options.sortBy;
 
     let loadData: () => Observable<PsSelectItem<T>[]>;
-    const entityToSelectItem = createEntityToSelectItemMapper(options.mode, options.idKey, options.labelKey);
+    const entityToSelectItem = createEntityToSelectItemMapper(options.mode, options.idKey, options.labelKey, options.disabledKey);
 
     const items = options.items;
     if (typeof items !== 'function') {
@@ -278,18 +279,25 @@ export function ensureObservable<T>(data: T | Observable<T>): Observable<T> {
   return data;
 }
 
-function createEntityToSelectItemMapper(mode: 'id' | 'entity', idKey: keyof any, labelKey: keyof any): (item: any) => PsSelectItem<any> {
+function createEntityToSelectItemMapper(
+  mode: 'id' | 'entity',
+  idKey: keyof any,
+  labelKey: keyof any,
+  disabledKey: keyof any
+): (item: any) => PsSelectItem<any> {
   if (mode === 'id') {
     return (item: any) => ({
       value: item[idKey],
       label: item[labelKey],
       entity: item,
+      disabled: (disabledKey && item[disabledKey]) || false,
     });
   }
   return (item: any) => ({
     value: item,
     label: item[labelKey],
     entity: item,
+    disabled: (disabledKey && item[disabledKey]) || false,
   });
 }
 
