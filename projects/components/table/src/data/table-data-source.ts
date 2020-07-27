@@ -19,8 +19,8 @@ export interface PsTableDataSourceOptions<TData, TTrigger = any> {
 }
 
 export interface IPsTableFilterResult<T> {
-  Items: T[];
-  TotalItems: number;
+  items: T[];
+  totalItems: number;
 }
 
 declare type PsTableMode = 'client' | 'server';
@@ -323,9 +323,9 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
           } else {
             const filterResult = data;
 
-            this.dataLength = filterResult.TotalItems;
-            this.data = filterResult.Items;
-            this._checkPageValidity(filterResult.TotalItems);
+            this.dataLength = filterResult.totalItems;
+            this.data = filterResult.items;
+            this._checkPageValidity(filterResult.totalItems);
           }
         });
     } else {

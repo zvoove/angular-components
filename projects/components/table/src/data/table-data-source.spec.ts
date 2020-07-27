@@ -597,7 +597,7 @@ describe('PsTableDataSource', () => {
 
   it('should update visibleRows, data and dataLength on server pagination', () => {
     const dataSource = new PsTableDataSource<any>(filter => {
-      return of({ Items: [{ prop: filter.currentPage }], TotalItems: 100 });
+      return of({ items: [{ prop: filter.currentPage }], totalItems: 100 });
     }, 'server');
     dataSource.tableReady = true;
     dataSource.pageIndex = 0;
@@ -628,7 +628,7 @@ describe('PsTableDataSource', () => {
 
   it('should fix pageIndex when currentPage would have no items on server pagination', () => {
     const dataSource = new PsTableDataSource<any>(filter => {
-      return of({ Items: [{ prop: filter.currentPage }], TotalItems: 1 });
+      return of({ items: [{ prop: filter.currentPage }], totalItems: 1 });
     }, 'server');
     dataSource.tableReady = true;
     dataSource.pageIndex = 1;
