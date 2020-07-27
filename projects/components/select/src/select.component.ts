@@ -37,6 +37,7 @@ import { PsSelectTriggerTemplateDirective } from './select-trigger-template.dire
           [dataSource]="dataSource"
           [compareWith]="compareWith"
           [clearable]="clearable"
+          [showToggleAll]="showToggleAll"
           [optionTemplate]="optionTemplate"
         ></ps-select-data>
       </mat-select>
@@ -95,6 +96,9 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
 
   /** When true, an empty option is added to the top of the list (ignored for multiple true) */
   @Input() public clearable = true;
+
+  /** If true, then there will be a toggle all checkbox available (only multiple select mode) */
+  @Input() public showToggleAll = true;
 
   @Input() public set disabled(value: boolean) {
     this.setDisabledState(value);

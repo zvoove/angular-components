@@ -12,7 +12,7 @@ import { DefaultPsSelectService } from './defaults/default-select-service';
 import { PsSelectItem } from './models';
 import { DefaultPsSelectDataSource } from './defaults/default-select-data-source';
 
-function createMatSelect(): MatSelect {
+function createFakeMatSelect(): MatSelect {
   const matSelect = <any>{
     stateChanges: new Subject<void>(),
     close: () => {},
@@ -32,46 +32,6 @@ function createMatSelect(): MatSelect {
   return matSelect;
 }
 
-describe('PsSelectComponent', () => {
-  it('should create', () => {
-    TestBed.configureTestingModule({
-      imports: [PsSelectModule.forRoot(DefaultPsSelectService)],
-    });
-    const fixture = TestBed.createComponent(PsSelectComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeDefined();
-  });
-
-  it('should fix MatSelect.close() not emitting stateChanges', fakeAsync(() => {
-    const matSelect = createMatSelect();
-
-    const psSelect = new PsSelectComponent(null, null, null);
-    psSelect.setMatSelect = matSelect;
-
-    spyOn(matSelect.stateChanges, 'next');
-
-    matSelect.close();
-
-    expect(matSelect.stateChanges.next).toHaveBeenCalled();
-  }));
-
-  it('should not enable/disable formControl, if it is already', fakeAsync(() => {
-    // formControl enable/disable calls setDisabledState on the valueAccessor, which is the PsSelect -> endless loop
-    const psSelect = new PsSelectComponent(null, null, null);
-    psSelect.formControl.enable();
-
-    spyOn(psSelect.formControl, 'enable');
-    psSelect.setDisabledState(false);
-    expect(psSelect.formControl.enable).not.toHaveBeenCalled();
-
-    psSelect.formControl.disable();
-
-    spyOn(psSelect.formControl, 'disable');
-    psSelect.setDisabledState(false);
-    expect(psSelect.formControl.disable).not.toHaveBeenCalled();
-  }));
-});
-
 @Component({
   selector: 'ps-test-component',
   template: `
@@ -81,6 +41,7 @@ describe('PsSelectComponent', () => {
         [dataSource]="dataSource"
         [errorStateMatcher]="errorStateMatcher"
         [panelClass]="panelClass"
+        [clearable]="clearable"
       ></ps-select>
     </div>
   `,
@@ -94,6 +55,7 @@ export class TestComponent implements OnDestroy {
   emittedValues: any[] = [];
   errorStateMatcher: ErrorStateMatcher = null;
   panelClass: { [key: string]: boolean } = {};
+  clearable = true;
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
 
@@ -112,10 +74,11 @@ export class TestComponent implements OnDestroy {
 @Component({
   selector: 'ps-test-multiple-component',
   template: `
-    <ps-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true"></ps-select>
+    <ps-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true" [showToggleAll]="showToggleAll"></ps-select>
   `,
 })
 export class TestMultipleComponent {
+  showToggleAll = true;
   dataSource: any = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
   value: any = null;
 
@@ -177,6 +140,51 @@ async function initTest<T>(type: Type<T>): Promise<{ fixture: ComponentFixture<T
 }
 
 describe('PsSelectComponent', () => {
+  it('should use right default values', async () => {
+    const cmp = new PsSelectComponent(null, null, null);
+
+    expect(cmp.clearable).toBeTruthy();
+    expect(cmp.showToggleAll).toBeTruthy();
+  });
+
+  it('should create', () => {
+    TestBed.configureTestingModule({
+      imports: [PsSelectModule.forRoot(DefaultPsSelectService)],
+    });
+    const fixture = TestBed.createComponent(PsSelectComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+  });
+
+  it('should fix MatSelect.close() not emitting stateChanges', fakeAsync(() => {
+    const matSelect = createFakeMatSelect();
+
+    const psSelect = new PsSelectComponent(null, null, null);
+    psSelect.setMatSelect = matSelect;
+
+    spyOn(matSelect.stateChanges, 'next');
+
+    matSelect.close();
+
+    expect(matSelect.stateChanges.next).toHaveBeenCalled();
+  }));
+
+  it('should not enable/disable formControl, if it is already', fakeAsync(() => {
+    // formControl enable/disable calls setDisabledState on the valueAccessor, which is the PsSelect -> endless loop
+    const psSelect = new PsSelectComponent(null, null, null);
+    psSelect.formControl.enable();
+
+    spyOn(psSelect.formControl, 'enable');
+    psSelect.setDisabledState(false);
+    expect(psSelect.formControl.enable).not.toHaveBeenCalled();
+
+    psSelect.formControl.disable();
+
+    spyOn(psSelect.formControl, 'disable');
+    psSelect.setDisabledState(false);
+    expect(psSelect.formControl.disable).not.toHaveBeenCalled();
+  }));
+
   it('should work with ngModel', async () => {
     const { fixture, component } = await initTest(TestMultipleComponent);
 
@@ -226,6 +234,57 @@ describe('PsSelectComponent', () => {
     component.control.patchValue(1);
     fixture.detectChanges();
     expect(component.select.errorState).toBe(false);
+  });
+
+  it('should use clearable input', async () => {
+    const { fixture, component } = await initTest(TestComponent);
+    component.clearable = true;
+    fixture.detectChanges();
+    const options = ((component.select as any)._matSelect as MatSelect).options;
+
+    expect(options.find(x => x.viewValue === '--')).toBeTruthy();
+
+    component.clearable = false;
+    fixture.detectChanges();
+
+    expect(options.find(x => x.viewValue === '--')).toBeFalsy();
+  });
+
+  it('toggle all functionality should work', async () => {
+    const { fixture, component } = await initTest(TestMultipleComponent);
+    component.showToggleAll = true;
+    fixture.detectChanges();
+    const options = ((component.select as any)._matSelect as MatSelect).options;
+    expect(options.map(x => x.selected).reduce((prev, curr) => prev || curr, false)).toBeFalsy();
+
+    await openMatSelect(fixture);
+    let toggleAllCbx = await getToggleAllInputCbx(fixture);
+    expect(toggleAllCbx).toBeTruthy();
+
+    toggleAllCbx.click();
+    fixture.detectChanges();
+    expect(getOptionSelectedValues().reduce((prev, curr) => prev && curr, true)).toBeTruthy();
+
+    toggleAllCbx.click();
+    fixture.detectChanges();
+    expect(getOptionSelectedValues().reduce((prev, curr) => prev || curr, false)).toBeFalsy();
+
+    options.last.select();
+    toggleAllCbx.click();
+    fixture.detectChanges();
+    expect(getOptionSelectedValues().reduce((prev, curr) => prev && curr, true)).toBeTruthy();
+
+    component.showToggleAll = false;
+    fixture.detectChanges();
+    toggleAllCbx = await getToggleAllInputCbx(fixture);
+    expect(toggleAllCbx).toBeFalsy();
+
+    await closeMatSelect(fixture);
+
+    function getOptionSelectedValues() {
+      // Skip the first, as it is the search input wrapped in an option
+      return options.map(x => x.selected).slice(1);
+    }
   });
 
   it('should set the right css classes', async () => {
@@ -363,4 +422,30 @@ function getPsSelectCssClasses(fixture: ComponentFixture<any>) {
 function assertPsSelectCssClasses(fixture: ComponentFixture<any>, exprectedClasses: string[]) {
   const classes = getPsSelectCssClasses(fixture);
   expect(classes).toEqual(exprectedClasses.sort());
+}
+
+async function openMatSelect<T>(fixture: ComponentFixture<T>) {
+  const sortSelectTriggerEl = fixture.debugElement.nativeElement.querySelectorAll('.mat-select-trigger').item(0) as HTMLElement;
+  sortSelectTriggerEl.dispatchEvent(new MouseEvent('click'));
+  fixture.detectChanges();
+  await fixture.whenRenderingDone();
+}
+async function getMatOptionsNodes(): Promise<NodeListOf<HTMLElement>> {
+  const selectPanelNode = document.querySelector('.mat-select-panel');
+  const matOptionNodes = selectPanelNode.querySelectorAll('mat-option') as NodeListOf<HTMLElement>;
+  return matOptionNodes;
+}
+async function getToggleAllInputCbx<T>(fixture: ComponentFixture<T>): Promise<HTMLInputElement> {
+  const selectPanelNode = document.querySelector('.mat-select-panel');
+  const toggleAllElement = selectPanelNode.querySelector('.mat-select-search-toggle-all-checkbox input') as HTMLInputElement;
+  return toggleAllElement;
+}
+
+async function closeMatSelect<T>(fixture: ComponentFixture<T>) {
+  await closeBackdrop(fixture);
+}
+async function closeBackdrop<T>(fixture: ComponentFixture<T>) {
+  document.querySelector('.cdk-overlay-backdrop').dispatchEvent(new MouseEvent('click'));
+  fixture.detectChanges();
+  await fixture.whenRenderingDone();
 }

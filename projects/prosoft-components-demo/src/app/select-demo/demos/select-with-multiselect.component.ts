@@ -6,10 +6,13 @@ import { of, Observable } from 'rxjs';
   selector: 'app-select-with-multiselect',
   template: `
     <h2>Multiselect</h2>
+    <div>
+      <mat-checkbox [(ngModel)]="showToggleAll">show toggle all</mat-checkbox>
+    </div>
     <span [formGroup]="form">
       <mat-form-field style="display:inline-block">
         <mat-label>select</mat-label>
-        <ps-select formControlName="select" [dataSource]="items$" [multiple]="true"></ps-select>
+        <ps-select formControlName="select" [dataSource]="items$" [multiple]="true" [showToggleAll]="showToggleAll"></ps-select>
       </mat-form-field>
     </span>
     value: {{ form.value.select | json }}<br />
@@ -23,8 +26,9 @@ import { of, Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectWithMultiselectComponent {
+  public showToggleAll = true;
   public items$: Observable<any[]> = of(
-    Array.from(Array(50).keys()).map(i => ({
+    Array.from(Array(500).keys()).map(i => ({
       value: `id${i}`,
       label: `Item ${i}`,
     }))

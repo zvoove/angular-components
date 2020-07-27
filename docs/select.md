@@ -29,10 +29,11 @@ import { PsSelectModule } from '@prosoft/components/select';
 
 ### Properties <a name="PsSelectComponentProperties"></a>
 
-| Name                 | Description                                                                                                                     |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `dataSource: any`    | The PsSelect's source of data.                                                                                                  |
-| `clearable: boolean` | If `true`, PsSelect will show a 'Clear' button at the end of the selected value. If clicked, the selected item will be removed. |
+| Name                     | Default | Description                                                                                                                     |
+| ------------------------ | ------- |------------------------------------------------------------------------------------------------------------------------------- |
+| `dataSource: any`        | `null`  | The PsSelect's source of data.                                                                                                  |
+| `clearable: boolean`     | `true`  | If `true`, PsSelect will show a 'Clear' button at the end of the selected value. If clicked, the selected item will be removed. |
+| `showToggleAll: boolean` | `true`  | If `true`, PsSelect will show a 'toggle all' checkbox (ignored for single select). |
 
 ### Events <a name="PsSelectComponentEvents"></a>
 

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgModule, Injectable } from '@angular/core';
+import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -10,6 +10,15 @@ import { RouterModule } from '@angular/router';
 import { PsFormBaseModule } from '@prosoft/components/form-base';
 import { PsFormFieldModule } from '@prosoft/components/form-field';
 import { PsSliderModule } from '@prosoft/components/slider';
+import { Observable, of } from 'rxjs';
+import { SliderDemoComponent } from './slider-demo.component';
+
+@Injectable()
+export class CustomErrorStateMatcher implements ErrorStateMatcher {
+  public isErrorState(control: FormControl | null, _: FormGroupDirective | NgForm | null): boolean {
+    return !!(control && control.invalid);
+  }
+}
 
 import { DemoPsFormsService } from '../common/demo-ps-form-service';
 import { InvalidErrorStateMatcher } from '../common/invalid-error-state-matcher';

@@ -48,6 +48,7 @@ export abstract class PsIntlService {
   }
 }
 
+@Injectable()
 export class PsIntlServiceEn extends PsIntlService {
   private paginatorIntl = new MatPaginatorIntl();
   private formSavebarIntl: IPsSavebarIntlTexts = {
