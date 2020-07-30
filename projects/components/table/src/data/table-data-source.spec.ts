@@ -31,7 +31,7 @@ describe('PsTableDataSource', () => {
     dataSource.tableReady = true;
 
     const renderDataUpdates: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderDataUpdates.push(data);
     });
     expect(renderDataUpdates.length).toBe(1);
@@ -139,7 +139,7 @@ describe('PsTableDataSource', () => {
     dataSource.tableReady = true;
 
     let renderDataUpdates: any[] = [];
-    dataSource.connect().subscribe(data => {
+    dataSource.connect().subscribe((data) => {
       renderDataUpdates.push(data);
     });
 
@@ -159,12 +159,61 @@ describe('PsTableDataSource', () => {
     tick(500);
     expectLoadedState(loadedData, loadedData.length, loadedData);
 
-    // when data is already loaded, just update the visible items
-    initDirtyState(loadedData);
-    dataSource.filter = 'x';
-    dataSource.updateData(false);
-    expectLoadedState(loadedData, 1, loadedData.filter(x => x.prop === 'x'));
-    dataSource.filter = '';
+    // when data is already loaded, just update the visible items and clear the selection model
+    {
+      const error = new Error();
+      dataSource.loading = false;
+      dataSource.error = error;
+      dataSource.data = loadedData;
+      dataSource.dataLength = loadedData.length;
+
+      dataSource.selectionModel.select(loadedData[0]);
+      renderDataUpdates = [];
+
+      dataSource.filter = 'x';
+      dataSource.updateData(false);
+
+      // check, that loading, error and data are unchanged
+      expect(dataSource.loading).toBe(false);
+      expect(dataSource.error).toBe(error);
+      expect(dataSource.data).toBe(loadedData);
+      expect(dataSource.dataLength).toBe(1);
+
+      // check for the neccessary changes
+      const visibleRows = loadedData.filter((x) => x.prop === 'x');
+      expect(dataSource.visibleRows).toEqual(visibleRows);
+      expect(dataSource.selectionModel.selected).toEqual([]);
+      expect(renderDataUpdates.length).toEqual(1);
+      expect(renderDataUpdates.pop()).toEqual(visibleRows);
+
+      dataSource.filter = '';
+    }
+
+    // when data is already loaded AND another update request is in flight, don't do anything
+    {
+      const error = new Error();
+      dataSource.loading = true;
+      dataSource.error = error;
+      dataSource.data = loadedData;
+      dataSource.dataLength = loadedData.length;
+
+      dataSource.selectionModel.select(loadedData[0]);
+      renderDataUpdates = [];
+
+      dataSource.filter = 'x';
+      dataSource.updateData(false);
+
+      // check, that loading, error and data are unchanged
+      expect(dataSource.loading).toBe(true);
+      expect(dataSource.error).toBe(error);
+      expect(dataSource.data).toBe(loadedData);
+      expect(dataSource.dataLength).toBe(loadedData.length);
+      expect(dataSource.visibleRows).toEqual(loadedData);
+      expect(dataSource.selectionModel.selected).toEqual([loadedData[0]]);
+      expect(renderDataUpdates.length).toEqual(0);
+
+      dataSource.filter = '';
+    }
 
     // with force reload, it should load data from the server
     initDirtyState([beforeDataItem]);
@@ -222,9 +271,9 @@ describe('PsTableDataSource', () => {
   }));
 
   it('should not sort/filter/page, but provide info to loadData when mode is server', () => {
-    const loadedData = Array.from(new Array(20).keys()).map(x => ({ prop: x }));
+    const loadedData = Array.from(new Array(20).keys()).map((x) => ({ prop: x }));
     let lastUpdateInfo: IExtendedPsTableUpdateDataInfo<any> = null;
-    const dataSource = new PsTableDataSource<any>(updateInfo => {
+    const dataSource = new PsTableDataSource<any>((updateInfo) => {
       lastUpdateInfo = updateInfo;
       return of(loadedData);
     }, 'server');
@@ -237,7 +286,7 @@ describe('PsTableDataSource', () => {
     spyOn(dataSource, 'sortData');
 
     let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
 
@@ -275,7 +324,7 @@ describe('PsTableDataSource', () => {
     spyOn(dataSource, 'sortData').and.returnValue([{ x: 'sorted' }]);
 
     let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
 
@@ -306,7 +355,7 @@ describe('PsTableDataSource', () => {
     clientDataSource.tableReady = true;
 
     let renderData: any[] = [];
-    const sub = clientDataSource.connect().subscribe(data => {
+    const sub = clientDataSource.connect().subscribe((data) => {
       renderData = data;
     });
 
@@ -365,12 +414,12 @@ describe('PsTableDataSource', () => {
       const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
 
-      const data = inData.map(x => ({ prop: x }));
+      const data = inData.map((x) => ({ prop: x }));
       const sortedDataAsc = dataSource.sortData(data, { sortColumn: 'prop', sortDirection: 'asc' });
-      expect(sortedDataAsc).toEqual(ascExpectedData.map(x => ({ prop: x })));
+      expect(sortedDataAsc).toEqual(ascExpectedData.map((x) => ({ prop: x })));
 
       const sortedDataDesc = dataSource.sortData(data, { sortColumn: 'prop', sortDirection: 'desc' });
-      expect(sortedDataDesc).toEqual(descExpectedData.map(x => ({ prop: x })));
+      expect(sortedDataDesc).toEqual(descExpectedData.map((x) => ({ prop: x })));
     }
     it('should sort strings', () => {
       sortAssert(['b', 'a', 'c'], ['a', 'b', 'c'], ['c', 'b', 'a']);
@@ -412,7 +461,7 @@ describe('PsTableDataSource', () => {
     spyOn(dataSource, 'filterPredicate').and.callThrough();
 
     let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
 
@@ -529,14 +578,14 @@ describe('PsTableDataSource', () => {
   });
 
   it('selection should work', () => {
-    const loadedData = Array.from(new Array(6).keys()).map(x => ({ prop: x }));
+    const loadedData = Array.from(new Array(6).keys()).map((x) => ({ prop: x }));
     const dataSource = new PsTableDataSource<any>(() => of(loadedData), 'client');
     dataSource.tableReady = true;
     dataSource.pageIndex = 1;
     dataSource.pageSize = 2;
 
     let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
 
@@ -567,14 +616,14 @@ describe('PsTableDataSource', () => {
   });
 
   it('should update visibleRows but not data on client pagination', () => {
-    const loadedData = Array.from(new Array(6).keys()).map(x => ({ prop: x }));
+    const loadedData = Array.from(new Array(6).keys()).map((x) => ({ prop: x }));
     const dataSource = new PsTableDataSource<any>(() => of(loadedData), 'client');
     dataSource.tableReady = true;
     dataSource.pageIndex = 1;
     dataSource.pageSize = 2;
 
     let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
 
@@ -596,7 +645,7 @@ describe('PsTableDataSource', () => {
   });
 
   it('should update visibleRows, data and dataLength on server pagination', () => {
-    const dataSource = new PsTableDataSource<any>(filter => {
+    const dataSource = new PsTableDataSource<any>((filter) => {
       return of({ items: [{ prop: filter.currentPage }], totalItems: 100 });
     }, 'server');
     dataSource.tableReady = true;
@@ -604,7 +653,7 @@ describe('PsTableDataSource', () => {
     dataSource.pageSize = 1;
 
     let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
 
@@ -627,7 +676,7 @@ describe('PsTableDataSource', () => {
   });
 
   it('should fix pageIndex when currentPage would have no items on server pagination', () => {
-    const dataSource = new PsTableDataSource<any>(filter => {
+    const dataSource = new PsTableDataSource<any>((filter) => {
       return of({ items: [{ prop: filter.currentPage }], totalItems: 1 });
     }, 'server');
     dataSource.tableReady = true;
@@ -635,7 +684,7 @@ describe('PsTableDataSource', () => {
     dataSource.pageSize = 1;
 
     let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
 
@@ -664,7 +713,7 @@ describe('PsTableDataSource', () => {
     const loadTriggerValues: string[] = [];
     const dataSource = new PsTableDataSource<any>({
       loadTrigger$: loadTrigger$,
-      loadDataFn: filter => {
+      loadDataFn: (filter) => {
         loadTriggerValues.push(filter.triggerData);
         return of([]);
       },
@@ -672,7 +721,7 @@ describe('PsTableDataSource', () => {
     dataSource.tableReady = true;
 
     let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe(data => {
+    const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
 

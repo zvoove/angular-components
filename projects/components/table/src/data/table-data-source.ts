@@ -161,7 +161,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * @returns The values to use in the filter.
    */
   public filterValues = (row: { [key: string]: any }): any[] => {
-    return this.filterProperties(row).map(key => row[key]);
+    return this.filterProperties(row).map((key) => row[key]);
   };
 
   /**
@@ -177,7 +177,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
   public filterPredicate = (row: { [key: string]: any }, filter: string) => {
     // Transform the data into a lowercase string of all property values.
     const dataStr = this.filterValues(row)
-      .map(value => (value instanceof Date ? value.toLocaleString(this.locale) : value + '').toLowerCase())
+      .map((value) => (value instanceof Date ? value.toLocaleString(this.locale) : value + '').toLowerCase())
       // Use an obscure Unicode character to delimit the words in the concatenated string.
       // This avoids matches where the values of two columns combined will match the user's query
       // (e.g. `Flute` and `Stop` will match `Test`). The character is intended to be something
@@ -291,12 +291,11 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
     if (!this.tableReady) {
       return;
     }
-    this._loadDataSubscription.unsubscribe();
-
-    this.error = null;
-    this.selectionModel.clear();
 
     if (this.mode === 'server' || forceReload || !this._hasData) {
+      this.selectionModel.clear();
+      this._loadDataSubscription.unsubscribe();
+      this.error = null;
       this.loading = true;
       this._renderData.next([]);
       this._internalDetectChanges.next();
@@ -316,7 +315,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
             this._internalDetectChanges.next();
           })
         )
-        .subscribe(data => {
+        .subscribe((data) => {
           if (Array.isArray(data)) {
             this.dataLength = data.length;
             this.data = data;
@@ -328,7 +327,8 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
             this._checkPageValidity(filterResult.totalItems);
           }
         });
-    } else {
+    } else if (!this.loading) {
+      this.selectionModel.clear();
       this._data.next(this.data);
       this._internalDetectChanges.next();
     }
@@ -353,7 +353,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * @docs-private
    */
   public connect() {
-    this._updateDataTriggerSub = this._updateDataTrigger$.subscribe(data => {
+    this._updateDataTriggerSub = this._updateDataTrigger$.subscribe((data) => {
       this._lastLoadTriggerData = data;
       this.updateData();
     });
@@ -378,13 +378,13 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
     let dataStream: Observable<T[]> = this._data;
     if (this.mode === 'client') {
       dataStream = dataStream.pipe(
-        map(data => this._filterData(data)),
-        map(data => this._orderData(data)),
-        map(data => this._pageData(data))
+        map((data) => this._filterData(data)),
+        map((data) => this._orderData(data)),
+        map((data) => this._pageData(data))
       );
     }
     this._renderChangesSubscription.unsubscribe();
-    this._renderChangesSubscription = dataStream.subscribe(data => this._renderData.next(data));
+    this._renderChangesSubscription = dataStream.subscribe((data) => this._renderData.next(data));
   }
 
   /**
@@ -396,7 +396,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
     // If there is a filter string, filter out data that does not contain it.
     // Each data object is converted to a string using the function defined by filterTermAccessor.
     // May be overridden for customization.
-    const filteredData = !this.filter ? data : data.filter(obj => this.filterPredicate(obj, this.filter));
+    const filteredData = !this.filter ? data : data.filter((obj) => this.filterPredicate(obj, this.filter));
 
     this.dataLength = filteredData.length;
 
