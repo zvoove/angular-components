@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.22](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.20...@prosoft/components@0.1.0-alpha.22) (2020-07-30)
+
+
+### Bug Fixes
+
+* **table:** don't cancel data loading when only the view is updated ([#119](https://github.com/prosoft-edv/components/issues/119)) ([dc2a7e3](https://github.com/prosoft-edv/components/commit/dc2a7e3))
+
+
+### Code Refactoring
+
+* **table:** fixed casing of IPsTableFilterResult properties ([#100](https://github.com/prosoft-edv/components/issues/100)) ([99bf6fd](https://github.com/prosoft-edv/components/commit/99bf6fd)), closes [#89](https://github.com/prosoft-edv/components/issues/89)
+
+
+### Features
+
+* **select:** items can be disabled ([#112](https://github.com/prosoft-edv/components/issues/112)) ([2cfd6e0](https://github.com/prosoft-edv/components/commit/2cfd6e0))
+* **select:** toggle all in multiple mode ([#96](https://github.com/prosoft-edv/components/issues/96)) ([f5891a1](https://github.com/prosoft-edv/components/commit/f5891a1))
+
+
+### BREAKING CHANGES
+
+* **table:** IPsTableFilterResult properties are now camel case
+
+
+
+
+
 # [0.1.0-alpha.21](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.20...@prosoft/components@0.1.0-alpha.21) (2020-06-19)
 
 
