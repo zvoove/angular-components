@@ -76,7 +76,7 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
       [refreshable]="refreshable"
       [filterable]="filterable"
       [showSettings]="showSettings"
-      [cardLayout]="cardLayout"
+      [layout]="layout"
       [striped]="striped"
       [sortDefinitions]="sortDefinitions"
       (page)="onPage($event)"
@@ -139,7 +139,7 @@ export class TestComponent {
   public refreshable = true;
   public filterable = true;
   public showSettings = true;
-  public cardLayout = true;
+  public layout = 'card';
   public striped = true;
   public sortDefinitions: IPsTableSortDefinition[] = [{ prop: '__virtual', displayName: 'Virtual Column' }];
 
@@ -524,9 +524,22 @@ describe('PsTableComponent', () => {
       // ps-table[caption]
       expect(fixture.debugElement.query(By.css('h2')).nativeElement.textContent.trim()).toEqual('title');
 
-      // ps-table[cardLayout]
+      // ps-table[layout]
       expect(psTableDbg.classes['mat-elevation-z1']).toEqual(true);
       expect(psTableDbg.classes['ps-table--card']).toEqual(true);
+      expect(psTableDbg.classes['ps-table--border']).toEqual(false);
+
+      component.table.layout = 'border';
+      fixture.detectChanges();
+      expect(psTableDbg.classes['mat-elevation-z1']).toEqual(false);
+      expect(psTableDbg.classes['ps-table--card']).toEqual(false);
+      expect(psTableDbg.classes['ps-table--border']).toEqual(true);
+
+      component.table.layout = 'flat';
+      fixture.detectChanges();
+      expect(psTableDbg.classes['mat-elevation-z1']).toEqual(false);
+      expect(psTableDbg.classes['ps-table--card']).toEqual(false);
+      expect(psTableDbg.classes['ps-table--border']).toEqual(false);
 
       // ps-table[striped]
       expect(psTableDbg.classes['ps-table--striped']).toEqual(true);

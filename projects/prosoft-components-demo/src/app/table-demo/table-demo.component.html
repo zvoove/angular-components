@@ -4,7 +4,14 @@
     <mat-checkbox [(ngModel)]="refreshable">[refreshable]</mat-checkbox>
     <mat-checkbox [(ngModel)]="filterable">[filterable]</mat-checkbox>
     <mat-checkbox [(ngModel)]="showSettings">[showSettings]</mat-checkbox>
-    <mat-checkbox [(ngModel)]="cardLayout">[cardLayout]</mat-checkbox>
+    <mat-form-field>
+      <mat-label>[layout]</mat-label>
+      <mat-select [(ngModel)]="layout">
+        <mat-option [value]="'card'">table as MarCard</mat-option>
+        <mat-option [value]="'border'">table with border</mat-option>
+        <mat-option [value]="'flat'">table without enclosure</mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-checkbox [(ngModel)]="striped">[striped]</mat-checkbox>
     <mat-checkbox [(ngModel)]="sortDefinitions"
       >[sortDefinitions]="[&#x7B; displayName: 'custom: `$&#x7B;boolean&#x7D;$&#x7B;string&#x7D;`', prop: 'hiddenSortable'
@@ -85,7 +92,7 @@
   [refreshable]="refreshable"
   [filterable]="filterable"
   [showSettings]="showSettings"
-  [cardLayout]="cardLayout"
+  [layout]="layout"
   [striped]="striped"
   [pageDebounce]="pageDebounce"
   (page)="onPage($event)"

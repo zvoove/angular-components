@@ -37,19 +37,19 @@ import { PsTableModule } from '@prosoft/components/table';
 
 ### Properties <a name="PsTableComponentProperties"></a>
 
-| Name                                        | Description                                                                |
-| ------------------------------------------- | -------------------------------------------------------------------------- |
-| `caption: string`                           | The tables caption.                                                        |
-| `dataSource: PsTableDataSource<T>`          | The tables source of data.                                                 |
-| `tableId: string`                           | Unique identifier. Used to identify saved settings and for url parameters. |
-| `intlOverride: Partial<IPsTableIntlTexts>`  | If you want to override displayed labels.                                  |
-| `sortDefinitions: IPsTableSortDefinition[]` | Array of additional data element properties used for sorting.              |
-| `refreshable: boolean`                      | `true` if you want the table to have a 'refresh' button.                   |
-| `filterable: boolean`                       | `true` if the table should have a searchbar in its header.                 |
-| `showSettings: boolean`                     | `true` if the table should have a settings page.                           |
-| `pageDebounce: number`                      | Delays the paging by the given milliseconds.                               |
-| `cardLayout: boolean`                       | `true` if you want the table to be displayed as a MatCard.                 |
-| `striped: boolean`                          | `true` if you want every other row to be colorized.                        |
+| Name                                        | Description                                                                                                                                             |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `caption: string`                           | The tables caption.                                                                                                                                     |
+| `dataSource: PsTableDataSource<T>`          | The tables source of data.                                                                                                                              |
+| `tableId: string`                           | Unique identifier. Used to identify saved settings and for url parameters.                                                                              |
+| `intlOverride: Partial<IPsTableIntlTexts>`  | If you want to override displayed labels.                                                                                                               |
+| `sortDefinitions: IPsTableSortDefinition[]` | Array of additional data element properties used for sorting.                                                                                           |
+| `refreshable: boolean`                      | `true` if you want the table to have a 'refresh' button.                                                                                                |
+| `filterable: boolean`                       | `true` if the table should have a searchbar in its header.                                                                                              |
+| `showSettings: boolean`                     | `true` if the table should have a settings page.                                                                                                        |
+| `pageDebounce: number`                      | Delays the paging by the given milliseconds.                                                                                                            |
+| `layout: 'card' | 'border' | 'flat'`        | `card` - table is displayed as a MatCard (default), `border` - table is enclosed with a border, `flat` - table has no visible enclosure                 |
+| `striped: boolean`                          | `true` if you want every other row to be colorized.                                                                                                     |
 
 ### Events <a name="PsTableComponentEvents"></a>
 
@@ -163,7 +163,7 @@ Now you can use it in your components like this:
   [refreshable]="refreshable"
   [filterable]="filterable"
   [showSettings]="showSettings"
-  [cardLayout]="cardLayout"
+  [layout]="layout"
   [striped]="striped"
   [pageDebounce]="pageDebounce"
   (page)="onPage($event)"

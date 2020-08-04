@@ -45,6 +45,12 @@ import { IPsTableSetting, PsTableSettingsService } from './services/table-settin
   selector: 'ps-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
+  // tslint:disable-next-line: no-host-metadata-property
+  host: {
+    '[class.mat-elevation-z1]': `layout === 'card'`,
+    '[class.ps-table--card]': `layout === 'card'`,
+    '[class.ps-table--border]': `layout === 'border'`,
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
@@ -69,13 +75,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   @Input() public pageDebounce: number;
 
   @Input()
-  @HostBinding('class.mat-elevation-z1')
-  public cardLayout = true;
-
-  @HostBinding('class.ps-table--card')
-  public get cardLayoutBinding() {
-    return this.cardLayout;
-  }
+  public layout: 'card' | 'border' | 'flat' = 'card';
 
   @Input()
   @HostBinding('class.ps-table--striped')

@@ -16,7 +16,7 @@
       (searchChanged)="onSearchChanged($event)"
     ></ps-table-header>
 
-    <div [class.ps-table__shadow]="cardLayout">
+    <div [class.ps-table__shadow]="layout === 'card'">
       <ps-table-data
         [intl]="intl"
         [dataSource]="dataSource"

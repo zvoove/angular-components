@@ -98,7 +98,7 @@ export class TableDemoComponent {
   public refreshable = true;
   public filterable = true;
   public showSettings = true;
-  public cardLayout = true;
+  public layout = 'card';
   public striped = true;
   public sortDefinitions = true;
   public pageDebounce = 1000;

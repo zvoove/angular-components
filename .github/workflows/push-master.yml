@@ -9,7 +9,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
@@ -18,7 +18,7 @@ jobs:
     - name: Build
       run: |
         npm ci
-        npm run ng -- build components
+        npm run build:components
         npm run ng -- build --prod --baseHref=https://prosoft-edv.github.io/components/
         cp dist/prosoft-components-demo/index.html dist/prosoft-components-demo/404.html
       env:
@@ -30,7 +30,7 @@ jobs:
       with:
         token: ${{ secrets.NPM_AUTH_TOKEN }}
         package: ./dist/components/package.json
-      
+
     - if: steps.publish.type != 'none'
       name: Deploy demo to gh-pages
       uses: JamesIves/github-pages-deploy-action@releases/v3

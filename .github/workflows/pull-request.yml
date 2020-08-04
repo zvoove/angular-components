@@ -43,6 +43,7 @@ jobs:
       run: |
         npm ci
         npm run ng -- test components --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+        npm run test:schematics
       env:
         CI: true
 
@@ -59,7 +60,7 @@ jobs:
     - name: build
       run: |
         npm ci
-        npm run ng -- build components
+        npm run build:components
         npm run ng -- build --prod --baseHref=https://prosoft-edv.github.io/components/
       env:
         CI: true
