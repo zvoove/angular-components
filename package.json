@@ -14,7 +14,7 @@
     "e2e": "ng e2e",
     "commit": "git-cz",
     "release:test": "ng lint components && ng test components --watch false",
-    "release:prerelease": "lerna version prerelease",
+    "release": "lerna version",
     "copy:schemas": "cpx projects/components/schematics/*/schema.json dist/components/schematics/",
     "copy:files": "cpx projects/components/schematics/*/files/** dist/components/schematics/",
     "copy:collection": "cpx projects/components/schematics/migrations.json dist/components/schematics/",
