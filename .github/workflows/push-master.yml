@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - 'releases/**'
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -31,7 +32,7 @@ jobs:
         token: ${{ secrets.NPM_AUTH_TOKEN }}
         package: ./dist/components/package.json
 
-    - if: steps.publish.type != 'none'
+    - if: github.ref == 'refs/heads/master' && steps.publish.type != 'none'
       name: Deploy demo to gh-pages
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
