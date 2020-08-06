@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, QueryList, SimpleChange, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Injectable, QueryList, ViewChild } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSelect } from '@angular/material/select';
@@ -8,6 +8,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, ParamMap, Params, Router } from '@angular/router';
 import { IPsTableIntlTexts, PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { PsTableDataSource } from './data/table-data-source';
 import { PsTableColumnDirective } from './directives/table.directives';
 import { IPsTableSortDefinition } from './models';
@@ -19,15 +21,15 @@ import { PsTableSearchComponent } from './subcomponents/table-search.component';
 import { PsTableSettingsComponent } from './subcomponents/table-settings.component';
 import { PsTableComponent } from './table.component';
 import { PsTableModule } from './table.module';
-import { map } from 'rxjs/operators';
 
+@Injectable()
 class TestSettingsService extends PsTableSettingsService {
   public settings$ = new BehaviorSubject<{ [id: string]: IPsTableSetting }>({});
   public pageSizeOptions = [1, 5, 25, 50];
   public settingsEnabled = false;
 
   public getStream(tableId: string): Observable<IPsTableSetting> {
-    return this.settings$.pipe(map(settings => settings[tableId]));
+    return this.settings$.pipe(map((settings) => settings[tableId]));
   }
 
   public save(id: string, settings: IPsTableSetting): Observable<void> {
@@ -51,6 +53,7 @@ const route: ActivatedRoute = <any>{
       if (prop === 'queryParamMap') {
         return obj.value;
       }
+      return null;
     },
   }),
   queryParamMap: queryParams$,
@@ -131,7 +134,12 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
 export class TestComponent {
   public caption = 'title';
   public dataSource = new PsTableDataSource(
-    () => of([{ id: 1, str: 'item 1' }, { id: 2, str: 'item 2' }, { id: 3, str: 'item 3' }]),
+    () =>
+      of([
+        { id: 1, str: 'item 1' },
+        { id: 2, str: 'item 2' },
+        { id: 3, str: 'item 3' },
+      ]),
     'client'
   );
   public tableId = 'tableId';
@@ -149,9 +157,9 @@ export class TestComponent {
   @ViewChild(PsTableComponent, { static: true }) table: PsTableComponent;
   @ViewChild(PsTablePaginationComponent, { static: true }) paginator: PsTablePaginationComponent;
 
-  public onPage(event: any) {}
-  public onCustomListActionClick(slectedItems: any[]) {}
-  public onCustomRowActionClick(item: any) {}
+  public onPage(_event: any) {}
+  public onCustomListActionClick(_slectedItems: any[]) {}
+  public onCustomRowActionClick(_item: any) {}
 }
 
 describe('PsTableComponent', () => {
@@ -435,8 +443,8 @@ describe('PsTableComponent', () => {
 
     it('should update view when view/content children change', fakeAsync(() => {
       spyOn(cd, 'markForCheck');
-      const table = createTableInstance() as PsTableComponent & { updateTableState: () => void };
-      spyOn(table, 'updateTableState').and.callThrough();
+      const table = createTableInstance() as PsTableComponent;
+      spyOn(table as any, 'updateTableState').and.callThrough();
 
       table.customHeader = null;
       expect(cd.markForCheck).toHaveBeenCalledTimes(1);
@@ -486,7 +494,7 @@ describe('PsTableComponent', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      const intlService: PsIntlServiceEn = TestBed.get(PsIntlService);
+      const intlService = TestBed.inject(PsIntlService);
       const defaultTableIntl = intlService.get('table');
       fixture.detectChanges();
 
@@ -527,19 +535,19 @@ describe('PsTableComponent', () => {
       // ps-table[layout]
       expect(psTableDbg.classes['mat-elevation-z1']).toEqual(true);
       expect(psTableDbg.classes['ps-table--card']).toEqual(true);
-      expect(psTableDbg.classes['ps-table--border']).toEqual(false);
+      expect(psTableDbg.classes['ps-table--border']).toBeFalsy();
 
       component.table.layout = 'border';
       fixture.detectChanges();
-      expect(psTableDbg.classes['mat-elevation-z1']).toEqual(false);
-      expect(psTableDbg.classes['ps-table--card']).toEqual(false);
+      expect(psTableDbg.classes['mat-elevation-z1']).toBeFalsy();
+      expect(psTableDbg.classes['ps-table--card']).toBeFalsy();
       expect(psTableDbg.classes['ps-table--border']).toEqual(true);
 
       component.table.layout = 'flat';
       fixture.detectChanges();
-      expect(psTableDbg.classes['mat-elevation-z1']).toEqual(false);
-      expect(psTableDbg.classes['ps-table--card']).toEqual(false);
-      expect(psTableDbg.classes['ps-table--border']).toEqual(false);
+      expect(psTableDbg.classes['mat-elevation-z1']).toBeFalsy();
+      expect(psTableDbg.classes['ps-table--card']).toBeFalsy();
+      expect(psTableDbg.classes['ps-table--border']).toBeFalsy();
 
       // ps-table[striped]
       expect(psTableDbg.classes['ps-table--striped']).toEqual(true);
@@ -606,9 +614,9 @@ describe('PsTableComponent', () => {
 
       // sort
       spyOn(component.table, 'onSortChanged');
-      useMatSelect(fixture, 'ps-table-sort', matOptionNodes => {
+      useMatSelect(fixture, 'ps-table-sort', (matOptionNodes) => {
         // ps-table[sortDefinitions] + ps-table-column[sortable]
-        expect(Array.from(matOptionNodes).map(x => x.textContent.trim())).toEqual(['', 'id', 'Virtual Column']);
+        expect(Array.from(matOptionNodes).map((x) => x.textContent.trim())).toEqual(['', 'id', 'Virtual Column']);
 
         // sort change
         const itemNode = matOptionNodes.item(2);
@@ -620,9 +628,9 @@ describe('PsTableComponent', () => {
       });
 
       // *psTableRowActions
-      useMatMenu(fixture, '.ps-table-data__options-column button', rowActionButtonEls => {
+      useMatMenu(fixture, '.ps-table-data__options-column button', (rowActionButtonEls) => {
         spyOn(component, 'onCustomRowActionClick');
-        expect(Array.from(rowActionButtonEls).map(x => x.textContent.trim())).toEqual(['item 1 custom row actions']);
+        expect(Array.from(rowActionButtonEls).map((x) => x.textContent.trim())).toEqual(['item 1 custom row actions']);
         rowActionButtonEls.item(0).dispatchEvent(new MouseEvent('click'));
         flush();
         expect(component.onCustomRowActionClick).toHaveBeenCalledWith({ id: 1, str: 'item 1' });
@@ -632,10 +640,10 @@ describe('PsTableComponent', () => {
       const firstRowCheckboxEl = rowEls[0].querySelector('mat-checkbox input');
       firstRowCheckboxEl.dispatchEvent(new MouseEvent('click'));
 
-      useMatMenu(fixture, '.ps-table-data__options-column-header button', listActionButtonEls => {
+      useMatMenu(fixture, '.ps-table-data__options-column-header button', (listActionButtonEls) => {
         // *psTableListActions
         spyOn(component, 'onCustomListActionClick');
-        expect(Array.from(listActionButtonEls).map(x => x.textContent.trim())).toEqual([
+        expect(Array.from(listActionButtonEls).map((x) => x.textContent.trim())).toEqual([
           'custom list actions',
           'refresh Refresh list',
           'settings List settings',
@@ -668,8 +676,8 @@ describe('PsTableComponent', () => {
         listActionButtonEls = getMatMenuNodes();
         expect(
           Array.from(listActionButtonEls)
-            .map(x => x.textContent.trim())
-            .filter(x => x.includes('refresh'))
+            .map((x) => x.textContent.trim())
+            .filter((x) => x.includes('refresh'))
         ).toEqual([]);
       });
     }));
@@ -691,7 +699,7 @@ describe('PsTableComponent', () => {
       const pageSelect = paginationComponent.queryAll(By.directive(MatSelect));
 
       expect(pageSelect.length).toEqual(2);
-      expect(pageSelect.find(x => (x.nativeElement as HTMLElement).classList.contains('ps-table-pagination__page-select'))).toBeDefined();
+      expect(pageSelect.find((x) => (x.nativeElement as HTMLElement).classList.contains('ps-table-pagination__page-select'))).toBeDefined();
     }));
 
     it('should not show "GoToPage"-Select, if there are less then 3 pages', fakeAsync(() => {
@@ -711,7 +719,7 @@ describe('PsTableComponent', () => {
 
       expect(pageSelect.length).toEqual(1);
       expect(
-        pageSelect.find(x => (x.nativeElement as HTMLElement).classList.contains('ps-table-pagination__page-select'))
+        pageSelect.find((x) => (x.nativeElement as HTMLElement).classList.contains('ps-table-pagination__page-select'))
       ).not.toBeDefined();
     }));
 
@@ -728,8 +736,8 @@ describe('PsTableComponent', () => {
       tick(1);
       fixture.detectChanges();
 
-      useMatSelect(fixture, '.ps-table-pagination__page-select', matOptionNodes => {
-        expect(Array.from(matOptionNodes).map(x => x.textContent.trim())).toEqual(['1', '2', '3', '4']);
+      useMatSelect(fixture, '.ps-table-pagination__page-select', (matOptionNodes) => {
+        expect(Array.from(matOptionNodes).map((x) => x.textContent.trim())).toEqual(['1', '2', '3', '4']);
 
         const itemNode = matOptionNodes.item(2);
         itemNode.dispatchEvent(new Event('click'));

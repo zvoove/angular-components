@@ -29,7 +29,7 @@ export class TestComponent {
 
   @ViewChild(PsTableSearchComponent, { static: true }) tableSearch: PsTableSearchComponent;
 
-  public onSearchChanged(event: string) {}
+  public onSearchChanged(_event: string) {}
 }
 
 describe('PsTableSearchComponent', () => {

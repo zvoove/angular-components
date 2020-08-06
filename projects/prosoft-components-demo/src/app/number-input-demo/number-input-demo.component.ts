@@ -129,8 +129,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NumberInputDemoComponent {
-  public value: number | number[] = 5;
-  public model: number | number[] = 5;
+  public value = 5;
+  public model = 5;
   public control = new FormControl(5);
   public form = new FormGroup({
     control: this.control,

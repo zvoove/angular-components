@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DebugElement, ViewChild } from '@angular/core';
+import { Component, DebugElement, Injectable, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
@@ -8,13 +8,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PsBlockUiComponent } from '@prosoft/components/block-ui';
 import { PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
-import { PsSavebarComponent } from '@prosoft/components/savebar';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 
 import { IPsFormDataSource, IPsFormDataSourceConnectOptions } from './form-data-source';
 import { dependencies, PsFormComponent } from './form.component';
 import { PsFormModule } from './form.module';
 
+@Injectable()
 class TestPsFormService extends BasePsFormService {
   constructor() {
     super();
@@ -48,7 +48,7 @@ class TestPsFormService extends BasePsFormService {
 })
 export class TestDataSourceComponent {
   public dataSource: IPsFormDataSource;
-  @ViewChild(PsFormComponent, { static: false }) formComponent: PsFormComponent;
+  @ViewChild(PsFormComponent) formComponent: PsFormComponent;
 }
 
 describe('PsFormComponent', () => {
@@ -133,7 +133,7 @@ describe('PsFormComponent', () => {
 
       let errorContainer = getErrorContainer(fixture);
       expect(errorContainer).not.toBe(null);
-      expect(errorContainer.classes['ps-form__error-container--center']).toBe(false);
+      expect(errorContainer.classes['ps-form__error-container--center']).toBeFalsy();
       expect(getErrorIcon(fixture)).toBe(null);
       expect(getErrorText(fixture)).toBe('');
 
@@ -143,7 +143,7 @@ describe('PsFormComponent', () => {
 
       errorContainer = getErrorContainer(fixture);
       expect(errorContainer).not.toBe(null);
-      expect(errorContainer.classes['ps-form__error-container--center']).toBe(false);
+      expect(errorContainer.classes['ps-form__error-container--center']).toBeFalsy();
       expect(getErrorIcon(fixture)).toBe(null);
       expect(getErrorText(fixture)).toBe('error1');
 

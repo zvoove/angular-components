@@ -44,7 +44,11 @@ export abstract class BasePsFormService extends PsFormService {
   /**
    * Provided to be overwritten to filter the errors.
    */
-  public filterErrors(errorData: IPsFormErrorData[], includeControls: boolean, source: 'form' | 'control'): Observable<IPsFormErrorData[]> {
+  public filterErrors(
+    errorData: IPsFormErrorData[],
+    _includeControls: boolean,
+    _source: 'form' | 'control'
+  ): Observable<IPsFormErrorData[]> {
     return of(errorData);
   }
   protected abstract mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]>;
@@ -54,16 +58,13 @@ export abstract class BasePsFormService extends PsFormService {
 
     return update$.pipe(
       map(() => this.getErrorInfo(control, includeControls)),
-      switchMap(errorData => this.filterErrors(errorData, includeControls, source)),
-      switchMap(errorData => this.mapDataToError(errorData))
+      switchMap((errorData) => this.filterErrors(errorData, includeControls, source)),
+      switchMap((errorData) => this.mapDataToError(errorData))
     );
   }
 
   private createUpdateTrigger(control: AbstractControl): Observable<any> {
-    return merge(control.valueChanges, control.statusChanges).pipe(
-      startWith(null as any),
-      debounceTime(this.options.debounceTime)
-    );
+    return merge(control.valueChanges, control.statusChanges).pipe(startWith(null as any), debounceTime(this.options.debounceTime));
   }
 
   private getErrorInfo(control: AbstractControl, includeControls: boolean = false): IPsFormErrorData[] {
@@ -88,7 +89,7 @@ export abstract class BasePsFormService extends PsFormService {
     }
 
     if (control.errors) {
-      errors.push(...objectToKeyValueArray(control.errors).map(error => this.createFormErrorData(error, control, controlPath)));
+      errors.push(...objectToKeyValueArray(control.errors).map((error) => this.createFormErrorData(error, control, controlPath)));
     }
 
     return errors;

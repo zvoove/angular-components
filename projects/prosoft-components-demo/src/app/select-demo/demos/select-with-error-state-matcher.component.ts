@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { bufferCount, startWith } from 'rxjs/operators';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
     return !!(control && control.invalid);
   }
 }
@@ -35,7 +35,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class SelectWithErrorStateMatcherComponent {
   public items$: Observable<any[]> = of(
-    Array.from(Array(10).keys()).map(i => ({
+    Array.from(Array(10).keys()).map((i) => ({
       value: `id${i}`,
       label: `Item ${i}`,
     }))
@@ -44,10 +44,7 @@ export class SelectWithErrorStateMatcherComponent {
     select: new FormControl(null, [Validators.required]),
   });
   public errorStateMatcher = new MyErrorStateMatcher();
-  public lastFiveValues$ = this.form.get('select').valueChanges.pipe(
-    startWith(null, null, null, null, null as any),
-    bufferCount(5, 1)
-  );
+  public lastFiveValues$ = this.form.get('select').valueChanges.pipe(startWith(null, null, null, null, null as any), bufferCount(5, 1));
 
   constructor() {
     this.form.disable();

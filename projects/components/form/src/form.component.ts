@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   Input,
   OnDestroy,
   ViewChild,
@@ -14,6 +13,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import { IPsFormButton, IPsFormDataSource, IPsFormDataSourceConnectOptions, IPsFormException } from './form-data-source';
+
+import type { ElementRef } from '@angular/core';
 
 export const dependencies = {
   IntersectionObserver: IntersectionObserver,
@@ -85,7 +86,7 @@ export class PsFormComponent implements AfterViewInit, OnDestroy {
     return this.dataSource.exception;
   }
 
-  @ViewChild('errorCardWrapper', { static: false }) public errorCardWrapper: ElementRef | null;
+  @ViewChild('errorCardWrapper') public errorCardWrapper: ElementRef | null;
 
   private _dataSourceSub = Subscription.EMPTY;
   private _errorCardObserver: IntersectionObserver;

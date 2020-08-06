@@ -14,8 +14,8 @@ import {
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
 import { IPsTableIntlTexts } from '@prosoft/components/core';
-import { of, Subject, timer, iif } from 'rxjs';
-import { debounce, takeUntil, switchMap } from 'rxjs/operators';
+import { of, Subject, timer } from 'rxjs';
+import { debounce, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ps-table-pagination',
@@ -59,13 +59,13 @@ export class PsTablePaginationComponent implements OnChanges, OnDestroy {
   @Input() public pageSize: number;
   @Input() public dataLength: number;
   @Input() public pageIndex: number;
-  @Input() public pageSizeOptions: number;
+  @Input() public pageSizeOptions: number[];
   @Input() public intl: IPsTableIntlTexts;
   @Input() public pageDebounce: number;
 
   @Output() public page = new EventEmitter<PageEvent>();
 
-  @ViewChild(MatPaginator, { static: false }) public set paginator(value: MatPaginator | null) {
+  @ViewChild(MatPaginator) public set paginator(value: MatPaginator | null) {
     this._paginator = value;
     this.updatePaginatorIntl();
   }
@@ -83,7 +83,7 @@ export class PsTablePaginationComponent implements OnChanges, OnDestroy {
         debounce(() => (this.pageDebounce == null ? of(null) : timer(this.pageDebounce))),
         takeUntil(this.ngUnsubscribe$)
       )
-      .subscribe(pageEvent => this.page.emit(pageEvent));
+      .subscribe((pageEvent) => this.page.emit(pageEvent));
   }
 
   public ngOnChanges(changes: SimpleChanges) {

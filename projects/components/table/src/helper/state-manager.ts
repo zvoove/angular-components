@@ -32,9 +32,9 @@ export class PsTableUrlStateManager extends PsTableStateManager {
 
   public createStateSource(tableId: string) {
     return this.route.queryParamMap.pipe(
-      map(queryParamMap => queryParamMap.get(tableId)),
+      map((queryParamMap) => queryParamMap.get(tableId)),
       distinctUntilChanged(),
-      map(stateString => {
+      map((stateString) => {
         if (tableId && stateString) {
           return fromQueryParams(stateString);
         }
@@ -65,15 +65,15 @@ export class PsTableUrlStateManager extends PsTableStateManager {
 export class PsTableMemoryStateManager extends PsTableStateManager {
   private settings$ = new BehaviorSubject<IPsTableUpdateDataInfo>(null);
 
-  public remove(tableId: string) {
+  public remove(_tableId: string) {
     this.settings$.next(null);
   }
 
-  public createStateSource(tableId: string) {
+  public createStateSource(_tableId: string) {
     return this.settings$.asObservable();
   }
 
-  public requestUpdate(tableId: string, updateInfo: IPsTableUpdateDataInfo) {
+  public requestUpdate(_tableId: string, updateInfo: IPsTableUpdateDataInfo) {
     this.settings$.next(updateInfo);
   }
 }

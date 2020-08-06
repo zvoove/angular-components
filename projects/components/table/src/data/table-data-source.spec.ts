@@ -584,10 +584,7 @@ describe('PsTableDataSource', () => {
     dataSource.pageIndex = 1;
     dataSource.pageSize = 2;
 
-    let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe((data) => {
-      renderData = data;
-    });
+    const sub = dataSource.connect().subscribe();
 
     dataSource.updateData();
 
@@ -720,10 +717,7 @@ describe('PsTableDataSource', () => {
     });
     dataSource.tableReady = true;
 
-    let renderData: any[] = [];
-    const sub = dataSource.connect().subscribe((data) => {
-      renderData = data;
-    });
+    const sub = dataSource.connect().subscribe();
 
     expect(loadTriggerValues).toEqual([]);
 

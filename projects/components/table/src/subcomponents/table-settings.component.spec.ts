@@ -71,7 +71,7 @@ describe('PsTableSettingsComponent', () => {
       fixture.detectChanges();
       spyOn(component, 'onSettingsAborted');
 
-      const [saveButton, cancelBtn] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
+      const [, cancelBtn] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
 
       cancelBtn.triggerEventHandler('click', null);
 
@@ -95,7 +95,7 @@ describe('PsTableSettingsComponent', () => {
       spyOn(component, 'onSettingsSaved');
       spyOn(component.tableSearch.settingsService, 'save').and.returnValue(of(null).pipe(delay(10)));
 
-      const [saveButton, cancelBtn] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
+      const [saveButton] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
 
       saveButton.triggerEventHandler('click', null);
 
@@ -122,7 +122,7 @@ describe('PsTableSettingsComponent', () => {
       component.ngOnInit();
 
       let asyncSettings: IPsTableSetting;
-      component.settings$.subscribe(settings => {
+      component.settings$.subscribe((settings) => {
         asyncSettings = settings;
       });
 
@@ -137,7 +137,7 @@ describe('PsTableSettingsComponent', () => {
       component.ngOnInit();
 
       let asyncSettings: IPsTableSetting;
-      component.settings$.subscribe(settings => {
+      component.settings$.subscribe((settings) => {
         asyncSettings = settings;
       });
 

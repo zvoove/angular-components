@@ -28,14 +28,7 @@ function generateDate() {
   return date;
 }
 function generateString() {
-  return (
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15)
-  );
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
 function generateSampleDataRow(idx: number): ISampleData {
@@ -54,7 +47,7 @@ function generateSampleDataRow(idx: number): ISampleData {
 }
 function generateSampleData(rowCount: number): ISampleData[] {
   const rows = Array.from(new Array(rowCount).keys());
-  return rows.map(x => generateSampleDataRow(x));
+  return rows.map((x) => generateSampleDataRow(x));
 }
 
 const sampleData = generateSampleData(100);
@@ -82,7 +75,7 @@ const sampleData = generateSampleData(100);
 })
 export class TableDemoComponent {
   public show = true;
-  @ViewChild(PsTableComponent, { static: false }) public table: PsTableComponent;
+  @ViewChild(PsTableComponent) public table: PsTableComponent;
 
   public clientSampleDataSource = new PsTableDataSource<ISampleData>(() => {
     return of(sampleData);
@@ -98,7 +91,7 @@ export class TableDemoComponent {
   public refreshable = true;
   public filterable = true;
   public showSettings = true;
-  public layout = 'card';
+  public layout: 'card' | 'border' | 'flat' = 'card';
   public striped = true;
   public sortDefinitions = true;
   public pageDebounce = 1000;

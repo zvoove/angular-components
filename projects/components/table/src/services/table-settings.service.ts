@@ -12,7 +12,7 @@ export interface IPsTableSetting {
 export class PsTableSettingsService {
   public settingsEnabled = false;
   public pageSizeOptions = [5, 10, 25, 50];
-  public getStream(tableId: string, onlySaved: boolean): Observable<IPsTableSetting> {
+  public getStream(_tableId: string, _onlySaved: boolean): Observable<IPsTableSetting> {
     return of({
       columnBlacklist: [],
       sortColumn: null,

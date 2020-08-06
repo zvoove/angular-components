@@ -2,9 +2,8 @@ import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { TrackByFunction } from '@angular/core';
 import { BehaviorSubject, NEVER, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
-
 import { _isNumberValue } from '../helper/table.helper';
-import { IPsTableUpdateDataInfo, IExtendedPsTableUpdateDataInfo } from '../models';
+import { IExtendedPsTableUpdateDataInfo, IPsTableUpdateDataInfo } from '../models';
 
 /**
  * Corresponds to `Number.MAX_SAFE_INTEGER`. Moved out into a variable here due to
@@ -144,7 +143,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * on its data relative to the function to know if a row should be added/removed/moved.
    * Accepts a function that takes two parameters, index and item.
    */
-  public trackBy: TrackByFunction<T> = (index, item) => item;
+  public trackBy: TrackByFunction<T> = (_index, item) => item;
 
   /**
    * Returns the names of the property that should be used in filterPredicate.

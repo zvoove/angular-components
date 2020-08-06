@@ -46,7 +46,7 @@ class PaginationTestComponent {
   public intl = testIntl;
   public pageDebounce: number;
 
-  @ViewChild(PsTablePaginationComponent, { static: false })
+  @ViewChild(PsTablePaginationComponent)
   public pagination: PsTablePaginationComponent;
 
   public onPage = (_: PageEvent) => {};

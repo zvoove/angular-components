@@ -14,11 +14,14 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
-import { ErrorStateMatcher, MatOption } from '@angular/material/core';
+import { MatOption } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
+
 import { PsSelectOptionTemplateDirective } from './select-option-template.directive';
 import { PsSelectTriggerTemplateDirective } from './select-trigger-template.directive';
+
+import type { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
   selector: 'ps-select',
@@ -60,10 +63,10 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   public static nextId = 0;
   @HostBinding() public id = `ps-select-${PsSelectComponent.nextId++}`;
 
-  @ContentChild(PsSelectOptionTemplateDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsSelectOptionTemplateDirective, { read: TemplateRef })
   public optionTemplate: TemplateRef<any> | null = null;
 
-  @ContentChild(PsSelectTriggerTemplateDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsSelectTriggerTemplateDirective, { read: TemplateRef })
   public triggerTemplate: TemplateRef<any> | null = null;
 
   @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
@@ -178,7 +181,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   public get tooltip(): string {
     // MatSelect is not fully initialized in the beginning, so we need to skip this here until it is ready
     if (this.multiple && this._matSelect && this._matSelect._selectionModel && this._matSelect.selected) {
-      return (<MatOption[]>this._matSelect.selected).map(x => x.viewValue).join(', ');
+      return (<MatOption[]>this._matSelect.selected).map((x) => x.viewValue).join(', ');
     }
     return '';
   }
@@ -243,15 +246,15 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
     // This method is overwritten in setMatSelect
   }
 
-  public registerOnChange(fn: () => void) {
+  public registerOnChange(_fn: () => void) {
     // This method is overwritten in setMatSelect
   }
 
-  public registerOnTouched(fn: any): void {
+  public registerOnTouched(_fn: any): void {
     // This method is overwritten in setMatSelect
   }
 
-  public setDisabledState(isDisabled: boolean): void {
+  public setDisabledState(_isDisabled: boolean): void {
     // This method is overwritten in setMatSelect
   }
 

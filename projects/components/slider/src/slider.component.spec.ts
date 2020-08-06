@@ -41,7 +41,7 @@ export class SliderNgModelTestComponent {
   `,
 })
 export class SliderReactiveFormTestComponent {
-  @ViewChild(PsSliderComponent, { static: false }) slider: PsSliderComponent;
+  @ViewChild(PsSliderComponent) slider: PsSliderComponent;
 
   public formControl = new FormControl(null);
   public form = new FormGroup({

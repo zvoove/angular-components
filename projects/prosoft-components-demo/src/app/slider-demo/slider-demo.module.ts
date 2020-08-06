@@ -35,7 +35,6 @@ export class CustomErrorStateMatcher implements ErrorStateMatcher {
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
-    PsFormFieldModule,
     RouterModule.forChild([
       {
         path: '',

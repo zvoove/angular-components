@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
@@ -6,13 +7,14 @@ import { BasePsFormService } from './form.service';
 import { getControlType } from './helpers';
 import { IPsFormError, IPsFormErrorData } from './models';
 
+@Injectable()
 class TestPsFormService extends BasePsFormService {
-  public getLabel(formControl: FormControl): Observable<string> | null {
+  public getLabel(_formControl: FormControl): Observable<string> | null {
     return null;
   }
   protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
     return of(
-      errorData.map(data => ({
+      errorData.map((data) => ({
         errorText: `${data.controlPath}:${data.errorKey}`,
         data: data,
       }))
@@ -69,7 +71,7 @@ describe('BasePsFormService', () => {
       service.filterErrors = () => of([expected]);
       const form = new FormControl({});
       let result: IPsFormError[];
-      service.getControlErrors(form).subscribe(errors => {
+      service.getControlErrors(form).subscribe((errors) => {
         result = errors;
       });
 
@@ -89,9 +91,9 @@ describe('BasePsFormService', () => {
       const control = new FormControl('a', [Validators.minLength(2), Validators.pattern('test')]);
 
       let resultChecked = false;
-      service.getControlErrors(control).subscribe(errors => {
+      service.getControlErrors(control).subscribe((errors) => {
         // Everything in the order they are in the form, but parents after their children
-        const errorTexts = errors.map(x => x.errorText);
+        const errorTexts = errors.map((x) => x.errorText);
         expect(errorTexts).toEqual([':minlength', ':pattern']);
         resultChecked = true;
       });
@@ -105,7 +107,7 @@ describe('BasePsFormService', () => {
       const control = new FormControl('', [Validators.required]);
 
       let resultChecked = false;
-      service.getControlErrors(control).subscribe(errors => {
+      service.getControlErrors(control).subscribe((errors) => {
         expect(errors[0].data).toEqual({
           controlPath: '',
           errorKey: 'required',
@@ -161,7 +163,7 @@ describe('BasePsFormService', () => {
       });
 
       let resultChecked = false;
-      service.getFormErrors(form, true).subscribe(errors => {
+      service.getFormErrors(form, true).subscribe((errors) => {
         expect(errors[0].data).toEqual({
           controlPath: 'array.0.nested',
           errorKey: 'required',
@@ -210,9 +212,9 @@ describe('BasePsFormService', () => {
       );
 
       let resultChecked = false;
-      service.getFormErrors(form, includeControls).subscribe(errors => {
+      service.getFormErrors(form, includeControls).subscribe((errors) => {
         // Everything in the order they are in the form, but parents after their children
-        const errorTexts = errors.map(x => x.errorText);
+        const errorTexts = errors.map((x) => x.errorText);
         expect(errorTexts).toEqual(expected);
         resultChecked = true;
       });

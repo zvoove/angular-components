@@ -174,7 +174,7 @@ describe('PsFormFieldComponent', () => {
       // Label calculated from the service with delay
       component.customLabel = null;
       (<any>component.formControl).psLabel = 'async label';
-      TestBed.get(PsFormService).labelDelay = 10;
+      (TestBed.inject(PsFormService) as TestPsFormService).labelDelay = 10;
       fixture.detectChanges();
       tick(10);
       fixture.detectChanges();

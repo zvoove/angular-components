@@ -1,3 +1,31 @@
+/*
+  This is a "Solution Style" tsconfig.json file, and is used by editors and TypeScript’s language server to improve development experience.
+  It is not intended to be used to perform a compilation.
+
+  To learn more about this file see: https://angular.io/config/solution-tsconfig.
+*/
+
+/*
+This doesn't ork with our path mappings. See: https://github.com/microsoft/TypeScript/issues/39632
+Until this is fixed, we have to use a copy of the tsconfig.base.json here.
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/prosoft-components-demo/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/prosoft-components-demo/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/components/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/components/tsconfig.spec.json"
+    }
+  ]
+}
+*/
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -5,7 +33,7 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "esnext",
+    "module": "es2020",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,

@@ -1,26 +1,32 @@
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ContentChild,
   ContentChildren,
   ElementRef,
   HostBinding,
-  Input,
-  OnDestroy,
-  QueryList,
-  ViewChild,
-  ViewEncapsulation,
-  InjectionToken,
   Inject,
+  InjectionToken,
+  Input,
+  OnChanges,
+  OnDestroy,
   Optional,
   SimpleChanges,
-  OnChanges,
+  ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
+import type { QueryList } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
-import { FloatLabelType } from '@angular/material/core';
-import { MatFormField, MatFormFieldAppearance, MatFormFieldControl, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
+import {
+  FloatLabelType,
+  MatFormField,
+  MatFormFieldAppearance,
+  MatFormFieldControl,
+  MatLabel,
+  MatPrefix,
+  MatSuffix,
+} from '@angular/material/form-field';
 import { hasRequiredField, IPsFormError, PsFormService } from '@prosoft/components/form-base';
 import { Observable, of, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -232,13 +238,13 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
   @ViewChild(MatFormField, { static: true }) public _matFormField: MatFormField;
 
   /** We can get the FromControl from this */
-  @ContentChild(NgControl, { static: false }) public _ngControl: NgControl | null;
+  @ContentChild(NgControl) public _ngControl: NgControl | null;
 
   /** The MatFormFieldControl or null, if it is no MatFormFieldControl */
-  @ContentChild(MatFormFieldControl, { static: false }) public _control: MatFormFieldControl<any> | null;
+  @ContentChild(MatFormFieldControl) public _control: MatFormFieldControl<any> | null;
 
   /** The MatLabel, if it is set or null */
-  @ContentChild(MatLabel, { static: false }) public set labelChild(value: MatLabel) {
+  @ContentChild(MatLabel) public set labelChild(value: MatLabel) {
     this._labelChild = value;
     this.updateLabel();
     if (this._matFormField) {
@@ -343,7 +349,7 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
       }
 
       this.errors$ = this.formsService.getControlErrors(this.formControl).pipe(
-        tap(errors => {
+        tap((errors) => {
           this.hasError = !!errors.length;
         })
       );
@@ -381,7 +387,7 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
     if (this.labelTextSubscription) {
       this.labelTextSubscription.unsubscribe();
     }
-    this.labelTextSubscription = labelText$.subscribe(label => {
+    this.labelTextSubscription = labelText$.subscribe((label) => {
       if (this.controlType.startsWith('mat-checkbox')) {
         const labelNode = this._elementRef.nativeElement.querySelectorAll('.mat-checkbox-label')[0];
         if (!labelNode.innerText.trim()) {

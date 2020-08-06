@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { GestureConfig } from '@angular/material/core';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
@@ -67,7 +66,7 @@ import { AppComponent } from './app.component';
       },
     ]),
   ],
-  providers: [{ provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }, { provide: PsIntlService, useClass: PsIntlServiceEn }],
+  providers: [{ provide: PsIntlService, useClass: PsIntlServiceEn }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

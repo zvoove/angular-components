@@ -1,4 +1,4 @@
-import { ElementRef } from '@angular/core';
+import { ElementRef, NgZone } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { getControlType, hasRequiredField } from './helpers';
@@ -41,8 +41,9 @@ describe('getControlType', () => {
     expect(getControlType(control)).toBe('some-name');
   });
   it('should work with mat-slider', () => {
-    const elementRef: ElementRef = { nativeElement: { classList: { add: () => {} } } };
-    const control = new MatSlider(elementRef, null, null, null, null, null);
+    const elementRef: ElementRef = { nativeElement: { classList: { add: () => {} }, addEventListener: () => {} } };
+    const zone: NgZone = { runOutsideAngular: (x: any) => x } as any;
+    const control = new MatSlider(elementRef, null, null, null, null, zone, null, null);
     expect(getControlType(control)).toBe('mat-slider');
   });
   it('should return unknown when not type is found', () => {

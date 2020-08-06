@@ -27,7 +27,7 @@ import { PsSelectService } from './select.service';
   entryComponents: [],
 })
 export class PsSelectModule {
-  public static forRoot(selectServiceType: any): ModuleWithProviders {
+  public static forRoot(selectServiceType: any): ModuleWithProviders<PsSelectModule> {
     return {
       ngModule: PsSelectModule,
       providers: [{ provide: PsSelectService, useClass: selectServiceType }],

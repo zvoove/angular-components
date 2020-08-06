@@ -43,10 +43,10 @@ export class PsFlipContainerComponent implements AfterViewInit {
     return this._active;
   }
 
-  @ContentChild(FlipContainerFrontDirective, { read: TemplateRef, static: false })
+  @ContentChild(FlipContainerFrontDirective, { read: TemplateRef })
   public _frontTemplate: TemplateRef<any> | null = null;
 
-  @ContentChild(FlipContainerBackDirective, { read: TemplateRef, static: false })
+  @ContentChild(FlipContainerBackDirective, { read: TemplateRef })
   public _backTemplate: TemplateRef<any> | null = null;
 
   @ViewChild('frontside', { static: true }) public _frontside: ElementRef<any>;

@@ -15,12 +15,14 @@ import {
   TemplateRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { IPsSavebarIntlTexts, PsIntlService } from '@prosoft/components/core';
 import { merge, Subject, Subscription } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
+
 import { IPsSavebarMode } from './models';
 import { PsSavebarRightContentDirective } from './savebar-right-content.directive';
+
+import type { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ps-savebar',
@@ -40,7 +42,7 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   @Output() public saveAndClose = new EventEmitter<void>();
   @Output() public cancel = new EventEmitter<void>();
 
-  @ContentChild(PsSavebarRightContentDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsSavebarRightContentDirective, { read: TemplateRef })
   public customRightContent: TemplateRef<any> | null;
 
   public get isHidden(): boolean {
@@ -76,15 +78,10 @@ export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private intlService: PsIntlService, private renderer: Renderer2, private ngZone: NgZone, public cd: ChangeDetectorRef) {}
 
   public ngOnInit() {
-    this.intlService.intlChanged$
-      .pipe(
-        startWith(null as any),
-        takeUntil(this.ngUnsubscribe$)
-      )
-      .subscribe(() => {
-        this.updateIntl();
-        this.cd.markForCheck();
-      });
+    this.intlService.intlChanged$.pipe(startWith(null as any), takeUntil(this.ngUnsubscribe$)).subscribe(() => {
+      this.updateIntl();
+      this.cd.markForCheck();
+    });
 
     this.updateSaveKeyListener();
   }

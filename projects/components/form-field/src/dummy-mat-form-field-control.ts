@@ -1,9 +1,10 @@
-import { OnDestroy } from '@angular/core';
+import { OnDestroy, Injectable } from '@angular/core';
 import { AbstractControl, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
+@Injectable()
 export class DummyMatFormFieldControl extends MatFormFieldControl<string> implements OnDestroy {
   public get required() {
     return this._required;

@@ -13,3 +13,4 @@ export {
 } from './src/defaults/default-select-data-source';
 export { DefaultPsSelectService, PsSelectData } from './src/defaults/default-select-service';
 export { PsSelectOptionTemplateDirective } from './src/select-option-template.directive';
+export { PsSelectTriggerTemplateDirective } from './src/select-trigger-template.directive';

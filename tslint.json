@@ -3,6 +3,8 @@
   "rules": {
     "array-type": false,
     "arrow-parens": false,
+    "arrow-return-shorthand": true,
+    "curly": true,
     "deprecation": {
       "severity": "warn"
     },
@@ -12,6 +14,7 @@
     "directive-selector": [true, "attribute", "app", "camelCase"],
     "component-selector": [true, "element", "app", "kebab-case"],
     "import-blacklist": [true, "rxjs/Rx", "@angular/material", "@prosoft/components"],
+    "indent": false,
     "interface-name": false,
     "max-classes-per-file": false,
     "member-access": false,
@@ -28,7 +31,6 @@
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
-    "no-use-before-declare": true,
     "no-var-requires": false,
     "object-literal-key-quotes": [true, "as-needed"],
     "object-literal-sort-keys": false,

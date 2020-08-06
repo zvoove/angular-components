@@ -1,16 +1,15 @@
-import { ChangeDetectorRef, Component, OnDestroy, ViewChild, Type } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef, Component, OnDestroy, Type, ViewChild } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Subject, Subscription } from 'rxjs';
+import { DefaultPsSelectDataSource } from './defaults/default-select-data-source';
+import { DefaultPsSelectService } from './defaults/default-select-service';
 import { PsSelectComponent } from './select.component';
 import { PsSelectModule } from './select.module';
-import { DefaultPsSelectService } from './defaults/default-select-service';
-import { PsSelectItem } from './models';
-import { DefaultPsSelectDataSource } from './defaults/default-select-data-source';
 
 function createFakeMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -47,7 +46,10 @@ function createFakeMatSelect(): MatSelect {
   `,
 })
 export class TestComponent implements OnDestroy {
-  dataSource = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
+  dataSource = [
+    { value: 1, label: 'item1' },
+    { value: 2, label: 'item2' },
+  ];
   control = new FormControl(null, [Validators.required]);
   form = new FormGroup({
     select: this.control,
@@ -61,7 +63,7 @@ export class TestComponent implements OnDestroy {
 
   private valuesSubscription: Subscription;
   constructor() {
-    this.valuesSubscription = this.form.get('select').valueChanges.subscribe(value => {
+    this.valuesSubscription = this.form.get('select').valueChanges.subscribe((value) => {
       this.emittedValues.push(value);
     });
   }
@@ -73,13 +75,14 @@ export class TestComponent implements OnDestroy {
 
 @Component({
   selector: 'ps-test-multiple-component',
-  template: `
-    <ps-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true" [showToggleAll]="showToggleAll"></ps-select>
-  `,
+  template: ` <ps-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true" [showToggleAll]="showToggleAll"></ps-select> `,
 })
 export class TestMultipleComponent {
   showToggleAll = true;
-  dataSource: any = [{ value: 1, label: 'item1' }, { value: 2, label: 'item2' }];
+  dataSource: any = [
+    { value: 1, label: 'item1' },
+    { value: 2, label: 'item2' },
+  ];
   value: any = null;
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
@@ -197,7 +200,7 @@ describe('PsSelectComponent', () => {
   });
 
   it('should emit only once when selecting an option', async () => {
-    const { fixture, component } = await initTest(TestComponent);
+    const { component } = await initTest(TestComponent);
 
     const options = ((component.select as any)._matSelect as MatSelect).options;
 
@@ -223,7 +226,7 @@ describe('PsSelectComponent', () => {
 
     // Custom matcher - empty value
     component.errorStateMatcher = {
-      isErrorState: (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean => {
+      isErrorState: (control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean => {
         return !!(control && control.invalid);
       },
     };
@@ -242,12 +245,12 @@ describe('PsSelectComponent', () => {
     fixture.detectChanges();
     const options = ((component.select as any)._matSelect as MatSelect).options;
 
-    expect(options.find(x => x.viewValue === '--')).toBeTruthy();
+    expect(options.find((x) => x.viewValue === '--')).toBeTruthy();
 
     component.clearable = false;
     fixture.detectChanges();
 
-    expect(options.find(x => x.viewValue === '--')).toBeFalsy();
+    expect(options.find((x) => x.viewValue === '--')).toBeFalsy();
   });
 
   it('toggle all functionality should work', async () => {
@@ -255,7 +258,7 @@ describe('PsSelectComponent', () => {
     component.showToggleAll = true;
     fixture.detectChanges();
     const options = ((component.select as any)._matSelect as MatSelect).options;
-    expect(options.map(x => x.selected).reduce((prev, curr) => prev || curr, false)).toBeFalsy();
+    expect(options.map((x) => x.selected).reduce((prev, curr) => prev || curr, false)).toBeFalsy();
 
     await openMatSelect(fixture);
     let toggleAllCbx = await getToggleAllInputCbx(fixture);
@@ -283,7 +286,7 @@ describe('PsSelectComponent', () => {
 
     function getOptionSelectedValues() {
       // Skip the first, as it is the search input wrapped in an option
-      return options.map(x => x.selected).slice(1);
+      return options.map((x) => x.selected).slice(1);
     }
   });
 
@@ -292,7 +295,7 @@ describe('PsSelectComponent', () => {
 
     let errorState = false;
     component.errorStateMatcher = {
-      isErrorState: (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean => {
+      isErrorState: (_control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean => {
         return errorState;
       },
     };
@@ -352,14 +355,14 @@ describe('PsSelectComponent', () => {
   });
 
   it('should set multiple css class for multiple mode', async () => {
-    const { fixture, component } = await initTest(TestMultipleComponent);
+    const { fixture } = await initTest(TestMultipleComponent);
 
     const classes = getPsSelectCssClasses(fixture);
     expect(classes).toContain('ps-select-multiple');
   });
 
   it('should work with custom templates', async () => {
-    const { fixture, component } = await initTest(TestCustomTemplateComponent);
+    const { fixture } = await initTest(TestCustomTemplateComponent);
 
     const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
     matSelectTrigger.triggerEventHandler('click', new Event('click'));
@@ -397,9 +400,9 @@ describe('PsSelectComponent', () => {
     fixture.detectChanges();
 
     const options = ((component.select as any)._matSelect as MatSelect).options.toArray();
-    expect(options.find(o => o.value === 1).disabled).toBeTruthy();
-    expect(options.find(o => o.value === 2).disabled).toBeFalsy();
-    expect(options.find(o => o.value === 3).disabled).toBeFalsy();
+    expect(options.find((o) => o.value === 1).disabled).toBeTruthy();
+    expect(options.find((o) => o.value === 2).disabled).toBeFalsy();
+    expect(options.find((o) => o.value === 3).disabled).toBeFalsy();
   });
 });
 
@@ -414,7 +417,7 @@ function getPsSelectCssClasses(fixture: ComponentFixture<any>) {
   const classes = testComponentElement
     .querySelector('ps-select')
     .className.split(' ')
-    .filter(x => x.startsWith('ps-'))
+    .filter((x) => x.startsWith('ps-'))
     .sort();
   return classes;
 }
@@ -430,12 +433,12 @@ async function openMatSelect<T>(fixture: ComponentFixture<T>) {
   fixture.detectChanges();
   await fixture.whenRenderingDone();
 }
-async function getMatOptionsNodes(): Promise<NodeListOf<HTMLElement>> {
-  const selectPanelNode = document.querySelector('.mat-select-panel');
-  const matOptionNodes = selectPanelNode.querySelectorAll('mat-option') as NodeListOf<HTMLElement>;
-  return matOptionNodes;
-}
-async function getToggleAllInputCbx<T>(fixture: ComponentFixture<T>): Promise<HTMLInputElement> {
+// async function getMatOptionsNodes(): Promise<NodeListOf<HTMLElement>> {
+//   const selectPanelNode = document.querySelector('.mat-select-panel');
+//   const matOptionNodes = selectPanelNode.querySelectorAll('mat-option') as NodeListOf<HTMLElement>;
+//   return matOptionNodes;
+// }
+async function getToggleAllInputCbx<T>(_fixture: ComponentFixture<T>): Promise<HTMLInputElement> {
   const selectPanelNode = document.querySelector('.mat-select-panel');
   const toggleAllElement = selectPanelNode.querySelector('.mat-select-search-toggle-all-checkbox input') as HTMLInputElement;
   return toggleAllElement;

@@ -8,7 +8,6 @@ import {
   Input,
   OnDestroy,
   Optional,
-  QueryList,
   TemplateRef,
   ViewChildren,
   ViewEncapsulation,
@@ -18,10 +17,13 @@ import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
+
 import { getSelectUnknownDataSourceError } from './errors';
 import { PsSelectItem } from './models';
 import { isPsSelectDataSource, PsSelectDataSource } from './select-data-source';
 import { PsSelectService } from './select.service';
+
+import type { QueryList } from '@angular/core';
 
 @Component({
   selector: 'ps-select-data',
@@ -172,29 +174,24 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
 
   public ngAfterViewInit() {
     // forward MatOptions to MatSelect
-    this.options.changes
-      .pipe(
-        startWith(null as any),
-        takeUntil(this._ngUnsubscribe$)
-      )
-      .subscribe(() => {
-        const options = this.options.toArray();
-        this.select.options.reset(options);
-        this.select.options.notifyOnChanges();
-      });
+    this.options.changes.pipe(startWith(null as any), takeUntil(this._ngUnsubscribe$)).subscribe(() => {
+      const options = this.options.toArray();
+      this.select.options.reset(options);
+      this.select.options.notifyOnChanges();
+    });
 
     // forward panel open/close, filter and selectedValue to the DataSource
-    this.select.openedChange.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(open => this.dataSource.panelOpenChanged(open));
+    this.select.openedChange.pipe(takeUntil(this._ngUnsubscribe$)).subscribe((open) => this.dataSource.panelOpenChanged(open));
     this.filterCtrl.valueChanges
       .pipe(takeUntil(this._ngUnsubscribe$))
-      .subscribe(searchText => this.dataSource.searchTextChanged(searchText));
+      .subscribe((searchText) => this.dataSource.searchTextChanged(searchText));
 
     const ngControl = this.select.ngControl;
     let valueChanges = ngControl.valueChanges;
     if (ngControl.value) {
       valueChanges = valueChanges.pipe(startWith(ngControl.value));
     }
-    valueChanges.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(value => this._pushSelectedValuesToDataSource(value));
+    valueChanges.pipe(takeUntil(this._ngUnsubscribe$)).subscribe((value) => this._pushSelectedValuesToDataSource(value));
   }
 
   public ngOnDestroy() {
@@ -212,7 +209,7 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
   }
 
   public onToggleAll(state: boolean) {
-    const newValue = state ? (this.items as PsSelectItem<T>[]).map(x => x.value) : [];
+    const newValue = state ? (this.items as PsSelectItem<T>[]).map((x) => x.value) : [];
     this.control.patchValue(newValue);
   }
 
@@ -271,7 +268,7 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
     this._renderChangeSubscription = this.dataSource
       .connect()
       .pipe(takeUntil(this._ngUnsubscribe$))
-      .subscribe(items => {
+      .subscribe((items) => {
         this.items = items || [];
         this._updateToggleAllCheckbox();
         this.cd.markForCheck();

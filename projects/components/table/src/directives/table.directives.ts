@@ -22,9 +22,9 @@ export class PsTableColumnDirective {
   @Input() public width = 'auto';
   @Input() public headerStyles: { [key: string]: string } = {};
   @Input() public columnStyles: { [key: string]: string } = {};
-  @ContentChild(PsTableColumnTemplateDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsTableColumnTemplateDirective, { read: TemplateRef })
   public columnTemplate: TemplateRef<any> | null = null;
-  @ContentChild(PsTableColumnHeaderTemplateDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsTableColumnHeaderTemplateDirective, { read: TemplateRef })
   public headerTemplate: TemplateRef<any> | null = null;
 }
 
@@ -77,7 +77,7 @@ export class PsTableRowDetailDirective {
   @Input() public expanded = false;
   @Input() public showToggleColumn = true;
 
-  @ContentChild(PsTableRowDetailTemplateDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsTableRowDetailTemplateDirective, { read: TemplateRef })
   public template: TemplateRef<any> | null = null;
 
   private expandedItems = new WeakSet();

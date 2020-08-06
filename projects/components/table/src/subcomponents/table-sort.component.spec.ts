@@ -35,7 +35,7 @@ export class TestComponent {
 
   @ViewChild(PsTableSortComponent, { static: true }) tableSort: PsTableSortComponent;
 
-  public onSortChanged(event: any) {}
+  public onSortChanged(_event: any) {}
 }
 
 describe('PsTableSortComponent', () => {
@@ -70,7 +70,10 @@ describe('PsTableSortComponent', () => {
       sortDirection: 'asc',
     });
 
-    component.sortDefinitions = [{ prop: 'prop', displayName: 'Sort Prop' }, { prop: 'newprop', displayName: 'New Sort Prop' }];
+    component.sortDefinitions = [
+      { prop: 'prop', displayName: 'Sort Prop' },
+      { prop: 'newprop', displayName: 'New Sort Prop' },
+    ];
     fixture.detectChanges();
 
     const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
@@ -108,7 +111,10 @@ describe('PsTableSortComponent', () => {
     descButton.triggerEventHandler('click', new MouseEvent('click'));
     expect(component.onSortChanged).not.toHaveBeenCalled();
 
-    component.sortDefinitions = [{ prop: 'prop', displayName: 'Sort Prop' }, { prop: 'newprop', displayName: 'New Sort Prop' }];
+    component.sortDefinitions = [
+      { prop: 'prop', displayName: 'Sort Prop' },
+      { prop: 'newprop', displayName: 'New Sort Prop' },
+    ];
     fixture.detectChanges();
 
     const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));

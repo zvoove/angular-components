@@ -3,7 +3,7 @@ import { PsFormService } from './form.service';
 
 @NgModule({})
 export class PsFormBaseModule {
-  public static forRoot(formsServiceType: Type<PsFormService>): ModuleWithProviders {
+  public static forRoot(formsServiceType: Type<PsFormService>): ModuleWithProviders<PsFormBaseModule> {
     return {
       ngModule: PsFormBaseModule,
       providers: [{ provide: PsFormService, useClass: formsServiceType }],

@@ -14,19 +14,18 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  QueryList,
   SimpleChanges,
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import type { QueryList } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPsTableIntlTexts, PsExceptionMessageExtractor, PsIntlService } from '@prosoft/components/core';
 import { PsFlipContainerComponent } from '@prosoft/components/flip-container';
 import { combineLatest, Subject, Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
-
 import { PsTableDataSource } from './data/table-data-source';
 import {
   PsTableColumnDirective,
@@ -56,7 +55,7 @@ import { IPsTableSetting, PsTableSettingsService } from './services/table-settin
 })
 export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @Input() public caption: string;
-  @Input() public dataSource: PsTableDataSource<{ [key: string]: any }>;
+  @Input() public dataSource: PsTableDataSource<any, any>;
   @Input() public tableId: string;
   @Input() public intlOverride: Partial<IPsTableIntlTexts>;
   @Input()
@@ -87,7 +86,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   @ViewChild(PsFlipContainerComponent, { static: true }) public flipContainer: PsFlipContainerComponent | null = null;
 
-  @ContentChild(PsTableCustomHeaderDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsTableCustomHeaderDirective, { read: TemplateRef })
   public set customHeader(value: TemplateRef<any> | null) {
     this._customHeader = value;
     this.cd.markForCheck();
@@ -97,7 +96,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _customHeader: TemplateRef<any> | null = null;
 
-  @ContentChild(PsTableCustomSettingsDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsTableCustomSettingsDirective, { read: TemplateRef })
   public set customSettings(value: TemplateRef<any> | null) {
     this._customSettings = value;
     this.cd.markForCheck();
@@ -107,7 +106,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _customSettings: TemplateRef<any> | null = null;
 
-  @ContentChild(PsTableTopButtonSectionDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsTableTopButtonSectionDirective, { read: TemplateRef })
   public set topButtonSection(value: TemplateRef<any> | null) {
     this._topButtonSection = value;
     this.cd.markForCheck();
@@ -117,7 +116,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _topButtonSection: TemplateRef<any> | null = null;
 
-  @ContentChild(PsTableListActionsDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsTableListActionsDirective, { read: TemplateRef })
   public set listActions(value: TemplateRef<any> | null) {
     this._listActions = value;
     this.updateTableState();
@@ -127,7 +126,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _listActions: TemplateRef<any> | null = null;
 
-  @ContentChild(PsTableRowActionsDirective, { read: TemplateRef, static: false })
+  @ContentChild(PsTableRowActionsDirective, { read: TemplateRef })
   public set rowActions(value: TemplateRef<any> | null) {
     this._rowActions = value;
     this.updateTableState();
@@ -145,7 +144,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
 
   @HostBinding('class.ps-table--row-detail')
-  @ContentChild(PsTableRowDetailDirective, { static: false })
+  @ContentChild(PsTableRowDetailDirective)
   public set rowDetail(value: PsTableRowDetailDirective | null) {
     this._rowDetail = value;
     this.updateTableState();
@@ -268,7 +267,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   public ngOnDestroy(): void {
     if (this.subscriptions) {
-      this.subscriptions.forEach(s => s.unsubscribe());
+      this.subscriptions.forEach((s) => s.unsubscribe());
     }
 
     if (this._intlChangesSub) {
@@ -356,9 +355,9 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this.sortDirection = urlSettings.sortDirection || tableSettings.sortDirection || 'asc';
     this.filterText = urlSettings.searchText || '';
 
-    this.displayedColumns = this.columnDefs.map(x => x.property);
+    this.displayedColumns = this.columnDefs.map((x) => x.property);
     if (tableSettings.columnBlacklist && tableSettings.columnBlacklist.length) {
-      this.displayedColumns = this.displayedColumns.filter(x => !tableSettings.columnBlacklist.includes(x));
+      this.displayedColumns = this.displayedColumns.filter((x) => !tableSettings.columnBlacklist.includes(x));
     }
 
     // Row Detail Expander aktivieren
@@ -381,8 +380,8 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   private mergeSortDefinitions() {
     const sortableColumns = this.columnDefs
-      .filter(def => def.sortable)
-      .map(def => <IPsTableSortDefinition>{ prop: def.property, displayName: def.header });
+      .filter((def) => def.sortable)
+      .map((def) => <IPsTableSortDefinition>{ prop: def.property, displayName: def.header });
 
     this._mergedSortDefinitions = sortableColumns
       .concat(this._sortDefinitions)

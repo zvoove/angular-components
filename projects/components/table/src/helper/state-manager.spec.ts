@@ -9,7 +9,7 @@ describe('PsTableStateManager', () => {
     const queryParams$ = new BehaviorSubject<ParamMap>(convertToParamMap({}));
 
     const mockRouter: any = {
-      navigate: (path: any[], options: NavigationExtras) => {
+      navigate: (_path: any[], options: NavigationExtras) => {
         queryParams$.next(convertToParamMap(options.queryParams));
       },
     };
@@ -20,6 +20,7 @@ describe('PsTableStateManager', () => {
           if (prop === 'queryParamMap') {
             return obj.value;
           }
+          return null;
         },
       }),
       queryParamMap: queryParams$,
@@ -27,7 +28,7 @@ describe('PsTableStateManager', () => {
     const stateManager = new PsTableUrlStateManager(mockRouter, route);
     const source$ = stateManager.createStateSource('tableId');
     const states: IPsTableUpdateDataInfo[] = [];
-    const sub = source$.subscribe(state => {
+    const sub = source$.subscribe((state) => {
       states.push(state);
     });
 
@@ -47,7 +48,7 @@ describe('PsTableStateManager', () => {
     const stateManager = new PsTableMemoryStateManager();
     const source$ = stateManager.createStateSource('tableId');
     const states: IPsTableUpdateDataInfo[] = [];
-    const sub = source$.subscribe(state => {
+    const sub = source$.subscribe((state) => {
       states.push(state);
     });
 

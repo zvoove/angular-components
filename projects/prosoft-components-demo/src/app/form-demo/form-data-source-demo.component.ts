@@ -60,13 +60,13 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
 
   public connect(options: IPsFormDataSourceConnectOptions): Observable<void> {
     this._scrollToError = () => setTimeout(() => options.scrollToError(), 0); // Warten bis der error gerendert ist
-    this._errorInViewSub = options.errorInView$.subscribe(value => {
+    this._errorInViewSub = options.errorInView$.subscribe((value) => {
       this._errorInView = value;
       this.updateButtons();
       this.stateChanges$.next();
     });
 
-    this._connectSub = this.options.loadTrigger$.subscribe(params => {
+    this._connectSub = this.options.loadTrigger$.subscribe((params) => {
       this._loadParams = params;
       this.loadData(params);
     });
@@ -98,13 +98,13 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
       .saveFn(formValue, this._loadParams)
       .pipe(take(1))
       .subscribe({
-        next: data => {
+        next: (_data) => {
           this.markDataSaved();
           this.setEditMode(false);
           this._saving = false;
           this.stateChanges$.next();
         },
-        error: err => {
+        error: (err) => {
           this._saving = false;
           this.exception = {
             errorObject: err,
@@ -139,12 +139,12 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
       .loadFn(params)
       .pipe(take(1))
       .subscribe({
-        next: data => {
+        next: (data) => {
           this.initializeData(data);
           this._loading = false;
           this.stateChanges$.next();
         },
-        error: err => {
+        error: (err) => {
           this._loading = false;
           this._hasLoadError = true;
           this.exception = {
@@ -289,14 +289,14 @@ export class FormDataSourceDemoComponent {
   public dataSource = new DemoPsFormDataSource({
     form: this.form,
     loadTrigger$: this.loadTrigger$, // could be route params in a real application
-    loadFn: count => {
+    loadFn: (count) => {
       this.logs.push({ type: 'load', params: count });
       return of({
         input1: 'input 1 load count ' + count,
         input2: 'input 2 load count ' + count,
       }).pipe(
         delay(1000),
-        map(x => {
+        map((x) => {
           if (this.loadError) {
             throw new Error('this is the server error (loading)');
           }
@@ -309,7 +309,7 @@ export class FormDataSourceDemoComponent {
       this.logs.push({ type: 'save', data: data, params: count });
       return of(null).pipe(
         delay(1000),
-        tap(x => {
+        tap((x) => {
           if (this.saveError) {
             throw new Error('this is the server error (saving)');
           }
