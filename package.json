@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:components": "npm run build:components-lib && npm run build:components-schematics",
-    "build:components-lib": "ng build components",
+    "build:components-lib": "ng build components --prod",
     "build:components-schematics": "tsc -p projects/components/tsconfig.schematics.json",
     "test": "ng test",
     "test:schematics": "npm run build:components-schematics && jasmine dist/components/schematics/**/*_spec.js",
