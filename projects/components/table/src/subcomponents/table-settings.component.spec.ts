@@ -105,6 +105,29 @@ describe('PsTableSettingsComponent', () => {
 
       expect(component.onSettingsSaved).toHaveBeenCalled();
     }));
+
+    it('should not loose custom setting properties', fakeAsync(() => {
+      const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
+
+      const settings: any = {
+        columnBlacklist: ['prop_b'],
+        pageSize: 11,
+        sortColumn: 'prop_a',
+        sortDirection: 'desc',
+        customProperty: 'custom value',
+      };
+      component.tableId = 'tableA';
+      component.tableSearch.settingsService.getStream = () => of(settings);
+      fixture.detectChanges();
+
+      spyOn(component.tableSearch.settingsService, 'save').and.returnValue(of(null));
+
+      const [saveButton] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
+      saveButton.triggerEventHandler('click', null);
+
+      expect(component.tableSearch.settingsService.save).toHaveBeenCalledWith('tableA', settings);
+    }));
   });
 
   describe('isolated', () => {
@@ -122,7 +145,7 @@ describe('PsTableSettingsComponent', () => {
       component.ngOnInit();
 
       let asyncSettings: IPsTableSetting;
-      component.settings$.subscribe((settings) => {
+      component.settings$.subscribe(settings => {
         asyncSettings = settings;
       });
 
@@ -137,7 +160,7 @@ describe('PsTableSettingsComponent', () => {
       component.ngOnInit();
 
       let asyncSettings: IPsTableSetting;
-      component.settings$.subscribe((settings) => {
+      component.settings$.subscribe(settings => {
         asyncSettings = settings;
       });
 

@@ -50,9 +50,9 @@ export class PsTableSettingsComponent implements OnInit {
       map(settings => {
         settings = settings || ({} as IPsTableSetting);
         return <IPsTableSetting>{
+          ...settings,
           columnBlacklist: settings.columnBlacklist || [],
           pageSize: settings.pageSize || 15,
-          sortColumn: settings.sortColumn,
           sortDirection: settings.sortDirection || 'asc',
         };
       })
