@@ -112,6 +112,25 @@ describe('PsSelectDataComponent', () => {
 
     expect(component.items).toEqual(items);
   }));
+  it("should not switch dataSource when dataSource input doesn't change", fakeAsync(() => {
+    expect(component.items).toEqual([]);
+
+    const items = [{ value: 1, label: 'i1', hidden: false }];
+    const ds = createDataSource(items);
+    spyOn(service, 'createDataSource').and.returnValue(ds);
+
+    component.dataSource = 'a';
+    expect(service.createDataSource).toHaveBeenCalledTimes(1);
+
+    component.dataSource = 'lookup';
+    expect(service.createDataSource).toHaveBeenCalledTimes(2);
+
+    component.dataSource = 'lookup';
+    expect(service.createDataSource).toHaveBeenCalledTimes(2);
+
+    expect(component.items).toEqual(items);
+    expect(component.dataSource).toBe(ds);
+  }));
   it('should use multiple of matSelect', fakeAsync(() => {
     matSelect.multiple = false;
     expect(component.multiple).toEqual(false);

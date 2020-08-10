@@ -85,11 +85,12 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
    *   - `DataSource` object that implements the connect/disconnect interface.
    */
   @Input()
-  get dataSource(): PsSelectDataSource<T> {
-    return this._dataSource;
+  get dataSource(): any {
+    return this._dataSourceInstance;
   }
-  set dataSource(dataSource: PsSelectDataSource<T>) {
-    if (this._dataSource !== dataSource) {
+  set dataSource(dataSource: any) {
+    if (this._dataSourceInput !== dataSource) {
+      this._dataSourceInput = dataSource;
       this._switchDataSource(dataSource);
     }
   }
@@ -120,23 +121,23 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
   public toggleAllCheckboxIndeterminate = false;
 
   /** true while the options are loading */
-  public get loading() {
-    return this.dataSource && this.dataSource.loading;
+  public get loading(): boolean {
+    return !!this._dataSourceInstance?.loading;
   }
 
   /** true when there was an error while loading the options */
-  public get hasError() {
-    return this.dataSource && !!this.dataSource.error;
+  public get hasError(): boolean {
+    return !!this._dataSourceInstance?.error;
   }
 
   /** the error that occured while loading the options */
   public get error() {
-    return this.dataSource && this.dataSource.error;
+    return this._dataSourceInstance?.error;
   }
 
   /** true if the ps-select is in multiple mode */
   public get multiple() {
-    return this.select && this.select.multiple;
+    return !!this.select?.multiple;
   }
 
   /** If true, then the empty option should be shown. */
@@ -155,7 +156,10 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
   private _renderChangeSubscription: Subscription | null;
 
   /** The data source. */
-  private _dataSource: PsSelectDataSource<T>;
+  private _dataSourceInstance: PsSelectDataSource<T>;
+
+  /** The value the [dataSource] input was called with. */
+  private _dataSourceInput: any;
 
   /** The compareWith function set through the @Input() */
   private _compareWith: (o1: any, o2: any) => boolean;
@@ -228,16 +232,16 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
 
     // compareWith set -> update MatSelect and datasource
     if (this._compareWith) {
-      this._dataSource.compareWith = this._compareWith;
+      this._dataSourceInstance.compareWith = this._compareWith;
       this.select.compareWith = this._compareWith;
     }
     // compareWith not set, but datasource has one -> update MatSelect
-    else if (this._dataSource.compareWith) {
-      this.select.compareWith = this._dataSource.compareWith;
+    else if (this._dataSourceInstance.compareWith) {
+      this.select.compareWith = this._dataSourceInstance.compareWith;
     }
     // compareWith not set and datasource doesn't have one -> update datasource with the one of MatSelect
     else {
-      this._dataSource.compareWith = this.select.compareWith;
+      this._dataSourceInstance.compareWith = this.select.compareWith;
     }
   }
 
@@ -255,7 +259,7 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
   /** Set up a subscription for the data provided by the data source. */
   private _switchDataSource(dataSource: any) {
     if (isPsSelectDataSource(this.dataSource)) {
-      this.dataSource.disconnect();
+      this._dataSourceInstance.disconnect();
     }
 
     // Stop listening for data from the previous data source.
@@ -264,16 +268,16 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
       this._renderChangeSubscription = null;
     }
 
-    this._dataSource = this.selectService.createDataSource(dataSource, this.control);
+    this._dataSourceInstance = this.selectService.createDataSource(dataSource, this.control);
     this._updateCompareWithBindings();
-    this._dataSource.searchTextChanged(this.filterCtrl.value);
+    this._dataSourceInstance.searchTextChanged(this.filterCtrl.value);
     this._pushSelectedValuesToDataSource(this.select.value);
 
-    if (!isPsSelectDataSource(this._dataSource)) {
+    if (!isPsSelectDataSource(this._dataSourceInstance)) {
       throw getSelectUnknownDataSourceError();
     }
 
-    this._renderChangeSubscription = this.dataSource
+    this._renderChangeSubscription = this._dataSourceInstance
       .connect()
       .pipe(takeUntil(this._ngUnsubscribe$))
       .subscribe((items) => {
