@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.1](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.0...@prosoft/components@2.0.0-alpha.1) (2020-08-10)
+
+
+### Bug Fixes
+
+* **select:** don't recreate datasource when input doesn't change ([#125](https://github.com/prosoft-edv/components/issues/125)) ([2f4e0e4](https://github.com/prosoft-edv/components/commit/2f4e0e4))
+* **select:** propagate value when form is patched with emitEvent false ([#126](https://github.com/prosoft-edv/components/issues/126)) ([073adeb](https://github.com/prosoft-edv/components/commit/073adeb))
+
+
+
+
+
+
 # [2.0.0-alpha.0](https://github.com/prosoft-edv/components/compare/@prosoft/components@0.1.0-alpha.22...@prosoft/components@2.0.0-alpha.0) (2020-08-06)
 
 
