@@ -10,15 +10,20 @@ import { PsSelectService } from './select.service';
 
 function createMatSelect(): MatSelect {
   const matSelect = <any>{
+    value: null,
     stateChanges: new Subject<void>(),
     openedChange: new Subject<void>(),
     close: () => {},
-    _onChange: null,
+    _onChange: () => {},
     _onTouched: null,
     ngControl: new FormControl(),
     options: new QueryList(),
+    writeValue: () => {},
   };
 
+  matSelect.writeValue = (val: any) => {
+    matSelect.value = val;
+  };
   matSelect.registerOnChange = (val: any) => {
     matSelect._onChange = val;
   };
@@ -187,20 +192,26 @@ describe('PsSelectDataComponent', () => {
     spyOn(dataSource, 'selectedValuesChanged');
 
     const initialSelectedValue = { value: 42, label: 'init' };
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue(initialSelectedValue);
+    matSelect.writeValue(initialSelectedValue);
     component.ngAfterViewInit();
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([initialSelectedValue]);
 
     const newSelectedValue = { value: 1, label: '1' };
 
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue(newSelectedValue);
+    matSelect.writeValue(newSelectedValue);
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([newSelectedValue]);
 
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue(null);
+    matSelect.writeValue(null);
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([]);
 
     matSelect.multiple = true;
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue([newSelectedValue]);
+    matSelect.writeValue(newSelectedValue);
+    expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([newSelectedValue]);
+
+    matSelect._onChange(null);
+    expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([]);
+
+    matSelect._onChange(newSelectedValue);
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([newSelectedValue]);
 
     component.ngOnDestroy();
@@ -213,7 +224,7 @@ describe('PsSelectDataComponent', () => {
 
     component.compareWith = comparer;
     component.filterCtrl.patchValue('filter');
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue(selectedValue);
+    matSelect.writeValue(selectedValue);
 
     const newDataSource = createDataSource();
     spyOn(newDataSource, 'selectedValuesChanged');
@@ -235,19 +246,19 @@ describe('PsSelectDataComponent', () => {
     // single mode and valid values are already covered by the other test
     matSelect.multiple = true;
 
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue(null);
+    matSelect.writeValue(null);
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([]);
 
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue('');
+    matSelect.writeValue('');
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([]);
 
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue(false);
+    matSelect.writeValue(false);
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([]);
 
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue(0);
+    matSelect.writeValue(0);
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([]);
 
-    (<FormControl>(<unknown>matSelect.ngControl)).patchValue({ something: 'not array' });
+    matSelect.writeValue({ something: 'not array' });
     expect(dataSource.selectedValuesChanged).toHaveBeenCalledWith([]);
 
     component.ngOnDestroy();

@@ -186,12 +186,20 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
       .pipe(takeUntil(this._ngUnsubscribe$))
       .subscribe((searchText) => this.dataSource.searchTextChanged(searchText));
 
-    const ngControl = this.select.ngControl;
-    let valueChanges = ngControl.valueChanges;
-    if (ngControl.value) {
-      valueChanges = valueChanges.pipe(startWith(ngControl.value));
+    // Propagate value changes to the DataSource
+    const origWriteValue = this.select.writeValue;
+    this.select.writeValue = (value: any) => {
+      origWriteValue.call(this.select, value);
+      this._pushSelectedValuesToDataSource(this.select.value);
+    };
+    const origOnChange = this.select._onChange;
+    this.select._onChange = (value: any) => {
+      origOnChange(value);
+      this._pushSelectedValuesToDataSource(value);
+    };
+    if (this.select.value) {
+      this._pushSelectedValuesToDataSource(this.select.value);
     }
-    valueChanges.pipe(takeUntil(this._ngUnsubscribe$)).subscribe((value) => this._pushSelectedValuesToDataSource(value));
   }
 
   public ngOnDestroy() {
@@ -259,7 +267,7 @@ export class PsSelectDataComponent<T = any> implements AfterViewInit, OnDestroy 
     this._dataSource = this.selectService.createDataSource(dataSource, this.control);
     this._updateCompareWithBindings();
     this._dataSource.searchTextChanged(this.filterCtrl.value);
-    this._pushSelectedValuesToDataSource(this.select.ngControl.value);
+    this._pushSelectedValuesToDataSource(this.select.value);
 
     if (!isPsSelectDataSource(this._dataSource)) {
       throw getSelectUnknownDataSourceError();
