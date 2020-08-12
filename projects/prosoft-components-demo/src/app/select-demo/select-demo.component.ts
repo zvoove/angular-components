@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEnca
 import { FormControl, FormGroup } from '@angular/forms';
 import { DefaultPsSelectDataSource, PsSelectLoadTrigger, PsSelectSortBy } from '@prosoft/components/select';
 import { NEVER, of, throwError } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, delay } from 'rxjs/operators';
 
 declare type DemoDataSourceItems = 'default' | 'error' | 'loading' | 'empty';
 
@@ -26,6 +26,9 @@ interface DemoLogs {
 
         <div>(openedChange) $event = boolean</div>
         <div>(selectionChange) $event = MatSelectChange</div>
+
+        <mat-checkbox [(ngModel)]="customTriggerTpl">*psSelectTriggerTemplate="let item"</mat-checkbox>
+        <mat-checkbox [(ngModel)]="customOptionTpl">*psSelectOptionTemplate="let item"</mat-checkbox>
       </mat-card>
 
       <mat-card class="app-select-demo__settings-box">
@@ -88,7 +91,7 @@ interface DemoLogs {
     </div>
 
     <mat-card *ngIf="visible" style="margin-bottom: 1em;">
-      <mat-form-field>
+      <mat-form-field style="width: 100%;">
         <mat-label>ngModel</mat-label>
         <ps-select
           [(ngModel)]="ngModel"
@@ -98,10 +101,21 @@ interface DemoLogs {
           [disabled]="disabled"
           [required]="required"
           [panelClass]="{ 'app-select-demo__panel': panelClass }"
-        ></ps-select>
+        >
+          <ng-container *ngIf="customTriggerTpl">
+            <ng-container *psSelectTriggerTemplate="let item">
+              {{ item | json }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="customOptionTpl">
+            <ng-container *psSelectOptionTemplate="let item">
+              {{ item | json }}
+            </ng-container>
+          </ng-container>
+        </ps-select>
       </mat-form-field>
       <div [formGroup]="form">
-        <mat-form-field>
+        <mat-form-field style="width: 100%;">
           <mat-label>FormControl</mat-label>
           <ps-select
             formControlName="ctrl"
@@ -111,7 +125,18 @@ interface DemoLogs {
             [disabled]="disabled"
             [required]="required"
             [panelClass]="{ 'app-select-demo__panel': panelClass }"
-          ></ps-select>
+          >
+            <ng-container *ngIf="customTriggerTpl">
+              <ng-container *psSelectTriggerTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="customOptionTpl">
+              <ng-container *psSelectOptionTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            </ng-container>
+          </ps-select>
         </mat-form-field>
       </div>
     </mat-card>
@@ -167,7 +192,7 @@ export class SelectDemoComponent implements OnInit {
   public form = new FormGroup({
     ctrl: new FormControl(null),
   });
-  public items = Array.from(Array(500).keys()).map(i => ({
+  public items = Array.from(Array(500).keys()).map((i) => ({
     id: i,
     strId: `id${i}`,
     labelA: `Label A ${i}`,
@@ -187,6 +212,9 @@ export class SelectDemoComponent implements OnInit {
   public disabled = false;
   public required = false;
   public panelClass = false;
+
+  public customTriggerTpl = false;
+  public customOptionTpl = false;
 
   public dataSourceItems: DemoDataSourceItems = 'default';
   public dataSourceMode: 'id' | 'entity' = 'id';
@@ -254,7 +282,8 @@ export class SelectDemoComponent implements OnInit {
           items = of(items).pipe(
             tap(() => {
               ++logs.loadCount;
-            })
+            }),
+            delay(1000)
           );
         }
         if (this.itemsAsFunction) {

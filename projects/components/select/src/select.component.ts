@@ -34,7 +34,7 @@ import type { ErrorStateMatcher } from '@angular/material/core';
         (openedChange)="onOpenedChange($event)"
       >
         <mat-select-trigger *ngIf="triggerTemplate && !empty">
-          <ng-template [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: customTriggerData }"></ng-template>
+          <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: customTriggerData }"></ng-container>
         </mat-select-trigger>
         <ps-select-data
           [dataSource]="dataSource"
