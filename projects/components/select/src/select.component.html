@@ -1,0 +1,53 @@
+<div [matTooltip]="tooltip" [matTooltipDisabled]="!multiple">
+  <mat-select
+    [value]="value"
+    [disableOptionCentering]="true"
+    [compareWith]="compareWith"
+    [disabled]="disabled"
+    [multiple]="multiple"
+    [errorStateMatcher]="errorStateMatcher"
+    [panelClass]="panelClass"
+    [placeholder]="placeholder"
+    [required]="required"
+    (valueChange)="onValueChange($event)"
+    (selectionChange)="onSelectionChange($event)"
+    (openedChange)="onOpenedChange($event)"
+  >
+    <mat-select-trigger *ngIf="triggerTemplate && !empty">
+      <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: customTriggerData }"></ng-container>
+    </mat-select-trigger>
+
+    <mat-option class="ps-select__search">
+      <ngx-mat-select-search
+        [formControl]="filterCtrl"
+        [searching]="loading"
+        [showToggleAllCheckbox]="showToggleAll"
+        [toggleAllCheckboxChecked]="toggleAllCheckboxChecked"
+        [toggleAllCheckboxIndeterminate]="toggleAllCheckboxIndeterminate"
+        (toggleAll)="onToggleAll($event)"
+      ></ngx-mat-select-search>
+    </mat-option>
+
+    <mat-option *ngIf="hasError" [disabled]="true" class="ps-select__error">
+      <span class="ps-select__error-message">{{ error | psErrorMessage }}</span>
+    </mat-option>
+
+    <mat-option *ngIf="showEmptyInput" class="ps-select__empty-option">
+      --
+    </mat-option>
+
+    <mat-option
+      *ngFor="let item of items; trackBy: trackByOptions"
+      [value]="item.value"
+      [class.ps-select__option--hidden]="item.hidden"
+      [disabled]="item.disabled"
+      class="ps-select__option"
+    >
+      <ng-container *ngIf="!optionTemplate">
+        {{ item.label }}
+      </ng-container>
+      <ng-template *ngIf="optionTemplate" [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: item }">
+      </ng-template>
+    </mat-option>
+  </mat-select>
+</div>

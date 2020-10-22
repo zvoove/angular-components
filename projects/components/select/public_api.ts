@@ -1,4 +1,3 @@
-export { PsSelectDataComponent } from './src/select-data.component';
 export { PsSelectComponent } from './src/select.component';
 export { PsSelectItem } from './src/models';
 export { isPsSelectDataSource, PsSelectDataSource } from './src/select-data-source';

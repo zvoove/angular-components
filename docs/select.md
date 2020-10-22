@@ -29,11 +29,18 @@ import { PsSelectModule } from '@prosoft/components/select';
 
 ### Properties <a name="PsSelectComponentProperties"></a>
 
-| Name                     | Default | Description                                                                                                                     |
-| ------------------------ | ------- |------------------------------------------------------------------------------------------------------------------------------- |
-| `dataSource: any`        | `null`  | The PsSelect's source of data.                                                                                                  |
-| `clearable: boolean`     | `true`  | If `true`, PsSelect will show a 'Clear' button at the end of the selected value. If clicked, the selected item will be removed. |
-| `showToggleAll: boolean` | `true`  | If `true`, PsSelect will show a 'toggle all' checkbox (ignored for single select). |
+| Name                      | Default | Description                                                                                                                     |
+| ------------------------- | ------- |-------------------------------------------------------------------------------------------------------------------------------  |
+| `dataSource: any`         | `null`  | The PsSelect's source of data.                                                                                                  |
+| `clearable: boolean`      | `true`  | Whether an empty option should be added. If clicked, the selected item will be removed. (only in single select mode) |
+| `disabled: boolean`       | `false` | Whether the component is disabled. |
+| `errorStateMatcher: ErrorStateMatcher` | `null` | Object used to control when error messages are shown. |
+| `multiple: boolean`       | `false` | Whether the user should be allowed to select multiple options. |
+| `panelClass: string | string[] | Set<string> | { [key: string]: any }` | `null` | Classes to be passed to the select panel. Supports the same syntax as ngClass. |
+| `placeholder: string`     | `null`  | Placeholder to be shown if no value has been selected. |
+| `required: boolean`       | `false` | Whether the component is required. |
+| `showToggleAll: boolean`  | `true`  | Whether the user should be able to toggle the selected status of all items at once. (only in multiple select mode) |
+| `value: any`              | `null`  | Value of the select control. |
 
 ### Events <a name="PsSelectComponentEvents"></a>
 
@@ -41,6 +48,7 @@ import { PsSelectModule } from '@prosoft/components/select';
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `openedChange: EventEmitter<boolean>`            | Emitted if the opened state of the selection popup is changed.                                                                                                                 |
 | `selectionChange: EventEmitter<MatSelectChange>` | Emitted if the selected item of the select changed. For MatSelectChange properties check [MatSelectChange](https://material.angular.io/components/select/api#MatSelectChange). |
+| `valueChange: EventEmitter<any>`                 | Emitted if the selected item of the select changed. |
 
 ---
 

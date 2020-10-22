@@ -1,6 +1,8 @@
 import { Observable } from 'rxjs';
 import { PsSelectItem } from './models';
 
+export const DEFAULT_COMPARER = (a: any, b: any) => a === b;
+
 export abstract class PsSelectDataSource<T = any> {
   /** The flag that indicates if the select is currently loading data. */
   public loading = false;
@@ -8,7 +10,7 @@ export abstract class PsSelectDataSource<T = any> {
   /** The error that occured in the last observable returned by _loadItems or null. */
   public error: any = null;
 
-  public compareWith: (value1: T, value2: T) => boolean = (a, b) => a === b;
+  public compareWith: (value1: T, value2: T) => boolean = DEFAULT_COMPARER;
 
   /**
    * Connects a collection viewer (such as a data-table) to this data source. Note that

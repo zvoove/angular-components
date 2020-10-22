@@ -1,11 +1,15 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ContentChild,
   DoCheck,
+  ElementRef,
   EventEmitter,
   HostBinding,
   Input,
+  OnDestroy,
+  OnInit,
   Optional,
   Output,
   Self,
@@ -13,41 +17,54 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
-import { MatOption } from '@angular/material/core';
+import { ControlValueAccessor, FormControl, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
+import {
+  CanDisableCtor,
+  CanUpdateErrorStateCtor,
+  ErrorStateMatcher,
+  MatOption,
+  mixinDisabled,
+  mixinErrorState,
+} from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { getSelectUnknownDataSourceError } from './errors';
+import { PsSelectItem } from './models';
+import { DEFAULT_COMPARER, isPsSelectDataSource, PsSelectDataSource } from './select-data-source';
 import { PsSelectOptionTemplateDirective } from './select-option-template.directive';
 import { PsSelectTriggerTemplateDirective } from './select-trigger-template.directive';
+import { PsSelectService } from './select.service';
 
-import type { ErrorStateMatcher } from '@angular/material/core';
+const enum ValueChangeSource {
+  MatSelect = 1,
+  ToggleAll = 2,
+  ValueInput = 3,
+  WriteValue = 4,
+}
+
+// Boilerplate for applying mixins to MatSelect.
+/** @docs-private */
+class PsSelectBase {
+  constructor(
+    public _elementRef: ElementRef,
+    public _defaultErrorStateMatcher: ErrorStateMatcher,
+    public _parentForm: NgForm,
+    public _parentFormGroup: FormGroupDirective,
+    public ngControl: NgControl
+  ) {}
+}
+const _PsSelectMixinBase: CanDisableCtor & CanUpdateErrorStateCtor & typeof PsSelectBase = mixinDisabled(mixinErrorState(PsSelectBase));
 
 @Component({
   selector: 'ps-select',
-  template: `
-    <div [formGroup]="formGroup" [matTooltip]="tooltip" [matTooltipDisabled]="!multiple">
-      <mat-select
-        [formControl]="formControl"
-        [disableOptionCentering]="true"
-        (selectionChange)="onSelectionChange($event)"
-        (openedChange)="onOpenedChange($event)"
-      >
-        <mat-select-trigger *ngIf="triggerTemplate && !empty">
-          <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: customTriggerData }"></ng-container>
-        </mat-select-trigger>
-        <ps-select-data
-          [dataSource]="dataSource"
-          [compareWith]="compareWith"
-          [clearable]="clearable"
-          [showToggleAll]="showToggleAll"
-          [optionTemplate]="optionTemplate"
-        ></ps-select-data>
-      </mat-select>
-    </div>
-  `,
+  templateUrl: './select.component.html',
+  styleUrls: ['./select.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // tslint:disable-next-line: no-inputs-metadata-property
+  inputs: ['disabled'],
   // tslint:disable-next-line: no-host-metadata-property
   host: {
     '[class.ps-select-multiple]': 'multiple',
@@ -59,7 +76,8 @@ import type { ErrorStateMatcher } from '@angular/material/core';
   },
   providers: [{ provide: MatFormFieldControl, useExisting: PsSelectComponent }],
 })
-export class PsSelectComponent<T = any> implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck {
+export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
+  implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy {
   public static nextId = 0;
   @HostBinding() public id = `ps-select-${PsSelectComponent.nextId++}`;
 
@@ -71,21 +89,13 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
 
   @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
     this._matSelect = select;
-
-    // MatSelect doesn't trigger stateChanges on close which causes problems, so we patch it here.
-    const close = select.close;
-    select.close = () => {
-      close.call(select);
-      select.stateChanges.next();
-    };
-
-    // Forward the ControlValueAccessor methods to mat-select
-    this.writeValue = select.writeValue.bind(select);
-    this.registerOnChange = select.registerOnChange.bind(select);
-    this.registerOnTouched = select.registerOnTouched.bind(select);
-    this.setDisabledState = select.setDisabledState.bind(select);
-    select.writeValue = select.registerOnChange = select.registerOnTouched = select.setDisabledState = () => {};
   }
+
+  /**
+   * Stream containing the latest information on what rows are being displayed on screen.
+   * Can be used by the data source to as a heuristic of what data should be provided.
+   */
+  public viewChange = new BehaviorSubject<{ start: number; end: number }>({ start: 0, end: Number.MAX_VALUE });
 
   /**
    * The selects's source of data, which can be provided in three ways (in order of complexity):
@@ -93,94 +103,104 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
    *   - Stream that emits a data array each time the array changes
    *   - `DataSource` object that implements the connect/disconnect interface.
    */
-  @Input() public dataSource: any;
+  @Input()
+  get dataSource(): any {
+    return this._dataSourceInstance;
+  }
+  set dataSource(dataSource: any) {
+    if (this._dataSourceInput !== dataSource) {
+      this._dataSourceInput = dataSource;
+      this._switchDataSource(dataSource);
+    }
+  }
 
-  @Input() public compareWith: ((o1: any, o2: any) => boolean) | null = null;
+  @Input()
+  public get value(): T | null {
+    return this._value;
+  }
+  public set value(value: T | null) {
+    this._propagateValueChange(value, ValueChangeSource.ValueInput);
+  }
+  private _value: T | null = null;
 
-  /** When true, an empty option is added to the top of the list (ignored for multiple true) */
+  /** If true, then there will be a empty option available to deselect any values (only single select mode) */
   @Input() public clearable = true;
 
   /** If true, then there will be a toggle all checkbox available (only multiple select mode) */
   @Input() public showToggleAll = true;
 
-  @Input() public set disabled(value: boolean) {
-    this.setDisabledState(value);
-  }
-  public get disabled(): boolean {
-    return this.formControl.disabled;
-  }
+  @Input() public multiple = false;
 
-  @Input() public set multiple(value: boolean) {
-    this._matSelect.multiple = value;
-  }
-  public get multiple(): boolean {
-    return this._matSelect.multiple;
-  }
+  @Input() public errorStateMatcher: ErrorStateMatcher = null;
 
-  @Input() public set errorStateMatcher(value: ErrorStateMatcher) {
-    this._matSelect.errorStateMatcher = value;
-  }
-  public get errorStateMatcher(): ErrorStateMatcher {
-    return this._matSelect.errorStateMatcher;
-  }
+  @Input() public panelClass: string | string[] | Set<string> | { [key: string]: any } = null;
 
-  @Input() public set panelClass(value: string | string[] | Set<string> | { [key: string]: any }) {
-    this._matSelect.panelClass = value;
-  }
-  public get panelClass(): string | string[] | Set<string> | { [key: string]: any } {
-    return this._matSelect.panelClass;
-  }
+  @Input() public placeholder: string = null;
 
-  @Input() public set placeholder(value: string) {
-    this._matSelect.placeholder = value;
-  }
-  public get placeholder(): string {
-    return this._matSelect.placeholder;
-  }
+  @Input() public required = false;
 
-  @Input() public set required(value: boolean) {
-    this._matSelect.required = value;
-  }
-  public get required(): boolean {
-    return this._matSelect.required;
-  }
-
+  /**
+   * Event that emits whenever the raw value of the select changes. This is here primarily
+   * to facilitate the two-way binding for the `value` input.
+   * @docs-private
+   */
+  @Output() readonly valueChange: EventEmitter<T | null> = new EventEmitter<T | null>();
   @Output() public openedChange = new EventEmitter<boolean>();
   @Output() public selectionChange = new EventEmitter<MatSelectChange>();
 
-  public get value(): T | null {
-    return this._matSelect.value;
-  }
-  public get empty() {
-    return this._matSelect.empty;
-  }
+  public empty = true;
+
   public get shouldLabelFloat() {
     return this._matSelect.shouldLabelFloat;
   }
-  public get stateChanges() {
-    return this._matSelect.stateChanges;
-  }
+
   public get focused() {
     // tslint:disable-next-line: deprecation
     return this._matSelect.focused;
   }
-  public get errorState() {
-    return this._matSelect.errorState;
+
+  public get compareWith(): (o1: any, o2: any) => boolean {
+    return this._dataSourceInstance?.compareWith ?? DEFAULT_COMPARER;
   }
+
   public readonly controlType = 'ps-select';
 
-  public get formGroup(): FormGroup {
-    // ngModel or envent binding only -> dummy control
-    return (this._parentFormGroup && this._parentFormGroup.form) || (this._parentForm && this._parentForm.form) || this._dummyForm;
+  /** FormControl for the search filter */
+  public filterCtrl = new FormControl('');
+
+  /** The items to display */
+  public items: PsSelectItem<T>[] | ReadonlyArray<PsSelectItem<T>> = [];
+
+  public toggleAllCheckboxChecked = false;
+  public toggleAllCheckboxIndeterminate = false;
+
+  /** true while the options are loading */
+  public get loading(): boolean {
+    return !!this._dataSourceInstance?.loading;
   }
-  public get formControl(): FormControl {
-    // event binding only -> dummy control
-    return (this.ngControl && (this.ngControl.control as FormControl)) || this._dummyControl;
+
+  /** true when there was an error while loading the options */
+  public get hasError(): boolean {
+    return !!this.error;
+  }
+
+  /** the error that occured while loading the options */
+  public get error() {
+    return this._dataSourceInstance?.error;
+  }
+
+  /** If true, then the empty option should be shown. */
+  public get showEmptyInput() {
+    if (this.multiple || !this.clearable || !this.items?.length) {
+      return false;
+    }
+    const searchText = (this.filterCtrl.value || '').toLowerCase();
+    return !searchText || '--'.indexOf(searchText) > -1;
   }
 
   public get tooltip(): string {
     // MatSelect is not fully initialized in the beginning, so we need to skip this here until it is ready
-    if (this.multiple && this._matSelect && this._matSelect._selectionModel && this._matSelect.selected) {
+    if (this.multiple && this._matSelect?._selectionModel && this._matSelect.selected) {
       return (<MatOption[]>this._matSelect.selected).map((x) => x.viewValue).join(', ');
     }
     return '';
@@ -192,9 +212,8 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
       return null;
     }
 
+    const selectedOptions = this._matSelect._selectionModel.selected.map(toTriggerDataObj);
     if (this.multiple) {
-      const selectedOptions = this._matSelect._selectionModel.selected.map(toTriggerDataObj);
-
       if (this._matSelect._isRtl()) {
         selectedOptions.reverse();
       }
@@ -202,7 +221,7 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
       return selectedOptions;
     }
 
-    return toTriggerDataObj(this._matSelect._selectionModel.selected[0]);
+    return selectedOptions[0];
 
     function toTriggerDataObj(option: MatOption): { value: string; viewValue: string } {
       return {
@@ -212,15 +231,34 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
     }
   }
 
-  private _dummyForm = new FormGroup({});
-  private _dummyControl = new FormControl(null);
+  /** Subject that emits when the component has been destroyed. */
+  private _ngUnsubscribe$ = new Subject<void>();
+
+  /** Subscription that listens for the data provided by the data source. */
+  private _renderChangeSubscription = Subscription.EMPTY;
+
+  /** The data source. */
+  private _dataSourceInstance: PsSelectDataSource<T>;
+
+  /** The value the [dataSource] input was called with. */
+  private _dataSourceInput: any;
+
   private _matSelect!: MatSelect;
 
+  /** View -> model callback called when value changes */
+  private _onChange: (value: any) => void = () => {};
+
   constructor(
-    @Optional() private _parentForm: NgForm,
-    @Optional() private _parentFormGroup: FormGroupDirective,
+    elementRef: ElementRef,
+    defaultErrorStateMatcher: ErrorStateMatcher,
+    private selectService: PsSelectService,
+    private cd: ChangeDetectorRef,
+    @Optional() parentForm: NgForm,
+    @Optional() parentFormGroup: FormGroupDirective,
     @Optional() @Self() public ngControl: NgControl
   ) {
+    super(elementRef, defaultErrorStateMatcher, parentForm, parentFormGroup, ngControl);
+
     if (this.ngControl) {
       // Note: we provide the value accessor through here, instead of
       // the `providers` to avoid running into a circular import.
@@ -229,40 +267,127 @@ export class PsSelectComponent<T = any> implements ControlValueAccessor, MatForm
   }
 
   public ngDoCheck() {
-    // Wen need to call MatSelects ngDoCheck here to update the errorState.
-    // Otherwise the errorState would be updated after angular is done with checking
-    // for changes on ps-select, which would cause problems with mat-form-field.
-    this._matSelect.ngDoCheck();
+    if (this.ngControl) {
+      this.updateErrorState();
+    }
+  }
+
+  public ngOnInit() {
+    this.filterCtrl.valueChanges
+      .pipe(takeUntil(this._ngUnsubscribe$))
+      .subscribe((searchText) => this.dataSource.searchTextChanged(searchText));
+
+    this._matSelect.stateChanges.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(this.stateChanges);
+  }
+
+  public ngOnDestroy() {
+    this._ngUnsubscribe$.next();
+    this._ngUnsubscribe$.complete();
+    this.viewChange.complete();
+    this._renderChangeSubscription.unsubscribe();
   }
 
   public onContainerClick(_: MouseEvent): void {
     this._matSelect.onContainerClick();
   }
+
   public setDescribedByIds(ids: string[]): void {
     this._matSelect.setDescribedByIds(ids);
   }
 
-  public writeValue(_: any) {
-    // This method is overwritten in setMatSelect
+  public writeValue(value: any) {
+    this._propagateValueChange(value, ValueChangeSource.WriteValue);
   }
 
-  public registerOnChange(_fn: () => void) {
-    // This method is overwritten in setMatSelect
+  public registerOnChange(fn: () => void) {
+    this._onChange = fn;
   }
 
-  public registerOnTouched(_fn: any): void {
-    // This method is overwritten in setMatSelect
+  public registerOnTouched(fn: any): void {
+    this._matSelect.registerOnTouched(fn);
   }
 
-  public setDisabledState(_isDisabled: boolean): void {
-    // This method is overwritten in setMatSelect
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 
   public onSelectionChange(event: MatSelectChange) {
+    this._updateToggleAllCheckbox();
     this.selectionChange.emit(event);
   }
 
-  public onOpenedChange(event: boolean) {
-    this.openedChange.emit(event);
+  public onOpenedChange(open: boolean) {
+    this.openedChange.emit(open);
+    this._dataSourceInstance.panelOpenChanged(open);
+  }
+
+  public onValueChange(value: any) {
+    this._propagateValueChange(value, ValueChangeSource.MatSelect);
+  }
+
+  public onToggleAll(state: boolean) {
+    const newValue = state ? (this.items as PsSelectItem<T>[]).map((x) => x.value) : [];
+    this._propagateValueChange(newValue, ValueChangeSource.ToggleAll);
+  }
+
+  public trackByOptions(_: number, item: PsSelectItem<T>) {
+    return `${item.value}#${item.label}`;
+  }
+
+  private _propagateValueChange(value: any, source: ValueChangeSource) {
+    this._value = value;
+    this.empty = this.multiple ? !value?.length : value == null;
+    this._updateToggleAllCheckbox();
+    this._pushSelectedValuesToDataSource(value);
+    if (source !== ValueChangeSource.ValueInput) {
+      this.valueChange.emit(value);
+    }
+    if (source !== ValueChangeSource.WriteValue) {
+      this._onChange(value);
+    }
+    this.cd.markForCheck();
+  }
+
+  private _pushSelectedValuesToDataSource(value: any): void {
+    if (!this._dataSourceInstance) {
+      return;
+    }
+    let values: any[];
+    if (this.multiple) {
+      values = Array.isArray(value) ? value : [];
+    } else {
+      values = value ? [value] : [];
+    }
+    this._dataSourceInstance.selectedValuesChanged(values);
+  }
+
+  /** Set up a subscription for the data provided by the data source. */
+  private _switchDataSource(dataSource: any) {
+    // Stop listening for data from the previous data source.
+    this._dataSourceInstance?.disconnect();
+    this._renderChangeSubscription.unsubscribe();
+
+    this._dataSourceInstance = this.selectService.createDataSource(dataSource, this.ngControl?.control);
+    if (!isPsSelectDataSource(this._dataSourceInstance)) {
+      throw getSelectUnknownDataSourceError();
+    }
+
+    this._dataSourceInstance.searchTextChanged(this.filterCtrl.value);
+    this._dataSourceInstance.panelOpenChanged(this._matSelect.panelOpen);
+    this._pushSelectedValuesToDataSource(this._value);
+
+    this._renderChangeSubscription = this._dataSourceInstance.connect().subscribe((items) => {
+      this.items = items || [];
+      this._updateToggleAllCheckbox();
+      this.cd.markForCheck();
+    });
+  }
+
+  private _updateToggleAllCheckbox() {
+    if (this.multiple && this.items && Array.isArray(this._value)) {
+      const selectedValueCount = this._value.length;
+      this.toggleAllCheckboxChecked = this.items.length === selectedValueCount;
+      this.toggleAllCheckboxIndeterminate = selectedValueCount > 0 && selectedValueCount < this.items.length;
+    }
   }
 }

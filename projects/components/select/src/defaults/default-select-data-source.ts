@@ -66,9 +66,9 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   constructor(options: PsSelectDataSourceOptions) {
     super();
 
-    this._searchDebounceTime = options.searchDebounce || 300;
-    this._loadTrigger = options.loadTrigger || PsSelectLoadTrigger.Initial;
-    this._sortBy = options.sortBy == null ? PsSelectSortBy.Both : options.sortBy;
+    this._searchDebounceTime = options.searchDebounce ?? 300;
+    this._loadTrigger = options.loadTrigger ?? PsSelectLoadTrigger.Initial;
+    this._sortBy = options.sortBy ?? PsSelectSortBy.Both;
 
     let loadData: () => Observable<PsSelectItem<T>[]>;
     const entityToSelectItem = createEntityToSelectItemMapper(options.mode, options.idKey, options.labelKey, options.disabledKey);
@@ -76,13 +76,13 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     const items = options.items;
     if (typeof items !== 'function') {
       const data$ = ensureObservable(items).pipe(
-        map(x => x.map(entityToSelectItem)),
+        map((x) => x.map(entityToSelectItem)),
         takeUntil(this._ngUnsubscribe$)
       );
       loadData = () => data$;
     } else {
       const func: () => T[] | Observable<T[]> = items as any;
-      loadData = () => ensureObservable(func()).pipe(map(x => x.map(entityToSelectItem)));
+      loadData = () => ensureObservable(func()).pipe(map((x) => x.map(entityToSelectItem)));
     }
 
     if (options.mode === 'entity') {
@@ -113,27 +113,27 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     const loadedOptions$ = optionsLoadTrigger$.pipe(
       switchMap(() => this._loadData()),
       startWith<PsSelectItem<T>[]>([]),
-      map(options => options.map(normalizeLabel)),
+      map((options) => options.map(normalizeLabel)),
       shareReplay({ bufferSize: 1, refCount: true })
     );
 
     // generate values as options, that aren't in the loaded options
     const missingOptions$ = loadedOptions$.pipe(
-      switchMap(options =>
-        this._currentValues$.pipe(map(values => values.filter(value => !options.find(o => this.compareWith(o.value, value)))))
+      switchMap((options) =>
+        this._currentValues$.pipe(map((values) => values.filter((value) => !options.find((o) => this.compareWith(o.value, value)))))
       ),
       distinctUntilChanged((a, b) => {
         if (a.length !== b.length) {
           return false;
         }
         for (const value of a) {
-          if (!b.find(o => this.compareWith(o, value))) {
+          if (!b.find((o) => this.compareWith(o, value))) {
             return false;
           }
         }
         return true;
       }),
-      map(missingValues => this.getItemsForValues(missingValues).map(normalizeLabel))
+      map((missingValues) => this.getItemsForValues(missingValues).map(normalizeLabel))
     );
 
     let renderOptions$ = combineLatest([loadedOptions$, missingOptions$]).pipe(
@@ -143,19 +143,21 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
 
     if (this._sortBy) {
       const sortTrigger$ = this._createSortTrigger();
-      renderOptions$ = renderOptions$.pipe(switchMap(unsortedOptions => sortTrigger$.pipe(map(() => this._cloneAndSort(unsortedOptions)))));
+      renderOptions$ = renderOptions$.pipe(
+        switchMap((unsortedOptions) => sortTrigger$.pipe(map(() => this._cloneAndSort(unsortedOptions))))
+      );
     }
 
     // searchtext handling
     renderOptions$ = renderOptions$.pipe(
-      switchMap(options =>
+      switchMap((options) =>
         this._searchText$.pipe(
           debounceTime(this._searchDebounceTime),
           startWith(this._searchText$.value),
-          map(x => (x || '').toLowerCase()),
+          map((x) => (x || '').toLowerCase()),
           distinctUntilChanged(),
-          map(searchText => {
-            options.forEach(option => {
+          map((searchText) => {
+            options.forEach((option) => {
               option.hidden = this.searchCompare(option, searchText);
             });
             return options;
@@ -187,7 +189,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   }
 
   public getItemsForValues(values: T[]): PsSelectItem<T>[] {
-    return values.map(v => ({
+    return values.map((v) => ({
       value: v,
       label: `??? (ID: ${v})`,
     }));
@@ -217,7 +219,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
 
     const panelOpen$ = this._isPanelOpen$.pipe(
       distinctUntilChanged(),
-      filter(panelOpen => panelOpen)
+      filter((panelOpen) => panelOpen)
     );
     // tslint:disable-next-line: no-bitwise
     if (this._loadTrigger & PsSelectLoadTrigger.EveryPanelOpen) {
@@ -230,15 +232,15 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     return merge(...loadTriggers);
   }
 
-  private _createSortTrigger() {
+  private _createSortTrigger(): Observable<unknown> {
     const panelCloseEvent$ = this._isPanelOpen$.pipe(
       skip(1), // we don't need the initial value
       distinctUntilChanged(),
-      filter(x => !x) // we only care about close-events
+      filter((x) => !x) // we only care about close-events
     );
     const valueChangedWhileClosed$ = this._isPanelOpen$.pipe(
       distinctUntilChanged(),
-      switchMap(panelOpen => (panelOpen ? NEVER : this._currentValues$.pipe(skip(1))))
+      switchMap((panelOpen) => (panelOpen ? NEVER : this._currentValues$.pipe(skip(1))))
     );
 
     // initially and on panel close we must sort the selected options to the top
@@ -249,8 +251,8 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     let selectedOptionsSet: WeakSet<PsSelectItem> = null;
     // tslint:disable-next-line: no-bitwise
     if (this._sortBy & PsSelectSortBy.Selected) {
-      const selectedOptions = unsortedOptions.filter(option =>
-        this._currentValues$.value.find(value => this.compareWith(option.value, value))
+      const selectedOptions = unsortedOptions.filter((option) =>
+        this._currentValues$.value.find((value) => this.compareWith(option.value, value))
       );
       selectedOptionsSet = new WeakSet(selectedOptions);
     }
