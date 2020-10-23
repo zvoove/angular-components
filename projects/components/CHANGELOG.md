@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.4](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.3...@prosoft/components@2.0.0-alpha.4) (2020-10-23)
+
+
+### Bug Fixes
+
+* **select:** createDataSource control param is set correctly ([#134](https://github.com/prosoft-edv/components/issues/134)) ([9e83e67](https://github.com/prosoft-edv/components/commit/9e83e67))
+
+
+
+
+
 # [2.0.0-alpha.3](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.2...@prosoft/components@2.0.0-alpha.3) (2020-10-22)
 
 **Note:** Version bump only for package @prosoft/components
