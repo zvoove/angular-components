@@ -1,8 +1,17 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectorRef, Component, OnDestroy, QueryList, Type, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Injectable, OnDestroy, QueryList, Type, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  FormsModule,
+  NgForm,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatOptionHarness, OptionHarnessFilters } from '@angular/material/core/testing';
 import { MatSelect } from '@angular/material/select';
@@ -10,7 +19,7 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
 import { DefaultPsSelectDataSource } from './defaults/default-select-data-source';
-import { DefaultPsSelectService } from './defaults/default-select-service';
+import { DefaultPsSelectService, PsSelectData } from './defaults/default-select-service';
 import { PsSelectItem } from './models';
 import { PsSelectDataSource } from './select-data-source';
 import { PsSelectComponent } from './select.component';
@@ -165,11 +174,21 @@ export class TestCustomTemplateComponent {
   public value: any = null;
 }
 
+@Injectable()
+export class TestPsSelectService extends DefaultPsSelectService {
+  static calledwith: { dataSource: any; control: AbstractControl }[] = [];
+  public createDataSource<T>(dataSource: PsSelectData<T>, control: AbstractControl | null): PsSelectDataSource<T> {
+    TestPsSelectService.calledwith.push({ dataSource: dataSource, control: control });
+    return super.createDataSource(dataSource, control);
+  }
+}
+
 async function initTest<T>(
   type: Type<T>
 ): Promise<{ fixture: ComponentFixture<T>; component: T; loader: HarnessLoader; psSelect: PsSelectHarness }> {
+  TestPsSelectService.calledwith = [];
   await TestBed.configureTestingModule({
-    imports: [NoopAnimationsModule, PsSelectModule.forRoot(DefaultPsSelectService), FormsModule, ReactiveFormsModule],
+    imports: [NoopAnimationsModule, PsSelectModule.forRoot(TestPsSelectService), FormsModule, ReactiveFormsModule],
     declarations: [TestComponent, TestMultipleComponent, TestCustomTemplateComponent, TestValueComponent],
   });
   const fixture = TestBed.createComponent(type);
@@ -231,6 +250,7 @@ describe('PsSelectComponent', () => {
     spyOn(service, 'createDataSource').and.returnValue(ds);
 
     component.dataSource = 'a';
+    component.ngOnInit();
     expect(service.createDataSource).toHaveBeenCalledTimes(1);
 
     component.dataSource = 'lookup';
@@ -456,6 +476,8 @@ describe('PsSelectComponent', () => {
 
   it('should switch to new dataSource when new dataSource is set', async () => {
     const { fixture, component, psSelect } = await initTest(TestComponent);
+    TestPsSelectService.calledwith = [];
+
     component.dataSource = new DefaultPsSelectDataSource({
       mode: 'id',
       labelKey: 'label',
@@ -468,6 +490,9 @@ describe('PsSelectComponent', () => {
     component.control.patchValue(2);
 
     fixture.detectChanges();
+    expect(TestPsSelectService.calledwith.length).toBe(1);
+    expect(TestPsSelectService.calledwith[0].dataSource).toBe(component.dataSource);
+    expect(TestPsSelectService.calledwith[0].control).toBe(component.control);
 
     await psSelect.open();
     const selectSearch = await psSelect.getPanelHeader();
@@ -492,6 +517,9 @@ describe('PsSelectComponent', () => {
         ],
       });
       fixture.detectChanges();
+      expect(TestPsSelectService.calledwith.length).toBe(2);
+      expect(TestPsSelectService.calledwith[1].dataSource).toBe(component.dataSource);
+      expect(TestPsSelectService.calledwith[1].control).toBe(component.control);
 
       const selectedOptionTexts = await getOptionData(psSelect, (o) => o.getText(), { isSelected: true });
       expect(selectedOptionTexts.length).toBe(1);

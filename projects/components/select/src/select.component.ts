@@ -245,6 +245,8 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
 
   private _matSelect!: MatSelect;
 
+  private _onInitCalled = false;
+
   /** View -> model callback called when value changes */
   private _onChange: (value: any) => void = () => {};
 
@@ -273,6 +275,11 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
   }
 
   public ngOnInit() {
+    this._onInitCalled = true;
+
+    // before oninit ngControl.control isn't set, but it is needed for datasource creation
+    this._switchDataSource(this._dataSourceInput);
+
     this.filterCtrl.valueChanges
       .pipe(takeUntil(this._ngUnsubscribe$))
       .subscribe((searchText) => this.dataSource.searchTextChanged(searchText));
@@ -363,6 +370,11 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
 
   /** Set up a subscription for the data provided by the data source. */
   private _switchDataSource(dataSource: any) {
+    if (!this._onInitCalled) {
+      // before oninit ngControl.control isn't set, but it is needed for datasource creation
+      return;
+    }
+
     // Stop listening for data from the previous data source.
     this._dataSourceInstance?.disconnect();
     this._renderChangeSubscription.unsubscribe();
