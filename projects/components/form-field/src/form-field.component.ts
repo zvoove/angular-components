@@ -23,9 +23,11 @@ import {
   MatFormField,
   MatFormFieldAppearance,
   MatFormFieldControl,
+  MatFormFieldDefaultOptions,
   MatLabel,
   MatPrefix,
   MatSuffix,
+  MAT_FORM_FIELD_DEFAULT_OPTIONS,
 } from '@angular/material/form-field';
 import { hasRequiredField, IPsFormError, PsFormService } from '@prosoft/components/form-base';
 import { Observable, of, Subscription } from 'rxjs';
@@ -229,9 +231,9 @@ export const PS_FORM_FIELD_CONFIG = new InjectionToken<PsFormFieldConfig>('PS_FO
 })
 export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDestroy {
   @Input() public createLabel = true;
-  @Input() public floatLabel: FloatLabelType = 'auto';
+  @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
   @Input() public hint: string = null;
-  @Input() public appearance: MatFormFieldAppearance = 'legacy';
+  @Input() public appearance: MatFormFieldAppearance = this.matDefaults?.appearance || 'legacy';
   @Input() public subscriptType: PsFormFieldSubscriptType = this.defaults ? this.defaults.subscriptType : 'resize';
   @Input() public hintToggle: boolean | null = null;
 
@@ -312,7 +314,8 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
   constructor(
     private _elementRef: ElementRef,
     private formsService: PsFormService,
-    @Optional() @Inject(PS_FORM_FIELD_CONFIG) private defaults?: PsFormFieldConfig
+    @Optional() @Inject(PS_FORM_FIELD_CONFIG) private defaults?: PsFormFieldConfig,
+    @Optional() @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) private matDefaults?: MatFormFieldDefaultOptions
   ) {
     if (!this.defaults) {
       this.defaults = {

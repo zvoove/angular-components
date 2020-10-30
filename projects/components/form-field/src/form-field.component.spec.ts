@@ -10,6 +10,7 @@ import { Observable, of } from 'rxjs';
 import { PsFormFieldComponent, PsFormFieldSubscriptType } from './form-field.component';
 import { PsFormFieldModule } from './form-field.module';
 import { delay } from 'rxjs/operators';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 @Injectable()
 class TestPsFormService extends BasePsFormService {
@@ -30,7 +31,7 @@ class TestPsFormService extends BasePsFormService {
   }
   protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
     return of(
-      errorData.map(data => ({
+      errorData.map((data) => ({
         errorText: data.errorKey,
         data: data,
       }))
@@ -133,17 +134,11 @@ describe('PsFormFieldComponent', () => {
       fixture.detectChanges();
 
       expect(
-        fixture.debugElement
-          .query(By.css('.template-label'))
-          .query(By.css('.mat-checkbox-label'))
-          .nativeElement.textContent.trim()
+        fixture.debugElement.query(By.css('.template-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()
       ).toBe('async label');
-      expect(
-        fixture.debugElement
-          .query(By.css('.no-label'))
-          .query(By.css('.mat-checkbox-label'))
-          .nativeElement.textContent.trim()
-      ).toBe('service label');
+      expect(fixture.debugElement.query(By.css('.no-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()).toBe(
+        'service label'
+      );
     }));
   });
 
@@ -195,8 +190,8 @@ describe('PsFormFieldComponent', () => {
       expect(component.formField._matFormField._control.errorState).toBe(true);
 
       let errorsChecked = false;
-      component.formField.errors$.subscribe(e => {
-        expect(e.map(x => x.errorText)).toEqual(['pattern', 'minlength']);
+      component.formField.errors$.subscribe((e) => {
+        expect(e.map((x) => x.errorText)).toEqual(['pattern', 'minlength']);
         errorsChecked = true;
       });
       tick(1);
@@ -367,6 +362,41 @@ describe('PsFormFieldComponent', () => {
 
       expect(component.formField._matFormField._shouldLabelFloat()).toBe(true);
       expect(component.formFieldEmulated._matFormField._shouldLabelFloat()).toBe(true);
+    }));
+  });
+
+  describe('initialization', () => {
+    it('should initialize properly with its own default settings', async(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
+        declarations: [TestFormComponent],
+        providers: [{ provide: PsFormService, useClass: TestPsFormService }],
+      }).compileComponents();
+
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      expect(component.formField.appearance).toEqual('legacy');
+      expect(component.formField.floatLabel).toEqual('auto');
+    }));
+
+    it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', async(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
+        declarations: [TestFormComponent],
+        providers: [
+          { provide: PsFormService, useClass: TestPsFormService },
+          { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { floatLabel: 'always', hideRequiredMarker: false, appearance: 'outline' } },
+        ],
+      }).compileComponents();
+
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      expect(component.formField.appearance).toEqual('outline');
+      expect(component.formField.floatLabel).toEqual('always');
     }));
   });
 });
