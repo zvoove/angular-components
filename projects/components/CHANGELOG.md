@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.5](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.4...@prosoft/components@2.0.0-alpha.5) (2020-11-17)
+
+
+### Bug Fixes
+
+* **formfield:** formField now adheres MAT_FORM_FIELD_DEFAULT_OPTIONS ([#137](https://github.com/prosoft-edv/components/issues/137)) ([e07d933](https://github.com/prosoft-edv/components/commit/e07d933)), closes [#135](https://github.com/prosoft-edv/components/issues/135)
+* **ps-select:** re-applies stateChanges patch and fixes label ([#140](https://github.com/prosoft-edv/components/issues/140)) ([760821e](https://github.com/prosoft-edv/components/commit/760821e)), closes [#139](https://github.com/prosoft-edv/components/issues/139)
+
+
+
+
+
+
 # [2.0.0-alpha.4](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.3...@prosoft/components@2.0.0-alpha.4) (2020-10-23)
 
 
