@@ -14,10 +14,15 @@ import {
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatOptionHarness, OptionHarnessFilters } from '@angular/material/core/testing';
+import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatSelect } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { PsFormBaseModule } from '@prosoft/components/form-base';
+import { PsFormFieldModule } from '@prosoft/components/form-field';
+import { DemoPsFormsService } from 'projects/prosoft-components-demo/src/app/common/demo-ps-form-service';
 import { Observable, of, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
+
 import { DefaultPsSelectDataSource } from './defaults/default-select-data-source';
 import { DefaultPsSelectService, PsSelectData } from './defaults/default-select-service';
 import { PsSelectItem } from './models';
@@ -174,6 +179,21 @@ export class TestCustomTemplateComponent {
   public value: any = null;
 }
 
+@Component({
+  selector: 'ps-test-with-form-field',
+  template: `
+    <ps-form-field>
+      <mat-label>My Select</mat-label>
+      <ps-select [(ngModel)]="value" [dataSource]="dataSource" [clearable]="clearable"></ps-select>
+    </ps-form-field>
+  `,
+})
+export class TestWithFormFieldComponent {
+  public dataSource: any = [ITEMS.RED, ITEMS.GREEN, ITEMS.BLUE];
+  public value: any = null;
+  public clearable = false;
+}
+
 @Injectable()
 export class TestPsSelectService extends DefaultPsSelectService {
   static calledwith: { dataSource: any; control: AbstractControl }[] = [];
@@ -184,12 +204,14 @@ export class TestPsSelectService extends DefaultPsSelectService {
 }
 
 async function initTest<T>(
-  type: Type<T>
+  type: Type<T>,
+  additionalImports: any[] = [],
+  additionalDeclarations: any[] = []
 ): Promise<{ fixture: ComponentFixture<T>; component: T; loader: HarnessLoader; psSelect: PsSelectHarness }> {
   TestPsSelectService.calledwith = [];
   await TestBed.configureTestingModule({
-    imports: [NoopAnimationsModule, PsSelectModule.forRoot(TestPsSelectService), FormsModule, ReactiveFormsModule],
-    declarations: [TestComponent, TestMultipleComponent, TestCustomTemplateComponent, TestValueComponent],
+    imports: [NoopAnimationsModule, PsSelectModule.forRoot(TestPsSelectService), FormsModule, ReactiveFormsModule, ...additionalImports],
+    declarations: [TestComponent, TestMultipleComponent, TestCustomTemplateComponent, TestValueComponent, ...additionalDeclarations],
   });
   const fixture = TestBed.createComponent(type);
   const component = fixture.componentInstance;
@@ -218,8 +240,74 @@ describe('PsSelectComponent', () => {
     expect(component.disabled).toBe(false);
   });
 
-  // Probably unneccessary now
-  xit('should fix MatSelect.close() not emitting stateChanges', fakeAsync(() => {
+  it('should determine empty value correctly', () => {
+    const { component } = createPsSelect();
+    component.multiple = true;
+
+    const items = [
+      { value: 1, label: 'i1', hidden: false },
+      { value: 2, label: 'i2', hidden: false },
+    ];
+    component.dataSource = createFakeDataSource(items);
+
+    component.value = null;
+    expect(component.empty).toBe(true);
+
+    component.value = [];
+    expect(component.empty).toBe(true);
+
+    component.value = [items[0]];
+    expect(component.empty).toBe(false);
+
+    component.value = items;
+    expect(component.empty).toBe(false);
+
+    component.multiple = false;
+    component.value = null;
+    expect(component.empty).toBe(true);
+
+    component.value = {};
+    expect(component.empty).toBe(false);
+
+    component.value = '';
+    expect(component.empty).toBe(true);
+
+    component.value = 'some value';
+    expect(component.empty).toBe(false);
+  });
+
+  it('should update floating label state', async () => {
+    const { component, psSelect, loader } = await initTest(
+      TestWithFormFieldComponent,
+      [PsFormFieldModule, PsFormBaseModule.forRoot(DemoPsFormsService)],
+      [TestWithFormFieldComponent]
+    );
+
+    const matFormField = await loader.getHarness(MatFormFieldHarness);
+
+    component.value = ITEMS.RED;
+    component.clearable = true;
+
+    await psSelect.open();
+    expect(await psSelect.isEmpty()).toBe(false);
+    expect(await matFormField.isLabelFloating()).toBe(true);
+
+    await psSelect.close();
+    expect(await psSelect.isEmpty()).toBe(false);
+    expect(await matFormField.isLabelFloating()).toBe(true);
+
+    await psSelect.open();
+    await (await psSelect.getEmptyOption()).click();
+    expect(await psSelect.isEmpty()).toBe(true);
+    expect(await matFormField.isLabelFloating()).toBe(false);
+
+    await psSelect.open();
+    await psSelect.close();
+    // see https://github.com/prosoft-edv/components/issues/139
+    expect(await matFormField.isLabelFloating()).toBe(false);
+  });
+
+  it('should fix MatSelect.close() not emitting stateChanges', fakeAsync(() => {
     const matSelect = createFakeMatSelect();
 
     const { component } = createPsSelect();

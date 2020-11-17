@@ -89,6 +89,13 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
 
   @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
     this._matSelect = select;
+
+    // MatSelect doesn't trigger stateChanges on close which causes problems, so we patch it here.
+    const close = select.close;
+    select.close = () => {
+      close.call(select);
+      select.stateChanges.next();
+    };
   }
 
   /**
@@ -343,7 +350,7 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
 
   private _propagateValueChange(value: any, source: ValueChangeSource) {
     this._value = value;
-    this.empty = this.multiple ? !value?.length : value == null;
+    this.empty = this.multiple ? !value?.length : !value;
     this._updateToggleAllCheckbox();
     this._pushSelectedValuesToDataSource(value);
     if (source !== ValueChangeSource.ValueInput) {
