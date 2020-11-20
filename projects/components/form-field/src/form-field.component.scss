@@ -1,0 +1,195 @@
+.mat-form-field--no-underline .mat-form-field-underline,
+.mat-form-field--no-underline .mat-form-field-underline::before,
+.mat-form-field--no-underline .mat-form-field-flex,
+.mat-form-field--no-underline .mat-form-field-ripple {
+  background-color: transparent !important;
+}
+
+.mat-form-field--no-underline .mat-form-field-outline {
+  display: none !important;
+}
+
+ps-form-field .mat-form-field-invalid .mat-checkbox-frame,
+ps-form-field .mat-form-field-invalid .mat-radio-outer-circle,
+ps-form-field .mat-form-field-invalid .mat-slider-thumb {
+  border-color: var(--ps-error) !important;
+}
+
+/* Falls für emulated die Schrift rot sein soll:
+.mat-form-field--emulated.mat-form-field-invalid .mat-form-field-wrapper {
+  color: var(--ps-error) !important;
+}
+*/
+
+.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix {
+  display: flex;
+  align-items: center;
+}
+
+// Legacy appearance modifications
+.ps-form-field-type-mat-slider .mat-form-field-appearance-legacy mat-slider {
+  margin: -0.5em 0;
+  width: 100%;
+}
+.ps-form-field-type-mat-radio-group .mat-form-field-appearance-legacy .mat-form-field-infix {
+  padding: 0.36em 0;
+}
+.ps-form-field-type-mat-checkbox .mat-form-field-appearance-legacy .mat-form-field-infix {
+  padding: 0.25em 0;
+}
+
+// Standard appearance modifications
+.ps-form-field-type-mat-slider .mat-form-field-appearance-standard mat-slider {
+  margin: -0.435em 0;
+  width: 100%;
+}
+.ps-form-field-type-mat-radio-group .mat-form-field-appearance-standard .mat-form-field-infix {
+  padding: 0.42em 0;
+}
+.ps-form-field-type-mat-checkbox .mat-form-field-appearance-standard .mat-form-field-infix {
+  padding: 0.315em 0;
+}
+
+// Fill appearance modifications
+.ps-form-field-type-mat-slider .mat-form-field-appearance-fill mat-slider {
+  margin: -0.435em 0;
+  width: 100%;
+}
+.ps-form-field-type-mat-radio-group .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding: 0.42em 0;
+}
+.ps-form-field-type-mat-checkbox .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding: 0.31em 0;
+}
+
+// Outline appearance modifications
+.ps-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider {
+  margin: 0.06em 0;
+  width: 100%;
+}
+.ps-form-field-type-mat-radio-group .mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.92em 0;
+}
+.ps-form-field-type-mat-checkbox .mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.81em 0;
+}
+
+.ps-form-field-type-mat-slider .mat-form-field-infix {
+  padding: 0;
+}
+
+/* Mehrzeilige errors/hints erlauben */
+.ps-form-field--subscript-resize .mat-form-field-underline,
+.ps-form-field--subscript-resize .mat-form-field-subscript-wrapper {
+  position: static;
+}
+.ps-form-field--subscript-resize .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+/* hint/error bubble container */
+.ps-form-field--bubble .mat-form-field-subscript-wrapper {
+  padding-top: 1.25em !important;
+  overflow: visible;
+  z-index: 1;
+  margin-top: 0.25em;
+}
+
+/* hint/error bubble */
+.ps-form-field--bubble .mat-form-field-subscript-wrapper > div {
+  display: block;
+  position: absolute;
+  top: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  bottom: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 0 8px;
+  box-shadow: 1px 1px 3px #ccc;
+}
+
+/* hint bubble position */
+.ps-form-field--bubble .mat-form-field-subscript-wrapper > .mat-form-field-hint-wrapper {
+  left: auto;
+  right: 0;
+}
+/* error bubble position */
+.ps-form-field--bubble .mat-form-field-subscript-wrapper > div:not(.mat-form-field-hint-wrapper) {
+  left: 0;
+  right: auto;
+}
+
+/* hint/error bubble anchor */
+.ps-form-field--bubble .mat-form-field-subscript-wrapper:before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-right: none;
+  border-bottom: none;
+  border-bottom-right-radius: 999px;
+  transform: rotate(45deg) skew(-10deg, -10deg);
+  z-index: 100;
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+}
+
+/* hint bubble anchor position */
+.ps-form-field--bubble .mat-form-field-subscript-wrapper:before {
+  left: auto;
+  right: 10px;
+}
+/* error bubble anchor position */
+.ps-form-field--error-bubble .mat-form-field-subscript-wrapper:before {
+  left: 10px;
+  right: auto;
+}
+
+/* hint bubble colors */
+.ps-form-field--bubble .mat-form-field-subscript-wrapper > div,
+.ps-form-field--bubble .mat-form-field-subscript-wrapper:before {
+  border-color: rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+}
+
+/* error bubble colors */
+.ps-form-field--error-bubble .mat-form-field-subscript-wrapper > div,
+.ps-form-field--error-bubble .mat-form-field-subscript-wrapper:before {
+  border-color: #f99;
+  background-color: #fcc;
+}
+
+.ps-form-field--bubble .mat-error {
+  display: inline;
+  color: black;
+}
+
+.ps-form-field--bubble .mat-hint {
+  display: inline;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.ps-form-field--bubble:hover .mat-form-field-subscript-wrapper > div,
+.ps-form-field--bubble .mat-focused .mat-form-field-subscript-wrapper > div {
+  bottom: initial !important;
+  white-space: initial;
+}
+
+.ps-form-field--bubble:hover .mat-form-field-subscript-wrapper,
+.ps-form-field--bubble .mat-focused .mat-form-field-subscript-wrapper {
+  z-index: 10;
+}
+
+.ps-form-field--bubble:hover .mat-error,
+.ps-form-field--bubble .mat-focused .mat-error,
+.ps-form-field--bubble:hover .mat-hint,
+.ps-form-field--bubble .mat-focused .mat-hint {
+  display: block;
+}
