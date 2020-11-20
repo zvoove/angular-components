@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.6](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.5...@prosoft/components@2.0.0-alpha.6) (2020-11-20)
+
+
+### Bug Fixes
+
+* **form-field:** fixes for appearances 'standard', 'fill' and 'outline' ([#142](https://github.com/prosoft-edv/components/issues/142)) ([697b70f](https://github.com/prosoft-edv/components/commit/697b70f))
+
+
+
+
+
+
 # [2.0.0-alpha.5](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.4...@prosoft/components@2.0.0-alpha.5) (2020-11-17)
 
 
