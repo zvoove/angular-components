@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.7](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.5...@prosoft/components@2.0.0-alpha.7) (2020-12-02)
+
+
+### Bug Fixes
+
+* **form-field:** fixes for appearances 'standard', 'fill' and 'outline' ([#142](https://github.com/prosoft-edv/components/issues/142)) ([697b70f](https://github.com/prosoft-edv/components/commit/697b70f))
+
+
+### Code Refactoring
+
+* fixes for non-standard material font sizes ([#144](https://github.com/prosoft-edv/components/issues/144)) ([bc26cdf](https://github.com/prosoft-edv/components/commit/bc26cdf))
+
+
+### BREAKING CHANGES
+
+* Appearance fixes must now be defined outside now
+
+Co-authored-by: Michael Dorr <michael.dorr@prosoft.net>
+
+
+
+
+
 # [2.0.0-alpha.6](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.5...@prosoft/components@2.0.0-alpha.6) (2020-11-20)
 
 
