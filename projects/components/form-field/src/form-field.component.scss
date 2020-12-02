@@ -21,64 +21,13 @@ ps-form-field .mat-form-field-invalid .mat-slider-thumb {
 }
 */
 
+// Centers suffix icons for appearances other than legacy
 .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix {
   display: flex;
   align-items: center;
 }
 
-// Legacy appearance modifications
-.ps-form-field-type-mat-slider .mat-form-field-appearance-legacy mat-slider {
-  margin: -0.5em 0;
-  width: 100%;
-}
-.ps-form-field-type-mat-radio-group .mat-form-field-appearance-legacy .mat-form-field-infix {
-  padding: 0.36em 0;
-}
-.ps-form-field-type-mat-checkbox .mat-form-field-appearance-legacy .mat-form-field-infix {
-  padding: 0.25em 0;
-}
-
-// Standard appearance modifications
-.ps-form-field-type-mat-slider .mat-form-field-appearance-standard mat-slider {
-  margin: -0.435em 0;
-  width: 100%;
-}
-.ps-form-field-type-mat-radio-group .mat-form-field-appearance-standard .mat-form-field-infix {
-  padding: 0.42em 0;
-}
-.ps-form-field-type-mat-checkbox .mat-form-field-appearance-standard .mat-form-field-infix {
-  padding: 0.315em 0;
-}
-
-// Fill appearance modifications
-.ps-form-field-type-mat-slider .mat-form-field-appearance-fill mat-slider {
-  margin: -0.435em 0;
-  width: 100%;
-}
-.ps-form-field-type-mat-radio-group .mat-form-field-appearance-fill .mat-form-field-infix {
-  padding: 0.42em 0;
-}
-.ps-form-field-type-mat-checkbox .mat-form-field-appearance-fill .mat-form-field-infix {
-  padding: 0.31em 0;
-}
-
-// Outline appearance modifications
-.ps-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider {
-  margin: 0.06em 0;
-  width: 100%;
-}
-.ps-form-field-type-mat-radio-group .mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0.92em 0;
-}
-.ps-form-field-type-mat-checkbox .mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0.81em 0;
-}
-
-.ps-form-field-type-mat-slider .mat-form-field-infix {
-  padding: 0;
-}
-
-/* Mehrzeilige errors/hints erlauben */
+/* Allow multiline errors/hints */
 .ps-form-field--subscript-resize .mat-form-field-underline,
 .ps-form-field--subscript-resize .mat-form-field-subscript-wrapper {
   position: static;
