@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.8](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.5...@prosoft/components@2.0.0-alpha.8) (2020-12-03)
+
+
+### Bug Fixes
+
+* **form-field:** fixes for appearances 'standard', 'fill' and 'outline' ([#142](https://github.com/prosoft-edv/components/issues/142)) ([697b70f](https://github.com/prosoft-edv/components/commit/697b70f))
+* **select:** outline gap calculated correctly with ps-select ([#146](https://github.com/prosoft-edv/components/issues/146)) ([26b7574](https://github.com/prosoft-edv/components/commit/26b7574))
+
+
+### Code Refactoring
+
+* fixes for non-standard material font sizes ([#144](https://github.com/prosoft-edv/components/issues/144)) ([bc26cdf](https://github.com/prosoft-edv/components/commit/bc26cdf))
+
+
+### Features
+
+* **flip-container:** add animation option 'fade' ([#147](https://github.com/prosoft-edv/components/issues/147)) ([ef38332](https://github.com/prosoft-edv/components/commit/ef38332))
+
+
+### BREAKING CHANGES
+
+* **flip-container:** ps-table flip animation changed
+
+Co-authored-by: Michael Dorr <michael.dorr@prosoft.net>
+* Appearance fixes must now be defined outside now
+
+Co-authored-by: Michael Dorr <michael.dorr@prosoft.net>
+
+
+
+
+
 # [2.0.0-alpha.7](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.5...@prosoft/components@2.0.0-alpha.7) (2020-12-02)
 
 
