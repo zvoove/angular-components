@@ -158,7 +158,7 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
   public empty = true;
 
   public get shouldLabelFloat() {
-    return this._matSelect.shouldLabelFloat;
+    return !this.empty;
   }
 
   public get focused() {

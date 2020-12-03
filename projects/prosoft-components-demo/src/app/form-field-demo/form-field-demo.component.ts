@@ -32,7 +32,7 @@ export class FormFieldDemoComponent {
   public subscriptType: PsFormFieldSubscriptType = 'single-line';
   public hintToggle = false;
   public hintText = 'hint text';
-  public appearance: MatFormFieldAppearance = 'legacy';
+  public appearance: MatFormFieldAppearance = 'outline';
   public asyncLabel$ = of('Custom Label');
   public ctrlCountNumbers = Array(7).fill(1);
   public value = '';
@@ -80,12 +80,12 @@ export class FormFieldDemoComponent {
 
   public form = new FormGroup({
     Text: new FormControl(null),
-    Select: new FormControl(null),
+    Select: new FormControl('item_ok'),
     Checkbox: new FormControl(null),
     Radio: new FormControl(null),
     Prefix_Text: new FormControl(null),
     Slider: new FormControl(null),
-    PsSelect: new FormControl(null),
+    PsSelect: new FormControl(1),
   });
 
   public showControls = true;

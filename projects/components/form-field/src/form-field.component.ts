@@ -1,6 +1,6 @@
+import type { QueryList } from '@angular/core';
 import {
   AfterContentInit,
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ContentChild,
@@ -32,10 +32,8 @@ import {
 import { hasRequiredField, IPsFormError, PsFormService } from '@prosoft/components/form-base';
 import { Observable, of, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
 
-import type { QueryList } from '@angular/core';
 export declare type PsFormFieldSubscriptType = 'bubble' | 'resize' | 'single-line';
 
 export interface PsFormFieldConfig {
@@ -80,7 +78,7 @@ export const PS_FORM_FIELD_CONFIG = new InjectionToken<PsFormFieldConfig>('PS_FO
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsFormFieldComponent implements OnChanges, AfterContentInit, AfterViewInit, OnDestroy {
+export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDestroy {
   @Input() public createLabel = true;
   @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
   @Input() public hint: string = null;
@@ -161,7 +159,6 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, AfterV
   private hasError = false;
 
   private labelTextSubscription: Subscription;
-  private _afterViewInitTimeoutNumber: number;
 
   constructor(
     private _elementRef: ElementRef,
@@ -174,18 +171,6 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, AfterV
         hintToggle: false,
         subscriptType: 'resize',
       };
-    }
-  }
-
-  public ngAfterViewInit(): void {
-    // Fixes a bug where the label of a ps-select is rendered too late which prevents the calculation of the outline gap.
-    // Only happens when the control is conditionally visible (ngIf, switch-Container, etc.)
-    // The first one who can fix this properly is eligible to get a free cookie :D
-    if (this.appearance === 'outline' && this.controlType === 'ps-select') {
-      this._afterViewInitTimeoutNumber = setTimeout(() => {
-        (<any>this._matFormField)._outlineGapCalculationNeededOnStable = true;
-        this._afterViewInitTimeoutNumber = null;
-      });
     }
   }
 
@@ -232,10 +217,6 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, AfterV
 
     if (this.labelTextSubscription) {
       this.labelTextSubscription.unsubscribe();
-    }
-
-    if (this._afterViewInitTimeoutNumber) {
-      clearTimeout(this._afterViewInitTimeoutNumber);
     }
   }
 
