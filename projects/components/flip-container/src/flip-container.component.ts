@@ -1,4 +1,4 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { animate, query, sequence, state, style, transition, trigger } from '@angular/animations';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -20,24 +20,41 @@ import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-
   animations: [
     trigger('flipState', [
       state(
-        'back',
+        'flip_back',
         style({
           transform: 'rotateY(180deg)',
         })
       ),
       state(
-        'front',
+        'flip_front',
         style({
           transform: 'rotateY(0)',
         })
       ),
-      transition('back => front', animate('300ms ease-out')),
-      transition('front => back', animate('300ms ease-in')),
+      transition('flip_back => flip_front', animate('300ms ease-out')),
+      transition('flip_front => flip_back', animate('300ms ease-in')),
+      transition(
+        'fade_front => fade_back',
+        sequence([
+          query('.ps-flip-container__side__back', style({ opacity: 0 })),
+          query('.ps-flip-container__side__front', animate('150ms ease-in', style({ opacity: 0 }))),
+          query('.ps-flip-container__side__back', animate('150ms ease-out', style({ opacity: 1 }))),
+        ])
+      ),
+      transition(
+        'fade_back => fade_front',
+        sequence([
+          query('.ps-flip-container__side__front', style({ opacity: 0 })),
+          query('.ps-flip-container__side__back', animate('150ms ease-in', style({ opacity: 0 }))),
+          query('.ps-flip-container__side__front', animate('150ms ease-out', style({ opacity: 1 }))),
+        ])
+      ),
     ]),
   ],
 })
 export class PsFlipContainerComponent implements AfterViewInit {
   @Input() public removeHiddenNodes = true;
+  @Input() public animation: 'flip' | 'fade' = 'flip';
 
   public get active(): 'back' | 'front' {
     return this._active;
@@ -52,6 +69,9 @@ export class PsFlipContainerComponent implements AfterViewInit {
   @ViewChild('frontside', { static: true }) public _frontside: ElementRef<any>;
   @ViewChild('backside', { static: true }) public _backside: ElementRef<any>;
 
+  public get _activeState(): string {
+    return this.animation + '_' + this.active;
+  }
   public _active: 'back' | 'front' = 'front';
   public _attachFront = true;
   public _attachBack = false;

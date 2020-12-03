@@ -1,5 +1,5 @@
-<div class="ps-flip-container__container">
-  <div class="ps-flip-container__flip-box" [@flipState]="_active" (@flipState.start)="_flipStart()" (@flipState.done)="_flipDone()">
+<div class="ps-flip-container__container" [class]="'ps-flip-container__animation-' + animation">
+  <div class="ps-flip-container__flip-box" [@flipState]="_activeState" (@flipState.start)="_flipStart()" (@flipState.done)="_flipDone()">
     <div #frontside class="ps-flip-container__side ps-flip-container__side__front">
       <ng-container *ngIf="_attachFront || !removeHiddenNodes" [ngTemplateOutlet]="_frontTemplate"></ng-container>
     </div>

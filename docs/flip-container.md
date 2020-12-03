@@ -29,9 +29,10 @@ import { PsFlipContainerModule } from '@prosoft/components/flip-container';
 
 ### Properties <a name="PsFlipContainerComponentProperties"></a>
 
-| Name                         | Description                                                  |
-| ---------------------------- | ------------------------------------------------------------ |
-| `removeHiddenNodes: boolean` | Removes the DOM nodes from the hidden side of the container. |
+| Name                          | Description                                                  |
+| ----------------------------- | ------------------------------------------------------------ |
+| `animation: 'flip' \| 'fade'` | Changes the animation of the flip container. Default: 'flip' |
+| `removeHiddenNodes: boolean`  | Removes the DOM nodes from the hidden side of the container. |
 
 ### Functions <a name="PsFlipContainerComponentFunctions"></a>
 
