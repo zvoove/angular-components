@@ -1,0 +1,24 @@
+.ps-view__main-container {
+  box-sizing: border-box;
+}
+
+.ps-view__cards-container {
+  display: grid;
+  grid-gap: 1em;
+}
+
+mat-card.ps-view__error-container {
+  color: var(--ps-error);
+}
+
+mat-card.ps-view__error-container--center {
+  display: grid;
+  justify-items: center;
+}
+
+mat-icon.ps-view__error-icon {
+  color: var(--ps-error);
+  font-size: 72px;
+  height: 72px;
+  width: 72px;
+}

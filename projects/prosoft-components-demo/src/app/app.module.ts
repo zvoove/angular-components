@@ -61,6 +61,10 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./table-demo/table-demo.module').then((m) => m.TableDemoModule),
       },
       {
+        path: 'view',
+        loadChildren: () => import('./view-demo/view-demo.module').then((m) => m.ViewDemoModule),
+      },
+      {
         path: '**',
         pathMatch: 'full',
         loadChildren: () => import('./start-page/start-page.module').then((m) => m.StartPageModule),

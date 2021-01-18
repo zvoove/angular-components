@@ -1,0 +1,12 @@
+<div *ngIf="dataSource" class="ps-view__main-container">
+  <div class="ps-view__cards-container">
+    <ps-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
+      <ng-content></ng-content>
+    </ps-block-ui>
+
+    <mat-card *ngIf="exception" class="ps-view__error-container" [class.ps-view__error-container--center]="exception.alignCenter">
+      <mat-icon *ngIf="exception.icon" class="ps-view__error-icon">{{ exception.icon }}</mat-icon>
+      <span>{{ exception.errorObject | psErrorMessage }}</span>
+    </mat-card>
+  </div>
+</div>

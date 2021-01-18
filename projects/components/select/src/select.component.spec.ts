@@ -717,7 +717,7 @@ function last<T>(a: T[]): T {
 }
 
 function delay(duration = 0) {
-  return new Promise((resolve, _) => {
+  return new Promise<void>((resolve, _) => {
     setTimeout(() => {
       resolve();
     }, duration);
