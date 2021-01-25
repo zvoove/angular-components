@@ -65,6 +65,14 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./view-demo/view-demo.module').then((m) => m.ViewDemoModule),
       },
       {
+        path: 'card',
+        loadChildren: () => import('./card-demo/card-demo.module').then((m) => m.CardDemoModule),
+      },
+      {
+        path: 'header',
+        loadChildren: () => import('./header-demo/header-demo.module').then((m) => m.HeaderDemoModule),
+      },
+      {
         path: '**',
         pathMatch: 'full',
         loadChildren: () => import('./start-page/start-page.module').then((m) => m.StartPageModule),

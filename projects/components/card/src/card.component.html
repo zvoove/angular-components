@@ -1,0 +1,20 @@
+<ps-header
+  *ngIf="caption || captionSection || description || descriptionSection || topButtonSection"
+  [caption]="caption"
+  [description]="description"
+>
+  <ng-container *psHeaderCaptionSection [ngTemplateOutlet]="captionSection"></ng-container>
+  <ng-container *psHeaderDescriptionSection [ngTemplateOutlet]="descriptionSection"></ng-container>
+  <ng-container *psHeaderTopButtonSection [ngTemplateOutlet]="topButtonSection"></ng-container>
+</ps-header>
+<mat-card class="ps-card__content" [style.padding]="contentPadding">
+  <mat-card-content>
+    <ng-content></ng-content>
+  </mat-card-content>
+  <mat-card-footer *ngIf="footerSection">
+    <ng-container [ngTemplateOutlet]="footerSection"></ng-container>
+  </mat-card-footer>
+  <mat-card-actions *ngIf="actionsSection">
+    <ng-container [ngTemplateOutlet]="actionsSection"></ng-container>
+  </mat-card-actions>
+</mat-card>

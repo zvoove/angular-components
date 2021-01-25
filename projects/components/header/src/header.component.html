@@ -1,0 +1,23 @@
+<div class="ps-header__text">
+  <div class="ps-header__caption">
+    <ng-container *ngIf="caption; else customCaptionTemplate">
+      {{ caption }}
+    </ng-container>
+  </div>
+  <div class="ps-header__description">
+    <ng-container *ngIf="description; else customDescriptionTemplate">
+      {{ description }}
+    </ng-container>
+  </div>
+</div>
+<div *ngIf="topButtonSection" class="ps-header__actions">
+  <ng-container [ngTemplateOutlet]="topButtonSection"></ng-container>
+</div>
+
+<ng-template #customCaptionTemplate>
+  <ng-container [ngTemplateOutlet]="captionSection"></ng-container>
+</ng-template>
+
+<ng-template #customDescriptionTemplate>
+  <ng-container [ngTemplateOutlet]="descriptionSection"></ng-container>
+</ng-template>

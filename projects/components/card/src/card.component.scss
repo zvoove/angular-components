@@ -1,0 +1,8 @@
+ps-card {
+  display: grid;
+}
+
+.ps-card__content {
+  display: grid !important;
+  grid-template-rows: 1fr auto !important;
+}

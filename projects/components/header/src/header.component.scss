@@ -1,0 +1,30 @@
+ps-header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+  margin: 0;
+  gap: 0 1em;
+}
+
+.ps-header__text {
+  flex: 1 0 auto;
+}
+
+.ps-header__caption {
+  margin-bottom: 12px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.ps-header__description {
+  color: rgba(0, 0, 0, 0.54);
+  display: block;
+  font-size: 14px;
+  margin-bottom: 1em;
+}
+
+.ps-header__actions {
+  align-self: center;
+  margin-bottom: 1em;
+}
