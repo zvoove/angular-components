@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { IPsFormException } from '@prosoft/components/form';
+import { IPsException } from '@prosoft/components/core';
 import { IPsViewDataSource } from '@prosoft/components/view';
 import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 import { delay, map, take } from 'rxjs/operators';
@@ -16,7 +16,7 @@ class DemoPsViewDataSource<TParams, TData> implements IPsViewDataSource {
   public get contentBlocked(): boolean {
     return this._loading || this._blockView;
   }
-  public exception: IPsFormException;
+  public exception: IPsException;
 
   private _loading = false;
   private _hasLoadError = false;

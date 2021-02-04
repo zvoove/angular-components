@@ -26,7 +26,7 @@ export interface IPsFormDataSource {
   readonly buttons: IPsButton[];
   readonly contentVisible: boolean;
   readonly contentBlocked: boolean;
-  readonly exception: IPsException;
+  readonly exception: IPsException | null;
   readonly savebarMode: IPsSavebarMode;
   connect(options: IPsFormDataSourceConnectOptions): Observable<void>;
   disconnect(): void;

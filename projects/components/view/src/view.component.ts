@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { IPsException } from '@prosoft/components/core';
 import { Subscription } from 'rxjs';
-import { IPsViewDataSource, IPsViewException } from './view-data-source';
+
+import { IPsViewDataSource } from './view-data-source';
 
 @Component({
   selector: 'ps-view',
@@ -35,7 +37,7 @@ export class PsViewComponent implements OnDestroy {
     return this.dataSource.contentBlocked;
   }
 
-  public get exception(): IPsViewException {
+  public get exception(): IPsException | null {
     return this.dataSource.exception;
   }
 

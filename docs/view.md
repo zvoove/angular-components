@@ -34,7 +34,7 @@ import { PsViewModule } from '@prosoft/components/view';
 | ----------------------------- | ------------------------------------------------------------------- |
 | `contentVisible: boolean`     | `false` to hide the transcluded `ng-content`.                       |
 | `contentBlocked: boolean`     | `true` to show a loading spinner over the transcluded `ng-content`. |
-| `exception: IPsViewException` | When set, shows an error view with the provided information.        |
+| `exception: IPsException` | When set, shows an error view with the provided information.        |
 
 ### Functions <a name="IPsViewDataSourceFunctions"></a>
 

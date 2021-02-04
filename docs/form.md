@@ -34,10 +34,10 @@ import { PsFormModule } from '@prosoft/components/form';
 | --------------------------- | ---------------------------------------------------- |
 | `form: FormGroup` | The `FormGroup` to be forwarded to the `ps-savebar`. |
 | `autocomplete: 'on' | 'off'` | The autocomplete attribute for the HTML form tag. |
-| `buttons: IPsFormButton[]` | The buttons to show in the `ps-savebar`. |
+| `buttons: IPsButton[]` | The buttons to show in the `ps-savebar`. |
 | `contentVisible: boolean` | `false` to hide the transcluded `ng-content`. |
 | `contentBlocked: boolean` | `true` to show a loading spinner over the transcluded `ng-content`. |
-| `exception: IPsFormException` | When set, shows an error view with the provided information. |
+| `exception: IPsException` | When set, shows an error view with the provided information. |
 | `savebarMode: IPsSavebarMode` | The mode to be forwarded to the `ps-savebar`. |
 
 ### Functions <a name="IPsFormDataSourceFunctions"></a>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { IPsButton } from '@prosoft/components/core';
+import { IPsButton, IPsException } from '@prosoft/components/core';
 import { Subject, Subscription } from 'rxjs';
 import { IPsDialogWrapperDataSource } from './dialog-wrapper.models';
 
@@ -23,7 +23,7 @@ export class PsDialogWrapperComponent implements OnDestroy {
   public get contentBlocked(): boolean {
     return this.dataSource.contentBlocked;
   }
-  public get exception() {
+  public get exception(): IPsException | null {
     return this.dataSource.exception;
   }
   @Input() public set dataSource(value: IPsDialogWrapperDataSource) {

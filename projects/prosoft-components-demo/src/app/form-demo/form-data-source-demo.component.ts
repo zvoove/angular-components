@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import { IPsFormButton, IPsFormDataSource, IPsFormDataSourceConnectOptions, IPsFormException } from '@prosoft/components/form';
+import { IPsButton, IPsException } from '@prosoft/components/core';
+import { IPsFormDataSource, IPsFormDataSourceConnectOptions } from '@prosoft/components/form';
 import { IPsSavebarMode } from '@prosoft/components/savebar';
 import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 import { delay, map, take, tap } from 'rxjs/operators';
@@ -17,14 +18,14 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
   public get form(): FormGroup {
     return this.options.form;
   }
-  public buttons: IPsFormButton[] = [];
+  public buttons: IPsButton[] = [];
   public get contentVisible(): boolean {
     return !this._hasLoadError;
   }
   public get contentBlocked(): boolean {
     return this._loading || this._saving || this._blockView;
   }
-  public exception: IPsFormException;
+  public exception: IPsException;
   public get savebarMode(): IPsSavebarMode {
     return this._hasLoadError ? 'hide' : 'auto';
   }
@@ -40,7 +41,7 @@ class DemoPsFormDataSource<TParams, TData> implements IPsFormDataSource {
   private _loadParams: TParams = null;
   public _scrollToError: () => void;
 
-  private buttonDefs: { [key: string]: IPsFormButton } = {
+  private buttonDefs: { [key: string]: IPsButton } = {
     scrollToError: { type: 'icon', icon: 'error_outline', color: 'warn', click: () => this._scrollToError() },
     edit: { label: 'bearbeiten', type: 'raised', color: 'primary', disabled: () => this.contentBlocked, click: () => this.edit() },
     save: {

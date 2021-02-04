@@ -9,13 +9,13 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { IPsButton, IPsException } from '@prosoft/components/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { IPsFormButton, IPsFormDataSource, IPsFormDataSourceConnectOptions, IPsFormException } from './form-data-source';
+import { IPsFormDataSource, IPsFormDataSourceConnectOptions } from './form-data-source';
 
 import type { ElementRef } from '@angular/core';
-
 export const dependencies = {
   IntersectionObserver: IntersectionObserver,
 };
@@ -55,7 +55,7 @@ export class PsFormComponent implements AfterViewInit, OnDestroy {
     return this.dataSource.form;
   }
 
-  public get buttons(): IPsFormButton[] {
+  public get buttons(): IPsButton[] {
     return this.dataSource.buttons;
   }
 
@@ -82,7 +82,7 @@ export class PsFormComponent implements AfterViewInit, OnDestroy {
     return this.dataSource.contentBlocked;
   }
 
-  public get exception(): IPsFormException {
+  public get exception(): IPsException | null {
     return this.dataSource.exception;
   }
 
