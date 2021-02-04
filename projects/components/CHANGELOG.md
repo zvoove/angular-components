@@ -3,7 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [2.0.0-alpha.9](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.5...@prosoft/components@2.0.0-alpha.9) (2021-02-04)
+# [2.0.0-alpha.10](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.9...@prosoft/components@2.0.0-alpha.10) (2021-02-04)
+
+
+### Bug Fixes
+
+* **release:** broken typings ([#159](https://github.com/prosoft-edv/components/issues/159)) ([1a95a75](https://github.com/prosoft-edv/components/commit/1a95a75))
+
+
+
+
+
+
+# [2.0.0-alpha.9](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.8...@prosoft/components@2.0.0-alpha.9) (2021-02-04)
 
 
 ### Features
@@ -16,7 +28,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [2.0.0-alpha.8](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.5...@prosoft/components@2.0.0-alpha.8) (2020-12-03)
+# [2.0.0-alpha.8](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.7...@prosoft/components@2.0.0-alpha.8) (2020-12-03)
 
 
 ### Bug Fixes
@@ -39,7 +51,7 @@ Co-authored-by: Michael Dorr <michael.dorr@prosoft.net>
 
 
 
-# [2.0.0-alpha.7](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.5...@prosoft/components@2.0.0-alpha.7) (2020-12-02)
+# [2.0.0-alpha.7](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.6...@prosoft/components@2.0.0-alpha.7) (2020-12-02)
 
 
 ### Code Refactoring
