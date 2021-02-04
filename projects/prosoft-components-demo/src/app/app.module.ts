@@ -57,6 +57,10 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./form-demo/form-demo.module').then((m) => m.FormDemoModule),
       },
       {
+        path: 'dialog-wrapper',
+        loadChildren: () => import('./dialog-wrapper-demo/dialog-wrapper-demo.module').then((m) => m.DialogWrapperDemoModule),
+      },
+      {
         path: 'table',
         loadChildren: () => import('./table-demo/table-demo.module').then((m) => m.TableDemoModule),
       },

@@ -1,0 +1,30 @@
+<h1 mat-dialog-title *ngIf="dialogTitle">
+  {{ dialogTitle }}
+</h1>
+<mat-dialog-content>
+  <ps-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
+    <ng-content></ng-content>
+  </ps-block-ui>
+</mat-dialog-content>
+<mat-dialog-actions class="ps-dialog-wrapper__action-bar-container">
+  <div *ngIf="exception" class="ps-dialog-wrapper__error">
+    {{ exception.errorObject | psErrorMessage }}
+  </div>
+  <div class="ps-dialog-wrapper__buttons">
+    <button
+      *ngFor="let btn of buttons"
+      type="button"
+      style="margin: 0.25em;"
+      mat-button
+      [class.mat-raised-button]="btn.type === 'raised'"
+      [class.mat-stroked-button]="btn.type === 'stroked'"
+      [class.mat-icon-button]="btn.type === 'icon'"
+      [color]="btn.color"
+      [disabled]="btn.disabled && btn.disabled()"
+      (click)="btn.click()"
+    >
+      <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
+      {{ btn.label }}
+    </button>
+  </div>
+</mat-dialog-actions>

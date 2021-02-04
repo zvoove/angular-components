@@ -1,0 +1,22 @@
+.ps-dialog-wrapper__action-bar-container {
+  display: flex;
+  width: 100%;
+}
+
+.ps-dialog-wrapper__error {
+  color: var(--ps-error);
+}
+
+.ps-dialog-wrapper__buttons {
+  margin-left: auto;
+}
+
+ps-dialog-wrapper {
+  display: block;
+  /** Max possible width a MatDialog can be without showing a horizontal scrollbar  */
+  max-width: calc(80vw - 48px);
+
+  .mat-dialog-actions {
+    margin-bottom: -16px;
+  }
+}
