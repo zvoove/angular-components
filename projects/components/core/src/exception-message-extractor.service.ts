@@ -7,7 +7,7 @@ export class PsExceptionMessageExtractor {
    * @param error The error object.
    * @returns The error message
    */
-  public extractErrorMessage(error: any): string {
+  public extractErrorMessage(error: unknown): string {
     if (!error) {
       return null;
     }
@@ -16,6 +16,10 @@ export class PsExceptionMessageExtractor {
       return error;
     }
 
-    return error.message;
+    if (typeof error === 'object') {
+      return (error as any).message;
+    }
+
+    return null;
   }
 }

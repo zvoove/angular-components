@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { IPsTableIntlTexts } from '@prosoft/components/core';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 
 import { PsTableColumnDirective } from '../directives/table.directives';
 import { IPsTableSortDefinition } from '../models';
@@ -47,7 +47,7 @@ export class PsTableSettingsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.settings$ = this.settingsService.getStream(this.tableId, true).pipe(
-      map(settings => {
+      map((settings) => {
         settings = settings || ({} as IPsTableSetting);
         return <IPsTableSetting>{
           ...settings,
@@ -60,21 +60,21 @@ export class PsTableSettingsComponent implements OnInit {
   }
 
   public columnVisible(settings: IPsTableSetting, columnDef: PsTableColumnDirective) {
-    return !settings.columnBlacklist.some(x => x === columnDef.property);
+    return !settings.columnBlacklist.some((x) => x === columnDef.property);
   }
 
   public onSortChanged(event: { sortColumn: string; sortDirection: 'asc' | 'desc' }, settings: IPsTableSetting) {
     if (settings.sortColumn !== event.sortColumn) {
       settings.sortColumn = event.sortColumn;
-      settings.columnBlacklist = settings.columnBlacklist.filter(x => x !== event.sortColumn);
+      settings.columnBlacklist = settings.columnBlacklist.filter((x) => x !== event.sortColumn);
     }
     settings.sortDirection = event.sortDirection;
   }
 
   public onColumnVisibilityChange(event: MatCheckboxChange, settings: IPsTableSetting, columnDef: PsTableColumnDirective) {
     if (event.checked) {
-      settings.columnBlacklist = settings.columnBlacklist.filter(x => x !== columnDef.property);
-    } else if (!settings.columnBlacklist.find(x => x === columnDef.property)) {
+      settings.columnBlacklist = settings.columnBlacklist.filter((x) => x !== columnDef.property);
+    } else if (!settings.columnBlacklist.find((x) => x === columnDef.property)) {
       settings.columnBlacklist.push(columnDef.property);
     }
   }
@@ -83,7 +83,12 @@ export class PsTableSettingsComponent implements OnInit {
     if (this._settingSaveSub) {
       this._settingSaveSub.unsubscribe();
     }
-    this._settingSaveSub = this.settingsService.save(this.tableId, setting).subscribe(() => this.settingsSaved.emit());
+    this._settingSaveSub = this.settingsService
+      .save(this.tableId, setting)
+      .pipe(first())
+      .subscribe({
+        complete: () => this.settingsSaved.emit(),
+      });
   }
 
   public onCancelClick() {

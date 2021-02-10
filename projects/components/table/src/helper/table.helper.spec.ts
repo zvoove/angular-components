@@ -55,13 +55,13 @@ describe('fromQueryParams', () => {
   });
 
   it('should return undefined when all values are empty', () => {
-    expect(fromQueryParams('◬◬◬◬')).toBe(undefined);
+    expect(fromQueryParams('◬◬◬◬')).toBe(null);
   });
 
   it('should return undefined when the input is empty', () => {
-    expect(fromQueryParams('')).toBe(undefined);
-    expect(fromQueryParams(null)).toBe(undefined);
-    expect(fromQueryParams(undefined)).toBe(undefined);
+    expect(fromQueryParams('')).toBe(null);
+    expect(fromQueryParams(null)).toBe(null);
+    expect(fromQueryParams(undefined)).toBe(null);
   });
 });
 

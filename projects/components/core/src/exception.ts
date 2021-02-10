@@ -1,5 +1,5 @@
 export interface IPsException {
-  errorObject: any;
+  errorObject: unknown;
   icon?: string;
   alignCenter?: boolean;
 }

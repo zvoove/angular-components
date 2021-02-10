@@ -12,5 +12,7 @@ export interface IPsTableUpdateDataInfo {
 }
 
 export interface IExtendedPsTableUpdateDataInfo<TTrigger> extends IPsTableUpdateDataInfo {
+  currentPage: number;
+  pageSize: number;
   triggerData: TTrigger;
 }

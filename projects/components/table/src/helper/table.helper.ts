@@ -7,21 +7,29 @@ export function asQueryParams(settings: IPsTableUpdateDataInfo): string {
 
 export function fromQueryParams(settingsString: string): IPsTableUpdateDataInfo {
   if (!settingsString) {
-    return undefined;
+    return null;
   }
 
   const settings = settingsString.split('◬', 5);
   if (!settings.reduce((prev, curr) => prev || !!curr, false)) {
-    return undefined;
+    return null;
   }
 
-  return <IPsTableUpdateDataInfo>{
+  return {
     pageSize: coerceNumberProperty(settings[0], null),
     currentPage: coerceNumberProperty(settings[1], null),
     searchText: settings[2] || null,
     sortColumn: settings[3] || null,
-    sortDirection: settings[4] || null,
+    sortDirection: coerceSortDirectionProperty(settings[4], null),
   };
+}
+
+function coerceSortDirectionProperty(input: unknown, fallback: 'asc' | 'desc' | null): 'asc' | 'desc' | null {
+  const inputStr = (input + '').toLowerCase();
+  if (inputStr === 'asc' || inputStr === 'desc') {
+    return inputStr;
+  }
+  return fallback;
 }
 
 /**

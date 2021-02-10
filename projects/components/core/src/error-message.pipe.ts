@@ -4,11 +4,8 @@ import { PsExceptionMessageExtractor } from './exception-message-extractor.servi
 @Pipe({ name: 'psErrorMessage', pure: true })
 export class PsErrorMessagePipe implements PipeTransform {
   constructor(private extractor: PsExceptionMessageExtractor) {}
-  public transform(error: any) {
-    if (!error) {
-      return '';
-    }
-    return this.extractor.extractErrorMessage(error);
+  public transform(error: unknown) {
+    return this.extractor.extractErrorMessage(error) ?? '';
   }
 }
 
