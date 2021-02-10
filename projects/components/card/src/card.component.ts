@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ContentChild, Input, TemplateRef, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, HostBinding, Input, TemplateRef, ViewEncapsulation } from '@angular/core';
 import {
   PsCardActionsSectionDirective,
   PsCardCaptionSectionDirective,
@@ -33,4 +33,9 @@ export class PsCardComponent {
 
   @ContentChild(PsCardActionsSectionDirective, { read: TemplateRef })
   public actionsSection: TemplateRef<any> | null;
+
+  @HostBinding('class.ps-card__with-header')
+  public get showHeader() {
+    return this.caption || this.captionSection || this.description || this.descriptionSection || this.topButtonSection;
+  }
 }

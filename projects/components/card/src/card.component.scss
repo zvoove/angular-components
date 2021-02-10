@@ -2,7 +2,11 @@ ps-card {
   display: grid;
 }
 
-.ps-card__content {
-  display: grid !important;
-  grid-template-rows: 1fr auto !important;
+.ps-card__with-header {
+  grid-template-rows: auto 1fr;
+}
+
+mat-card.ps-card__content {
+  display: grid;
+  grid-template-rows: 1fr auto;
 }

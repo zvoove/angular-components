@@ -86,9 +86,17 @@
   <ng-container *psCardFooterSection> <strong>This is some footer: </strong>someValue </ng-container>
 </ps-card>
 
-<ps-card class="app-card-demo__ps-card" style="height: 900px;">
+<ps-card class="app-card-demo__ps-card" style="height: 450px;">
+  <div class="app-card-demo__content-wrapper">
+    <h2 class="app-card-demo__content">Card without header stretches to full height regardless of content height</h2>
+  </div>
+  <ng-container *psCardFooterSection>Is always at the bottom</ng-container>
+</ps-card>
+
+<ps-card class="app-card-demo__ps-card" [caption]="'Card with header stretches to full height'" style="height: 450px;">
   <div class="app-card-demo__content-wrapper">
     <h2 class="app-card-demo__content">Content goes here</h2>
   </div>
-  <ng-container *psCardFooterSection> <strong>This is some footer: </strong>someValue </ng-container>
 </ps-card>
+
+<div style="margin-bottom: 2em;"></div>

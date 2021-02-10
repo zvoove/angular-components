@@ -1,8 +1,4 @@
-<ps-header
-  *ngIf="caption || captionSection || description || descriptionSection || topButtonSection"
-  [caption]="caption"
-  [description]="description"
->
+<ps-header *ngIf="showHeader" [caption]="caption" [description]="description">
   <ng-container *psHeaderCaptionSection [ngTemplateOutlet]="captionSection"></ng-container>
   <ng-container *psHeaderDescriptionSection [ngTemplateOutlet]="descriptionSection"></ng-container>
   <ng-container *psHeaderTopButtonSection [ngTemplateOutlet]="topButtonSection"></ng-container>
