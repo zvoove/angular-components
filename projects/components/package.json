@@ -11,7 +11,7 @@
     "url": "https://github.com/prosoft-edv/components/issues"
   },
   "license": "MIT",
-  "version": "2.0.0-alpha.10",
+  "version": "2.0.0-alpha.11",
   "dependencies": {
     "jsdom": "^16.3.0",
     "tslib": "^2.0.0"

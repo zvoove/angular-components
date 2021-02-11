@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.11](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.10...@prosoft/components@2.0.0-alpha.11) (2021-02-11)
+
+
+### Bug Fixes
+
+* made some typings better compatible to strict apps ([#163](https://github.com/prosoft-edv/components/issues/163)) ([44eec52](https://github.com/prosoft-edv/components/commit/44eec52))
+* **card:** header and content share unused space equally ([#162](https://github.com/prosoft-edv/components/issues/162)) ([6723c2b](https://github.com/prosoft-edv/components/commit/6723c2b))
+
+
+
+
+
+
 # [2.0.0-alpha.10](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.9...@prosoft/components@2.0.0-alpha.10) (2021-02-04)
 
 
