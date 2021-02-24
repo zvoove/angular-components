@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.12](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.11...@prosoft/components@2.0.0-alpha.12) (2021-02-24)
+
+
+### Bug Fixes
+
+* **header:** typography and styling fixes ([#167](https://github.com/prosoft-edv/components/issues/167)) ([dd006a4](https://github.com/prosoft-edv/components/commit/dd006a4))
+
+
+
+
+
+
 # [2.0.0-alpha.11](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.10...@prosoft/components@2.0.0-alpha.11) (2021-02-11)
 
 
