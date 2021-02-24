@@ -1,10 +1,12 @@
 ps-header {
   display: flex;
   flex-direction: row;
-  width: 100%;
   flex-wrap: wrap;
+  gap: 1em;
+  width: 100%;
   margin: 0;
-  gap: 0 1em;
+  // margin directly on the ps-header makes it possible for users to override it
+  margin-bottom: 2em;
 }
 
 .ps-header__text {
@@ -12,19 +14,9 @@ ps-header {
 }
 
 .ps-header__caption {
-  margin-bottom: 12px;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.ps-header__description {
-  color: rgba(0, 0, 0, 0.54);
-  display: block;
-  font-size: 14px;
-  margin-bottom: 1em;
+  margin-bottom: 0;
 }
 
 .ps-header__actions {
-  align-self: center;
-  margin-bottom: 1em;
+  align-self: flex-end;
 }
