@@ -14,9 +14,8 @@
   <ng-container matColumnDef="rowDetailExpander">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let row" style="width: 70px;">
-      <button mat-icon-button color="primary" type="button" (click)="toggleRowDetail(row)">
-        <mat-icon *ngIf="!rowDetail.isExpanded(row)">chevron_right</mat-icon>
-        <mat-icon *ngIf="rowDetail.isExpanded(row)">expand_more</mat-icon>
+      <button *ngIf="showRowDetails(row)" mat-icon-button color="primary" type="button" (click)="toggleRowDetail(row)">
+        <mat-icon>{{ rowDetail.isExpanded(row) ? 'expand_more' : 'chevron_right' }}</mat-icon>
       </button>
     </td>
   </ng-container>
@@ -25,17 +24,17 @@
   <ng-container *ngFor="let columnDef of columnDefs">
     <ng-container [matColumnDef]="columnDef.property">
       <th mat-header-cell *matHeaderCellDef [ngStyle]="columnDef.headerStyles" [style.width]="columnDef.width">
-        <ng-container *ngIf="!columnDef.headerTemplate">
+        <ng-container *ngIf="!columnDef.headerTemplate; else customHeaderTemplate">
           {{ columnDef.header }}
         </ng-container>
-        <ng-template *ngIf="columnDef.headerTemplate" [ngTemplateOutlet]="columnDef.headerTemplate"></ng-template>
+        <ng-template #customHeaderTemplate [ngTemplateOutlet]="columnDef.headerTemplate"></ng-template>
       </th>
       <td mat-cell *matCellDef="let element" [ngStyle]="columnDef.columnStyles">
-        <ng-container *ngIf="!columnDef.columnTemplate">
+        <ng-container *ngIf="!columnDef.columnTemplate; else customRowTemplate">
           {{ element[columnDef.property] }}
         </ng-container>
         <ng-template
-          *ngIf="columnDef.columnTemplate"
+          #customRowTemplate
           [ngTemplateOutlet]="columnDef.columnTemplate"
           [ngTemplateOutletContext]="{ $implicit: element, expanded: rowDetail?.isExpanded(element) || false }"
         >
@@ -47,31 +46,31 @@
   <!--Option Column-->
   <ng-container matColumnDef="options">
     <th class="ps-table-data__options-column-header" mat-header-cell *matHeaderCellDef>
-      <button *ngIf="showListActions" mat-icon-button type="button" [matMenuTriggerFor]="listMenu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #listMenu="matMenu">
-        <!--Dynamic ListActions-->
-        <ng-template [ngTemplateOutlet]="listActions" [ngTemplateOutletContext]="{ $implicit: getSelectedRows() }"></ng-template>
-
-        <button *ngIf="refreshable" type="button" mat-menu-item (click)="onRefreshDataClicked()">
-          <mat-icon>refresh</mat-icon>
-          {{ intl.refreshListLabel }}
+      <ng-container *ngIf="showListActions">
+        <button mat-icon-button type="button" [matMenuTriggerFor]="listActionsComponent.menu">
+          <mat-icon>more_vert</mat-icon>
         </button>
-        <button *ngIf="settingsEnabled" type="button" mat-menu-item (click)="onShowSettingsClicked()">
-          <mat-icon>settings</mat-icon>
-          {{ intl.settingsLabel }}
-        </button>
-      </mat-menu>
+        <ps-table-actions
+          #listActionsComponent
+          [actions]="dataSource.listActions"
+          [items]="getSelectedRows()"
+          [refreshable]="refreshable"
+          [settingsEnabled]="settingsEnabled"
+          [intl]="intl"
+          (refreshData)="onRefreshDataClicked()"
+          (showSettings)="onShowSettingsClicked()"
+        >
+          <ng-template [ngTemplateOutlet]="listActions" [ngTemplateOutletContext]="{ $implicit: getSelectedRows() }"></ng-template>
+        </ps-table-actions>
+      </ng-container>
     </th>
     <td class="ps-table-data__options-column" mat-cell *matCellDef="let element">
-      <button *ngIf="rowActions" mat-icon-button type="button" [matMenuTriggerFor]="rowMenu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #rowMenu="matMenu">
-        <!--Dynamic RowActions-->
-        <ng-container [ngTemplateOutlet]="rowActions" [ngTemplateOutletContext]="{ $implicit: element }"></ng-container>
-      </mat-menu>
+      <ps-table-row-actions
+        [actions]="dataSource.rowActions"
+        [actionsTemplate]="rowActions"
+        [item]="element"
+        [moreMenuThreshold]="dataSource.moreMenuThreshold"
+      ></ps-table-row-actions>
     </td>
   </ng-container>
 

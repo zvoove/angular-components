@@ -1,26 +1,23 @@
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Injectable, QueryList, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { PageEvent } from '@angular/material/paginator';
-import { MatSelect } from '@angular/material/select';
-import { By } from '@angular/platform-browser';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, ParamMap, Params, Router } from '@angular/router';
 import { IPsTableIntlTexts, PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
+import { filterAsync } from '@prosoft/components/utils/src/array';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { PsTableDataSource } from './data/table-data-source';
 import { PsTableColumnDirective } from './directives/table.directives';
-import { IPsTableSortDefinition } from './models';
+import { PsTableMemoryStateManager } from './helper/state-manager';
+import { IPsTableSortDefinition, PsTableActionScope } from './models';
 import { IPsTableSetting, PsTableSettingsService } from './services/table-settings.service';
-import { PsTableDataComponent } from './subcomponents/table-data.component';
-import { PsTableHeaderComponent } from './subcomponents/table-header.component';
 import { PsTablePaginationComponent } from './subcomponents/table-pagination.component';
-import { PsTableSearchComponent } from './subcomponents/table-search.component';
-import { PsTableSettingsComponent } from './subcomponents/table-settings.component';
 import { PsTableComponent } from './table.component';
 import { PsTableModule } from './table.module';
+import { PsTableHarness } from './testing/table.harness';
 
 @Injectable()
 class TestSettingsService extends PsTableSettingsService {
@@ -82,6 +79,7 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
       [layout]="layout"
       [striped]="striped"
       [sortDefinitions]="sortDefinitions"
+      [stateManager]="stateManager"
       (page)="onPage($event)"
     >
       <ps-table-column [header]="'id'" property="id" [sortable]="true"></ps-table-column>
@@ -133,15 +131,7 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
 })
 export class TestComponent {
   public caption = 'title';
-  public dataSource = new PsTableDataSource(
-    () =>
-      of([
-        { id: 1, str: 'item 1' },
-        { id: 2, str: 'item 2' },
-        { id: 3, str: 'item 3' },
-      ]),
-    'client'
-  );
+  public dataSource: PsTableDataSource<any>;
   public tableId = 'tableId';
   public intlOverride: Partial<IPsTableIntlTexts>;
   public refreshable = true;
@@ -150,6 +140,9 @@ export class TestComponent {
   public layout = 'card';
   public striped = true;
   public sortDefinitions: IPsTableSortDefinition[] = [{ prop: '__virtual', displayName: 'Virtual Column' }];
+
+  /** Karma doesn't recognize url changes from code. */
+  public stateManager = new PsTableMemoryStateManager();
 
   public expanded = false;
   public showToggleColumn = true;
@@ -160,6 +153,7 @@ export class TestComponent {
   public onPage(_event: any) {}
   public onCustomListActionClick(_slectedItems: any[]) {}
   public onCustomRowActionClick(_item: any) {}
+  public onListActionExecute(_selection: any[]) {}
 }
 
 describe('PsTableComponent', () => {
@@ -474,10 +468,24 @@ describe('PsTableComponent', () => {
   });
 
   describe('intgration', () => {
-    beforeEach(async(() => {
+    let fixture: ComponentFixture<TestComponent>;
+    let component: TestComponent;
+    let loader: HarnessLoader;
+    let table: PsTableHarness;
+
+    async function initTestComponent(tableDataSource: PsTableDataSource<any>) {
+      fixture = TestBed.createComponent(TestComponent);
+      component = fixture.componentInstance;
+      expect(component).toBeDefined();
+      component.dataSource = tableDataSource;
+      loader = TestbedHarnessEnvironment.loader(fixture);
+      table = await loader.getHarness(PsTableHarness);
+    }
+
+    beforeEach(async () => {
       queryParams$.next(convertToParamMap({}));
 
-      TestBed.configureTestingModule({
+      await TestBed.configureTestingModule({
         imports: [NoopAnimationsModule, CommonModule, PsTableModule],
         declarations: [TestComponent],
         providers: [
@@ -486,352 +494,294 @@ describe('PsTableComponent', () => {
           { provide: ActivatedRoute, useValue: route },
           { provide: Router, useValue: router },
         ],
-      }).compileComponents();
-    }));
+      });
 
-    it('should resolve intl correctly', () => {
-      const fixture = TestBed.createComponent(TestComponent);
-      const component = fixture.componentInstance;
-      expect(component).toBeDefined();
+      await initTestComponent(
+        new PsTableDataSource({
+          loadDataFn: () =>
+            of([
+              { id: 1, str: 'item 1' },
+              { id: 2, str: 'item 2' },
+              { id: 3, str: 'item 3' },
+            ]),
+          mode: 'client',
+        })
+      );
+    });
 
+    it('should resolve intl correctly', async () => {
       const intlService = TestBed.inject(PsIntlService);
       const defaultTableIntl = intlService.get('table');
       fixture.detectChanges();
-
       expect(component.table.intl).toEqual(defaultTableIntl);
 
       component.intlOverride = {
-        lastPageLabel: 'asdf',
+        getRangeLabel: () => 'bar',
       };
-      fixture.detectChanges();
-      expect(component.table.intl.lastPageLabel).toEqual('asdf');
 
-      (<any>intlService).tableIntl.previousPageLabel = 'x';
+      expect(await table.getRangeLabel()).toEqual('bar');
+
+      (<any>intlService).tableIntl.itemsPerPageLabel = 'foo';
       intlService.intlChanged$.next();
-      fixture.detectChanges();
-      expect(component.table.intl.previousPageLabel).toEqual('x');
+
+      expect(await table.getRangeLabel()).toEqual('bar');
+      expect(await table.getItemsPerPageLabel()).toEqual('foo');
     });
 
-    it('should bind the right properties and events to the ui', fakeAsync(() => {
-      const fixture = TestBed.createComponent(TestComponent);
-      const component = fixture.componentInstance;
-      component.table.settingsService.settingsEnabled = true;
-      (component.table.settingsService as TestSettingsService).settings$.next({
-        [component.tableId]: {
-          pageSize: 2,
-          sortColumn: null,
-          sortDirection: null,
-          columnBlacklist: [],
-        },
-      });
-      fixture.detectChanges();
+    describe('should bind the right properties and events to the ui', () => {
+      beforeEach(async () => {
+        await initTestComponent(
+          new PsTableDataSource({
+            loadDataFn: () =>
+              of([
+                { id: 1, str: 'item 1' },
+                { id: 2, str: 'item 2' },
+                { id: 3, str: 'item 3' },
+              ]),
+            mode: 'client',
+            actions: [
+              {
+                label: 'custom action',
+                icon: 'check',
+                scope: PsTableActionScope.all,
+                actionFn: (selection) => component.onListActionExecute(selection),
+              },
+            ],
+          })
+        );
 
-      const psTableDbg = fixture.debugElement.query(By.directive(PsTableComponent));
-      const tableHeaderDbg = psTableDbg.query(By.directive(PsTableHeaderComponent));
-
-      // ps-table[caption]
-      expect(fixture.debugElement.query(By.css('h2')).nativeElement.textContent.trim()).toEqual('title');
-
-      // ps-table[layout]
-      expect(psTableDbg.classes['mat-elevation-z1']).toEqual(true);
-      expect(psTableDbg.classes['ps-table--card']).toEqual(true);
-      expect(psTableDbg.classes['ps-table--border']).toBeFalsy();
-
-      component.table.layout = 'border';
-      fixture.detectChanges();
-      expect(psTableDbg.classes['mat-elevation-z1']).toBeFalsy();
-      expect(psTableDbg.classes['ps-table--card']).toBeFalsy();
-      expect(psTableDbg.classes['ps-table--border']).toEqual(true);
-
-      component.table.layout = 'flat';
-      fixture.detectChanges();
-      expect(psTableDbg.classes['mat-elevation-z1']).toBeFalsy();
-      expect(psTableDbg.classes['ps-table--card']).toBeFalsy();
-      expect(psTableDbg.classes['ps-table--border']).toBeFalsy();
-
-      // ps-table[striped]
-      expect(psTableDbg.classes['ps-table--striped']).toEqual(true);
-
-      // *psTableCustomHeader
-      expect(tableHeaderDbg.nativeElement.textContent).toContain('custom header');
-
-      // *psTableTopButtonSection
-      expect(tableHeaderDbg.nativeElement.textContent).toContain('custom button section');
-
-      tick(1);
-      fixture.detectChanges();
-
-      const tableDataEl: HTMLElement = fixture.debugElement.query(By.directive(PsTableDataComponent)).nativeElement;
-      const headerRowEl = tableDataEl.querySelectorAll('.mat-header-row').item(0);
-      const rowEls = tableDataEl.querySelectorAll('.ps-table-data__row');
-      expect(rowEls.length).toEqual(2);
-
-      const strHeaderEl: HTMLElement = headerRowEl.querySelectorAll('.mat-column-str').item(0) as HTMLElement;
-      const strFirstCol: HTMLElement = rowEls[0].querySelectorAll('.mat-column-str').item(0) as HTMLElement;
-      const virtualHeaderEl: HTMLElement = headerRowEl.querySelectorAll('.mat-column-__virtual').item(0) as HTMLElement;
-      const virtualFirstCol: HTMLElement = rowEls[0].querySelectorAll('.mat-column-__virtual').item(0) as HTMLElement;
-
-      // ps-table-column[property]
-      expect(strFirstCol.textContent.trim()).toEqual('item 1');
-
-      // ps-table-column[columnStyles]
-      expect(strFirstCol.style.color).toEqual('blue');
-
-      // ps-table-column[header]
-      expect(strHeaderEl.textContent.trim()).toEqual('string');
-
-      // ps-table-column[headerStyles]
-      expect(strHeaderEl.style.color).toEqual('green');
-
-      // *psTableColumnHeaderTemplate
-      expect(virtualHeaderEl.textContent.trim()).toEqual('custom');
-
-      // *psTableColumnTemplate
-      expect(virtualFirstCol.textContent.trim()).toEqual('custom 1');
-
-      // ps-table-row-detail
-      const detailRowEls = tableDataEl.querySelectorAll('.ps-table-data__detail-row');
-      expect(detailRowEls[0].clientHeight).toEqual(0);
-      expect(detailRowEls[0].textContent.trim()).toEqual('');
-      const expandButtonFirstRow: HTMLElement = rowEls[0].querySelectorAll('.mat-column-rowDetailExpander button').item(0) as HTMLElement;
-      expandButtonFirstRow.dispatchEvent(new MouseEvent('click'));
-      fixture.detectChanges();
-      flush();
-      fixture.detectChanges();
-      expect(detailRowEls[0].clientHeight > 0).toEqual(true);
-      expect(detailRowEls[0].textContent.trim()).toEqual('item: 1');
-
-      // filter
-      const searchInputEl = fixture.debugElement
-        .query(By.directive(PsTableSearchComponent))
-        .nativeElement.querySelectorAll('input')
-        .item(0) as HTMLInputElement;
-      spyOn(component.table, 'onSearchChanged');
-      searchInputEl.value = 'asdf';
-      searchInputEl.dispatchEvent(new KeyboardEvent('keyup', { key: 'f' }));
-      tick(300);
-      expect(component.table.onSearchChanged).toHaveBeenCalledWith('asdf');
-
-      // sort
-      spyOn(component.table, 'onSortChanged');
-      useMatSelect(fixture, 'ps-table-sort', (matOptionNodes) => {
-        // ps-table[sortDefinitions] + ps-table-column[sortable]
-        expect(Array.from(matOptionNodes).map((x) => x.textContent.trim())).toEqual(['', 'id', 'Virtual Column']);
-
-        // sort change
-        const itemNode = matOptionNodes.item(2);
-        itemNode.dispatchEvent(new Event('click'));
-      });
-      expect(component.table.onSortChanged).toHaveBeenCalledWith({
-        sortColumn: '__virtual',
-        sortDirection: 'asc',
+        component.table.settingsService.settingsEnabled = true;
+        (component.table.settingsService as TestSettingsService).settings$.next({
+          [component.tableId]: {
+            pageSize: 2,
+            sortColumn: null,
+            sortDirection: null,
+            columnBlacklist: [],
+          },
+        });
       });
 
-      // *psTableRowActions
-      useMatMenu(fixture, '.ps-table-data__options-column button', (rowActionButtonEls) => {
-        spyOn(component, 'onCustomRowActionClick');
-        expect(Array.from(rowActionButtonEls).map((x) => x.textContent.trim())).toEqual(['item 1 custom row actions']);
-        rowActionButtonEls.item(0).dispatchEvent(new MouseEvent('click'));
-        flush();
-        expect(component.onCustomRowActionClick).toHaveBeenCalledWith({ id: 1, str: 'item 1' });
+      it('should bind caption', async () => {
+        expect(await table.getCaption()).toEqual('title');
+        component.caption = 'foo';
+        expect(await table.getCaption()).toEqual('foo');
       });
 
-      // list actions
-      const firstRowCheckboxEl = rowEls[0].querySelector('mat-checkbox input');
-      firstRowCheckboxEl.dispatchEvent(new MouseEvent('click'));
+      it('should set layout', async () => {
+        expect(await table.getIsLayout('card')).toBeTruthy();
 
-      useMatMenu(fixture, '.ps-table-data__options-column-header button', (listActionButtonEls) => {
-        // *psTableListActions
-        spyOn(component, 'onCustomListActionClick');
-        expect(Array.from(listActionButtonEls).map((x) => x.textContent.trim())).toEqual([
-          'custom list actions',
-          'refresh Refresh list',
-          'settings List settings',
-        ]);
-        listActionButtonEls.item(0).dispatchEvent(new MouseEvent('click'));
-        flush();
-        expect(component.onCustomListActionClick).toHaveBeenCalledWith([{ id: 1, str: 'item 1' }]);
+        component.table.layout = 'border';
+        expect(await table.getIsLayout('border')).toBeTruthy();
 
-        // refresh
-        spyOn(component.table.dataSource, 'updateData');
-        listActionButtonEls.item(1).dispatchEvent(new MouseEvent('click'));
-        flush();
-        expect(component.table.dataSource.updateData).toHaveBeenCalled();
+        component.table.layout = 'flat';
+        expect(await table.getIsLayout('flat')).toBeTruthy();
+      });
 
-        // settings
-        listActionButtonEls.item(2).dispatchEvent(new MouseEvent('click'));
-        flush();
-        fixture.detectChanges();
-        flush();
-        expect(component.table.flipContainer.active).toEqual('back');
-        fixture.whenRenderingDone().then(() => {
-          const tableSettingsDbg = psTableDbg.query(By.directive(PsTableSettingsComponent));
-          // *psTableCustomSettings
-          expect(tableSettingsDbg.nativeElement.textContent).toContain('custom settings 2');
+      it('should set striped', async () => {
+        expect(await table.getIsStriped()).toBeTruthy();
+        component.striped = false;
+        expect(await table.getIsStriped()).toBeFalsy();
+      });
+
+      it('should set custom header', async () => {
+        const customContent = await table.getCustomHeaderContent();
+        expect(customContent.length).toEqual(1);
+        expect(await customContent[0].text()).toEqual('custom header');
+      });
+
+      it('should set top buttons', async () => {
+        const topButtonSectionContent = await table.getTopButtonSectionContent();
+        expect(topButtonSectionContent.length).toEqual(1);
+        expect(await topButtonSectionContent[0].text()).toEqual('custom button section');
+      });
+
+      it('should create header rows', async () => {
+        const headerRows = await table.getHeaderRows();
+        expect(headerRows.length).toEqual(1);
+
+        const strHeaderCells = await headerRows[0].getCells({ columnName: 'str' });
+        expect(strHeaderCells.length).toEqual(1);
+        expect(await (await strHeaderCells[0].host()).getCssValue('color')).toEqual('rgb(0, 128, 0)');
+        expect(await strHeaderCells[0].getText()).toEqual('string');
+
+        const customHeaderCells = await headerRows[0].getCells({ columnName: '__virtual' });
+        expect(customHeaderCells.length).toEqual(1);
+        expect(await await customHeaderCells[0].getText()).toEqual('custom');
+      });
+
+      it('should create data rows', async () => {
+        const dataRows = await table.getRows();
+        expect(dataRows.length).toEqual(6); // 3 rows with 3x row detail per row
+
+        const data = await filterAsync(dataRows, async (row) => {
+          return await (await row.host()).hasClass('ps-table-data__row');
         });
 
-        // hide refresh button
+        expect(data.length).toEqual(3);
+
+        const strDataCell = await data[0].getCells({ columnName: 'str' });
+        expect(strDataCell.length).toEqual(1);
+        expect(await strDataCell[0].getText()).toEqual('item 1');
+        expect(await (await strDataCell[0].host()).getCssValue('color')).toEqual('rgb(0, 0, 255)');
+
+        const detail = await filterAsync(dataRows, async (row) => {
+          return await (await row.host()).hasClass('ps-table-data__detail-row');
+        });
+
+        expect(detail.every(async (d) => (await (await d.host()).getCssValue('height')) === '0')).toEqual(true);
+
+        const expanderCell = await data[0].getCells({ columnName: 'rowDetailExpander' });
+        expect(expanderCell.length).toEqual(1);
+
+        await (await expanderCell[0].host()).click();
+        expect(await (await detail[0].host()).getCssValue('height')).not.toEqual('0');
+
+        const customExpanderCell = await data[0].getCells({ columnName: '__custom' });
+        expect(customExpanderCell.length).toEqual(1);
+
+        await (await customExpanderCell[0].host()).click();
+        expect(detail.every(async (d) => (await (await d.host()).getCssValue('height')) === '0')).toEqual(true);
+      });
+
+      it('should filter', async () => {
+        const searchInput = await table.getSearchInput();
+        expect(await searchInput.getValue()).toEqual('');
+
+        spyOn(component.table, 'onSearchChanged');
+        await searchInput.setValue('asdf');
+        expect(component.table.onSearchChanged).toHaveBeenCalledTimes(1);
+        expect(component.table.onSearchChanged).toHaveBeenCalledWith('asdf');
+      });
+
+      it('should sort', async () => {
+        const sortSelect = await table.getSortSelect();
+        expect(await sortSelect.getValueText()).toEqual('');
+
+        await sortSelect.open();
+        const optionTexts = await Promise.all((await sortSelect.getOptions()).map(async (o) => await o.getText()));
+        expect(optionTexts).toEqual(['', 'id', 'Virtual Column']);
+
+        spyOn(component.table, 'onSortChanged');
+        await sortSelect.clickOptions({ text: 'id' });
+        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+          sortColumn: 'id',
+          sortDirection: 'asc',
+        });
+
+        const sortDirectionButtons = await table.getSortDirectionButtons();
+        expect(sortDirectionButtons.length).toEqual(2);
+        await sortDirectionButtons[0].click();
+        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+          sortColumn: 'id',
+          sortDirection: 'desc',
+        });
+      });
+
+      it('should refresh', async () => {
+        const listActionsMenu = await table.getListActionsButton();
+        await listActionsMenu.open();
+        const listActions = await listActionsMenu.getItems();
+        expect(listActions.length).toEqual(3);
+
+        spyOn(component.table.dataSource, 'updateData');
+        await listActionsMenu.clickItem({ text: 'refresh Refresh list' });
+        expect(component.table.dataSource.updateData).toHaveBeenCalled();
+      });
+
+      it('should hide refresh button', async () => {
         component.refreshable = false;
-        fixture.detectChanges();
-        listActionButtonEls = getMatMenuNodes();
-        expect(
-          Array.from(listActionButtonEls)
-            .map((x) => x.textContent.trim())
-            .filter((x) => x.includes('refresh'))
-        ).toEqual([]);
-      });
-    }));
 
-    it('should show "GoToPage"-Select, if there are more then 2 pages', fakeAsync(() => {
-      const fixture = TestBed.createComponent(TestComponent);
-      const component = fixture.componentInstance;
-      component.dataSource = new PsTableDataSource(
-        () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
-        'client'
-      );
-      component.dataSource.updateData();
-      fixture.detectChanges();
-
-      tick(1);
-      fixture.detectChanges();
-
-      const paginationComponent = fixture.debugElement.query(By.directive(PsTablePaginationComponent));
-      const pageSelect = paginationComponent.queryAll(By.directive(MatSelect));
-
-      expect(pageSelect.length).toEqual(2);
-      expect(pageSelect.find((x) => (x.nativeElement as HTMLElement).classList.contains('ps-table-pagination__page-select'))).toBeDefined();
-    }));
-
-    it('should not show "GoToPage"-Select, if there are less then 3 pages', fakeAsync(() => {
-      const fixture = TestBed.createComponent(TestComponent);
-      const component = fixture.componentInstance;
-      component.dataSource = new PsTableDataSource(
-        () => of(Array.from({ length: 5 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
-        'client'
-      );
-      component.dataSource.updateData();
-      fixture.detectChanges();
-      tick(1);
-      fixture.detectChanges();
-
-      const paginationComponent = fixture.debugElement.query(By.directive(PsTablePaginationComponent));
-      const pageSelect = paginationComponent.queryAll(By.directive(MatSelect));
-
-      expect(pageSelect.length).toEqual(1);
-      expect(
-        pageSelect.find((x) => (x.nativeElement as HTMLElement).classList.contains('ps-table-pagination__page-select'))
-      ).not.toBeDefined();
-    }));
-
-    it('should go to selected page chosen with "GoToPage"-Select', fakeAsync(() => {
-      const fixture = TestBed.createComponent(TestComponent);
-      const component = fixture.componentInstance;
-      spyOn(component.table, 'onPage');
-      component.dataSource = new PsTableDataSource(
-        () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
-        'client'
-      );
-      component.dataSource.updateData();
-      fixture.detectChanges();
-      tick(1);
-      fixture.detectChanges();
-
-      useMatSelect(fixture, '.ps-table-pagination__page-select', (matOptionNodes) => {
-        expect(Array.from(matOptionNodes).map((x) => x.textContent.trim())).toEqual(['1', '2', '3', '4']);
-
-        const itemNode = matOptionNodes.item(2);
-        itemNode.dispatchEvent(new Event('click'));
+        const listActionsMenu = await table.getListActionsButton();
+        await listActionsMenu.open();
+        const listActions = await listActionsMenu.getItems();
+        expect(listActions.length).toEqual(2);
+        expect(await listActions[0].getText()).toEqual('check custom action');
+        expect(await listActions[1].getText()).toEqual('settings List settings');
       });
 
-      expect(component.table.onPage).toHaveBeenCalledTimes(1);
-      expect(component.table.onPage).toHaveBeenCalledWith({
-        length: 50,
-        pageIndex: 2,
-        pageSize: 15,
-        previousPageIndex: 1,
-      } as PageEvent);
-    }));
+      it('should flip to settings', async () => {
+        const listActionsMenu = await table.getListActionsButton();
+        await listActionsMenu.open();
+        const listActions = await listActionsMenu.getItems();
+        expect(listActions.length).toEqual(3);
 
-    it('should work with custom row detail toggle', fakeAsync(() => {
-      const fixture = TestBed.createComponent(TestComponent);
-      const component = fixture.componentInstance;
-      component.dataSource = new PsTableDataSource(
-        () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
-        'client'
+        expect(await table.getSettingsHarness()).toBeNull();
+        await listActionsMenu.clickItem({ text: 'settings List settings' });
+        expect(await table.getSettingsHarness()).toBeDefined();
+      });
+
+      it('should hide settings button', async () => {
+        component.showSettings = false;
+
+        const listActionsMenu = await table.getListActionsButton();
+        await listActionsMenu.open();
+        const listActions = await listActionsMenu.getItems();
+        expect(listActions.length).toEqual(2);
+        expect(await listActions[0].getText()).toEqual('check custom action');
+        expect(await listActions[1].getText()).toEqual('refresh Refresh list');
+      });
+
+      it('should call customListAction', async () => {
+        const checkboxes = await table.getSelectCheckboxes();
+        await checkboxes[1].check();
+
+        const listActionsMenu = await table.getListActionsButton();
+        await listActionsMenu.open();
+        spyOn(component, 'onListActionExecute');
+        await listActionsMenu.clickItem({ text: 'check custom action' });
+        expect(component.onListActionExecute).toHaveBeenCalledWith([{ id: 1, str: 'item 1' }]);
+      });
+
+      it('should call customRowAction', async () => {
+        const listActionsMenu = await table.getRowActionsButton(1);
+        await listActionsMenu.open();
+        spyOn(component, 'onListActionExecute');
+        await listActionsMenu.clickItem({ text: 'check custom action' });
+        expect(component.onListActionExecute).toHaveBeenCalledWith([{ id: 1, str: 'item 1' }]);
+      });
+    });
+
+    it('should show "GoToPage"-Select, if there are more then 2 pages', async () => {
+      await initTestComponent(
+        new PsTableDataSource({
+          loadDataFn: () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
+          mode: 'client',
+        })
       );
-      component.dataSource.updateData();
-      fixture.detectChanges();
 
-      tick(1);
-      fixture.detectChanges();
+      const gotoPageSelect = await table.getGotoPageSelect();
+      await gotoPageSelect.open();
+      expect((await gotoPageSelect.getOptions()).length).toEqual(4);
+    });
 
-      const tableDataEl: HTMLElement = fixture.debugElement.query(By.directive(PsTableDataComponent)).nativeElement;
-      const rowEls = tableDataEl.querySelectorAll('.ps-table-data__row');
+    it('should not show "GoToPage"-Select, if there are less then 3 pages', async () => {
+      await initTestComponent(
+        new PsTableDataSource({
+          loadDataFn: () => of(Array.from({ length: 5 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
+          mode: 'client',
+        })
+      );
 
-      const detailRowEls = tableDataEl.querySelectorAll('.ps-table-data__detail-row');
-      expect(detailRowEls[5].clientHeight).toEqual(0);
-      expect(detailRowEls[5].textContent.trim()).toEqual('');
+      const gotoPageSelect = await table.getGotoPageSelect();
+      expect(gotoPageSelect).toBeNull();
+    });
 
-      const toggleSpy = spyOn(component.table, 'toggleRowDetail').and.callThrough();
-      const customExpandButtonFifthRow: HTMLElement = rowEls[5].querySelectorAll('.mat-column-__custom button').item(0) as HTMLElement;
-      customExpandButtonFifthRow.dispatchEvent(new MouseEvent('click'));
-      fixture.detectChanges();
-      flush();
-      fixture.detectChanges();
+    it('should go to selected page chosen with "GoToPage"-Select', async () => {
+      await initTestComponent(
+        new PsTableDataSource({
+          loadDataFn: () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
+          mode: 'client',
+        })
+      );
 
-      expect(toggleSpy).toHaveBeenCalledTimes(1);
-      expect(toggleSpy).toHaveBeenCalledWith({ id: 5, str: 'item 5' });
-      expect(detailRowEls[5].clientHeight > 0).toEqual(true);
-      expect(detailRowEls[5].textContent.trim()).toEqual('item: 5');
-    }));
+      component.table.pageDebounce = 0;
+
+      const gotoPageSelect = await table.getGotoPageSelect();
+      await gotoPageSelect.open();
+      await gotoPageSelect.clickOptions({ text: '2' });
+
+      const firstRowSecondPage = (await table.getRows())[0];
+      expect(await (await firstRowSecondPage.getCells({ columnName: 'str' }))[0].getText()).toEqual('item 15');
+    });
   });
 });
-
-function openMatMenu<T>(fixture: ComponentFixture<T>, menuTriggerSelector: string) {
-  const sortSelectTriggerEl = fixture.debugElement.nativeElement.querySelectorAll(menuTriggerSelector).item(0) as HTMLElement;
-  sortSelectTriggerEl.dispatchEvent(new MouseEvent('click'));
-  fixture.detectChanges();
-}
-function getMatMenuNodes(): NodeListOf<HTMLElement> {
-  const matMenuItemNodes = document.querySelectorAll('.mat-menu-content > *') as NodeListOf<HTMLElement>;
-  return matMenuItemNodes;
-}
-function closeMatMenu<T>(fixture: ComponentFixture<T>) {
-  closeBackdrop(fixture);
-}
-
-function useMatMenu<T>(fixture: ComponentFixture<T>, selector: string, useFnc: (options: NodeListOf<HTMLElement>) => void) {
-  openMatMenu(fixture, selector);
-  useFnc(getMatMenuNodes());
-  closeMatMenu(fixture);
-}
-
-function openMatSelect<T>(fixture: ComponentFixture<T>, selector: string) {
-  const sortSelectTriggerEl = fixture.debugElement.nativeElement.querySelectorAll(selector + ' .mat-select-trigger').item(0) as HTMLElement;
-  sortSelectTriggerEl.dispatchEvent(new MouseEvent('click'));
-  fixture.detectChanges();
-}
-function getMatOptionsNodes(): NodeListOf<HTMLElement> {
-  const selectPanelNode = document.querySelector('.mat-select-panel');
-  const matOptionNodes = selectPanelNode.querySelectorAll('mat-option') as NodeListOf<HTMLElement>;
-  return matOptionNodes;
-}
-function closeMatSelect<T>(fixture: ComponentFixture<T>) {
-  closeBackdrop(fixture);
-}
-
-export function useMatSelect<T>(fixture: ComponentFixture<T>, selector: string, useFnc: (options: NodeListOf<HTMLElement>) => void) {
-  openMatSelect(fixture, selector);
-  useFnc(getMatOptionsNodes());
-  closeMatSelect(fixture);
-}
-
-function closeBackdrop<T>(fixture: ComponentFixture<T>) {
-  document.querySelector('.cdk-overlay-backdrop').dispatchEvent(new MouseEvent('click'));
-  fixture.detectChanges();
-  flush();
-
-  // Sometimes the mat-select oder mat-menu items aren't cleared and the tests fail. Hopefully this fixes that.
-  tick(1);
-  fixture.detectChanges();
-}

@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy } from '@angular/core';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
 import { PsTableComponent, PsTableDataSource } from '@prosoft/components/table';
+import { PsTableActionScope } from '@prosoft/components/table/src/models';
 import { NEVER, of, throwError } from 'rxjs';
 
 interface ISampleData {
@@ -80,6 +80,72 @@ export class TableDemoComponent {
   public clientSampleDataSource = new PsTableDataSource<ISampleData>(() => {
     return of(sampleData);
   }, 'client');
+  public actionsDataSource = new PsTableDataSource<ISampleData>({
+    loadDataFn: () => of(sampleData),
+    actions: [
+      {
+        label: 'rowAction 1',
+        icon: 'check',
+        iconColor: 'green',
+        actionFn: () => of(),
+        scope: PsTableActionScope.row,
+      },
+      {
+        label: 'rowAction 2',
+        icon: 'cancel',
+        actionFn: () => of(),
+        scope: PsTableActionScope.row,
+        isHiddenFn: () => Math.random() > 0.5,
+      },
+      {
+        label: 'listAction 1',
+        icon: 'cancel',
+        actionFn: () => of(),
+        scope: PsTableActionScope.list,
+      },
+      {
+        label: 'listAction 2',
+        icon: 'cancel',
+        actionFn: () => of(),
+        scope: PsTableActionScope.list,
+        isDisabledFn: () => true,
+      },
+      {
+        label: 'listAction 3',
+        icon: 'cancel',
+        actionFn: () => of(),
+        scope: PsTableActionScope.list,
+        isHiddenFn: () => Math.random() > 0.5,
+      },
+      {
+        label: 'allAction',
+        icon: 'cancel',
+        scope: PsTableActionScope.all,
+        children: [
+          {
+            label: 'allChildAction 1',
+            icon: 'cancel',
+            actionFn: () => of(),
+            scope: PsTableActionScope.list,
+          },
+          {
+            label: 'allChildAction 2',
+            icon: 'cancel',
+            scope: PsTableActionScope.list,
+            children: [
+              {
+                label: 'allChildAction 2 Child 1',
+                icon: 'cancel',
+                actionFn: () => of(),
+                scope: PsTableActionScope.list,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
   public emptyDataSource = new PsTableDataSource<any>(() => of([]));
   public loadingDataSource = new PsTableDataSource<any>(() => NEVER);
   public errorDataSource = new PsTableDataSource<any>(() => {
@@ -95,8 +161,8 @@ export class TableDemoComponent {
   public striped = true;
   public sortDefinitions = true;
   public pageDebounce = 1000;
-  public dataSourceType: 'client' | 'loading' | 'error' | 'empty' = 'client';
-  public dataSource: PsTableDataSource<ISampleData> = this.clientSampleDataSource;
+  public dataSourceType: 'client' | 'loading' | 'error' | 'actions' | 'empty' = 'actions';
+  public dataSource: PsTableDataSource<ISampleData> = this.actionsDataSource;
 
   public columnHeaderTemplate = false;
   public columnColumnTemplate = true;
@@ -131,6 +197,9 @@ export class TableDemoComponent {
         break;
       case 'empty':
         this.dataSource = this.emptyDataSource;
+        break;
+      case 'actions':
+        this.dataSource = this.actionsDataSource;
         break;
       default:
         this.dataSource = this.clientSampleDataSource;

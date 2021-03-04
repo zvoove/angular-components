@@ -16,3 +16,21 @@ export interface IExtendedPsTableUpdateDataInfo<TTrigger> extends IPsTableUpdate
   pageSize: number;
   triggerData: TTrigger;
 }
+
+export const enum PsTableActionScope {
+  row = 1,
+  list = 2,
+  // tslint:disable-next-line:no-bitwise
+  all = row | list,
+}
+
+export interface IPsTableAction<T> {
+  label: string;
+  icon: string;
+  iconColor?: string;
+  children?: IPsTableAction<T>[];
+  scope: PsTableActionScope;
+  isDisabledFn?: (items: T[]) => boolean;
+  isHiddenFn?: (items: T[]) => boolean;
+  actionFn?: (items: T[]) => void;
+}

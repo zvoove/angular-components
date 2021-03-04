@@ -15,7 +15,9 @@ import { IPsTableSortDefinition } from '../models';
   selector: 'ps-table-header',
   template: `
     <h2 *ngIf="caption" class="ps-table-header__caption">{{ caption }}</h2>
-    <ng-container [ngTemplateOutlet]="customHeader"></ng-container>
+    <div *ngIf="customHeader" class="ps-table-header__custom-content">
+      <ng-container [ngTemplateOutlet]="customHeader"></ng-container>
+    </div>
     <ps-table-sort
       *ngIf="showSorting"
       class="ps-table-header__sort"
@@ -79,12 +81,10 @@ export class PsTableHeaderComponent {
   @Input() public topButtonSection: TemplateRef<any> | null;
   @Input() public customHeader: TemplateRef<any> | null;
   @Input() public selectedRows: any[];
-
   @Input() public showSorting: boolean;
   @Input() public sortColumn: string;
   @Input() public sortDirection: 'asc' | 'desc';
   @Input() public sortDefinitions: IPsTableSortDefinition[] = [];
-
   @Input() public filterable: boolean;
   @Input() public searchText: string;
 

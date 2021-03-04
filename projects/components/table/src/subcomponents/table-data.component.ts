@@ -26,14 +26,21 @@ export class PsTableDataComponent implements OnChanges {
   @Input() public dataSource: PsTableDataSource<{ [key: string]: any }>;
   @Input() public tableId: string;
   @Input() public intl: IPsTableIntlTexts;
-  @Input() public rowActions: TemplateRef<any> | null = null;
   @Input() public rowDetail: PsTableRowDetailDirective | null;
-  @Input() public listActions: TemplateRef<any> | null = null;
   @Input() public columnDefs: PsTableColumnDirective[];
   @Input() public showListActions: boolean;
   @Input() public refreshable: boolean;
   @Input() public settingsEnabled: boolean;
   @Input() public displayedColumns: string[];
+  /**
+   * @deprecated Please use the action definition in PsTableDataSource
+   */
+  @Input() public rowActions: TemplateRef<any> | null = null;
+
+  /**
+   * @deprecated Please use the action definition in PsTableDataSource
+   */
+  @Input() public listActions: TemplateRef<any> | null = null;
 
   @Output() public showSettingsClicked = new EventEmitter<void>();
   @Output() public refreshDataClicked = new EventEmitter<void>();
@@ -86,5 +93,13 @@ export class PsTableDataComponent implements OnChanges {
 
   public getSelectedRows() {
     return this.dataSource.selectionModel.selected;
+  }
+
+  public showRowDetails(row: any) {
+    if (typeof this.rowDetail.showToggleColumn === 'function') {
+      return this.rowDetail.showToggleColumn(row);
+    }
+
+    return true;
   }
 }

@@ -1,0 +1,37 @@
+<ng-container *ngIf="actions | psTableActionsToRender: item as visibleActions">
+  <ng-container *ngIf="visibleActions.length >= moreMenuThreshold || actionsTemplate; else thresholdReachedTemplate">
+    <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <ps-table-actions #rowActionsComponent [actions]="actions" [items]="itemAsArray">
+      <ng-container [ngTemplateOutlet]="actionsTemplate" [ngTemplateOutletContext]="{ $implicit: item }"></ng-container>
+    </ps-table-actions>
+  </ng-container>
+  <ng-template #thresholdReachedTemplate>
+    <ng-container *ngFor="let action of visibleActions">
+      <button
+        type="button"
+        *ngIf="!action.children?.length; else rowIconBtnWithChildren"
+        mat-icon-button
+        [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
+        (click)="action.actionFn(itemAsArray)"
+        [matTooltip]="action.label"
+      >
+        <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
+      </button>
+      <ng-template #rowIconBtnWithChildren>
+        <button
+          type="button"
+          *ngIf="action.children?.length"
+          mat-icon-button
+          [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
+          [matMenuTriggerFor]="iconActions.menu"
+          [matTooltip]="action.label"
+        >
+          <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
+        </button>
+        <ps-table-actions #iconActions [actions]="action.children" [items]="itemAsArray"></ps-table-actions>
+      </ng-template>
+    </ng-container>
+  </ng-template>
+</ng-container>

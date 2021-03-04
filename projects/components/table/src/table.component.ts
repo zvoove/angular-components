@@ -215,7 +215,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     return !!(this.tableId && this.settingsService.settingsEnabled && this.showSettings);
   }
   public get showListActions(): boolean {
-    return !!this.listActions || this.settingsEnabled || this.refreshable;
+    return !!this.listActions || !!this.dataSource.listActions.length || this.settingsEnabled || this.refreshable;
   }
   public get showSorting(): boolean {
     return !!this._mergedSortDefinitions.length;
@@ -366,12 +366,12 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     }
 
     // Selektierung der Rows aktivieren
-    if (this.listActions) {
+    if (this.listActions || this.dataSource.listActions.length) {
       this.displayedColumns.splice(0, 0, 'select');
     }
 
     // Selektierungs- und Row-Aktionen aktivieren
-    if (this.showListActions || this.rowActions) {
+    if (this.showListActions || this.rowActions || this.dataSource.rowActions.length) {
       this.displayedColumns.push('options');
     }
 
