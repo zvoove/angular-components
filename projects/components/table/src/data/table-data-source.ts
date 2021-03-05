@@ -149,9 +149,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
     this.listActions = options.actions?.filter((a) => a.scope & PsTableActionScope.list) || [];
     this._updateDataTrigger$ = options.loadTrigger$ || NEVER;
     this._loadData = options.loadDataFn;
-    this.moreMenuThreshold = options.moreMenuThreshold || 3;
-
-    this._initDataChangeSubscription();
+    this.moreMenuThreshold = options.moreMenuThreshold ?? 3;
   }
 
   /**
@@ -160,7 +158,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * on its data relative to the function to know if a row should be added/removed/moved.
    * Accepts a function that takes two parameters, index and item.
    */
-  public trackBy: TrackByFunction<T> = (_index, item) => item;
+  public trackBy: TrackByFunction<T> = (i) => i; // index is more performant than item reference when paginating
 
   /**
    * Returns the names of the property that should be used in filterPredicate.
@@ -313,7 +311,6 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
       this._loadDataSubscription.unsubscribe();
       this.error = null;
       this.loading = true;
-      this._renderData.next([]);
       this._internalDetectChanges.next();
 
       const updateInfo = this.getUpdateDataInfo(true);
@@ -369,6 +366,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * @docs-private
    */
   public connect() {
+    this._initDataChangeSubscription();
     this._updateDataTriggerSub = this._updateDataTrigger$.subscribe((data) => {
       this._lastLoadTriggerData = data;
       this.updateData();
@@ -381,6 +379,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * @docs-private
    */
   public disconnect() {
+    this._renderChangesSubscription.unsubscribe();
     this._updateDataTriggerSub.unsubscribe();
     this._loadDataSubscription.unsubscribe();
   }

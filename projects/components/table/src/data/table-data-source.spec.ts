@@ -123,6 +123,7 @@ describe('PsTableDataSource', () => {
 
   it('should reset error/loading/data/selection before updateData and after', fakeAsync(() => {
     let doThrowError: Error = null;
+    let beforeVisibleRows: any[] = [];
     const beforeDataItem = {};
     const loadedData = [{ prop: 'x' }, { prop: 'y' }];
     const dataSource = new PsTableDataSource<any>(() => {
@@ -229,6 +230,7 @@ describe('PsTableDataSource', () => {
       dataSource.dataLength = data.length;
       dataSource.selectionModel.select(data[0]);
       renderDataUpdates = [];
+      beforeVisibleRows = dataSource.visibleRows;
     }
 
     function expectAsyncLoadingState() {
@@ -236,15 +238,14 @@ describe('PsTableDataSource', () => {
       expect(dataSource.loading).toBe(true);
       expect(dataSource.error).toBe(null);
       expect(dataSource.selectionModel.selected).toEqual([]);
-      expect(renderDataUpdates.length).toEqual(1);
-      expect(renderDataUpdates.pop()).toEqual([]);
+      expect(renderDataUpdates.length).toEqual(0);
 
       // data shouldn't have changed, otherwise pagination breaks
       expect(dataSource.data).toEqual([beforeDataItem]);
       expect(dataSource.dataLength).toEqual(1);
 
-      // but visible rows should be empty, so the table doesn't show only entries while loading
-      expect(dataSource.visibleRows).toEqual([]);
+      // but visible rows should be unmodified, so the table doesn't have to trash and rebuild the dom while loading
+      expect(dataSource.visibleRows).toEqual(beforeVisibleRows);
     }
 
     function expectLoadedState(data: any[], dataLength: number, visibleData: any[]) {
@@ -580,11 +581,10 @@ describe('PsTableDataSource', () => {
   it('selection should work', () => {
     const loadedData = Array.from(new Array(6).keys()).map((x) => ({ prop: x }));
     const dataSource = new PsTableDataSource<any>(() => of(loadedData), 'client');
+    const sub = dataSource.connect().subscribe();
     dataSource.tableReady = true;
     dataSource.pageIndex = 1;
     dataSource.pageSize = 2;
-
-    const sub = dataSource.connect().subscribe();
 
     dataSource.updateData();
 
@@ -615,14 +615,13 @@ describe('PsTableDataSource', () => {
   it('should update visibleRows but not data on client pagination', () => {
     const loadedData = Array.from(new Array(6).keys()).map((x) => ({ prop: x }));
     const dataSource = new PsTableDataSource<any>(() => of(loadedData), 'client');
-    dataSource.tableReady = true;
-    dataSource.pageIndex = 1;
-    dataSource.pageSize = 2;
-
     let renderData: any[] = [];
     const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
     });
+    dataSource.tableReady = true;
+    dataSource.pageIndex = 1;
+    dataSource.pageSize = 2;
 
     dataSource.updateData();
 

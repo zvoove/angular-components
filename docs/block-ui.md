@@ -26,6 +26,7 @@ import { PsBlockUiModule } from '@prosoft/components/block-ui';
 | --------------------- | -------------------------------------------------------------------------------------------- |
 | `blocked: boolean`    | Toggles the blocking overlay. However, the blocked content is still accessable via keyboard. |
 | `spinnerText: string` | The text that will be shown under the blocking spinner.                                      |
+| `clickthrough: boolean` | Allows clicking through the blocking overlay.                                              |
 
 ---
 

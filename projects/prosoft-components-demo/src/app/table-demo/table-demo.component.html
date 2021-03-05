@@ -22,24 +22,28 @@
       <input matInput type="string" [(ngModel)]="caption" />
     </mat-form-field>
     <mat-form-field>
-      <mat-label>[dataSource]</mat-label>
-      <mat-select [(ngModel)]="dataSourceType" (selectionChange)="onDataSourceTypeChanged($event)">
-        <mat-option [value]="'client'">sample data (client filter/sort/paging)</mat-option>
-        <mat-option [value]="'error'">error while loading</mat-option>
-        <mat-option [value]="'loading'">endless loading</mat-option>
-        <mat-option [value]="'actions'">action definition</mat-option>
-        <mat-option [value]="'empty'">no data</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
       <input matInput type="number" [(ngModel)]="pageDebounce" />
       <mat-label>Page debounce in ms</mat-label>
     </mat-form-field>
+    <div>[dataSource] = new PsTableDataSource(...)</div>
     <div>(page) $event = &#x7B; pageIndex: number; previousPageIndex?: number; pageSize: number; length: number; &#x7D;</div>
 
     <mat-checkbox [(ngModel)]="disableAllSortable" (change)="rebuildTable()"
       >set all ps-table-column [sortable]="false" and ps-table [sortDefinitions]="null"</mat-checkbox
     >
+  </mat-card>
+
+  <mat-card class="app-table-demo__settings-box">
+    <strong>PsTableDataSource</strong>
+    <mat-checkbox [(ngModel)]="dsThrowError" (change)="reloadTable()">throw error</mat-checkbox>
+    <mat-form-field>
+      <input matInput type="number" [(ngModel)]="dsLoadDelay" (change)="reloadTable()" />
+      <mat-label>loading delay in ms</mat-label>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="number" [(ngModel)]="dsDataCount" (change)="rebuildSampleData()" />
+      <mat-label>item count</mat-label>
+    </mat-form-field>
   </mat-card>
 
   <mat-card class="app-table-demo__settings-box">

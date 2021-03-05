@@ -16,7 +16,7 @@
       (searchChanged)="onSearchChanged($event)"
     ></ps-table-header>
 
-    <div [class.ps-table__shadow]="layout === 'card'">
+    <ps-block-ui [class.ps-table__shadow]="layout === 'card'" [blocked]="showLoading" [clickthrough]="true">
       <ps-table-data
         [intl]="intl"
         [dataSource]="dataSource"
@@ -35,9 +35,6 @@
 
       <div class="ps-table__no-entries-text" *ngIf="showNoEntriesText">{{ intl.noEntriesLabel }}</div>
       <div class="ps-table__error-text" *ngIf="showError">{{ errorMessage }}</div>
-      <div class="ps-table__loading-container" *ngIf="showLoading">
-        <mat-spinner class="ps-table__loading-spinner"></mat-spinner>
-      </div>
       <ps-table-pagination
         [pageSize]="pageSize"
         [dataLength]="dataLength"
@@ -47,7 +44,7 @@
         [pageDebounce]="pageDebounce"
         (page)="onPage($event)"
       ></ps-table-pagination>
-    </div>
+    </ps-block-ui>
   </div>
   <div *psFlipContainerBack>
     <ps-table-settings

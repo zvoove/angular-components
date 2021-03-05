@@ -2,13 +2,8 @@ ps-table {
   display: block;
   border-radius: 4px;
 
-  .ps-table__loading-spinner {
-    margin: 1em auto;
-  }
-
   .ps-table__no-entries-text,
-  .ps-table__error-text,
-  .ps-table__loading-container {
+  .ps-table__error-text {
     font-size: large;
     background-color: white;
     padding: 1em 0;

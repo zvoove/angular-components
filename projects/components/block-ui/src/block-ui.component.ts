@@ -1,4 +1,13 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  HostBinding,
+  Input,
+  OnChanges,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 
 import type { ElementRef } from '@angular/core';
 
@@ -24,6 +33,14 @@ import type { ElementRef } from '@angular/core';
       ps-block-ui {
         display: grid;
         position: relative;
+      }
+
+      .ps-block-ui__clickthrough {
+        pointer-events: none;
+      }
+
+      .ps-block-ui__clickthrough > .ps-block-ui__content {
+        pointer-events: auto;
       }
 
       .ps-block-ui__content {
@@ -68,6 +85,9 @@ import type { ElementRef } from '@angular/core';
 export class PsBlockUiComponent implements OnChanges, AfterViewInit {
   @Input() public blocked: boolean;
   @Input() public spinnerText: string;
+  @HostBinding('class.ps-block-ui__clickthrough')
+  @Input()
+  public clickthrough = false;
 
   public spinnerDiameter = 100;
 
