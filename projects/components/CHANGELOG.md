@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.13](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.12...@prosoft/components@2.0.0-alpha.13) (2021-03-29)
+
+
+### Features
+
+* **table:** added new action functionality ([#156](https://github.com/prosoft-edv/components/issues/156)) ([e4db7dd](https://github.com/prosoft-edv/components/commit/e4db7dd))
+
+
+### Performance Improvements
+
+* **table:** paginating keeps rows while loading ([#169](https://github.com/prosoft-edv/components/issues/169)) ([61d7512](https://github.com/prosoft-edv/components/commit/61d7512))
+* **table:** render options mat-menu lazy ([#170](https://github.com/prosoft-edv/components/issues/170)) ([eb2b809](https://github.com/prosoft-edv/components/commit/eb2b809))
+
+
+
+
+
+
 # [2.0.0-alpha.12](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.11...@prosoft/components@2.0.0-alpha.12) (2021-02-24)
 
 
