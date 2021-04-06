@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule, MatButton } from '@angular/material/button';
 import { MatCardModule, MatCardActions } from '@angular/material/card';
 import { MatCheckboxModule, MatCheckboxChange } from '@angular/material/checkbox';
@@ -49,21 +49,23 @@ export class TestComponent {
 
 describe('PsTableSettingsComponent', () => {
   describe('integration', () => {
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          NoopAnimationsModule,
-          CommonModule,
-          MatCardModule,
-          MatFormFieldModule,
-          MatSelectModule,
-          MatCheckboxModule,
-          MatButtonModule,
-          MatIconModule,
-        ],
-        declarations: [TestComponent, PsTableSettingsComponent, PsTableSortComponent],
-      }).compileComponents();
-    }));
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [
+            NoopAnimationsModule,
+            CommonModule,
+            MatCardModule,
+            MatFormFieldModule,
+            MatSelectModule,
+            MatCheckboxModule,
+            MatButtonModule,
+            MatIconModule,
+          ],
+          declarations: [TestComponent, PsTableSettingsComponent, PsTableSortComponent],
+        }).compileComponents();
+      })
+    );
 
     it('should emit settingsAborted on cancel click', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestComponent);
@@ -145,7 +147,7 @@ describe('PsTableSettingsComponent', () => {
       component.ngOnInit();
 
       let asyncSettings: IPsTableSetting;
-      component.settings$.subscribe(settings => {
+      component.settings$.subscribe((settings) => {
         asyncSettings = settings;
       });
 
@@ -160,7 +162,7 @@ describe('PsTableSettingsComponent', () => {
       component.ngOnInit();
 
       let asyncSettings: IPsTableSetting;
-      component.settings$.subscribe(settings => {
+      component.settings$.subscribe((settings) => {
         asyncSettings = settings;
       });
 

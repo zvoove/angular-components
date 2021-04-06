@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -38,12 +38,14 @@ export class TestComponent {
 }
 
 describe('PsTableHeaderComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
-      declarations: [TestComponent, PsTableHeaderComponent, PsTableSearchComponent, PsTableSortComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
+        declarations: [TestComponent, PsTableHeaderComponent, PsTableSearchComponent, PsTableSortComponent],
+      }).compileComponents();
+    })
+  );
 
   it('should only add top padding if sort, search or action buttons are visible without a caption', () => {
     const fixture = TestBed.createComponent(TestComponent);

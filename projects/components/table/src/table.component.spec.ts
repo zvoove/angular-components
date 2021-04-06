@@ -25,7 +25,7 @@ class TestSettingsService extends PsTableSettingsService {
   public pageSizeOptions = [1, 5, 25, 50];
   public settingsEnabled = false;
 
-  public getStream(tableId: string): Observable<IPsTableSetting> {
+  public getStream(tableId: string, _: boolean): Observable<IPsTableSetting> {
     return this.settings$.pipe(map((settings) => settings[tableId]));
   }
 

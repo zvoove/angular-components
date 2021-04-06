@@ -584,10 +584,9 @@ describe('PsSelectComponent', () => {
 
     await psSelect.open();
     const selectSearch = await psSelect.getPanelHeader();
-    const filter = await selectSearch.getFilter();
 
     {
-      await filter.setValue('2');
+      await selectSearch.setFilter('2');
 
       const optionTexts = await getOptionData(psSelect, (o) => o.getText(), { isSelected: true });
       expect(optionTexts).toEqual(['2']);

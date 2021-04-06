@@ -147,15 +147,15 @@ describe('DialogUnitTestComponent', () => {
   });
 
   it('should call cancelFunction and then close on cancel click', async () => {
-    spyOn(dialogRef.componentInstance, 'cancelFunction').and.callThrough();
-    spyOn(dialogRef.componentInstance.dataSource, 'close').and.callThrough();
+    const cancelSpy = spyOn(dialogRef.componentInstance, 'cancelFunction').and.callThrough();
+    const closeSpy = spyOn(dialogRef.componentInstance.dataSource, 'close').and.callThrough();
 
     const btns = await dialogWrapper.getActionButtons({ text: 'Cancel' });
     expect(btns.length).toEqual(1);
     await btns[0].click();
 
-    expect(dialogRef.componentInstance.cancelFunction).toHaveBeenCalledTimes(1);
-    expect(dialogRef.componentInstance.dataSource.close).toHaveBeenCalledTimes(1);
+    expect(cancelSpy).toHaveBeenCalledTimes(1);
+    expect(closeSpy).toHaveBeenCalledTimes(1);
     expect((await rootLoader.getAllHarnesses(PsDialogWrapperHarness)).length).toEqual(0);
   });
 

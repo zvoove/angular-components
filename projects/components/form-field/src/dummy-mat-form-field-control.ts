@@ -5,7 +5,10 @@ import { Subject, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
 @Injectable()
-export class DummyMatFormFieldControl extends MatFormFieldControl<string> implements OnDestroy {
+export class DummyMatFormFieldControl implements MatFormFieldControl<string>, OnDestroy {
+  public id: string;
+  public userAriaDescribedBy?: string;
+
   public get required() {
     return this._required;
   }
@@ -56,10 +59,8 @@ export class DummyMatFormFieldControl extends MatFormFieldControl<string> implem
   private _statusSubscription: Subscription;
 
   constructor(public ngControl: NgControl, formControl: AbstractControl) {
-    super();
-
     if (formControl) {
-      this._valueSubscription = formControl.valueChanges.pipe(startWith(formControl.value)).subscribe(value => {
+      this._valueSubscription = formControl.valueChanges.pipe(startWith(formControl.value)).subscribe((value) => {
         this.value = value;
         this.errorState = formControl.invalid;
       });

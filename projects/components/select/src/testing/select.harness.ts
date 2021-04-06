@@ -3,7 +3,6 @@ import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { MatOptionHarness, OptionHarnessFilters } from '@angular/material/core/testing';
 import { MatFormFieldControlHarness } from '@angular/material/form-field/testing/control';
-import { MatInputHarness } from '@angular/material/input/testing';
 import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
 
@@ -179,6 +178,7 @@ export class PsSelectPanelHeaderHarness extends ComponentHarness {
   static hostSelector = '.ps-select__search';
 
   private _loadingSpinner = this.locatorForOptional(MatProgressSpinnerHarness);
+  private _filter = this.locatorFor('input.mat-select-search-input.mat-input-element');
 
   /**
    * Gets a `HarnessPredicate` that can be used to search for a `MatOptionsHarness` that meets
@@ -194,11 +194,22 @@ export class PsSelectPanelHeaderHarness extends ComponentHarness {
   getToggleAll = this.locatorForOptional(MatCheckboxHarness);
 
   /** Gets the filter input. */
-  getFilter = this.locatorFor(
-    MatInputHarness.with({
-      placeholder: 'Suche',
-    })
-  );
+  async setFilter(newValue: string) {
+    const inputEl = await this._filter();
+    await inputEl.clear();
+
+    // We don't want to send keys for the value if the value is an empty
+    // string in order to clear the value. Sending keys with an empty string
+    // still results in unnecessary focus events.
+    if (newValue) {
+      await inputEl.sendKeys(newValue);
+    }
+
+    // Some input types won't respond to key presses (e.g. `color`) so to be sure that the
+    // value is set, we also set the property after the keyboard sequence. Note that we don't
+    // want to do it before, because it can cause the value to be entered twice.
+    await inputEl.setInputValue(newValue);
+  }
 
   /** Gets whether the loading spinner is shown. */
   async isLoading() {

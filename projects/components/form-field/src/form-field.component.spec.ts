@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Injectable, ViewChild, DebugElement } from '@angular/core';
-import { async, fakeAsync, TestBed, tick, ComponentFixture } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, ComponentFixture, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
@@ -117,39 +117,46 @@ export class TestCheckboxComponent {
 
 describe('PsFormFieldComponent', () => {
   describe('checkbox', () => {
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
-        declarations: [TestCheckboxComponent],
-        providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-      }).compileComponents();
-    }));
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
+          declarations: [TestCheckboxComponent],
+          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
+        }).compileComponents();
+      })
+    );
 
-    it('should set checkbox label if no label is set in the template', async(() => {
-      const fixture = TestBed.createComponent(TestCheckboxComponent);
-      const component = fixture.componentInstance;
-      expect(component).toBeDefined();
+    it(
+      'should set checkbox label if no label is set in the template',
+      waitForAsync(() => {
+        const fixture = TestBed.createComponent(TestCheckboxComponent);
+        const component = fixture.componentInstance;
+        expect(component).toBeDefined();
 
-      (<any>component.formControl).psLabel = 'service label';
-      fixture.detectChanges();
+        (<any>component.formControl).psLabel = 'service label';
+        fixture.detectChanges();
 
-      expect(
-        fixture.debugElement.query(By.css('.template-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()
-      ).toBe('async label');
-      expect(fixture.debugElement.query(By.css('.no-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()).toBe(
-        'service label'
-      );
-    }));
+        expect(
+          fixture.debugElement.query(By.css('.template-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()
+        ).toBe('async label');
+        expect(fixture.debugElement.query(By.css('.no-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()).toBe(
+          'service label'
+        );
+      })
+    );
   });
 
   describe('formControl', () => {
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, PsFormFieldModule],
-        declarations: [TestFormComponent],
-        providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-      }).compileComponents();
-    }));
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, PsFormFieldModule],
+          declarations: [TestFormComponent],
+          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
+        }).compileComponents();
+      })
+    );
 
     it('should set label', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestFormComponent);
@@ -299,13 +306,15 @@ describe('PsFormFieldComponent', () => {
   });
 
   describe('ngModel', () => {
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormFieldModule],
-        declarations: [TestNgModelComponent],
-        providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-      }).compileComponents();
-    }));
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormFieldModule],
+          declarations: [TestNgModelComponent],
+          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
+        }).compileComponents();
+      })
+    );
 
     it('should work with ngModel', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestNgModelComponent);
@@ -327,13 +336,15 @@ describe('PsFormFieldComponent', () => {
   });
 
   describe('no form', () => {
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormFieldModule],
-        declarations: [TestNoFormComponent],
-        providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-      }).compileComponents();
-    }));
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormFieldModule],
+          declarations: [TestNoFormComponent],
+          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
+        }).compileComponents();
+      })
+    );
 
     it('should work without form binding', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestNoFormComponent);
@@ -366,38 +377,47 @@ describe('PsFormFieldComponent', () => {
   });
 
   describe('initialization', () => {
-    it('should initialize properly with its own default settings', async(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
-        declarations: [TestFormComponent],
-        providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-      }).compileComponents();
+    it(
+      'should initialize properly with its own default settings',
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
+          declarations: [TestFormComponent],
+          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
+        }).compileComponents();
 
-      const fixture = TestBed.createComponent(TestFormComponent);
-      const component = fixture.componentInstance;
-      expect(component).toBeDefined();
+        const fixture = TestBed.createComponent(TestFormComponent);
+        const component = fixture.componentInstance;
+        expect(component).toBeDefined();
 
-      expect(component.formField.appearance).toEqual('legacy');
-      expect(component.formField.floatLabel).toEqual('auto');
-    }));
+        expect(component.formField.appearance).toEqual('legacy');
+        expect(component.formField.floatLabel).toEqual('auto');
+      })
+    );
 
-    it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', async(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
-        declarations: [TestFormComponent],
-        providers: [
-          { provide: PsFormService, useClass: TestPsFormService },
-          { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { floatLabel: 'always', hideRequiredMarker: false, appearance: 'outline' } },
-        ],
-      }).compileComponents();
+    it(
+      'should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings',
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
+          declarations: [TestFormComponent],
+          providers: [
+            { provide: PsFormService, useClass: TestPsFormService },
+            {
+              provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+              useValue: { floatLabel: 'always', hideRequiredMarker: false, appearance: 'outline' },
+            },
+          ],
+        }).compileComponents();
 
-      const fixture = TestBed.createComponent(TestFormComponent);
-      const component = fixture.componentInstance;
-      expect(component).toBeDefined();
+        const fixture = TestBed.createComponent(TestFormComponent);
+        const component = fixture.componentInstance;
+        expect(component).toBeDefined();
 
-      expect(component.formField.appearance).toEqual('outline');
-      expect(component.formField.floatLabel).toEqual('always');
-    }));
+        expect(component.formField.appearance).toEqual('outline');
+        expect(component.formField.floatLabel).toEqual('always');
+      })
+    );
   });
 });
 

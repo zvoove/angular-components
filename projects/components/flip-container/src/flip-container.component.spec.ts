@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PsFlipContainerComponent } from './flip-container.component';
@@ -22,12 +22,14 @@ export class TestComponent {
 }
 
 describe('PsFlipContainerComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, PsFlipContainerModule],
-      declarations: [TestComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, CommonModule, PsFlipContainerModule],
+        declarations: [TestComponent],
+      }).compileComponents();
+    })
+  );
 
   it('should initially show front and correctly switch between front and back', fakeAsync(() => {
     const fixture = TestBed.createComponent(TestComponent);

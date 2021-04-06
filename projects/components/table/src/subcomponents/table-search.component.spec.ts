@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,12 +33,14 @@ export class TestComponent {
 }
 
 describe('PsTableSearchComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
-      declarations: [TestComponent, PsTableSearchComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+        declarations: [TestComponent, PsTableSearchComponent],
+      }).compileComponents();
+    })
+  );
 
   it('should emit searchChanged on changes after debounce time', fakeAsync(() => {
     const fixture = TestBed.createComponent(TestComponent);

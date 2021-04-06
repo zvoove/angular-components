@@ -1,6 +1,6 @@
 <div [matTooltip]="tooltip" [matTooltipDisabled]="!multiple">
   <mat-select
-    [value]="value"
+    [ngModel]="value"
     [disableOptionCentering]="true"
     [compareWith]="compareWith"
     [disabled]="disabled"

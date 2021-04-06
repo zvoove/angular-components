@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DebugElement, Injectable, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
@@ -26,7 +26,7 @@ class TestPsFormService extends BasePsFormService {
   }
   protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
     return of(
-      errorData.map(data => ({
+      errorData.map((data) => ({
         errorText: data.errorKey,
         data: data,
       }))
@@ -53,13 +53,18 @@ export class TestDataSourceComponent {
 
 describe('PsFormComponent', () => {
   describe('integration with dataSource', () => {
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, PsFormModule],
-        declarations: [TestDataSourceComponent],
-        providers: [{ provide: PsFormService, useClass: TestPsFormService }, { provide: PsIntlService, useClass: PsIntlServiceEn }],
-      }).compileComponents();
-    }));
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [NoopAnimationsModule, CommonModule, PsFormModule],
+          declarations: [TestDataSourceComponent],
+          providers: [
+            { provide: PsFormService, useClass: TestPsFormService },
+            { provide: PsIntlService, useClass: PsIntlServiceEn },
+          ],
+        }).compileComponents();
+      })
+    );
 
     it('should render buttons correctly', async () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
@@ -87,12 +92,12 @@ describe('PsFormComponent', () => {
       expect(buttons.length).toBe(3);
 
       {
-        const customButton = buttons.find(x => x.nativeElement.textContent === 'btnCus');
+        const customButton = buttons.find((x) => x.nativeElement.textContent === 'btnCus');
         expect(customButton).toBeTruthy();
       }
 
       {
-        const btn1Button = buttons.find(x => x.nativeElement.textContent.trim() === 'btn1');
+        const btn1Button = buttons.find((x) => x.nativeElement.textContent.trim() === 'btn1');
         expect(btn1Button).toBeTruthy();
         const btn1Classes = getClasses(btn1Button);
         expect(btn1Classes).toContain('mat-stroked-button');
@@ -102,7 +107,7 @@ describe('PsFormComponent', () => {
       }
 
       {
-        const btn2Button = buttons.find(x => x.nativeElement.textContent.trim() === 'btn2');
+        const btn2Button = buttons.find((x) => x.nativeElement.textContent.trim() === 'btn2');
         expect(btn2Button).toBeTruthy();
         const btn2Classes = getClasses(btn2Button);
         expect(btn2Classes).toContain('mat-raised-button');
@@ -248,10 +253,10 @@ describe('PsFormComponent', () => {
       const errorInViewValues: boolean[] = [];
       let opts: IPsFormDataSourceConnectOptions;
       let errorInViewSub: Subscription;
-      ds.connect = options => {
+      ds.connect = (options) => {
         opts = options;
         expect(errorInViewSub).not.toBeDefined();
-        errorInViewSub = options.errorInView$.subscribe(value => errorInViewValues.push(value));
+        errorInViewSub = options.errorInView$.subscribe((value) => errorInViewValues.push(value));
         return ds.cdTrigger$;
       };
       ds.exception = { errorObject: new Error('asdf') };
