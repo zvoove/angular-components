@@ -18,7 +18,8 @@
     "copy:schemas": "cpx projects/components/schematics/*/schema.json dist/components/schematics/",
     "copy:files": "cpx projects/components/schematics/*/files/** dist/components/schematics/",
     "copy:collection": "cpx projects/components/schematics/migrations.json dist/components/schematics/",
-    "postbuild:components-schematics": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
+    "postbuild:components-schematics": "npm run copy:schemas && npm run copy:files && npm run copy:collection",
+    "prepare": "husky install"
   },
   "private": false,
   "dependencies": {
@@ -45,17 +46,17 @@
     "@angular/cli": "~11.2.5",
     "@angular/compiler-cli": "~11.2.6",
     "@angular/language-service": "~11.2.6",
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "@types/nouislider": "9.0.5",
     "codelyzer": "^6.0.0",
-    "commitizen": "^4.0.3",
+    "commitizen": "^4.2.3",
     "cpx": "^1.5.0",
-    "cz-conventional-changelog": "^3.0.2",
-    "husky": "^3.0.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^6.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "jsdom": "^16.3.0",
@@ -64,8 +65,8 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "lerna": "^3.15.0",
-    "lint-staged": "^8.2.1",
+    "lerna": "^4.0.0",
+    "lint-staged": "^10.5.4",
     "ng-packagr": "^11.2.4",
     "prettier": "^2.0.5",
     "protractor": "~7.0.0",
@@ -75,19 +76,7 @@
     "typescript": "~4.1.5"
   },
   "lint-staged": {
-    "ignore": [
-      ".vscode/**",
-      "coverage/**",
-      "dist/**",
-      "node_modules/**",
-      "package-lock.json"
-    ],
-    "linters": {
-      "*.{ts,json,scss,html}": [
-        "prettier --write",
-        "git add"
-      ]
-    }
+    "*.{ts,json,scss,html}": "prettier --write"
   },
   "config": {
     "commitizen": {
@@ -98,11 +87,5 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   }
 }
