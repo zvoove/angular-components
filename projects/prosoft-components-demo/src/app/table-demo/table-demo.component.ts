@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { PsTableComponent, PsTableDataSource } from '@prosoft/components/table';
-import { PsTableActionScope } from '@prosoft/components/table/src/models';
+import { PsTableActionScope, PsTableComponent, PsTableDataSource } from '@prosoft/components/table';
 import { of, timer } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 

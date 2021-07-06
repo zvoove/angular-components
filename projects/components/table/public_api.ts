@@ -14,7 +14,13 @@ export {
   PsTableTopButtonSectionDirective,
 } from './src/directives/table.directives';
 export { PsTableMemoryStateManager, PsTableStateManager, PsTableUrlStateManager } from './src/helper/state-manager';
-export { IExtendedPsTableUpdateDataInfo, IPsTableAction, IPsTableSortDefinition, IPsTableUpdateDataInfo } from './src/models';
+export {
+  IExtendedPsTableUpdateDataInfo,
+  IPsTableAction,
+  IPsTableSortDefinition,
+  IPsTableUpdateDataInfo,
+  PsTableActionScope,
+} from './src/models';
 export { IPsTableSetting, PsTableSettingsService } from './src/services/table-settings.service';
 export { PsTableComponent } from './src/table.component';
 export { PsTableModule } from './src/table.module';
