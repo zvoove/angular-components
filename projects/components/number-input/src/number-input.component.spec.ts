@@ -210,4 +210,23 @@ describe('PsNumberInputComponent', () => {
 
     expect(spinner._formattedValue).toEqual('10,000,000');
   });
+
+  it('should not truncate numbers on tab (bug)', () => {
+    spinner.ngOnInit();
+    spinner._onFocusChanged(true);
+    const inputEl = fixture.debugElement.query(By.css('input'));
+    inputEl.nativeElement.value = '50000000';
+    inputEl.triggerEventHandler('input', { target: inputEl.nativeElement });
+    spinner._onFocusChanged(false);
+    fixture.detectChanges();
+    expect(spinner._formattedValue).toEqual('50,000,000');
+
+    spinner._onFocusChanged(true);
+    inputEl.nativeElement.value = '50,000,001';
+    inputEl.triggerEventHandler('input', { target: inputEl.nativeElement });
+    spinner._onFocusChanged(false);
+    fixture.detectChanges();
+    expect(spinner._formattedValue).toEqual('50,000,001');
+    // Without _replaceAll it would be 50,000
+  });
 });

@@ -28,6 +28,7 @@ import {
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { CanUpdateErrorState, CanUpdateErrorStateCtor, ErrorStateMatcher, mixinErrorState } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { replaceAll } from '@prosoft/components/utils';
 import { Subject } from 'rxjs';
 
 import type { ElementRef } from '@angular/core';
@@ -70,8 +71,10 @@ const _PsNumberInputMixinBase: CanUpdateErrorStateCtor & typeof PsNumberInputBas
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsNumberInputComponent extends _PsNumberInputMixinBase
-  implements ControlValueAccessor, MatFormFieldControl<any>, OnChanges, OnDestroy, OnInit, DoCheck, CanUpdateErrorState {
+export class PsNumberInputComponent
+  extends _PsNumberInputMixinBase
+  implements ControlValueAccessor, MatFormFieldControl<any>, OnChanges, OnDestroy, OnInit, DoCheck, CanUpdateErrorState
+{
   /** Mininum boundary value. */
   @Input() min: number;
 
@@ -353,7 +356,8 @@ export class PsNumberInputComponent extends _PsNumberInputMixinBase
       return null;
     }
 
-    val = val.replace(this._thousandSeparator, '').replace(this._decimalSeparator, '.');
+    val = replaceAll(val, this._thousandSeparator, '');
+    val = replaceAll(val, this._decimalSeparator, '.');
 
     value = this._fixNumber(parseFloat(val));
 
