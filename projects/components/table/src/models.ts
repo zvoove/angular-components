@@ -27,10 +27,17 @@ export const enum PsTableActionScope {
 export interface IPsTableAction<T> {
   label: string;
   icon: string;
+  isSvgIcon?: boolean;
   iconColor?: string;
   children?: IPsTableAction<T>[];
   scope: PsTableActionScope;
   isDisabledFn?: (items: T[]) => boolean;
   isHiddenFn?: (items: T[]) => boolean;
   actionFn?: (items: T[]) => void;
+  routerLink?: (item: T[]) => IPsTableActionRouterLink;
+}
+
+export interface IPsTableActionRouterLink {
+  path: string[];
+  queryParams?: { [key: string]: any };
 }

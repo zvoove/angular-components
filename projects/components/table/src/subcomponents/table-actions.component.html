@@ -5,22 +5,33 @@
 <mat-menu #menu>
   <ng-template matMenuContent>
     <ng-container *ngFor="let action of actions">
-      <button
-        *ngIf="!action.children; else branch"
-        mat-menu-item
-        [disabled]="action.isDisabledFn && action.isDisabledFn(items)"
-        (click)="action.actionFn(items)"
-      >
-        <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
-        {{ action.label }}
-      </button>
-      <ng-template #branch>
-        <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu">
-          <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
+      <ng-container [ngSwitch]="action | psTableActionType">
+        <button
+          *ngSwitchCase="'button'"
+          mat-menu-item
+          [disabled]="action.isDisabledFn && action.isDisabledFn(items)"
+          (click)="action.actionFn(items)"
+        >
+          <ng-template [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
           {{ action.label }}
         </button>
-        <ps-table-actions #innerPanel [actions]="action.children | psTableActionsToRender: items" [items]="items"></ps-table-actions>
-      </ng-template>
+        <a
+          *ngSwitchCase="'link'"
+          mat-menu-item
+          [routerLink]="action.routerLink(items).path"
+          [queryParams]="action.routerLink(items).queryParams"
+        >
+          <ng-template [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
+          {{ action.label }}
+        </a>
+        <ng-container *ngSwitchCase="'menu'">
+          <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu">
+            <ng-template [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
+            {{ action.label }}
+          </button>
+          <ps-table-actions #innerPanel [actions]="action.children | psTableActionsToRender: items" [items]="items"></ps-table-actions>
+        </ng-container>
+      </ng-container>
     </ng-container>
     <!-- ng-content is deprecated here, as it doesn't work correctly, if it contains a mat-menu-item with a child met-menu -->
     <ng-content></ng-content>
@@ -34,3 +45,8 @@
     </button>
   </ng-template>
 </mat-menu>
+<ng-template let-action #actionIcon>
+  <!-- Setting either [innerHTML] or [svgIcon] seems not to work correctly. -->
+  <mat-icon *ngIf="!action.isSvgIcon" [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
+  <mat-icon *ngIf="action.isSvgIcon === true" [style.color]="action.iconColor" [svgIcon]="action.icon"></mat-icon>
+</ng-template>

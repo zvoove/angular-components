@@ -20,6 +20,7 @@ export {
   IPsTableSortDefinition,
   IPsTableUpdateDataInfo,
   PsTableActionScope,
+  IPsTableActionRouterLink,
 } from './src/models';
 export { IPsTableSetting, PsTableSettingsService } from './src/services/table-settings.service';
 export { PsTableComponent } from './src/table.component';

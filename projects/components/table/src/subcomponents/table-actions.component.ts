@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
 import { IPsTableIntlTexts } from '@prosoft/components/core';
+
 import { IPsTableAction } from '../models';
 
 @Component({

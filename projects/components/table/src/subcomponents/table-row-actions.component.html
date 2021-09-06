@@ -9,29 +9,45 @@
   </ng-container>
   <ng-template #thresholdReachedTemplate>
     <ng-container *ngFor="let action of visibleActions">
-      <button
-        type="button"
-        *ngIf="!action.children?.length; else rowIconBtnWithChildren"
-        mat-icon-button
-        [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
-        (click)="action.actionFn(itemAsArray)"
-        [matTooltip]="action.label"
-      >
-        <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
-      </button>
-      <ng-template #rowIconBtnWithChildren>
+      <ng-container [ngSwitch]="action | psTableActionType">
         <button
           type="button"
-          *ngIf="action.children?.length"
+          *ngSwitchCase="'button'"
           mat-icon-button
           [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
-          [matMenuTriggerFor]="iconActions.menu"
+          (click)="action.actionFn(itemAsArray)"
           [matTooltip]="action.label"
         >
-          <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
+          <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
         </button>
-        <ps-table-actions #iconActions [actions]="action.children" [items]="itemAsArray"></ps-table-actions>
-      </ng-template>
+        <a
+          *ngSwitchCase="'link'"
+          mat-menu-item
+          [routerLink]="action.routerLink([item]).path"
+          [queryParams]="action.routerLink([item]).queryParams"
+        >
+          <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
+          {{ action.label }}
+        </a>
+        <ng-container *ngSwitchCase="'menu'">
+          <button
+            type="button"
+            *ngIf="action.children?.length"
+            mat-icon-button
+            [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
+            [matMenuTriggerFor]="iconActions.menu"
+            [matTooltip]="action.label"
+          >
+            <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
+          </button>
+          <ps-table-actions #iconActions [actions]="action.children" [items]="itemAsArray"></ps-table-actions>
+        </ng-container>
+      </ng-container>
     </ng-container>
   </ng-template>
 </ng-container>
+<ng-template let-action #actionIcon>
+  <!-- Setting either [innerHTML] or [svgIcon] seems not to work correctly. -->
+  <mat-icon *ngIf="!action.isSvgIcon" [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
+  <mat-icon *ngIf="action.isSvgIcon === true" [style.color]="action.iconColor" [svgIcon]="action.icon"></mat-icon>
+</ng-template>

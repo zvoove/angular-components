@@ -12,9 +12,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
 import { PsBlockUiModule } from '@prosoft/components/block-ui';
 import { PsFlipContainerModule } from '@prosoft/components/flip-container';
 import { PsSavebarModule } from '@prosoft/components/savebar';
+
 import {
   PsTableColumnDirective,
   PsTableColumnHeaderTemplateDirective,
@@ -28,6 +30,7 @@ import {
   PsTableTopButtonSectionDirective,
 } from './directives/table.directives';
 import { PsTableActionsToRenderPipe } from './pipes/table-actions-to-render.pipe';
+import { PsTableActionTypePipe } from './pipes/table-actions-type.pipe';
 import { PsTableActionsComponent } from './subcomponents/table-actions.component';
 import { PsTableDataComponent } from './subcomponents/table-data.component';
 import { PsTableHeaderComponent } from './subcomponents/table-header.component';
@@ -62,10 +65,12 @@ import { PsTableComponent } from './table.component';
     PsTableRowDetailTemplateDirective,
     PsTableCustomSettingsDirective,
     PsTableActionsToRenderPipe,
+    PsTableActionTypePipe,
   ],
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     MatSortModule,
     MatTableModule,
     MatPaginatorModule,

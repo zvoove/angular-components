@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { PsTableActionScope, PsTableComponent, PsTableDataSource } from '@prosoft/components/table';
+import { PsTableComponent, PsTableDataSource, IPsTableActionRouterLink, PsTableActionScope } from '@prosoft/components/table';
 import { of, timer } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 
@@ -121,6 +121,15 @@ export class TableDemoComponent {
         actionFn: () => of(),
         scope: PsTableActionScope.row,
         isHiddenFn: () => Math.random() > 0.5,
+        children: [
+          {
+            label: 'rowAction 2 child',
+            isSvgIcon: true,
+            icon: 'angular',
+            scope: PsTableActionScope.row,
+            routerLink: (items) => ({ path: ['/', 'table', items[0].id] } as IPsTableActionRouterLink),
+          },
+        ],
       },
       {
         label: 'listAction 1',
@@ -165,6 +174,12 @@ export class TableDemoComponent {
                 scope: PsTableActionScope.list,
               },
             ],
+          },
+          {
+            label: 'allChildAction 3',
+            icon: 'angular',
+            isSvgIcon: true,
+            scope: PsTableActionScope.all,
           },
         ],
       },
