@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.14](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.13...@prosoft/components@2.0.0-alpha.14) (2021-09-06)
+
+
+### Bug Fixes
+
+* **number-input:** numbers getting truncated ([#181](https://github.com/prosoft-edv/components/issues/181)) ([94905a4](https://github.com/prosoft-edv/components/commit/94905a4)), closes [#180](https://github.com/prosoft-edv/components/issues/180)
+* **table:** exports PsTableActionScope ([#184](https://github.com/prosoft-edv/components/issues/184)) ([71b7979](https://github.com/prosoft-edv/components/commit/71b7979))
+
+
+### Features
+
+* **table:** adds support for routerlinks and svgIcons in table actions ([#185](https://github.com/prosoft-edv/components/issues/185)) ([ae82176](https://github.com/prosoft-edv/components/commit/ae82176))
+* angular 11 update ([#172](https://github.com/prosoft-edv/components/issues/172)) ([f8dd028](https://github.com/prosoft-edv/components/commit/f8dd028))
+
+
+
+
+
+
 # [2.0.0-alpha.13](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.12...@prosoft/components@2.0.0-alpha.13) (2021-03-29)
 
 
