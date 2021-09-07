@@ -181,6 +181,25 @@ export class TableDemoComponent {
             isSvgIcon: true,
             scope: PsTableActionScope.all,
           },
+          {
+            label: 'Nested Menus without icons',
+            icon: '',
+            scope: PsTableActionScope.all,
+            children: [
+              {
+                label: 'Nested Menu without any icons 1',
+                icon: '',
+                actionFn: () => of(),
+                scope: PsTableActionScope.all,
+              },
+              {
+                label: 'Nested Menu without any icons 2',
+                icon: '',
+                actionFn: () => of(),
+                scope: PsTableActionScope.all,
+              },
+            ],
+          },
         ],
       },
     ],

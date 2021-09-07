@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
 import { IPsTableIntlTexts } from '@prosoft/components/core';
 
@@ -9,7 +9,8 @@ import { IPsTableAction } from '../models';
   templateUrl: './table-actions.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PsTableActionsComponent {
+export class PsTableActionsComponent implements OnChanges {
+  @Input() public isRoot = true;
   @Input() public actions: IPsTableAction<unknown>[];
   @Input() public items: unknown[];
   @Input() public refreshable: boolean;
@@ -19,5 +20,13 @@ export class PsTableActionsComponent {
   @Output() public refreshData = new EventEmitter<void>();
   @Output() public showSettings = new EventEmitter<void>();
 
+  public showIcon: boolean;
+
   @ViewChild('menu', { static: true }) menu: MatMenu;
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes.isRoot || changes.actions) {
+      this.showIcon = this.isRoot || this.actions?.some((x) => x.icon);
+    }
+  }
 }

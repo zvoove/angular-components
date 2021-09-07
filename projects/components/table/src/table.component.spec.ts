@@ -847,6 +847,23 @@ describe('PsTableComponent', () => {
                 }),
               },
               {
+                label: 'custom all action 3',
+                icon: 'cancel',
+                scope: PsTableActionScope.all,
+                children: [
+                  {
+                    label: 'custom all action 3 subaction 1',
+                    icon: '',
+                    scope: PsTableActionScope.all,
+                  },
+                  {
+                    label: 'custom all action 3 subaction 2',
+                    icon: '',
+                    scope: PsTableActionScope.all,
+                  },
+                ],
+              },
+              {
                 label: 'custom list action 1',
                 icon: 'check',
                 scope: PsTableActionScope.list,
@@ -885,7 +902,7 @@ describe('PsTableComponent', () => {
         const listActionsMenu = await table.getListActionsButton();
         await listActionsMenu.open();
         const listActions = await listActionsMenu.getItems();
-        expect(listActions.length).toEqual(4);
+        expect(listActions.length).toEqual(5);
 
         const links = fixture.debugElement.queryAll(By.directive(RouterLinkWithHref));
         expect(links).toBeTruthy();
@@ -901,13 +918,14 @@ describe('PsTableComponent', () => {
         const listActionsMenu = await table.getListActionsButton();
         await listActionsMenu.open();
         const listActions = await listActionsMenu.getItems();
-        expect(listActions.length).toEqual(4);
+        expect(listActions.length).toEqual(5);
 
         // List-Actions - 1. Level
         await checkAction$(listActions[0], 'custom all action 1', 'check', IconType.FONT);
         await checkAction$(listActions[1], 'custom all action 2', 'angular', IconType.SVG);
-        await checkAction$(listActions[2], 'custom list action 1', 'check', IconType.FONT);
-        await checkAction$(listActions[3], 'custom list action 2', 'angular', IconType.SVG);
+        await checkAction$(listActions[2], 'custom all action 3', 'cancel', IconType.FONT);
+        await checkAction$(listActions[3], 'custom list action 1', 'check', IconType.FONT);
+        await checkAction$(listActions[4], 'custom list action 2', 'angular', IconType.SVG);
 
         // List-Actions - 2. Level
         expect(await listActions[0].hasSubmenu()).toBeTrue();
@@ -923,29 +941,66 @@ describe('PsTableComponent', () => {
         const rowActionsMenu = await table.getRowActionsButton(1);
         await rowActionsMenu.open();
         const rowActions = await rowActionsMenu.getItems();
-        expect(rowActions.length).toEqual(4);
+        expect(rowActions.length).toEqual(5);
 
         // Row-Actions - 1. Level
         await checkAction$(rowActions[0], 'custom all action 1', 'check', IconType.FONT);
         await checkAction$(rowActions[1], 'custom all action 2', 'angular', IconType.SVG);
-        await checkAction$(rowActions[2], 'custom row action 1', 'check', IconType.FONT);
-        await checkAction$(rowActions[3], 'custom row action 2', 'angular', IconType.SVG);
+        await checkAction$(rowActions[2], 'custom all action 3', 'cancel', IconType.FONT);
+        await checkAction$(rowActions[3], 'custom row action 1', 'check', IconType.FONT);
+        await checkAction$(rowActions[4], 'custom row action 2', 'angular', IconType.SVG);
+      });
+
+      it('nested menus display no icon, if all entries do not specify one', async () => {
+        const selectBoxes = await table.getSelectCheckboxes();
+        expect(selectBoxes.length).toBeTruthy();
+        await selectBoxes[1].check();
+
+        // List-Actions
+        const listActionsMenu = await table.getListActionsButton();
+        await listActionsMenu.open();
+        const listActions = await listActionsMenu.getItems();
+        expect(listActions.length).toEqual(5);
+
+        // List-Actions - 2. Level
+        expect(await listActions[2].hasSubmenu()).toBeTrue();
+        const subListActionsMenu = await listActions[2].getSubmenu();
+        expect(subListActionsMenu).toBeTruthy();
+        await subListActionsMenu.open();
+        const subListActions = await subListActionsMenu.getItems();
+        expect(subListActions.length).toEqual(2);
+        await checkAction$(subListActions[0], 'custom all action 3 subaction 1');
+        await checkAction$(subListActions[1], 'custom all action 3 subaction 2');
+
+        // Row-Actions
+        const rowActionsMenu = await table.getRowActionsButton(1);
+        await rowActionsMenu.open();
+        const rowActions = await rowActionsMenu.getItems();
+        expect(rowActions.length).toEqual(5);
       });
 
       async function checkAction$(
         matMenuItemHarness: MatMenuItemHarness,
         expectedText: string,
-        expectedIcon: string,
-        expectedType: IconType
+        expectedIcon?: string,
+        expectedType?: IconType
       ): Promise<void> {
         expect(matMenuItemHarness).toBeTruthy();
 
         // toContain instead of toEqual, because the result of getText() can contain the icon name if it is not a svgIcon
         expect(await matMenuItemHarness.getText()).toContain(expectedText);
-        const matIconHarness = await matMenuItemHarness.getHarness(MatIconHarness);
-        expect(matIconHarness).toBeTruthy();
-        expect(await matIconHarness.getName()).toEqual(expectedIcon);
-        expect(await matIconHarness.getType()).toEqual(expectedType);
+        const hasIcon = expectedIcon !== undefined && expectedType !== undefined;
+
+        if (hasIcon) {
+          const matIconHarness = await matMenuItemHarness.getHarness(MatIconHarness);
+          expect(matIconHarness).toBeTruthy();
+          expect(await matIconHarness.getName()).toEqual(expectedIcon);
+          expect(await matIconHarness.getType()).toEqual(expectedType);
+        } else {
+          // getHarness() throws an error, if nothing was found
+          const matIconHarnesses = await matMenuItemHarness.getAllHarnesses(MatIconHarness);
+          expect(matIconHarnesses).toHaveSize(0);
+        }
       }
     });
   });

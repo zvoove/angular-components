@@ -40,7 +40,7 @@
           >
             <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
           </button>
-          <ps-table-actions #iconActions [actions]="action.children" [items]="itemAsArray"></ps-table-actions>
+          <ps-table-actions #iconActions [actions]="action.children" [items]="itemAsArray" [isRoot]="false"></ps-table-actions>
         </ng-container>
       </ng-container>
     </ng-container>
