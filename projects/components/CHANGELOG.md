@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.15](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.14...@prosoft/components@2.0.0-alpha.15) (2021-09-08)
+
+
+### Features
+
+* **table:** hides icons of table actions in nested menus if all items dont specify one ([#187](https://github.com/prosoft-edv/components/issues/187)) ([e49c493](https://github.com/prosoft-edv/components/commit/e49c493))
+
+
+
+
+
+
 # [2.0.0-alpha.14](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.13...@prosoft/components@2.0.0-alpha.14) (2021-09-06)
 
 
