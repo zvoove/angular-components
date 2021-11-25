@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.2](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.15...@prosoft/components@3.0.2) (2021-11-25)
+
+
+### Features
+
+* angular 13 update ([#192](https://github.com/prosoft-edv/components/issues/192)) ([3b85f76](https://github.com/prosoft-edv/components/commit/3b85f760cd1a19a16f65d3a8c211f32d0db11a38)), closes [#189](https://github.com/prosoft-edv/components/issues/189)
+
+
+### BREAKING CHANGES
+
+* No longer compatible with Angular below version 12
+
+* feat: angular Material 12 update
+* No longer compatible with Angular Material below version 12
+
+* feat: angular 13 Update
+
+Angular and Angular Material 13 Update
+* No longer compatible with Angular below version 13
+* Naming change of ps-select enums to camelCase
+
+* feat: ts-node 10 update
+
+* chore: push github node version to 16
+
+* chore: removed missed lint error
+
+Co-authored-by: Michael Dorr <michael.dorr@zvoove.org>
+
+
+
+
+
+
 # [2.0.0-alpha.15](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.14...@prosoft/components@2.0.0-alpha.15) (2021-09-08)
 
 
