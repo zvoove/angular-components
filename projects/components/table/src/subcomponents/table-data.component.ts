@@ -42,8 +42,8 @@ export class PsTableDataComponent implements OnChanges {
    */
   @Input() public listActions: TemplateRef<any> | null = null;
 
-  @Output() public showSettingsClicked = new EventEmitter<void>();
-  @Output() public refreshDataClicked = new EventEmitter<void>();
+  @Output() public readonly showSettingsClicked = new EventEmitter<void>();
+  @Output() public readonly refreshDataClicked = new EventEmitter<void>();
 
   private _dataSourceChangesSub = Subscription.EMPTY;
 

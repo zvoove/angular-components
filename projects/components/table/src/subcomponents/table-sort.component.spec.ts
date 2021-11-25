@@ -1,10 +1,12 @@
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSelectHarness } from '@angular/material/select/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IPsTableSortDefinition } from '../models';
@@ -21,6 +23,8 @@ import { PsTableSortComponent } from './table-sort.component';
       (sortChanged)="onSortChanged($event)"
     ></ps-table-sort>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestComponent {
   public sortColumn = 'prop';
@@ -48,7 +52,7 @@ describe('PsTableSortComponent', () => {
     })
   );
 
-  it('should emit sortChanged on changes', () => {
+  it('should emit sortChanged on changes', async () => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
@@ -78,21 +82,20 @@ describe('PsTableSortComponent', () => {
     ];
     fixture.detectChanges();
 
-    const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
-    matSelectTrigger.triggerEventHandler('click', new MouseEvent('click'));
-    fixture.detectChanges();
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const matSelect = await loader.getHarness(MatSelectHarness);
+    await matSelect.open();
 
-    const selectPanelNode = document.querySelector('.mat-select-panel');
-    const matOptionNodes = selectPanelNode.querySelectorAll('mat-option');
-    const itemNode = matOptionNodes.item(1);
-    itemNode.dispatchEvent(new Event('click'));
+    const matOptions = await matSelect.getOptions();
+    const matOption = matOptions[1];
+    await matOption.click();
     expect(component.onSortChanged).toHaveBeenCalledWith({
       sortColumn: 'newprop',
       sortDirection: 'asc',
     });
   });
 
-  it('should not emit sortChanged when nothing changes', () => {
+  it('should not emit sortChanged when nothing changes', async () => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
@@ -119,14 +122,13 @@ describe('PsTableSortComponent', () => {
     ];
     fixture.detectChanges();
 
-    const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
-    matSelectTrigger.triggerEventHandler('click', new MouseEvent('click'));
-    fixture.detectChanges();
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const matSelect = await loader.getHarness(MatSelectHarness);
+    await matSelect.open();
 
-    const selectPanelNode = document.querySelector('.mat-select-panel');
-    const matOptionNodes = selectPanelNode.querySelectorAll('mat-option');
-    const itemNode = matOptionNodes.item(0);
-    itemNode.dispatchEvent(new Event('click'));
+    const matOptions = await matSelect.getOptions();
+    const firstOption = matOptions[0];
+    await firstOption.click();
     expect(component.onSortChanged).not.toHaveBeenCalled();
   });
 });

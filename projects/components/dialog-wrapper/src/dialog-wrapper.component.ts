@@ -5,8 +5,8 @@ import { IPsDialogWrapperDataSource } from './dialog-wrapper.models';
 
 @Component({
   selector: 'ps-dialog-wrapper',
-  templateUrl: 'dialog-wrapper.component.html',
-  styleUrls: ['dialog-wrapper.component.scss'],
+  templateUrl: './dialog-wrapper.component.html',
+  styleUrls: ['./dialog-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })

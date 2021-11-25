@@ -65,7 +65,8 @@ export class TestDialogWrapperDataSource implements IPsDialogWrapperDataSource {
       <span>dialogContent</span>
     </ps-dialog-wrapper>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class PsDialogWrapperTestDialog {
   dataSource = new TestDialogWrapperDataSource({
@@ -90,7 +91,8 @@ export class PsDialogWrapperTestDialog {
 
 @Component({
   selector: 'ps-dialog-wrapper-test',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class PsDialogWrapperTestComponent {
   constructor(public dialog: MatDialog) {}

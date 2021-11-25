@@ -22,10 +22,10 @@ export class DemoPsTableSettingsService extends PsTableSettingsService {
     this.settingsEnabled = true;
   }
 
-  public getStream(tableId: string): Observable<IPsTableSetting> {
-    return this.settings$.pipe(map(settings => settings[tableId]));
+  public override getStream(tableId: string): Observable<IPsTableSetting> {
+    return this.settings$.pipe(map((settings) => settings[tableId]));
   }
-  public save(tableId: string, settings: IPsTableSetting): Observable<void> {
+  public override save(tableId: string, settings: IPsTableSetting): Observable<void> {
     this.settings$.next({ [tableId]: settings });
     return of(null);
   }

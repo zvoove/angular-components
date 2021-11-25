@@ -143,9 +143,9 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
       'loadDataFn' in optionsOrLoadDataFn ? optionsOrLoadDataFn : { loadDataFn: optionsOrLoadDataFn, actions: [], mode: mode };
 
     this.mode = options.mode || 'client';
-    // tslint:disable-next-line:no-bitwise
+    // eslint-disable-next-line no-bitwise
     this.rowActions = options.actions?.filter((a) => a.scope & PsTableActionScope.row) || [];
-    // tslint:disable-next-line:no-bitwise
+    // eslint-disable-next-line no-bitwise
     this.listActions = options.actions?.filter((a) => a.scope & PsTableActionScope.list) || [];
     this._updateDataTrigger$ = options.loadTrigger$ || NEVER;
     this._loadData = options.loadDataFn;
@@ -162,6 +162,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
 
   /**
    * Returns the names of the property that should be used in filterPredicate.
+   *
    * @param row Data object for which the property names should be returned.
    * @returns The names of the properties to use in the filter.
    */
@@ -171,12 +172,11 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
 
   /**
    * Returns all values that should be used for filtering.
+   *
    * @param row Data object used to check against the filter.
    * @returns The values to use in the filter.
    */
-  public filterValues = (row: { [key: string]: any }): any[] => {
-    return this.filterProperties(row).map((key) => row[key]);
-  };
+  public filterValues = (row: { [key: string]: any }): any[] => this.filterProperties(row).map((key) => row[key]);
 
   /**
    * Checks if a data object matches the data source's filter string. By default, each data object
@@ -184,6 +184,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * at least one occurrence in that string. By default, the filter string has its whitespace
    * trimmed and the match is case-insensitive. May be overridden for a custom implementation of
    * filter matching.
+   *
    * @param row Data object used to check against the filter.
    * @param filter Filter string that has been set on the data source.
    * @returns Whether the filter matches against the data
@@ -211,6 +212,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * This default function assumes that the sort header IDs (which defaults to the column name)
    * matches the data's properties (e.g. column Xyz represents data['Xyz']).
    * May be set to a custom function for different behavior.
+   *
    * @param data Data object that is being accessed.
    * @param columnName The name of the column that represents the data.
    */
@@ -234,6 +236,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * By default, the function retrieves the active sort and its direction and compares data
    * by retrieving data using the sortingDataAccessor. May be overridden for a custom implementation
    * of data ordering.
+   *
    * @param data The array of data that should be sorted.
    * @param sort The connected MatSort that holds the current sort state.
    */
@@ -358,11 +361,16 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    * Toggle the selection of the visible rows
    */
   public toggleVisibleRowSelection() {
-    this.allVisibleRowsSelected ? this.selectionModel.clear() : this.selectVisibleRows();
+    if (this.allVisibleRowsSelected) {
+      this.selectionModel.clear();
+    } else {
+      this.selectVisibleRows();
+    }
   }
 
   /**
    * Used by the MatTable. Called when it connects to the data source.
+   *
    * @docs-private
    */
   public connect() {
@@ -376,6 +384,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
 
   /**
    * Used by the MatTable. Called when it is destroyed. No-op.
+   *
    * @docs-private
    */
   public disconnect() {

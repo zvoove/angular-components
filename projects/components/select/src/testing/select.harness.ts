@@ -1,4 +1,4 @@
-// tslint:disable: member-ordering
+/* eslint-disable @typescript-eslint/member-ordering */
 import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { MatOptionHarness, OptionHarnessFilters } from '@angular/material/core/testing';
@@ -7,7 +7,7 @@ import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/te
 import { MatSelectHarness } from '@angular/material/select/testing';
 
 /** A set of criteria that can be used to filter a list of `MatSelectHarness` instances. */
-// tslint:disable-next-line: no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PsSelectHarnessFilters extends BaseHarnessFilters {}
 
 /** Harness for interacting with a standard mat-select in tests. */
@@ -20,6 +20,7 @@ export class PsSelectHarness extends MatFormFieldControlHarness {
   /**
    * Gets a `HarnessPredicate` that can be used to search for a `PsSelectHarness` that meets
    * certain criteria.
+   *
    * @param options Options for filtering which select instances are considered a match.
    * @return a `HarnessPredicate` configured with the given options.
    */
@@ -183,6 +184,7 @@ export class PsSelectPanelHeaderHarness extends ComponentHarness {
   /**
    * Gets a `HarnessPredicate` that can be used to search for a `MatOptionsHarness` that meets
    * certain criteria.
+   *
    * @param options Options for filtering which option instances are considered a match.
    * @return a `HarnessPredicate` configured with the given options.
    */

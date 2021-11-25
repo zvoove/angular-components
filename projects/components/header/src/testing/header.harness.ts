@@ -6,19 +6,19 @@ export interface PsHeaderHarnessFilters extends BaseHarnessFilters {
 }
 
 export const enum PsHeaderSection {
-  CAPTION = '.ps-header__caption',
-  DESCRIPTION = '.ps-header__description',
-  ACTIONS = '.ps-header__actions',
+  caption = '.ps-header__caption',
+  description = '.ps-header__description',
+  actions = '.ps-header__actions',
 }
 
 export class PsHeaderHarness extends ContentContainerComponentHarness<PsHeaderSection> {
   static hostSelector = 'ps-header';
 
-  private _caption = this.locatorForOptional(PsHeaderSection.CAPTION);
-  private _captionChildren = this.locatorForAll(PsHeaderSection.CAPTION + ' > *');
-  private _description = this.locatorForOptional(PsHeaderSection.DESCRIPTION);
-  private _descriptionChildren = this.locatorForAll(PsHeaderSection.DESCRIPTION + ' > *');
-  private _actionsChildren = this.locatorForAll(PsHeaderSection.ACTIONS + ' > *');
+  private _caption = this.locatorForOptional(PsHeaderSection.caption);
+  private _captionChildren = this.locatorForAll(PsHeaderSection.caption + ' > *');
+  private _description = this.locatorForOptional(PsHeaderSection.description);
+  private _descriptionChildren = this.locatorForAll(PsHeaderSection.description + ' > *');
+  private _actionsChildren = this.locatorForAll(PsHeaderSection.actions + ' > *');
 
   static with(options: PsHeaderHarnessFilters = {}): HarnessPredicate<PsHeaderHarness> {
     return new HarnessPredicate(PsHeaderHarness, options)

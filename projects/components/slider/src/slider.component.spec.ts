@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { API } from 'nouislider';
 import { PsSliderComponent } from './slider.component';
 import { PsSliderModule } from './slider.module';
 
@@ -10,6 +11,8 @@ import { PsSliderModule } from './slider.module';
   template: `
     <ps-slider [min]="min" [max]="max" [stepSize]="stepSize" [(value)]="testValue" [isRange]="isRange" [disabled]="disabled"></ps-slider>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class SliderNgModelBlankImplementedComponent {
   @ViewChild(PsSliderComponent, { static: true }) slider: PsSliderComponent;
@@ -24,6 +27,8 @@ export class SliderNgModelBlankImplementedComponent {
 @Component({
   selector: 'ps-slider-test-ngmodel',
   template: ` <ps-slider [min]="0" [max]="15" [(ngModel)]="testValue"></ps-slider> `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class SliderNgModelTestComponent {
   @ViewChild(PsSliderComponent, { static: true }) slider: PsSliderComponent;
@@ -37,6 +42,8 @@ export class SliderNgModelTestComponent {
       <ps-slider [min]="0" [max]="15" [formControlName]="'control'"></ps-slider>
     </form>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class SliderReactiveFormTestComponent {
   @ViewChild(PsSliderComponent) slider: PsSliderComponent;
@@ -318,7 +325,7 @@ describe('PsSlider', () => {
   });
 });
 
-function getNoUiSlider(psSlider: PsSliderComponent): noUiSlider.noUiSlider {
+function getNoUiSlider(psSlider: PsSliderComponent): API {
   return (psSlider as any)._slider;
 }
 

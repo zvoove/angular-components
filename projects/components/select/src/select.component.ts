@@ -18,14 +18,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
-import {
-  CanDisableCtor,
-  CanUpdateErrorStateCtor,
-  ErrorStateMatcher,
-  MatOption,
-  mixinDisabled,
-  mixinErrorState,
-} from '@angular/material/core';
+import { ErrorStateMatcher, MatOption, mixinDisabled, mixinErrorState } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
@@ -38,10 +31,10 @@ import { PsSelectTriggerTemplateDirective } from './select-trigger-template.dire
 import { PsSelectService } from './select.service';
 
 const enum ValueChangeSource {
-  MatSelect = 1,
-  ToggleAll = 2,
-  ValueInput = 3,
-  WriteValue = 4,
+  matSelect = 1,
+  toggleAll = 2,
+  valueInput = 3,
+  writeValue = 4,
 }
 
 // Boilerplate for applying mixins to MatSelect.
@@ -55,7 +48,8 @@ class PsSelectBase {
     public ngControl: NgControl
   ) {}
 }
-const _PsSelectMixinBase: CanDisableCtor & CanUpdateErrorStateCtor & typeof PsSelectBase = mixinDisabled(mixinErrorState(PsSelectBase));
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const _PsSelectMixinBase = mixinDisabled(mixinErrorState(PsSelectBase));
 
 @Component({
   selector: 'ps-select',
@@ -63,9 +57,9 @@ const _PsSelectMixinBase: CanDisableCtor & CanUpdateErrorStateCtor & typeof PsSe
   styleUrls: ['./select.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // tslint:disable-next-line: no-inputs-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
   inputs: ['disabled'],
-  // tslint:disable-next-line: no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[class.ps-select-multiple]': 'multiple',
     '[class.ps-select-disabled]': 'disabled',
@@ -76,8 +70,10 @@ const _PsSelectMixinBase: CanDisableCtor & CanUpdateErrorStateCtor & typeof PsSe
   },
   providers: [{ provide: MatFormFieldControl, useExisting: PsSelectComponent }],
 })
-export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
-  implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy {
+export class PsSelectComponent<T = unknown>
+  extends _PsSelectMixinBase
+  implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy
+{
   public static nextId = 0;
   @HostBinding() public id = `ps-select-${PsSelectComponent.nextId++}`;
 
@@ -126,7 +122,7 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
     return this._value;
   }
   public set value(value: T | null) {
-    this._propagateValueChange(value, ValueChangeSource.ValueInput);
+    this._propagateValueChange(value, ValueChangeSource.valueInput);
   }
   private _value: T | null = null;
 
@@ -138,7 +134,7 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
 
   @Input() public multiple = false;
 
-  @Input() public errorStateMatcher: ErrorStateMatcher = null;
+  @Input() public override errorStateMatcher: ErrorStateMatcher = null;
 
   @Input() public panelClass: string | string[] | Set<string> | { [key: string]: any } = null;
 
@@ -149,11 +145,12 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
   /**
    * Event that emits whenever the raw value of the select changes. This is here primarily
    * to facilitate the two-way binding for the `value` input.
+   *
    * @docs-private
    */
   @Output() readonly valueChange: EventEmitter<T | null> = new EventEmitter<T | null>();
-  @Output() public openedChange = new EventEmitter<boolean>();
-  @Output() public selectionChange = new EventEmitter<MatSelectChange>();
+  @Output() public readonly openedChange = new EventEmitter<boolean>();
+  @Output() public readonly selectionChange = new EventEmitter<MatSelectChange>();
 
   public empty = true;
 
@@ -162,7 +159,7 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
   }
 
   public get focused() {
-    // tslint:disable-next-line: deprecation
+    // eslint-disable-next-line import/no-deprecated
     return this._matSelect.focused;
   }
 
@@ -264,7 +261,7 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
     private cd: ChangeDetectorRef,
     @Optional() parentForm: NgForm,
     @Optional() parentFormGroup: FormGroupDirective,
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public override ngControl: NgControl
   ) {
     super(elementRef, defaultErrorStateMatcher, parentForm, parentFormGroup, ngControl);
 
@@ -310,7 +307,7 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
   }
 
   public writeValue(value: any) {
-    this._propagateValueChange(value, ValueChangeSource.WriteValue);
+    this._propagateValueChange(value, ValueChangeSource.writeValue);
   }
 
   public registerOnChange(fn: () => void) {
@@ -336,12 +333,12 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
   }
 
   public onValueChange(value: any) {
-    this._propagateValueChange(value, ValueChangeSource.MatSelect);
+    this._propagateValueChange(value, ValueChangeSource.matSelect);
   }
 
   public onToggleAll(state: boolean) {
     const newValue = state ? (this.items as PsSelectItem<T>[]).map((x) => x.value) : [];
-    this._propagateValueChange(newValue, ValueChangeSource.ToggleAll);
+    this._propagateValueChange(newValue, ValueChangeSource.toggleAll);
   }
 
   public trackByOptions(_: number, item: PsSelectItem<T>) {
@@ -353,10 +350,10 @@ export class PsSelectComponent<T = unknown> extends _PsSelectMixinBase
     this.empty = this.multiple ? !value?.length : !value;
     this._updateToggleAllCheckbox();
     this._pushSelectedValuesToDataSource(value);
-    if (source !== ValueChangeSource.ValueInput) {
+    if (source !== ValueChangeSource.valueInput) {
       this.valueChange.emit(value);
     }
-    if (source !== ValueChangeSource.WriteValue) {
+    if (source !== ValueChangeSource.writeValue) {
       this._onChange(value);
     }
     this.cd.markForCheck();

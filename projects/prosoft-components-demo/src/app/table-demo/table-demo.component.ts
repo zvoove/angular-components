@@ -6,10 +6,10 @@ import { first, map } from 'rxjs/operators';
 
 interface ISampleData {
   id: number;
-  number: number;
+  num: number;
   date: Date;
-  string: string;
-  boolean: boolean;
+  str: string;
+  bool: boolean;
   hiddenSortable: string;
 }
 
@@ -37,10 +37,10 @@ function generateSampleDataRow(idx: number): ISampleData {
   const str = generateString();
   return {
     id: idx,
-    number: num,
-    boolean: bool,
+    num: num,
+    bool: bool,
     date: date,
-    string: str,
+    str: str,
     hiddenSortable: `${bool}${str}`,
   };
 }

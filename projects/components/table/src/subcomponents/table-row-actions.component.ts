@@ -7,7 +7,7 @@ import { IPsTableAction } from '../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PsTableRowActionsComponent implements OnChanges {
-  @Input() public isRoot = true;
+  @Input() public root = true;
   @Input() public actions: IPsTableAction<any>[];
   @Input() public actionsTemplate: TemplateRef<any> | null = null;
   @Input() public moreMenuThreshold: number;

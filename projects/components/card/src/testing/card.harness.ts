@@ -7,16 +7,16 @@ export interface PsCardHarnessFilters extends BaseHarnessFilters {
 }
 
 export const enum PsCardSection {
-  FOOTER = '.mat-card-footer',
-  ACTIONS = '.mat-card-actions',
+  footer = '.mat-card-footer',
+  actions = '.mat-card-actions',
 }
 
 export class PsCardHarness extends ContentContainerComponentHarness<PsCardSection> {
   static hostSelector = 'ps-card';
 
   private _header = this.locatorForOptional(PsHeaderHarness);
-  private _actionsChildren = this.locatorForAll(PsCardSection.ACTIONS + ' > *');
-  private _footerChildren = this.locatorForAll(PsCardSection.FOOTER + ' > *');
+  private _actionsChildren = this.locatorForAll(PsCardSection.actions + ' > *');
+  private _footerChildren = this.locatorForAll(PsCardSection.footer + ' > *');
 
   static with(options: PsCardHarnessFilters = {}): HarnessPredicate<PsCardHarness> {
     return new HarnessPredicate(PsCardHarness, options)

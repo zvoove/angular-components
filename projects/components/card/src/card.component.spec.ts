@@ -1,6 +1,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { PsHeaderHarness } from '@prosoft/components/header/src/testing/header.harness';
@@ -19,9 +19,7 @@ import { PsCardHarness } from './testing/card.harness';
         <span *ngIf="addDescriptionTemplate">customDescription</span>
       </ng-container>
       <ng-container *psCardTopButtonSection>
-        <button *ngIf="addTopButton" mat-button>
-          testTopButton
-        </button>
+        <button *ngIf="addTopButton" mat-button>testTopButton</button>
       </ng-container>
       <ng-container *psCardFooterSection>
         <span *ngIf="addFooterTemplate">testFooter</span>
@@ -32,6 +30,8 @@ import { PsCardHarness } from './testing/card.harness';
       <h2>Test content</h2>
     </ps-card>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestDataSourceComponent {
   public caption: string;

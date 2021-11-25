@@ -1,22 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { MatButtonModule, MatButton } from '@angular/material/button';
-import { MatCardModule, MatCardActions } from '@angular/material/card';
-import { MatCheckboxModule, MatCheckboxChange } from '@angular/material/checkbox';
+import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatCardActions, MatCardModule } from '@angular/material/card';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IPsTableIntlTexts } from '@prosoft/components/core';
 import { of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { PsTableColumnDirective } from '../directives/table.directives';
 import { IPsTableSortDefinition } from '../models';
 import { IPsTableSetting, PsTableSettingsService } from '../services/table-settings.service';
 import { PsTableSettingsComponent } from './table-settings.component';
 import { PsTableSortComponent } from './table-sort.component';
-import { By } from '@angular/platform-browser';
-import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'ps-test-component',
@@ -31,6 +31,8 @@ import { delay } from 'rxjs/operators';
       (settingsAborted)="onSettingsAborted($event)"
     ></ps-table-settings>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestComponent {
   public intl: Partial<IPsTableIntlTexts> = {
@@ -178,14 +180,14 @@ describe('PsTableSettingsComponent', () => {
       const settingsService = new PsTableSettingsService();
       const component = new PsTableSettingsComponent(settingsService);
       function createSettings(blacklist: string[]): IPsTableSetting {
-        return ({
+        return {
           columnBlacklist: blacklist,
-        } as Partial<IPsTableSetting>) as any;
+        } as Partial<IPsTableSetting> as any;
       }
       function createColumnDef(propName: string): PsTableColumnDirective {
-        return ({
+        return {
           property: propName,
-        } as Partial<IPsTableSetting>) as any;
+        } as Partial<IPsTableSetting> as any;
       }
       expect(component.columnVisible(createSettings(['prop']), createColumnDef('prop'))).toEqual(false);
       expect(component.columnVisible(createSettings(['a']), createColumnDef('prop'))).toEqual(true);
@@ -196,11 +198,11 @@ describe('PsTableSettingsComponent', () => {
       const settingsService = new PsTableSettingsService();
       const component = new PsTableSettingsComponent(settingsService);
       function createSettings(blacklist: string[], sortColumn: string, sortDirection: 'asc' | 'desc'): IPsTableSetting {
-        return ({
+        return {
           columnBlacklist: blacklist,
           sortColumn: sortColumn,
           sortDirection: sortDirection,
-        } as Partial<IPsTableSetting>) as any;
+        } as Partial<IPsTableSetting> as any;
       }
       function createColumnDef(sortColumn: string, sortDirection: 'asc' | 'desc') {
         return { sortColumn: sortColumn, sortDirection: sortDirection };

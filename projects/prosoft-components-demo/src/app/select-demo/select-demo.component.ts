@@ -261,16 +261,16 @@ export class SelectDemoComponent implements OnInit {
 
   public getPsSelectLoadTrigger() {
     return (
-      // tslint:disable-next-line: no-bitwise
-      (this.loadTriggerInitial && PsSelectLoadTrigger.Initial) |
-      (this.loadTriggerFirstPanelOpen && PsSelectLoadTrigger.FirstPanelOpen) |
-      (this.loadTriggerEveryPanelOpen && PsSelectLoadTrigger.EveryPanelOpen)
+      // eslint-disable-next-line no-bitwise
+      (this.loadTriggerInitial && PsSelectLoadTrigger.initial) |
+      (this.loadTriggerFirstPanelOpen && PsSelectLoadTrigger.firstPanelOpen) |
+      (this.loadTriggerEveryPanelOpen && PsSelectLoadTrigger.everyPanelOpen)
     );
   }
 
   public getPsSelectSortBy() {
-    // tslint:disable-next-line: no-bitwise
-    return (this.sortBySelected && PsSelectSortBy.Selected) | (this.sortByComparer && PsSelectSortBy.Comparer);
+    // eslint-disable-next-line no-bitwise
+    return (this.sortBySelected && PsSelectSortBy.selected) | (this.sortByComparer && PsSelectSortBy.comparer);
   }
 
   public getDataSourceItems(logs: DemoLogs) {

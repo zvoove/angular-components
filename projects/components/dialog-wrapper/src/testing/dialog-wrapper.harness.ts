@@ -7,13 +7,13 @@ export interface PsDialogWrapperHarnessFilters extends BaseHarnessFilters {
 }
 
 export const enum PsDialogWrapperSection {
-  DIALOG_TITLE = '.mat-dialog-title',
+  dialogTitle = '.mat-dialog-title',
 }
 
 export class PsDialogWrapperHarness extends ContentContainerComponentHarness<PsDialogWrapperSection> {
   static hostSelector = 'ps-dialog-wrapper';
 
-  private _dialogTitle = this.locatorForOptional(PsDialogWrapperSection.DIALOG_TITLE);
+  private _dialogTitle = this.locatorForOptional(PsDialogWrapperSection.dialogTitle);
   private _error = this.locatorForOptional('.ps-dialog-wrapper__error');
 
   static with(options: PsDialogWrapperHarnessFilters = {}): HarnessPredicate<PsDialogWrapperHarness> {

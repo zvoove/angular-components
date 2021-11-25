@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DebugElement, Injectable, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DebugElement, Injectable, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
@@ -9,7 +9,6 @@ import { PsBlockUiComponent } from '@prosoft/components/block-ui';
 import { PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
 import { Observable, of, Subject, Subscription } from 'rxjs';
-
 import { IPsFormDataSource, IPsFormDataSourceConnectOptions } from './form-data-source';
 import { dependencies, PsFormComponent } from './form.component';
 import { PsFormModule } from './form.module';
@@ -45,6 +44,8 @@ class TestPsFormService extends BasePsFormService {
       </ng-container>
     </ps-form>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestDataSourceComponent {
   public dataSource: IPsFormDataSource;
@@ -233,7 +234,7 @@ describe('PsFormComponent', () => {
       let intersectCallback: (x: any) => void;
       let observedEl: any;
       let observerOptions: any;
-      dependencies.IntersectionObserver = function MockIO(callback: any, options: any) {
+      dependencies.intersectionObserver = function mockIO(callback: any, options: any) {
         intersectCallback = callback;
         observerOptions = options;
 

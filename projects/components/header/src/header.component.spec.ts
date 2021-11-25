@@ -1,6 +1,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { PsHeaderComponent, PsHeaderModule } from '..';
@@ -11,9 +11,7 @@ import { PsHeaderHarness } from './testing/header.harness';
   template: `
     <ps-header [caption]="caption" [description]="description">
       <ng-container *psHeaderTopButtonSection>
-        <button mat-button color="accent" *ngIf="addButtons">
-          testButton
-        </button>
+        <button mat-button color="accent" *ngIf="addButtons">testButton</button>
       </ng-container>
       <ng-container *psHeaderCaptionSection>
         <h1 style="background-color: cyan;" *ngIf="addCaptionTemplate">caption text</h1>
@@ -23,6 +21,8 @@ import { PsHeaderHarness } from './testing/header.harness';
       </ng-container>
     </ps-header>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestDataSourceComponent {
   public caption: string;

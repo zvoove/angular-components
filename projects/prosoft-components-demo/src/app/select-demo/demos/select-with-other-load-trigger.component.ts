@@ -48,11 +48,11 @@ export class SelectWithOtherLoadTriggerComponent {
   public onTriggerChanged(value: string) {
     this.loadCount = 0;
     if (value === 'initial') {
-      this.dataSource = this.createDataSource(PsSelectLoadTrigger.Initial);
+      this.dataSource = this.createDataSource(PsSelectLoadTrigger.initial);
     } else if (value === 'firstopen') {
-      this.dataSource = this.createDataSource(PsSelectLoadTrigger.FirstPanelOpen);
+      this.dataSource = this.createDataSource(PsSelectLoadTrigger.firstPanelOpen);
     } else {
-      this.dataSource = this.createDataSource(PsSelectLoadTrigger.EveryPanelOpen);
+      this.dataSource = this.createDataSource(PsSelectLoadTrigger.everyPanelOpen);
     }
     this.cd.markForCheck();
   }

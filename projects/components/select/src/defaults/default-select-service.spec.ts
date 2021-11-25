@@ -44,7 +44,7 @@ describe('DefaultPsSelectService', () => {
     const item = { a: 1, b: 'item 1' };
     const dataSource = service.createDataSource({ mode: 'entity', idKey: 'a', labelKey: 'b', items: [item] }, null);
 
-    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
+    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.initial, 300);
     expectEntityEqualComparer(dataSource, 'a');
     expectEntityGetItemsForValues(dataSource, 'a', 'b');
 
@@ -58,7 +58,7 @@ describe('DefaultPsSelectService', () => {
     const item = { a: 1, b: 'item 1' };
     const dataSource = service.createDataSource({ mode: 'id', idKey: 'a', labelKey: 'b', items: [item] }, null);
 
-    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
+    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.initial, 300);
     expectStrictEqualComparer(dataSource);
     expectIdGetItemsForValues(dataSource);
 
@@ -77,12 +77,12 @@ describe('DefaultPsSelectService', () => {
         labelKey: 'y',
         items: of([item]),
         searchDebounce: 100,
-        loadTrigger: PsSelectLoadTrigger.FirstPanelOpen,
+        loadTrigger: PsSelectLoadTrigger.firstPanelOpen,
       },
       null
     );
 
-    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.FirstPanelOpen, 100);
+    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.firstPanelOpen, 100);
     expectEntityEqualComparer(dataSource, 'x');
     expectEntityGetItemsForValues(dataSource, 'x', 'y');
 
@@ -96,7 +96,7 @@ describe('DefaultPsSelectService', () => {
     const item = { value: 1, label: 'item 1' };
     const dataSource = service.createDataSource([item], null);
 
-    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
+    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.initial, 300);
     expectStrictEqualComparer(dataSource);
     expectIdGetItemsForValues(dataSource);
 
@@ -110,7 +110,7 @@ describe('DefaultPsSelectService', () => {
     const item = { value: 1, label: 'item 1' };
     const dataSource = service.createDataSource(of([item]), null);
 
-    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.Initial, 300);
+    expectDataSourceOptions(dataSource, PsSelectLoadTrigger.initial, 300);
     expectStrictEqualComparer(dataSource);
     expectIdGetItemsForValues(dataSource);
 
@@ -131,7 +131,7 @@ describe('DefaultPsSelectService', () => {
 
 function getRenderData(dataSource: PsSelectDataSource) {
   let currentRenderOptions;
-  dataSource.connect().subscribe(options => {
+  dataSource.connect().subscribe((options) => {
     currentRenderOptions = options;
   });
   dataSource.panelOpenChanged(true); // Just in case the loadTrigger is not Initial
@@ -142,12 +142,12 @@ function getRenderData(dataSource: PsSelectDataSource) {
 function expectStrictEqualComparer(dataSource: PsSelectDataSource) {
   expect(dataSource.compareWith('item 1', 'item 1')).toBeTruthy();
   expect(dataSource.compareWith(1, 1)).toBeTruthy();
-  const obj = { ObjectUuid: 1 };
+  const obj = { objectUuid: 1 };
   expect(dataSource.compareWith(obj, obj)).toBeTruthy();
 
   expect(dataSource.compareWith('item 1', 'item 2')).toBeFalsy();
   expect(dataSource.compareWith(1, 2)).toBeFalsy();
-  expect(dataSource.compareWith({ ObjectUuid: 1 }, { ObjectUuid: 1 })).toBeFalsy();
+  expect(dataSource.compareWith({ objectUuid: 1 }, { objectUuid: 1 })).toBeFalsy();
 }
 
 function expectEntityEqualComparer(dataSource: PsSelectDataSource, idKey: string) {

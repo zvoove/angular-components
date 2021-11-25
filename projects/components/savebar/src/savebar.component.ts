@@ -24,6 +24,9 @@ import { PsSavebarRightContentDirective } from './savebar-right-content.directiv
 
 import type { FormGroup } from '@angular/forms';
 
+/**
+ * @deprecated Please use ps-form instead, will be removed in a later release
+ */
 @Component({
   selector: 'ps-savebar',
   templateUrl: './savebar.component.html',
@@ -34,13 +37,14 @@ import type { FormGroup } from '@angular/forms';
 export class PsSavebarComponent implements OnInit, OnChanges, OnDestroy {
   @Input() public mode: IPsSavebarMode = 'auto';
   @Input() public form: FormGroup;
+  // eslint-disable-next-line @angular-eslint/no-input-prefix
   @Input() public canSave: boolean | null;
   @Input() public intlOverride: Partial<IPsSavebarIntlTexts>;
   @Input() public saveKey = 's';
 
-  @Output() public save = new EventEmitter<void>();
-  @Output() public saveAndClose = new EventEmitter<void>();
-  @Output() public cancel = new EventEmitter<void>();
+  @Output() public readonly save = new EventEmitter<void>();
+  @Output() public readonly saveAndClose = new EventEmitter<void>();
+  @Output() public readonly cancel = new EventEmitter<void>();
 
   @ContentChild(PsSavebarRightContentDirective, { read: TemplateRef })
   public customRightContent: TemplateRef<any> | null;

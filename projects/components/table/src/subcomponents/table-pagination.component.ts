@@ -63,7 +63,7 @@ export class PsTablePaginationComponent implements OnChanges, OnDestroy {
   @Input() public intl: IPsTableIntlTexts;
   @Input() public pageDebounce: number;
 
-  @Output() public page = new EventEmitter<PageEvent>();
+  @Output() public readonly page = new EventEmitter<PageEvent>();
 
   @ViewChild(MatPaginator) public set paginator(value: MatPaginator | null) {
     this._paginator = value;

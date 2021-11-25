@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MatSpinner } from '@angular/material/progress-spinner';
 import { By } from '@angular/platform-browser';
@@ -14,6 +14,8 @@ import { PsBlockUiModule } from './block-ui.module';
       <div id="content">test text</div>
     </ps-block-ui>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestComponent {
   public blocked = false;

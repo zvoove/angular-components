@@ -1,5 +1,7 @@
-import { coerceNumberProperty, coerceBooleanProperty } from '@angular/cdk/coercion';
+/* eslint-disable @angular-eslint/no-conflicting-lifecycle */
+import { coerceBooleanProperty, coerceNumberProperty } from '@angular/cdk/coercion';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DoCheck,
@@ -16,9 +18,9 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
-import { CanUpdateErrorStateCtor, ErrorStateMatcher, mixinErrorState } from '@angular/material/core';
+import { ErrorStateMatcher, mixinErrorState } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import * as noUiSlider from 'nouislider';
+import { API, create, Options } from 'nouislider';
 import { DefaultFormatter } from './formatter';
 
 declare type PsSliderConnect = boolean | boolean[];
@@ -33,18 +35,17 @@ export class PsSliderBase {
     public ngControl: NgControl
   ) {}
 }
-export const _PsSliderMixinBase: CanUpdateErrorStateCtor & typeof PsSliderBase = mixinErrorState(PsSliderBase);
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const _PsSliderMixinBase = mixinErrorState(PsSliderBase);
 
-// tslint:disable-next-line: no-conflicting-lifecycle
+// eslint-disable-next-line @angular-eslint/no-conflicting-lifecycle
 @Component({
   selector: 'ps-slider',
-  template: `
-    <div></div>
-  `,
+  template: ` <div></div> `,
   styleUrls: ['./slider.component.scss'],
   encapsulation: ViewEncapsulation.None,
   providers: [{ provide: MatFormFieldControl, useExisting: PsSliderComponent }],
-  // tslint:disable-next-line: no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[attr.id]': 'id',
     '[class.ps-slider-invalid]': 'errorState',
@@ -52,9 +53,12 @@ export const _PsSliderMixinBase: CanUpdateErrorStateCtor & typeof PsSliderBase =
     '[attr.aria-invalid]': 'errorState',
     '[attr.aria-required]': 'required.toString()',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PsSliderComponent extends _PsSliderMixinBase
-  implements ControlValueAccessor, MatFormFieldControl<number | number[]>, OnInit, OnChanges, DoCheck {
+export class PsSliderComponent
+  extends _PsSliderMixinBase
+  implements ControlValueAccessor, MatFormFieldControl<number | number[]>, OnInit, OnChanges, DoCheck
+{
   public static nextId = 0;
 
   /**
@@ -86,18 +90,21 @@ export class PsSliderComponent extends _PsSliderMixinBase
 
   /**
    * Implemented as part of PsFormFieldControl.
+   *
    * @docs-private
    */
   public shouldLabelFloat = true;
 
   /**
    * Implemented as part of PsFormFieldControl.
+   *
    * @docs-private
    */
   public noUnderline = true;
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   @Input()
@@ -112,29 +119,34 @@ export class PsSliderComponent extends _PsSliderMixinBase
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   public placeholder: string;
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   public focused = false;
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   public controlType = 'ps-slider';
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   public autofilled?: boolean;
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   @Input()
@@ -149,6 +161,7 @@ export class PsSliderComponent extends _PsSliderMixinBase
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   @Input()
@@ -189,6 +202,7 @@ export class PsSliderComponent extends _PsSliderMixinBase
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   @Input()
@@ -220,10 +234,11 @@ export class PsSliderComponent extends _PsSliderMixinBase
   private _value: number | number[];
   private _rawProvidedValue: any = null;
 
-  @Output() public valueChange = new EventEmitter<number | number[]>();
+  @Output() public readonly valueChange = new EventEmitter<number | number[]>();
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   public get empty() {
@@ -234,12 +249,12 @@ export class PsSliderComponent extends _PsSliderMixinBase
   public _ariaDescribedby: string;
 
   private _formatter = new DefaultFormatter();
-  private _slider: noUiSlider.noUiSlider;
+  private _slider: API;
 
   constructor(
     @Optional() _parentForm: NgForm,
     @Optional() _parentFormGroup: FormGroupDirective,
-    @Optional() @Self() public ngControl: NgControl,
+    @Optional() @Self() public override ngControl: NgControl,
     _defaultErrorStateMatcher: ErrorStateMatcher,
     private el: ElementRef,
     private renderer: Renderer2,
@@ -253,7 +268,7 @@ export class PsSliderComponent extends _PsSliderMixinBase
   }
 
   public ngOnInit(): void {
-    const inputsConfig: noUiSlider.Options = {
+    const inputsConfig: Options = {
       start: this.value,
       step: this.stepSize,
       range: { min: this.min, max: this.max },
@@ -262,7 +277,7 @@ export class PsSliderComponent extends _PsSliderMixinBase
       connect: this.connect || !!this.isRange,
     };
 
-    this._slider = noUiSlider.create(this.el.nativeElement.querySelector('div'), inputsConfig);
+    this._slider = create(this.el.nativeElement.querySelector('div'), inputsConfig);
     this._slider.on('change', () => {
       const value = this._slider.get();
       this.value = Array.isArray(value) ? value.map(Number) : +value;
@@ -278,14 +293,16 @@ export class PsSliderComponent extends _PsSliderMixinBase
       // So we set the _rawProvidedValue here again to fix that
       this.value = this._rawProvidedValue;
     }
-    if (this._slider && (changes.isRange || changes.min || changes.max || changes.stepSize || changes.showTooltip || changes.connect)) {
-      this._slider.updateOptions({
-        start: this.value,
-        step: this.stepSize,
-        range: { min: this.min, max: this.max },
-        tooltips: this.showTooltip,
-        connect: this.connect,
-      });
+    if (this._slider && (changes.isRange || changes.min || changes.max || changes.stepSize || changes.showTooltip)) {
+      this._slider.updateOptions(
+        {
+          start: this.value,
+          step: this.stepSize,
+          range: { min: this.min, max: this.max },
+          tooltips: this.showTooltip,
+        },
+        false
+      );
     }
   }
 
@@ -319,6 +336,7 @@ export class PsSliderComponent extends _PsSliderMixinBase
 
   /**
    * Implemented as part of MatFormFieldControl.
+   *
    * @docs-private
    */
   setDescribedByIds(ids: string[]) {

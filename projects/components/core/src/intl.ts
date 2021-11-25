@@ -34,6 +34,7 @@ export abstract class PsIntlService {
   public abstract get(intlKey: 'savebar'): IPsSavebarIntlTexts;
   public abstract get(intlKey: PsIntlKeys): IPsSavebarIntlTexts | IPsTableIntlTexts;
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   public merge<T extends {}>(intl1: T, overrides: Partial<T>): T {
     if (!overrides) {
       return intl1;

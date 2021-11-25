@@ -20,7 +20,7 @@ export interface IExtendedPsTableUpdateDataInfo<TTrigger> extends IPsTableUpdate
 export const enum PsTableActionScope {
   row = 1,
   list = 2,
-  // tslint:disable-next-line:no-bitwise
+  // eslint-disable-next-line no-bitwise
   all = row | list,
 }
 

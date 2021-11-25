@@ -164,9 +164,7 @@ export class NumberInputDemoComponent {
   public onUseErrorStateMatcherChange() {
     if (this.useErrorStateMatcher) {
       this.errorStateMatcher = {
-        isErrorState: () => {
-          return true;
-        },
+        isErrorState: () => true,
       };
     } else {
       this.errorStateMatcher = null;

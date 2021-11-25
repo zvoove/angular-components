@@ -66,7 +66,7 @@ export class PsTableSortComponent {
   @Input() public sortColumn: string;
   @Input() public sortDirection: 'asc' | 'desc';
   @Input() public sortDefinitions: IPsTableSortDefinition[] = [];
-  @Output() public sortChanged = new EventEmitter<{ sortColumn: string; sortDirection: 'asc' | 'desc' }>();
+  @Output() public readonly sortChanged = new EventEmitter<{ sortColumn: string; sortDirection: 'asc' | 'desc' }>();
 
   public onSortColumnChange(event: MatSelectChange) {
     if (this.sortColumn !== event.value) {

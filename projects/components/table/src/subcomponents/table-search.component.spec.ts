@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
-import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule, MatInput } from '@angular/material/input';
+import { MatInput, MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PsTableSearchComponent } from './table-search.component';
@@ -19,6 +19,8 @@ import { PsTableSearchComponent } from './table-search.component';
       (searchChanged)="onSearchChanged($event)"
     ></ps-table-search>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestComponent {
   public searchText = 'search text';

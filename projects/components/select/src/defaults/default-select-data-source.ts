@@ -34,23 +34,23 @@ export function isPsSelectOptionsData(value: any): value is PsSelectDataSourceOp
 }
 
 export const enum PsSelectLoadTrigger {
-  // tslint:disable-next-line: no-bitwise
-  Initial = 1 << 0,
-  // tslint:disable-next-line: no-bitwise
-  FirstPanelOpen = 1 << 1,
-  // tslint:disable-next-line: no-bitwise
-  EveryPanelOpen = 1 << 2,
-  All = Initial + FirstPanelOpen + EveryPanelOpen,
+  // eslint-disable-next-line no-bitwise
+  initial = 1 << 0,
+  // eslint-disable-next-line no-bitwise
+  firstPanelOpen = 1 << 1,
+  // eslint-disable-next-line no-bitwise
+  everyPanelOpen = 1 << 2,
+  all = initial + firstPanelOpen + everyPanelOpen,
 }
 
 export const enum PsSelectSortBy {
-  // tslint:disable-next-line: no-bitwise
-  None = 0,
-  // tslint:disable-next-line: no-bitwise
-  Selected = 1 << 0,
-  // tslint:disable-next-line: no-bitwise
-  Comparer = 1 << 1,
-  Both = Selected + Comparer,
+  // eslint-disable-next-line no-bitwise
+  none = 0,
+  // eslint-disable-next-line no-bitwise
+  selected = 1 << 0,
+  // eslint-disable-next-line no-bitwise
+  comparer = 1 << 1,
+  both = selected + comparer,
 }
 
 export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
@@ -60,15 +60,15 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
   private _isPanelOpen$ = new BehaviorSubject<boolean>(false);
   private _searchText$ = new BehaviorSubject<string>('');
   private _currentValues$ = new BehaviorSubject<T[]>([]);
-  private _ngUnsubscribe$ = new Subject<string>();
+  private _ngUnsubscribe$ = new Subject<void>();
   private _loadData: () => Observable<PsSelectItem<T>[]>;
 
   constructor(options: PsSelectDataSourceOptions) {
     super();
 
     this._searchDebounceTime = options.searchDebounce ?? 300;
-    this._loadTrigger = options.loadTrigger ?? PsSelectLoadTrigger.Initial;
-    this._sortBy = options.sortBy ?? PsSelectSortBy.Both;
+    this._loadTrigger = options.loadTrigger ?? PsSelectLoadTrigger.initial;
+    this._sortBy = options.sortBy ?? PsSelectSortBy.both;
 
     let loadData: () => Observable<PsSelectItem<T>[]>;
     const entityToSelectItem = createEntityToSelectItemMapper(options.mode, options.idKey, options.labelKey, options.disabledKey);
@@ -87,9 +87,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
 
     if (options.mode === 'entity') {
       this.compareWith = createEntityComparer(options.idKey);
-      this.getItemsForValues = (values: any[]) => {
-        return values.map(entityToSelectItem);
-      };
+      this.getItemsForValues = (values: any[]) => values.map(entityToSelectItem);
     }
 
     this._loadData = () => {
@@ -199,21 +197,17 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
    * Sort comparer for the items.
    * Note: Selected items will still be at the top.
    */
-  public sortCompare = (a: PsSelectItem, b: PsSelectItem): number => {
-    return a.label.localeCompare(b.label);
-  };
+  public sortCompare = (a: PsSelectItem, b: PsSelectItem): number => a.label.localeCompare(b.label);
 
   /**
    * Search comparer for the items.
    */
-  public searchCompare = (option: PsSelectItem, searchText: string): boolean => {
-    return option.label.toLowerCase().indexOf(searchText) === -1;
-  };
+  public searchCompare = (option: PsSelectItem, searchText: string): boolean => option.label.toLowerCase().indexOf(searchText) === -1;
 
   private _createOptionsLoadTrigger(): Observable<void> {
     const loadTriggers: Observable<any>[] = [];
-    // tslint:disable-next-line: no-bitwise
-    if (this._loadTrigger & PsSelectLoadTrigger.Initial) {
+    // eslint-disable-next-line no-bitwise
+    if (this._loadTrigger & PsSelectLoadTrigger.initial) {
       loadTriggers.push(of(null));
     }
 
@@ -221,11 +215,11 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
       distinctUntilChanged(),
       filter((panelOpen) => panelOpen)
     );
-    // tslint:disable-next-line: no-bitwise
-    if (this._loadTrigger & PsSelectLoadTrigger.EveryPanelOpen) {
+    // eslint-disable-next-line no-bitwise
+    if (this._loadTrigger & PsSelectLoadTrigger.everyPanelOpen) {
       loadTriggers.push(panelOpen$);
-      // tslint:disable-next-line: no-bitwise
-    } else if (this._loadTrigger & PsSelectLoadTrigger.FirstPanelOpen) {
+      // eslint-disable-next-line no-bitwise
+    } else if (this._loadTrigger & PsSelectLoadTrigger.firstPanelOpen) {
       loadTriggers.push(panelOpen$.pipe(take(1)));
     }
 
@@ -249,16 +243,16 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
 
   private _cloneAndSort(unsortedOptions: PsSelectItem<T>[]) {
     let selectedOptionsSet: WeakSet<PsSelectItem> = null;
-    // tslint:disable-next-line: no-bitwise
-    if (this._sortBy & PsSelectSortBy.Selected) {
+    // eslint-disable-next-line no-bitwise
+    if (this._sortBy & PsSelectSortBy.selected) {
       const selectedOptions = unsortedOptions.filter((option) =>
         this._currentValues$.value.find((value) => this.compareWith(option.value, value))
       );
       selectedOptionsSet = new WeakSet(selectedOptions);
     }
     const sortedOptions = unsortedOptions.slice().sort((a, b) => {
-      // tslint:disable-next-line: no-bitwise
-      if (this._sortBy & PsSelectSortBy.Selected) {
+      // eslint-disable-next-line no-bitwise
+      if (this._sortBy & PsSelectSortBy.selected) {
         const aSelected = +selectedOptionsSet.has(a);
         const bSelected = +selectedOptionsSet.has(b);
         const selectedDifferent = bSelected - aSelected;
@@ -267,8 +261,8 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
         }
       }
 
-      // tslint:disable-next-line: no-bitwise
-      return this._sortBy & PsSelectSortBy.Comparer ? this.sortCompare(a, b) : 0;
+      // eslint-disable-next-line no-bitwise
+      return this._sortBy & PsSelectSortBy.comparer ? this.sortCompare(a, b) : 0;
     });
     return sortedOptions;
   }

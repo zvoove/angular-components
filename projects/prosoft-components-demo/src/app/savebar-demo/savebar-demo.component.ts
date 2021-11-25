@@ -24,9 +24,7 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
         </form>
       </mat-card>
       <ng-container *psSavebarRightContent>
-        <button mat-stroked-button type="button" (click)="onButtonClick('custom')">
-          Custom Button
-        </button>
+        <button mat-stroked-button type="button" (click)="onButtonClick('custom')">Custom Button</button>
       </ng-container>
     </ps-savebar>
   `,
@@ -40,9 +38,8 @@ export class SavebarDemoComponent {
       input2: new FormControl('b'),
     },
     [
-      (formGroup: AbstractControl) => {
-        return formGroup.value.input1 === formGroup.value.input2 ? null : { equal: 'input1 and input2 must be equal' };
-      },
+      (formGroup: AbstractControl) =>
+        formGroup.value.input1 === formGroup.value.input2 ? null : { equal: 'input1 and input2 must be equal' },
     ]
   );
 

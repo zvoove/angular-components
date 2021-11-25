@@ -103,8 +103,8 @@
   (page)="onPage($event)"
 >
   <ps-table-column [header]="'id'" property="id" [sortable]="!disableAllSortable"></ps-table-column>
-  <ps-table-column [header]="'number'" property="number" [sortable]="!disableAllSortable"></ps-table-column>
-  <ps-table-column [header]="'boolean'" property="boolean" [sortable]="!disableAllSortable"></ps-table-column>
+  <ps-table-column [header]="'number'" property="num" [sortable]="!disableAllSortable"></ps-table-column>
+  <ps-table-column [header]="'boolean'" property="bool" [sortable]="!disableAllSortable"></ps-table-column>
   <ps-table-column
     [header]="columnHeader"
     property="date"
@@ -116,7 +116,7 @@
   >
     <ng-container *ngIf="columnHeaderTemplate">
       <ng-container *psTableColumnHeaderTemplate>
-        <i style="color: blue;">date</i>
+        <i style="color: blue">date</i>
       </ng-container>
     </ng-container>
     <ng-container *ngIf="columnColumnTemplate">
@@ -125,7 +125,7 @@
       </ng-container>
     </ng-container>
   </ps-table-column>
-  <ps-table-column [header]="'string'" property="string" [sortable]="!disableAllSortable"></ps-table-column>
+  <ps-table-column [header]="'string'" property="str" [sortable]="!disableAllSortable"></ps-table-column>
   <ps-table-column
     [header]="'Custom row detail toggle'"
     property="__custom"
@@ -141,28 +141,20 @@
   </ps-table-column>
 
   <ng-container *ngIf="customHeader">
-    <div *psTableCustomHeader style="border: 1px solid black; width: 100%;">
-      custom header
-    </div>
+    <div *psTableCustomHeader style="border: 1px solid black; width: 100%">custom header</div>
   </ng-container>
 
   <ng-container *ngIf="customSettings">
-    <div *psTableCustomSettings style="border: 1px solid black; width: 100%;">
-      custom settings
-    </div>
+    <div *psTableCustomSettings style="border: 1px solid black; width: 100%">custom settings</div>
   </ng-container>
 
   <ng-container *ngIf="customTopButton">
-    <div *psTableTopButtonSection style="border: 1px solid black;">
-      custom button section
-    </div>
+    <div *psTableTopButtonSection style="border: 1px solid black">custom button section</div>
   </ng-container>
 
   <ng-container *ngIf="customListActions">
     <ng-container *psTableListActions="let selection">
-      <button type="button" mat-menu-item (click)="alertData(selection)">
-        custom list actions
-      </button>
+      <button type="button" mat-menu-item (click)="alertData(selection)">custom list actions</button>
     </ng-container>
   </ng-container>
 
@@ -179,4 +171,4 @@
   </ng-container>
 </ps-table>
 
-<mat-card style="margin: 1em 0;"> Last page event: {{ pageEvent | json }} </mat-card>
+<mat-card style="margin: 1em 0"> Last page event: {{ pageEvent | json }} </mat-card>

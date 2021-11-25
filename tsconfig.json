@@ -1,48 +1,41 @@
-/*
-  This is a "Solution Style" tsconfig.json file, and is used by editors and TypeScript’s language server to improve development experience.
-  It is not intended to be used to perform a compilation.
-
-  To learn more about this file see: https://angular.io/config/solution-tsconfig.
-*/
-
-/*
-This doesn't ork with our path mappings. See: https://github.com/microsoft/TypeScript/issues/39632
-Until this is fixed, we have to use a copy of the tsconfig.base.json here.
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./projects/prosoft-components-demo/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/prosoft-components-demo/tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/components/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/components/tsconfig.spec.json"
-    }
-  ]
-}
-*/
-{
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "sourceMap": true,
-    "declaration": false,
-    "module": "es2020",
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "es2015",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"],
+    "forceConsistentCasingInFileNames": true,
+
     "strict": true,
     "strictNullChecks": false,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "alwaysStrict": true,
+
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2017",
+    "module": "es2020",
+    "lib": ["es2020", "dom"],
+
     "paths": {
       "@prosoft/components/*": ["projects/components/*"]
     }

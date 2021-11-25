@@ -11,7 +11,7 @@ export class PsTableColumnHeaderTemplateDirective {
 }
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'ps-table-column',
 })
 export class PsTableColumnDirective {
@@ -75,7 +75,7 @@ export class PsTableRowDetailTemplateDirective {
 }
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'ps-table-row-detail',
 })
 export class PsTableRowDetailDirective {

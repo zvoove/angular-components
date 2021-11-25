@@ -12,6 +12,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
       <input matInput [(ngModel)]="value" type="text" />
     </ps-form-field>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReferenceColumnComponent {
   @Input() public subscriptType: PsFormFieldSubscriptType = 'single-line';
@@ -79,13 +80,12 @@ export class FormFieldDemoComponent {
   }
 
   public form = new FormGroup({
-    Text: new FormControl(null),
-    Select: new FormControl('item_ok'),
-    Checkbox: new FormControl(null),
-    Radio: new FormControl(null),
-    Prefix_Text: new FormControl(null),
-    Slider: new FormControl(null),
-    PsSelect: new FormControl(1),
+    select: new FormControl('item_ok'),
+    checkbox: new FormControl(null),
+    radio: new FormControl(null),
+    prefixText: new FormControl(null),
+    slider: new FormControl(null),
+    psSelect: new FormControl(1),
   });
 
   public showControls = true;

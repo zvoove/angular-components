@@ -5,19 +5,17 @@ const { JSDOM } = jsdom;
 
 const touchedFiles: string[] = [];
 
-export default function (): Rule {
-  return (tree: Tree, context: SchematicContext) => {
-    context.logger.info('"ps-table: replace [cardLayout] with [layout]" started...');
-    traverseDirectory(tree.root, tree, context);
-    if (touchedFiles.length) {
-      context.logger.info(`Modified files: ${touchedFiles.join(', ')}`);
-    } else {
-      context.logger.info('No modifications required.');
-    }
-    context.logger.info('"ps-table: replace [cardLayout] with [layout]" finished');
-    return tree;
-  };
-}
+export default (): Rule => (tree: Tree, context: SchematicContext) => {
+  context.logger.info('"ps-table: replace [cardLayout] with [layout]" started...');
+  traverseDirectory(tree.root, tree, context);
+  if (touchedFiles.length) {
+    context.logger.info(`Modified files: ${touchedFiles.join(', ')}`);
+  } else {
+    context.logger.info('No modifications required.');
+  }
+  context.logger.info('"ps-table: replace [cardLayout] with [layout]" finished');
+  return tree;
+};
 
 function traverseDirectory(directory: DirEntry, tree: Tree, _context: SchematicContext) {
   const dirPath = directory.path;
@@ -44,9 +42,9 @@ function updateTemplate(file: FileEntry, tree: Tree, _context: SchematicContext)
   }
   // the includeLocations flag is very important so that .nodeLocation() works down the line
   const dom = new JSDOM(content, { includeNodeLocations: true });
-  const elements: HTMLElement[] = Array.from(
-    <HTMLCollectionOf<HTMLElement>>dom.window.document.getElementsByTagName('ps-table')
-  ).filter((x: HTMLElement) => x.hasAttribute('[cardLayout]'));
+  const elements: HTMLElement[] = Array.from(<HTMLCollectionOf<HTMLElement>>dom.window.document.getElementsByTagName('ps-table')).filter(
+    (x: HTMLElement) => x.hasAttribute('[cardLayout]')
+  );
   if (elements.length) {
     const recorder = tree.beginUpdate(file.path);
     for (const element of elements) {

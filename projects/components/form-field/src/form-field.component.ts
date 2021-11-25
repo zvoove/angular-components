@@ -212,6 +212,7 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
 
   public ngOnDestroy(): void {
     if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
+      // eslint-disable-next-line @angular-eslint/no-lifecycle-call
       this.matFormFieldControl.ngOnDestroy();
     }
 

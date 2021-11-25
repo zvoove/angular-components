@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { fakeAsync, tick } from '@angular/core/testing';
 import { NEVER, of, Subject, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
@@ -641,9 +642,7 @@ describe('PsTableDataSource', () => {
   });
 
   it('should update visibleRows, data and dataLength on server pagination', () => {
-    const dataSource = new PsTableDataSource<any>((filter) => {
-      return of({ items: [{ prop: filter.currentPage }], totalItems: 100 });
-    }, 'server');
+    const dataSource = new PsTableDataSource<any>((filter) => of({ items: [{ prop: filter.currentPage }], totalItems: 100 }), 'server');
     dataSource.tableReady = true;
     dataSource.pageIndex = 0;
     dataSource.pageSize = 1;
@@ -672,9 +671,7 @@ describe('PsTableDataSource', () => {
   });
 
   it('should fix pageIndex when currentPage would have no items on server pagination', () => {
-    const dataSource = new PsTableDataSource<any>((filter) => {
-      return of({ items: [{ prop: filter.currentPage }], totalItems: 1 });
-    }, 'server');
+    const dataSource = new PsTableDataSource<any>((filter) => of({ items: [{ prop: filter.currentPage }], totalItems: 1 }), 'server');
     dataSource.tableReady = true;
     dataSource.pageIndex = 1;
     dataSource.pageSize = 1;

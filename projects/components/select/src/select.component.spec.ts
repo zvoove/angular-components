@@ -1,6 +1,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectorRef, Component, Injectable, OnDestroy, QueryList, Type, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, OnDestroy, QueryList, Type, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import {
   AbstractControl,
@@ -22,7 +22,6 @@ import { PsFormBaseModule } from '@prosoft/components/form-base';
 import { PsFormFieldModule } from '@prosoft/components/form-field';
 import { DemoPsFormsService } from 'projects/prosoft-components-demo/src/app/common/demo-ps-form-service';
 import { Observable, of, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
-
 import { DefaultPsSelectDataSource } from './defaults/default-select-data-source';
 import { DefaultPsSelectService, PsSelectData } from './defaults/default-select-service';
 import { PsSelectItem } from './models';
@@ -104,9 +103,11 @@ function createPsSelect(options?: { dataSource?: PsSelectDataSource; service: Ps
       ></ps-select>
     </div>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestComponent implements OnDestroy {
-  dataSource: any = [ITEMS.RED, ITEMS.GREEN, ITEMS.BLUE];
+  dataSource: any = [ITEMS.red, ITEMS.green, ITEMS.blue];
   control = new FormControl(null, [Validators.required]);
   form = new FormGroup({
     select: this.control,
@@ -131,18 +132,20 @@ export class TestComponent implements OnDestroy {
 }
 
 const ITEMS = {
-  RED: { value: 'red', label: 'Red' },
-  GREEN: { value: 'green', label: 'Green' },
-  BLUE: { value: 'blue', label: 'Blue' },
+  red: { value: 'red', label: 'Red' },
+  green: { value: 'green', label: 'Green' },
+  blue: { value: 'blue', label: 'Blue' },
 };
 
 @Component({
   selector: 'ps-test-multiple-component',
   template: ` <ps-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true" [showToggleAll]="showToggleAll"></ps-select> `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestMultipleComponent {
   showToggleAll = true;
-  dataSource: any = [ITEMS.RED, ITEMS.GREEN, ITEMS.BLUE];
+  dataSource: any = [ITEMS.red, ITEMS.green, ITEMS.blue];
   value: any = null;
 
   @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
@@ -153,9 +156,11 @@ export class TestMultipleComponent {
 @Component({
   selector: 'ps-test-value',
   template: `<ps-select [(value)]="value" [dataSource]="items"></ps-select>`,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestValueComponent {
-  public items = [ITEMS.RED, ITEMS.GREEN, ITEMS.BLUE];
+  public items = [ITEMS.red, ITEMS.green, ITEMS.blue];
   public value: any = null;
 }
 
@@ -173,9 +178,11 @@ export class TestValueComponent {
       </ng-container>
     </ps-select>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestCustomTemplateComponent {
-  public items = [ITEMS.RED, ITEMS.GREEN, ITEMS.BLUE];
+  public items = [ITEMS.red, ITEMS.green, ITEMS.blue];
   public value: any = null;
 }
 
@@ -187,9 +194,11 @@ export class TestCustomTemplateComponent {
       <ps-select [(ngModel)]="value" [dataSource]="dataSource" [clearable]="clearable"></ps-select>
     </ps-form-field>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestWithFormFieldComponent {
-  public dataSource: any = [ITEMS.RED, ITEMS.GREEN, ITEMS.BLUE];
+  public dataSource: any = [ITEMS.red, ITEMS.green, ITEMS.blue];
   public value: any = null;
   public clearable = false;
 }
@@ -197,7 +206,7 @@ export class TestWithFormFieldComponent {
 @Injectable()
 export class TestPsSelectService extends DefaultPsSelectService {
   static calledwith: { dataSource: any; control: AbstractControl }[] = [];
-  public createDataSource<T>(dataSource: PsSelectData<T>, control: AbstractControl | null): PsSelectDataSource<T> {
+  public override createDataSource<T>(dataSource: PsSelectData<T>, control: AbstractControl | null): PsSelectDataSource<T> {
     TestPsSelectService.calledwith.push({ dataSource: dataSource, control: control });
     return super.createDataSource(dataSource, control);
   }
@@ -285,7 +294,7 @@ describe('PsSelectComponent', () => {
 
     const matFormField = await loader.getHarness(MatFormFieldHarness);
 
-    component.value = ITEMS.RED;
+    component.value = ITEMS.red;
     component.clearable = true;
 
     await psSelect.open();
@@ -353,21 +362,21 @@ describe('PsSelectComponent', () => {
 
   it('should work with ngModel', async () => {
     const { component, psSelect } = await initTest(TestMultipleComponent);
-    await psSelect.clickOptions({ text: ITEMS.GREEN.label });
-    expect(component.value).toEqual([ITEMS.GREEN.value]);
+    await psSelect.clickOptions({ text: ITEMS.green.label });
+    expect(component.value).toEqual([ITEMS.green.value]);
   });
 
   it('should work with value binding', async () => {
     const { component, psSelect } = await initTest(TestValueComponent);
-    await psSelect.clickOptions({ text: ITEMS.RED.label });
-    expect(component.value).toEqual(ITEMS.RED.value);
+    await psSelect.clickOptions({ text: ITEMS.red.label });
+    expect(component.value).toEqual(ITEMS.red.value);
   });
 
   it('should emit only once when selecting an option', async () => {
     const { component, psSelect } = await initTest(TestComponent);
-    await psSelect.clickOptions({ text: ITEMS.GREEN.label });
+    await psSelect.clickOptions({ text: ITEMS.green.label });
     await psSelect.clickOptions({ text: '--' });
-    expect(component.emittedValues).toEqual([ITEMS.GREEN.value, undefined]);
+    expect(component.emittedValues).toEqual([ITEMS.green.value, undefined]);
   });
 
   it('should use the error state matcher input', async () => {
@@ -379,9 +388,7 @@ describe('PsSelectComponent', () => {
 
     // Custom matcher - empty value
     component.errorStateMatcher = {
-      isErrorState: (control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean => {
-        return !!(control && control.invalid);
-      },
+      isErrorState: (control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean => !!(control && control.invalid),
     };
     expect(await psSelect.isErrorState()).toBe(true);
 
@@ -430,9 +437,7 @@ describe('PsSelectComponent', () => {
 
     let errorState = false;
     component.errorStateMatcher = {
-      isErrorState: (_control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean => {
-        return errorState;
-      },
+      isErrorState: (_control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean => errorState,
     };
 
     await psSelect.open();

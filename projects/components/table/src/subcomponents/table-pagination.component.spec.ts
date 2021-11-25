@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, DebugElement, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DebugElement, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -38,6 +38,8 @@ const testIntl: IPsTableIntlTexts = {
       (page)="onPage($event)"
     ></ps-table-pagination>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 class PaginationTestComponent {
   public pageSize = 5;
@@ -115,7 +117,11 @@ describe('PsTablePaginationComponent', () => {
     }));
 
     it('should calculate pages correctly', () => {
-      for (const data of [[15, 5, 3], [11, 5, 3], [15, 10, 2]]) {
+      for (const data of [
+        [15, 5, 3],
+        [11, 5, 3],
+        [15, 10, 2],
+      ]) {
         component.dataLength = data[0];
         component.pageSize = data[1];
         fixture.detectChanges();

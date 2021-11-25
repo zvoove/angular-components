@@ -88,8 +88,8 @@ export class PsTableHeaderComponent {
   @Input() public filterable: boolean;
   @Input() public searchText: string;
 
-  @Output() public sortChanged = new EventEmitter<{ sortColumn: string; sortDirection: 'asc' | 'desc' }>();
-  @Output() public searchChanged = new EventEmitter<string>();
+  @Output() public readonly sortChanged = new EventEmitter<{ sortColumn: string; sortDirection: 'asc' | 'desc' }>();
+  @Output() public readonly searchChanged = new EventEmitter<string>();
 
   @HostBinding('style.padding-top') public get paddingTop() {
     return !this.caption && (this.showSorting || this.filterable || this.topButtonSection) ? '1em' : '0';

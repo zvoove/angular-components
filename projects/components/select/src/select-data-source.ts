@@ -16,6 +16,7 @@ export abstract class PsSelectDataSource<T = any> {
    * Connects a collection viewer (such as a data-table) to this data source. Note that
    * the stream provided will be accessed during change detection and should not directly change
    * values that are bound in template views.
+   *
    * @returns Observable that emits a new value when the data changes.
    */
   public abstract connect(): Observable<PsSelectItem<T>[] | ReadonlyArray<PsSelectItem<T>>>;

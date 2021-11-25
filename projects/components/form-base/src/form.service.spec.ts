@@ -63,7 +63,7 @@ describe('BasePsFormService', () => {
         errorKey: 'key',
         controlPath: null,
         errorValue: {
-          LocalizationKey: 'loca_key',
+          localizationKey: 'loca_key',
         },
         isControl: false,
       };

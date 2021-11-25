@@ -1,16 +1,16 @@
-import { ChangeDetectorRef, Component, Injectable, ViewChild, DebugElement } from '@angular/core';
-import { fakeAsync, TestBed, tick, ComponentFixture, waitForAsync } from '@angular/core/testing';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DebugElement, Injectable, ViewChild } from '@angular/core';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
 import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { PsFormFieldComponent, PsFormFieldSubscriptType } from './form-field.component';
 import { PsFormFieldModule } from './form-field.module';
-import { delay } from 'rxjs/operators';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 @Injectable()
 class TestPsFormService extends BasePsFormService {
@@ -49,6 +49,8 @@ class TestPsFormService extends BasePsFormService {
       <input type="text" />
     </ps-form-field>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestNoFormComponent {
   @ViewChild('f1', { static: true }) formField: PsFormFieldComponent;
@@ -64,6 +66,8 @@ export class TestNoFormComponent {
       <input type="text" [(ngModel)]="value" matInput />
     </ps-form-field>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestNgModelComponent {
   value: any = null;
@@ -81,6 +85,8 @@ export class TestNgModelComponent {
       <input type="text" [formControl]="formControl" matInput />
     </ps-form-field>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestFormComponent {
   formControl = new FormControl('', [Validators.pattern('pattern'), Validators.minLength(5)]);
@@ -104,6 +110,8 @@ export class TestFormComponent {
       <mat-checkbox [formControl]="formControl"></mat-checkbox>
     </ps-form-field>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestCheckboxComponent {
   public asyncLabel$ = of('async label');
@@ -447,7 +455,7 @@ function detectChangesAndIgnoreChangeAfterChecked(fixture: ComponentFixture<any>
     fixture.detectChanges();
   } catch (e) {
     // Expression has changed after it was checked. Previous value: 'aria-describedby: null'. Current value: 'aria-describedby: mat-hint-0'.
-    if (e.message.indexOf('Expression has changed after it was checked') === -1) {
+    if (e instanceof Error && e.message.indexOf('Expression has changed after it was checked') === -1) {
       throw e;
     }
   }

@@ -22,10 +22,15 @@
             "main": "projects/prosoft-components-demo/src/main.ts",
             "polyfills": "projects/prosoft-components-demo/src/polyfills.ts",
             "tsConfig": "projects/prosoft-components-demo/tsconfig.app.json",
-            "aot": true,
             "assets": ["projects/prosoft-components-demo/src/favicon.ico", "projects/prosoft-components-demo/src/assets"],
             "styles": ["projects/prosoft-components-demo/src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -54,7 +59,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -86,17 +92,6 @@
             "scripts": []
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/prosoft-components-demo/tsconfig.app.json",
-              "projects/prosoft-components-demo/tsconfig.spec.json",
-              "projects/prosoft-components-demo/e2e/tsconfig.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
@@ -107,6 +102,12 @@
             "production": {
               "devServerTarget": "prosoft-components-demo:serve:production"
             }
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/prosoft-components-demo/**/*.ts", "projects/prosoft-components-demo/**/*.html"]
           }
         }
       }
@@ -138,10 +139,9 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": ["projects/components/tsconfig.lib.json", "projects/components/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
+            "lintFilePatterns": ["projects/components/**/*.ts", "projects/components/**/*.html"]
           }
         }
       }
@@ -149,6 +149,7 @@
   },
   "defaultProject": "prosoft-components-demo",
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }

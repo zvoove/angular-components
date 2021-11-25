@@ -17,7 +17,7 @@ import { IPsFormDataSource, IPsFormDataSourceConnectOptions } from './form-data-
 
 import type { ElementRef } from '@angular/core';
 export const dependencies = {
-  IntersectionObserver: IntersectionObserver,
+  intersectionObserver: IntersectionObserver,
 };
 
 @Component({
@@ -140,7 +140,7 @@ export class PsFormComponent implements AfterViewInit, OnDestroy {
         threshold: 0, // visible amount of item shown in relation to root
       } as IntersectionObserverInit;
 
-      this._errorCardObserver = new dependencies.IntersectionObserver((changes, _) => {
+      this._errorCardObserver = new dependencies.intersectionObserver((changes, _) => {
         const isErrorCardInView = changes[0].intersectionRatio > 0;
         this._errrorInView$.next(isErrorCardInView);
         this.cd.markForCheck();

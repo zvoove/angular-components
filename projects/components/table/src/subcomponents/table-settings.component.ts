@@ -36,8 +36,8 @@ export class PsTableSettingsComponent implements OnInit {
   @Input() public pageSizeOptions: number[];
   @Input() public customSettings: TemplateRef<any> | null = null;
 
-  @Output() public settingsSaved = new EventEmitter<void>();
-  @Output() public settingsAborted = new EventEmitter<void>();
+  @Output() public readonly settingsSaved = new EventEmitter<void>();
+  @Output() public readonly settingsAborted = new EventEmitter<void>();
 
   public settings$: Observable<IPsTableSetting>;
 

@@ -10,23 +10,23 @@ import { IPsTableAction } from '../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PsTableActionsComponent implements OnChanges {
-  @Input() public isRoot = true;
+  @Input() public root = true;
   @Input() public actions: IPsTableAction<unknown>[];
   @Input() public items: unknown[];
   @Input() public refreshable: boolean;
   @Input() public settingsEnabled: boolean;
   @Input() public intl: IPsTableIntlTexts;
 
-  @Output() public refreshData = new EventEmitter<void>();
-  @Output() public showSettings = new EventEmitter<void>();
+  @Output() public readonly refreshData = new EventEmitter<void>();
+  @Output() public readonly showSettings = new EventEmitter<void>();
 
   public showIcon: boolean;
 
   @ViewChild('menu', { static: true }) menu: MatMenu;
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.isRoot || changes.actions) {
-      this.showIcon = this.isRoot || this.actions?.some((x) => x.icon);
+    if (changes.root || changes.actions) {
+      this.showIcon = this.root || this.actions?.some((x) => x.icon);
     }
   }
 }

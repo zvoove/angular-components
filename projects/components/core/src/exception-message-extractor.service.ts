@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 export class PsExceptionMessageExtractor {
   /**
    * Extracts a error message from a given error object
+   *
    * @param error The error object.
    * @returns The error message
    */

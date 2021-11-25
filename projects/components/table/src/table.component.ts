@@ -44,7 +44,7 @@ import { IPsTableSetting, PsTableSettingsService } from './services/table-settin
   selector: 'ps-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
-  // tslint:disable-next-line: no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[class.mat-elevation-z1]': `layout === 'card'`,
     '[class.ps-table--card]': `layout === 'card'`,
@@ -82,7 +82,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   @Input() stateManager: PsTableStateManager = new PsTableUrlStateManager(this.router, this.route);
 
-  @Output() public page = new EventEmitter<PageEvent>();
+  @Output() public readonly page = new EventEmitter<PageEvent>();
 
   @ViewChild(PsFlipContainerComponent, { static: true }) public flipContainer: PsFlipContainerComponent | null = null;
 

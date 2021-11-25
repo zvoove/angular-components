@@ -34,6 +34,7 @@ function coerceSortDirectionProperty(input: unknown, fallback: 'asc' | 'desc' | 
 
 /**
  * Whether the provided value is considered a number.
+ *
  * @docs-private
  */
 export function _isNumberValue(value: any): boolean {

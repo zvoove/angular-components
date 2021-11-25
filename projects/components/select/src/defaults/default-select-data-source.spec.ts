@@ -11,7 +11,7 @@ describe('DefaultPsSelectDataSource', () => {
     const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([item]));
 
     let currentRenderOptions;
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -39,7 +39,7 @@ describe('DefaultPsSelectDataSource', () => {
     const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([item])));
 
     let currentRenderOptions;
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -87,7 +87,7 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should update loading flag', fakeAsync(() => {
     const dataSource = new DefaultPsSelectDataSource(
-      createDataSourceOptions(() => of([]).pipe(delay(1000)), { loadTrigger: PsSelectLoadTrigger.All })
+      createDataSourceOptions(() => of([]).pipe(delay(1000)), { loadTrigger: PsSelectLoadTrigger.all })
     );
     expect(dataSource.loading).toBe(false);
 
@@ -136,7 +136,7 @@ describe('DefaultPsSelectDataSource', () => {
     let currentRenderOptions;
 
     // Beim connecten darf das debounce das laden nicht verzögern
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -167,7 +167,7 @@ describe('DefaultPsSelectDataSource', () => {
     let currentRenderOptions;
 
     // Beim connecten darf das debounce das laden nicht verzögern
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -230,7 +230,7 @@ describe('DefaultPsSelectDataSource', () => {
     );
 
     let currentRenderOptions;
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -259,7 +259,7 @@ describe('DefaultPsSelectDataSource', () => {
           ++loadDataCallCount;
           return of([createItem('item', loadDataCallCount)]);
         },
-        { loadTrigger: PsSelectLoadTrigger.FirstPanelOpen }
+        { loadTrigger: PsSelectLoadTrigger.firstPanelOpen }
       )
     );
 
@@ -293,7 +293,7 @@ describe('DefaultPsSelectDataSource', () => {
           ++loadDataCallCount;
           return of([createItem('item', loadDataCallCount)]);
         },
-        { loadTrigger: PsSelectLoadTrigger.EveryPanelOpen }
+        { loadTrigger: PsSelectLoadTrigger.everyPanelOpen }
       )
     );
 
@@ -330,14 +330,10 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should add selected values to loaded options, if they are missing', fakeAsync(() => {
     const items$ = new Subject<any[]>();
-    const dataSource = new DefaultPsSelectDataSource<number>(
-      createDataSourceOptions(() => {
-        return items$;
-      })
-    );
+    const dataSource = new DefaultPsSelectDataSource<number>(createDataSourceOptions(() => items$));
 
     let currentRenderOptions: any[] | null = null;
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -390,12 +386,12 @@ describe('DefaultPsSelectDataSource', () => {
           }
           return items$;
         },
-        { loadTrigger: PsSelectLoadTrigger.All }
+        { loadTrigger: PsSelectLoadTrigger.all }
       )
     );
 
     let currentRenderOptions: any[] | null = null;
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -424,14 +420,10 @@ describe('DefaultPsSelectDataSource', () => {
     const item1 = createItem('item 1', 1);
     const item2 = createItem('item 2', 2);
     const item3 = createItem('item 3', 3);
-    const dataSource = new DefaultPsSelectDataSource(
-      createDataSourceOptions(() => {
-        return of([item1, item2, item3]);
-      })
-    );
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(() => of([item1, item2, item3])));
 
     let currentRenderOptions;
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -455,7 +447,7 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should emit data only when needed', fakeAsync(() => {
     const items$ = new BehaviorSubject([createItem('item 1', 1)]);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(() => items$, { loadTrigger: PsSelectLoadTrigger.All }));
+    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(() => items$, { loadTrigger: PsSelectLoadTrigger.all }));
 
     let dataEmitCount = 0;
     dataSource.connect().subscribe(() => {
@@ -502,7 +494,7 @@ describe('DefaultPsSelectDataSource', () => {
     const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([item]));
     let currentRenderOptions: PsSelectItem[] = [];
 
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -518,7 +510,7 @@ describe('DefaultPsSelectDataSource', () => {
     const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([item], { mode: 'entity' }));
     let currentRenderOptions: PsSelectItem[] = [];
 
-    dataSource.connect().subscribe(options => {
+    dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
     });
     tick(1);
@@ -549,7 +541,7 @@ describe('DefaultPsSelectDataSource', () => {
       dataSource.selectedValuesChanged([item3Label2Selected.value, item5Label6Selected.value, item6Label5Selected.value]);
 
       currentRenderOptions = null;
-      dataSource.connect().subscribe(options => {
+      dataSource.connect().subscribe((options) => {
         currentRenderOptions = options;
       });
       tick(1);
@@ -559,7 +551,7 @@ describe('DefaultPsSelectDataSource', () => {
       initDataSource(null);
 
       const expectedOptions = [item3Label2Selected, item6Label5Selected, item5Label6Selected, item1Label1, item4Label3, item2Label4].map(
-        x => createIdOption(x)
+        (x) => createIdOption(x)
       );
       expect(currentRenderOptions).toEqual(expectedOptions);
       expect(dataSource.sortCompare).toHaveBeenCalled();
@@ -568,9 +560,9 @@ describe('DefaultPsSelectDataSource', () => {
     }));
 
     it('PsSelectSort.None', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.None);
+      initDataSource(PsSelectSortBy.none);
 
-      const expectedOptions = initialItems.map(x => createIdOption(x));
+      const expectedOptions = initialItems.map((x) => createIdOption(x));
       expect(currentRenderOptions).toEqual(expectedOptions);
       expect(dataSource.sortCompare).not.toHaveBeenCalled();
 
@@ -578,10 +570,10 @@ describe('DefaultPsSelectDataSource', () => {
     }));
 
     it('PsSelectSort.Selected', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.Selected);
+      initDataSource(PsSelectSortBy.selected);
 
       const expectedOptions = [item3Label2Selected, item5Label6Selected, item6Label5Selected, item1Label1, item2Label4, item4Label3].map(
-        x => createIdOption(x)
+        (x) => createIdOption(x)
       );
       expect(currentRenderOptions).toEqual(expectedOptions);
       expect(dataSource.sortCompare).not.toHaveBeenCalled();
@@ -590,10 +582,10 @@ describe('DefaultPsSelectDataSource', () => {
     }));
 
     it('PsSelectSort.Comparer', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.Comparer);
+      initDataSource(PsSelectSortBy.comparer);
 
       const expectedOptions = [item1Label1, item3Label2Selected, item4Label3, item2Label4, item6Label5Selected, item5Label6Selected].map(
-        x => createIdOption(x)
+        (x) => createIdOption(x)
       );
       expect(currentRenderOptions).toEqual(expectedOptions);
       expect(dataSource.sortCompare).toHaveBeenCalled();
@@ -602,10 +594,10 @@ describe('DefaultPsSelectDataSource', () => {
     }));
 
     it('PsSelectSort.Comparer with custom reverse sorting', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.Comparer, (a, b) => b.value - a.value); // reverse sort
+      initDataSource(PsSelectSortBy.comparer, (a, b) => b.value - a.value); // reverse sort
 
       const expectedOptions = [item5Label6Selected, item6Label5Selected, item2Label4, item4Label3, item3Label2Selected, item1Label1].map(
-        x => createIdOption(x)
+        (x) => createIdOption(x)
       );
       expect(currentRenderOptions).toEqual(expectedOptions);
       expect(dataSource.sortCompare).toHaveBeenCalled();
@@ -614,10 +606,10 @@ describe('DefaultPsSelectDataSource', () => {
     }));
 
     it('PsSelectSort.Both', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.Both);
+      initDataSource(PsSelectSortBy.both);
 
       const expectedOptions = [item3Label2Selected, item6Label5Selected, item5Label6Selected, item1Label1, item4Label3, item2Label4].map(
-        x => createIdOption(x)
+        (x) => createIdOption(x)
       );
       expect(currentRenderOptions).toEqual(expectedOptions);
       expect(dataSource.sortCompare).toHaveBeenCalled();
@@ -626,10 +618,10 @@ describe('DefaultPsSelectDataSource', () => {
     }));
 
     it('PsSelectSort.Both with custom reverse sorting', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.Both, (a, b) => b.value - a.value); // reverse sort
+      initDataSource(PsSelectSortBy.both, (a, b) => b.value - a.value); // reverse sort
 
       const expectedOptions = [item5Label6Selected, item6Label5Selected, item3Label2Selected, item2Label4, item4Label3, item1Label1].map(
-        x => createIdOption(x)
+        (x) => createIdOption(x)
       );
       expect(currentRenderOptions).toEqual(expectedOptions);
       expect(dataSource.sortCompare).toHaveBeenCalled();

@@ -1,7 +1,7 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Subject } from 'rxjs';
@@ -18,6 +18,8 @@ import { PsViewModule } from './view.module';
       <div id="hight-strech" style="height: 2000px;">hight strech</div>
     </ps-view>
   `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestDataSourceComponent {
   public dataSource: IPsViewDataSource;
@@ -121,7 +123,8 @@ describe('PsViewComponent', () => {
 type ITestPsViewDataSource = {
   -readonly [K in keyof IPsViewDataSource]: IPsViewDataSource[K];
 };
-function createDataSource(override: Partial<IPsViewDataSource> = {}): ITestPsViewDataSource & { cdTrigger$: Subject<void> } {
+
+const createDataSource = (override: Partial<IPsViewDataSource> = {}): ITestPsViewDataSource & { cdTrigger$: Subject<void> } => {
   const cdTrigger$ = new Subject<void>();
   return {
     cdTrigger$: cdTrigger$,
@@ -132,4 +135,4 @@ function createDataSource(override: Partial<IPsViewDataSource> = {}): ITestPsVie
     disconnect: () => {},
     ...override,
   };
-}
+};
