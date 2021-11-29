@@ -17,13 +17,13 @@
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "@angular/cdk": ">=8.2.1",
-    "@angular/common": ">=8.0.0",
-    "@angular/core": ">=8.0.0",
-    "@angular/forms": ">=8.0.0",
-    "@angular/material": ">=8.2.1",
-    "ngx-mat-select-search": ">=2.1.0",
-    "nouislider": ">=14.0.2"
+    "@angular/cdk": ">=13.0.0",
+    "@angular/common": ">=13.0.0",
+    "@angular/core": ">=13.0.0",
+    "@angular/forms": ">=13.0.0",
+    "@angular/material": ">=13.0.0",
+    "ngx-mat-select-search": ">=3.3.3",
+    "nouislider": ">=15.5.0"
   },
   "schematics": "./schematics/migrations.json",
   "ng-update": {
