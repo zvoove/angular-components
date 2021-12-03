@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/prosoft-edv/components/compare/@prosoft/components@3.0.2...@prosoft/components@3.1.0) (2021-12-03)
+
+
+### Features
+
+* add auto-form-array ([#196](https://github.com/prosoft-edv/components/issues/196)) ([72f2bb0](https://github.com/prosoft-edv/components/commit/72f2bb030b81eeec7cd5b4fa9d57d7d7e66ab569))
+
+
+
+
+
+
 ## [3.0.2](https://github.com/prosoft-edv/components/compare/@prosoft/components@2.0.0-alpha.15...@prosoft/components@3.0.2) (2021-11-25)
 
 
