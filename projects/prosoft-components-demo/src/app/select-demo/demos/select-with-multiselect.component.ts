@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { of, Observable } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-select-with-multiselect',
@@ -28,7 +28,7 @@ import { of, Observable } from 'rxjs';
 export class SelectWithMultiselectComponent {
   public showToggleAll = true;
   public items$: Observable<any[]> = of(
-    Array.from(Array(500).keys()).map(i => ({
+    Array.from(Array(500).keys()).map((i) => ({
       value: `id${i}`,
       label: `Item ${i}`,
     }))

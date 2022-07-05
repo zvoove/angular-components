@@ -38,6 +38,8 @@ let nextUniqueId = 0;
 // Boilerplate for applying mixins to PsNumberInput.
 /** @docs-private */
 class PsNumberInputBase {
+  readonly stateChanges = new Subject<void>();
+
   constructor(
     public _defaultErrorStateMatcher: ErrorStateMatcher,
     public _parentForm: NgForm,
