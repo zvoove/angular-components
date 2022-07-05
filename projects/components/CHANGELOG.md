@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/prosoft-edv/components/compare/@prosoft/components@3.1.0...@prosoft/components@4.0.0) (2022-07-05)
+
+
+### Features
+
+* angular 14 update ([e36742c](https://github.com/prosoft-edv/components/commit/e36742ce4b6e4bc5de554dee2e02848f738a7c67))
+
+
+
+
+
 # [3.1.0](https://github.com/prosoft-edv/components/compare/@prosoft/components@3.0.2...@prosoft/components@3.1.0) (2021-12-03)
 
 
