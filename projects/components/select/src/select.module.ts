@@ -22,7 +22,6 @@ import { PsSelectService } from './select.service';
   ],
   declarations: [PsSelectComponent, PsSelectOptionTemplateDirective, PsSelectTriggerTemplateDirective],
   exports: [MatSelectModule, PsSelectComponent, PsSelectOptionTemplateDirective, PsSelectTriggerTemplateDirective],
-  entryComponents: [],
 })
 export class PsSelectModule {
   public static forRoot(selectServiceType: any): ModuleWithProviders<PsSelectModule> {

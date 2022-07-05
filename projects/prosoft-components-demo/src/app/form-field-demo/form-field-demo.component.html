@@ -297,8 +297,8 @@
             <mat-radio-button [value]="false" style="padding-right: 8px">Nein</mat-radio-button>
             <button
               mat-icon-button
-              [disabled]="form.get('Radio').disabled || form.get('Radio').value === null"
-              (click)="form.get('Radio').patchValue(null)"
+              [disabled]="form.controls.radio.disabled || form.controls.radio.value === null"
+              (click)="form.controls.radio.patchValue(null)"
               style="height: 20px; width: 20px; line-height: 20px"
             >
               <mat-icon style="line-height: 20px">clear</mat-icon>

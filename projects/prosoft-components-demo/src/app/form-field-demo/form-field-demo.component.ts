@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { of } from 'rxjs';
-import { PsFormFieldSubscriptType } from '@prosoft/components/form-field';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { PsFormFieldSubscriptType } from '@prosoft/components/form-field';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-reference-column',

@@ -55,6 +55,31 @@
         "@angular-eslint/relative-url-prefix": "error",
         "@angular-eslint/use-lifecycle-interface": "error",
         "@typescript-eslint/consistent-type-assertions": "off",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "default",
+            "format": ["camelCase"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "allow"
+          },
+
+          {
+            "selector": "variable",
+            "format": ["camelCase", "UPPER_CASE"],
+            "leadingUnderscore": "allow",
+            "trailingUnderscore": "allow"
+          },
+
+          {
+            "selector": "typeLike",
+            "format": ["PascalCase"]
+          },
+          {
+            "selector": "objectLiteralProperty",
+            "format": null
+          }
+        ],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/explicit-member-accessibility": [
           "off",

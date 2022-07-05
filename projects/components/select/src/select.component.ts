@@ -40,6 +40,8 @@ const enum ValueChangeSource {
 // Boilerplate for applying mixins to MatSelect.
 /** @docs-private */
 class PsSelectBase {
+  readonly stateChanges = new Subject<void>();
+
   constructor(
     public _elementRef: ElementRef,
     public _defaultErrorStateMatcher: ErrorStateMatcher,

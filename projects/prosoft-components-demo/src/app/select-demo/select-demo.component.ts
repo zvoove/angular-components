@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEnca
 import { FormControl, FormGroup } from '@angular/forms';
 import { DefaultPsSelectDataSource, PsSelectLoadTrigger, PsSelectSortBy } from '@prosoft/components/select';
 import { NEVER, of, throwError } from 'rxjs';
-import { tap, delay } from 'rxjs/operators';
+import { delay, tap } from 'rxjs/operators';
 
 declare type DemoDataSourceItems = 'default' | 'error' | 'loading' | 'empty';
 

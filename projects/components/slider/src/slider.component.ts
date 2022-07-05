@@ -21,6 +21,7 @@ import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@an
 import { ErrorStateMatcher, mixinErrorState } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { API, create, Options } from 'nouislider';
+import { Subject } from 'rxjs';
 import { DefaultFormatter } from './formatter';
 
 declare type PsSliderConnect = boolean | boolean[];
@@ -28,6 +29,8 @@ declare type PsSliderConnect = boolean | boolean[];
 // Boilerplate for applying mixins to PsSlider.
 /** @docs-private */
 export class PsSliderBase {
+  readonly stateChanges = new Subject<void>();
+
   constructor(
     public _defaultErrorStateMatcher: ErrorStateMatcher,
     public _parentForm: NgForm,
