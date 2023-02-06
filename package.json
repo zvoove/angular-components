@@ -15,7 +15,6 @@
     "e2e": "ng e2e",
     "commit": "git-cz",
     "release:test": "ng lint components && ng test components --watch false",
-    "release": "lerna version",
     "copy:schemas": "copyfiles -u 3 projects/components/schematics/*/schema.json dist/components/schematics/",
     "copy:files": "copyfiles -u 3 projects/components/schematics/*/files/** dist/components/schematics/",
     "copy:collection": "copyfiles -f projects/components/schematics/migrations.json dist/components/schematics/",
@@ -52,8 +51,6 @@
     "@angular/cli": "^14.0.4",
     "@angular/compiler-cli": "^14.0.4",
     "@angular/language-service": "^14.0.4",
-    "@commitlint/cli": "^17.0.3",
-    "@commitlint/config-conventional": "^17.0.3",
     "@types/jasmine": "~3.10.2",
     "@types/jasminewd2": "~2.0.10",
     "@types/node": "^18.0.1",
@@ -76,7 +73,6 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.7.0",
-    "lerna": "^5.1.6",
     "lint-staged": "^13.0.3",
     "ng-packagr": "^14.0.2",
     "prettier": "^2.7.1",
@@ -92,10 +88,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
   }
 }
