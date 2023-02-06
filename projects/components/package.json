@@ -1,17 +1,7 @@
 {
   "name": "@prosoft/components",
   "description": "",
-  "keywords": [
-    "angular",
-    "material",
-    "components"
-  ],
-  "homepage": "https://github.com/prosoft-edv/components",
-  "bugs": {
-    "url": "https://github.com/prosoft-edv/components/issues"
-  },
-  "license": "MIT",
-  "version": "4.0.0",
+  "version": "4.0.3",
   "dependencies": {
     "jsdom": "^20.0.0",
     "tslib": "^2.3.1"

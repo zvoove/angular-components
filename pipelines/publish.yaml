@@ -1,0 +1,30 @@
+trigger: none
+
+pool:
+  name: zvoove Regensburg
+
+jobs:
+  - job: Build
+    displayName: 'publish'
+    workspace:
+      clean: all
+    steps:
+      - task: Npm@1
+        inputs:
+          command: 'ci'
+        displayName: 'Npm install dependancies'
+
+      - task: Npm@1
+        inputs:
+          command: custom
+          customCommand: 'run build:components'
+        displayName: 'Npm build'
+
+      - task: Npm@1
+        inputs:
+          command: 'publish'
+          workingDir: 'dist/components'
+          verbose: false
+          publishRegistry: 'useFeed'
+          publishFeed: 'ddd069d1-3bbd-4d00-abd2-18cca04c9464'
+        displayName: Npm publish feed

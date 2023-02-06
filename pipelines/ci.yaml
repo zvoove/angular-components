@@ -1,0 +1,39 @@
+trigger: none
+
+pool:
+  name: zvoove Regensburg
+
+jobs:
+  - job: Build
+    displayName: 'CI checks'
+    workspace:
+      clean: all
+    steps:
+      - task: Npm@1
+        inputs:
+          command: 'ci'
+        displayName: 'Npm install dependancies'
+
+      - task: Npm@1
+        inputs:
+          command: custom
+          customCommand: 'run build:components'
+        displayName: 'Npm build'
+
+      - task: Npm@1
+        inputs:
+          command: custom
+          customCommand: 'run ng -- test components --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox'
+        displayName: 'Npm test components'
+
+      - task: Npm@1
+        inputs:
+          command: custom
+          customCommand: 'run test:schematics'
+        displayName: 'Npm test schematics'
+
+      - task: Npm@1
+        inputs:
+          command: custom
+          customCommand: 'run lint'
+        displayName: 'Npm lint'
