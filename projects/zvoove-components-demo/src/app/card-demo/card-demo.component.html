@@ -1,0 +1,102 @@
+<zv-card [caption]="'Card with simple caption'" [description]="'Here you see the simple card caption with some description text'">
+  <div class="app-card-demo__content-wrapper">
+    <h2 class="app-card-demo__content">Content goes here</h2>
+  </div>
+</zv-card>
+
+<zv-card class="app-card-demo__zv-card" [caption]="'Card with actions'" [description]="'Here you see the zv-card with an action'">
+  <ng-container *zvCardTopButtonSection>
+    <button mat-mini-fab color="primary">
+      <mat-icon>add</mat-icon>
+    </button>
+  </ng-container>
+  <div class="app-card-demo__content-wrapper">
+    <h2 class="app-card-demo__content">Content goes here</h2>
+  </div>
+</zv-card>
+
+<zv-card class="app-card-demo__zv-card" [caption]="'Card with footer'" [description]="'Here you see the zv-card with a footer'">
+  <ng-container *zvCardTopButtonSection>
+    <button mat-raised-button color="primary">
+      <mat-icon>add</mat-icon>
+      Add
+    </button>
+    <button style="margin-left: 1em" mat-raised-button color="accent">
+      <mat-icon>edit</mat-icon>
+      Edit
+    </button>
+  </ng-container>
+  <div class="app-card-demo__content-wrapper">
+    <h2 class="app-card-demo__content">Content goes here</h2>
+  </div>
+  <ng-container *zvCardFooterSection> <strong>This is some footer: </strong>someValue </ng-container>
+</zv-card>
+
+<zv-card class="app-card-demo__zv-card">
+  <ng-container *zvCardCaptionSection>
+    <h1 style="background-color: cyan">Card with custom caption</h1>
+  </ng-container>
+  <ng-container *zvCardDescriptionSection>
+    <span style="background-color: lightblue">You can also set a custom description</span>
+  </ng-container>
+  <ng-container *zvCardTopButtonSection>
+    <button mat-mini-fab color="primary">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button style="margin-left: 1em" mat-mini-fab color="accent">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button style="margin-left: 1em" mat-mini-fab color="warn">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </ng-container>
+  <div class="app-card-demo__content-wrapper">
+    <h2 class="app-card-demo__content">Content goes here</h2>
+  </div>
+  <ng-container *zvCardFooterSection> <strong>This is some footer: </strong>someValue </ng-container>
+</zv-card>
+
+<zv-card class="app-card-demo__zv-card">
+  <ng-container *zvCardCaptionSection>
+    <h1 style="background-color: cyan">Card with actions</h1>
+  </ng-container>
+  <ng-container *zvCardDescriptionSection>
+    <span style="background-color: lightblue">You can also set a custom description</span>
+  </ng-container>
+  <ng-container *zvCardTopButtonSection>
+    <button mat-mini-fab color="primary">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button style="margin-left: 1em" mat-mini-fab color="accent">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button style="margin-left: 1em" mat-mini-fab color="warn">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </ng-container>
+  <div class="app-card-demo__content-wrapper">
+    <h2 class="app-card-demo__content">Content goes here</h2>
+  </div>
+  <ng-container *zvCardActionsSection>
+    <div style="text-align: right">
+      <button mat-button color="primary">Add</button>
+      <button mat-stroked-button>Cancel</button>
+    </div>
+  </ng-container>
+  <ng-container *zvCardFooterSection> <strong>This is some footer: </strong>someValue </ng-container>
+</zv-card>
+
+<zv-card class="app-card-demo__zv-card" style="height: 450px">
+  <div class="app-card-demo__content-wrapper">
+    <h2 class="app-card-demo__content">Card without header stretches to full height regardless of content height</h2>
+  </div>
+  <ng-container *zvCardFooterSection>Is always at the bottom</ng-container>
+</zv-card>
+
+<zv-card class="app-card-demo__zv-card" [caption]="'Card with header stretches to full height'" style="height: 450px">
+  <div class="app-card-demo__content-wrapper">
+    <h2 class="app-card-demo__content">Content goes here</h2>
+  </div>
+</zv-card>
+
+<div style="margin-bottom: 2em"></div>

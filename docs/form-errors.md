@@ -1,24 +1,24 @@
 <link href="style.css" rel="stylesheet"></link>
 
-# PsFormErrors <a name="PsFormErrors"></a>
+# ZvFormErrors <a name="ZvFormErrors"></a>
 
-`<ps-form-errors>` is a control that extracts all validation errors from a given 'FormGroup' and shows them as chips.
+`<zv-form-errors>` is a control that extracts all validation errors from a given 'FormGroup' and shows them as chips.
 
 ---
 
-## API <a name="PsFormErrorsApi"></a>
+## API <a name="ZvFormErrorsApi"></a>
 
-### Import <a name="PsFormErrorsImport"></a>
+### Import <a name="ZvFormErrorsImport"></a>
 
 ```ts | js
-import { PsFormErrorsModule } from '@prosoft/components/form-errors';
+import { ZvFormErrorsModule } from '@zvoove/components/form-errors';
 ```
 
 ---
 
-## PsFormErrorsComponent <a name="PsFormErrorsComponent"></a>
+## ZvFormErrorsComponent <a name="ZvFormErrorsComponent"></a>
 
-### Properties <a name="PsFormErrorsComponentProperties"></a>
+### Properties <a name="ZvFormErrorsComponentProperties"></a>
 
 | Name              | Description                                             |
 | ----------------- | ------------------------------------------------------- |
@@ -26,26 +26,26 @@ import { PsFormErrorsModule } from '@prosoft/components/form-errors';
 
 ---
 
-## Prerequisites/Requirements <a name="PsFormErrorsRequirements"></a>
+## Prerequisites/Requirements <a name="ZvFormErrorsRequirements"></a>
 
-1. You have to override `BasePsFormService` and implement the following two functions:
+1. You have to override `BaseZvFormService` and implement the following two functions:
 
 - > `getLabel(formControl: any): Observable<string>` which should return the FormControls label.
-- > `mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]>` which should return `IPsFormError` with the required information `errorText` and `data`.
+- > `mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]>` which should return `IZvFormError` with the required information `errorText` and `data`.
 
-2. Import the PsFormBaseModule using `.forRoot()` with the created service in your AppModule. Like this:
-   `PsFormBaseModule.forRoot(DemoPsFormsService)`
+2. Import the ZvFormBaseModule using `.forRoot()` with the created service in your AppModule. Like this:
+   `ZvFormBaseModule.forRoot(DemoZvFormsService)`
 
 ---
 
-## Implementation <a name="PsFormErrorsImplementation"></a>
+## Implementation <a name="ZvFormErrorsImplementation"></a>
 
 Import the module into your module.
 
 ```ts | js
 @NgModule({
   declarations: [MyComponent],
-  imports: [PsFormErrorsModule],
+  imports: [ZvFormErrorsModule],
 })
 export class MyModule {}
 ```
@@ -53,5 +53,5 @@ export class MyModule {}
 Now you can use it in your components like this:
 
 ```html
-<ps-form-errors [form]="form"></ps-form-errors>
+<zv-form-errors [form]="form"></zv-form-errors>
 ```

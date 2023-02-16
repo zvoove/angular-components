@@ -6,10 +6,10 @@ import { MatPaginator, MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { IPsTableIntlTexts } from '../..';
-import { PsTablePaginationComponent } from './table-pagination.component';
+import { IZvTableIntlTexts } from '../..';
+import { ZvTablePaginationComponent } from './table-pagination.component';
 
-const testIntl: IPsTableIntlTexts = {
+const testIntl: IZvTableIntlTexts = {
   firstPageLabel: 'a',
   lastPageLabel: 'b',
   previousPageLabel: 'c',
@@ -28,7 +28,7 @@ const testIntl: IPsTableIntlTexts = {
 
 @Component({
   template: `
-    <ps-table-pagination
+    <zv-table-pagination
       [pageSize]="pageSize"
       [dataLength]="dataLength"
       [pageIndex]="pageIndex"
@@ -36,7 +36,7 @@ const testIntl: IPsTableIntlTexts = {
       [intl]="intl"
       [pageDebounce]="pageDebounce"
       (page)="onPage($event)"
-    ></ps-table-pagination>
+    ></zv-table-pagination>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -48,18 +48,18 @@ class PaginationTestComponent {
   public intl = testIntl;
   public pageDebounce: number;
 
-  @ViewChild(PsTablePaginationComponent)
-  public pagination: PsTablePaginationComponent;
+  @ViewChild(ZvTablePaginationComponent)
+  public pagination: ZvTablePaginationComponent;
 
   public onPage = (_: PageEvent) => {};
 }
 
-describe('PsTablePaginationComponent', () => {
+describe('ZvTablePaginationComponent', () => {
   describe('Unit tests', () => {
-    let component: PsTablePaginationComponent;
+    let component: ZvTablePaginationComponent;
     const cd = { markForCheck: () => {} } as ChangeDetectorRef;
     beforeEach(() => {
-      component = new PsTablePaginationComponent(cd);
+      component = new ZvTablePaginationComponent(cd);
     });
 
     it('should set Intl correctly', () => {
@@ -94,13 +94,13 @@ describe('PsTablePaginationComponent', () => {
     let debugElement: DebugElement;
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [PaginationTestComponent, PsTablePaginationComponent],
+        declarations: [PaginationTestComponent, ZvTablePaginationComponent],
         imports: [BrowserAnimationsModule, FormsModule, MatPaginatorModule, MatSelectModule, MatCardModule],
       });
 
       fixture = TestBed.createComponent(PaginationTestComponent);
       component = fixture.componentInstance;
-      debugElement = fixture.debugElement.query(By.directive(PsTablePaginationComponent));
+      debugElement = fixture.debugElement.query(By.directive(ZvTablePaginationComponent));
 
       fixture.detectChanges();
     });

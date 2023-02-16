@@ -1,2 +1,2 @@
-export { PsBlockUiComponent } from './src/block-ui.component';
-export { PsBlockUiModule } from './src/block-ui.module';
+export { ZvBlockUiComponent } from './src/block-ui.component';
+export { ZvBlockUiModule } from './src/block-ui.module';

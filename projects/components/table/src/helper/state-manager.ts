@@ -1,16 +1,16 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
-import { IPsTableUpdateDataInfo } from '../models';
+import { IZvTableUpdateDataInfo } from '../models';
 import { asQueryParams, fromQueryParams } from './table.helper';
 
-export abstract class PsTableStateManager {
+export abstract class ZvTableStateManager {
   abstract remove(tableId: string): void;
-  abstract createStateSource(tableId: string): Observable<IPsTableUpdateDataInfo>;
-  abstract requestUpdate(tableId: string, updateInfo: IPsTableUpdateDataInfo): void;
+  abstract createStateSource(tableId: string): Observable<IZvTableUpdateDataInfo>;
+  abstract requestUpdate(tableId: string, updateInfo: IZvTableUpdateDataInfo): void;
 }
 
-export class PsTableUrlStateManager extends PsTableStateManager {
+export class ZvTableUrlStateManager extends ZvTableStateManager {
   constructor(private router: Router, private route: ActivatedRoute) {
     super();
   }
@@ -43,7 +43,7 @@ export class PsTableUrlStateManager extends PsTableStateManager {
     );
   }
 
-  public requestUpdate(tableId: string, updateInfo: IPsTableUpdateDataInfo) {
+  public requestUpdate(tableId: string, updateInfo: IZvTableUpdateDataInfo) {
     const newQueryParams: { [id: string]: any } = {};
 
     const currentParams = this.route.snapshot.queryParamMap;
@@ -62,8 +62,8 @@ export class PsTableUrlStateManager extends PsTableStateManager {
   }
 }
 
-export class PsTableMemoryStateManager extends PsTableStateManager {
-  private settings$ = new BehaviorSubject<IPsTableUpdateDataInfo>(null);
+export class ZvTableMemoryStateManager extends ZvTableStateManager {
+  private settings$ = new BehaviorSubject<IZvTableUpdateDataInfo>(null);
 
   public remove(_tableId: string) {
     this.settings$.next(null);
@@ -73,7 +73,7 @@ export class PsTableMemoryStateManager extends PsTableStateManager {
     return this.settings$.asObservable();
   }
 
-  public requestUpdate(_tableId: string, updateInfo: IPsTableUpdateDataInfo) {
+  public requestUpdate(_tableId: string, updateInfo: IZvTableUpdateDataInfo) {
     this.settings$.next(updateInfo);
   }
 }

@@ -1,6 +1,6 @@
-<ps-flip-container [animation]="'fade'">
-  <div *psFlipContainerFront>
-    <ps-table-header
+<zv-flip-container [animation]="'fade'">
+  <div *zvFlipContainerFront>
+    <zv-table-header
       [intl]="intl"
       [caption]="caption"
       [topButtonSection]="topButtonSection"
@@ -14,10 +14,10 @@
       [searchText]="filterText"
       (sortChanged)="onSortChanged($event)"
       (searchChanged)="onSearchChanged($event)"
-    ></ps-table-header>
+    ></zv-table-header>
 
-    <ps-block-ui [class.ps-table__shadow]="layout === 'card'" [blocked]="showLoading" [clickthrough]="true">
-      <ps-table-data
+    <zv-block-ui [class.zv-table__shadow]="layout === 'card'" [blocked]="showLoading" [clickthrough]="true">
+      <zv-table-data
         [intl]="intl"
         [dataSource]="dataSource"
         [tableId]="tableId"
@@ -31,11 +31,11 @@
         [displayedColumns]="displayedColumns"
         (showSettingsClicked)="flipContainer.showBack()"
         (refreshDataClicked)="onRefreshDataClicked()"
-      ></ps-table-data>
+      ></zv-table-data>
 
-      <div class="ps-table__no-entries-text" *ngIf="showNoEntriesText">{{ intl.noEntriesLabel }}</div>
-      <div class="ps-table__error-text" *ngIf="showError">{{ errorMessage }}</div>
-      <ps-table-pagination
+      <div class="zv-table__no-entries-text" *ngIf="showNoEntriesText">{{ intl.noEntriesLabel }}</div>
+      <div class="zv-table__error-text" *ngIf="showError">{{ errorMessage }}</div>
+      <zv-table-pagination
         [pageSize]="pageSize"
         [dataLength]="dataLength"
         [pageIndex]="pageIndex"
@@ -43,11 +43,11 @@
         [intl]="intl"
         [pageDebounce]="pageDebounce"
         (page)="onPage($event)"
-      ></ps-table-pagination>
-    </ps-block-ui>
+      ></zv-table-pagination>
+    </zv-block-ui>
   </div>
-  <div *psFlipContainerBack>
-    <ps-table-settings
+  <div *zvFlipContainerBack>
+    <zv-table-settings
       *ngIf="settingsEnabled"
       [tableId]="tableId"
       [intl]="intl"
@@ -58,6 +58,6 @@
       (settingsSaved)="onSettingsSaved()"
       [customSettings]="customSettings"
     >
-    </ps-table-settings>
+    </zv-table-settings>
   </div>
-</ps-flip-container>
+</zv-flip-container>

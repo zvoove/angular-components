@@ -1,14 +1,14 @@
 import { ContentContainerComponentHarness, HarnessPredicate, TestElement } from '@angular/cdk/testing';
 
-export class PsTableHeaderHarness extends ContentContainerComponentHarness {
-  static hostSelector = 'ps-table-header';
+export class ZvTableHeaderHarness extends ContentContainerComponentHarness {
+  static hostSelector = 'zv-table-header';
 
-  private _caption = this.locatorForOptional('.ps-table-header__caption');
-  private _customHeader = this.locatorForAll('.ps-table-header__custom-content > *');
-  private _topButtonSection = this.locatorForAll('.ps-table-header__actions > *');
+  private _caption = this.locatorForOptional('.zv-table-header__caption');
+  private _customHeader = this.locatorForAll('.zv-table-header__custom-content > *');
+  private _topButtonSection = this.locatorForAll('.zv-table-header__actions > *');
 
-  static with(): HarnessPredicate<PsTableHeaderHarness> {
-    return new HarnessPredicate(PsTableHeaderHarness, {});
+  static with(): HarnessPredicate<ZvTableHeaderHarness> {
+    return new HarnessPredicate(ZvTableHeaderHarness, {});
   }
 
   public async getCaption(): Promise<string> {

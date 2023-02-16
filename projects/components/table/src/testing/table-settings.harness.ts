@@ -1,9 +1,9 @@
 import { ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
 
-export class PsTableSettingsHarness extends ContentContainerComponentHarness {
-  static hostSelector = 'ps-table-settings';
+export class ZvTableSettingsHarness extends ContentContainerComponentHarness {
+  static hostSelector = 'zv-table-settings';
 
-  static with(): HarnessPredicate<PsTableSettingsHarness> {
-    return new HarnessPredicate(PsTableSettingsHarness, {});
+  static with(): HarnessPredicate<ZvTableSettingsHarness> {
+    return new HarnessPredicate(ZvTableSettingsHarness, {});
   }
 }

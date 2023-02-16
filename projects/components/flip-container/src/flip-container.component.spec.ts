@@ -3,16 +3,16 @@ import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PsFlipContainerComponent } from './flip-container.component';
-import { PsFlipContainerModule } from './flip-container.module';
+import { ZvFlipContainerComponent } from './flip-container.component';
+import { ZvFlipContainerModule } from './flip-container.module';
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-flip-container [removeHiddenNodes]="removeHiddenNodes">
-      <div *psFlipContainerFront><span>front</span></div>
-      <div *psFlipContainerBack><span>back</span></div>
-    </ps-flip-container>
+    <zv-flip-container [removeHiddenNodes]="removeHiddenNodes">
+      <div *zvFlipContainerFront><span>front</span></div>
+      <div *zvFlipContainerBack><span>back</span></div>
+    </zv-flip-container>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -20,25 +20,23 @@ import { PsFlipContainerModule } from './flip-container.module';
 export class TestComponent {
   public removeHiddenNodes = true;
 
-  @ViewChild(PsFlipContainerComponent, { static: true }) cmp: PsFlipContainerComponent;
+  @ViewChild(ZvFlipContainerComponent, { static: true }) cmp: ZvFlipContainerComponent;
 }
 
-describe('PsFlipContainerComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, PsFlipContainerModule],
-        declarations: [TestComponent],
-      }).compileComponents();
-    })
-  );
+describe('ZvFlipContainerComponent', () => {
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [NoopAnimationsModule, CommonModule, ZvFlipContainerModule],
+      declarations: [TestComponent],
+    }).compileComponents();
+  }));
 
   it('should initially show front and correctly switch between front and back', fakeAsync(() => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    const flipBoxDbg = fixture.debugElement.query(By.css('.ps-flip-container__flip-box'));
+    const flipBoxDbg = fixture.debugElement.query(By.css('.zv-flip-container__flip-box'));
     expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
     expect(component.cmp.active).toEqual('front');
 
@@ -121,8 +119,8 @@ describe('PsFlipContainerComponent', () => {
     component.removeHiddenNodes = false;
     fixture.detectChanges();
 
-    const backEl = fixture.debugElement.query(By.css('.ps-flip-container__side__back')).nativeElement;
-    const frontEl = fixture.debugElement.query(By.css('.ps-flip-container__side__front')).nativeElement;
+    const backEl = fixture.debugElement.query(By.css('.zv-flip-container__side__back')).nativeElement;
+    const frontEl = fixture.debugElement.query(By.css('.zv-flip-container__side__front')).nativeElement;
 
     expect(backEl.hidden).toEqual(true);
     expect(backEl.children.length).toEqual(1);
@@ -147,8 +145,8 @@ describe('PsFlipContainerComponent', () => {
     component.removeHiddenNodes = true;
     fixture.detectChanges();
 
-    const backEl = fixture.debugElement.query(By.css('.ps-flip-container__side__back')).nativeElement;
-    const frontEl = fixture.debugElement.query(By.css('.ps-flip-container__side__front')).nativeElement;
+    const backEl = fixture.debugElement.query(By.css('.zv-flip-container__side__back')).nativeElement;
+    const frontEl = fixture.debugElement.query(By.css('.zv-flip-container__side__front')).nativeElement;
 
     expect(backEl.hidden).toEqual(true);
     expect(backEl.children.length).toEqual(0);

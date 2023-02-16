@@ -1,33 +1,21 @@
 import { FormGroup } from '@angular/forms';
-import { IPsButton, IPsException } from '@prosoft/components/core';
-import { IPsSavebarMode } from '@prosoft/components/savebar';
+import { IZvButton, IZvException } from '@zvoove/components/core';
 import { Observable } from 'rxjs';
 
-/**
- * @deprecated Will be replaced with IPsBtton
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface IPsFormButton extends IPsButton {}
-
-/**
- * @deprecated Will be replaced with IPsException
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface IPsFormException extends IPsException {}
-
-export interface IPsFormDataSourceConnectOptions {
+export declare type IZvSavebarMode = 'sticky' | 'fixed' | 'auto' | 'hide';
+export interface IZvFormDataSourceConnectOptions {
   errorInView$: Observable<boolean>;
   scrollToError(): void;
 }
 
-export interface IPsFormDataSource {
+export interface IZvFormDataSource {
   readonly form: FormGroup;
   readonly autocomplete: 'on' | 'off';
-  readonly buttons: IPsButton[];
+  readonly buttons: IZvButton[];
   readonly contentVisible: boolean;
   readonly contentBlocked: boolean;
-  readonly exception: IPsException | null;
-  readonly savebarMode: IPsSavebarMode;
-  connect(options: IPsFormDataSourceConnectOptions): Observable<void>;
+  readonly exception: IZvException | null;
+  readonly savebarMode: IZvSavebarMode;
+  connect(options: IZvFormDataSourceConnectOptions): Observable<void>;
   disconnect(): void;
 }

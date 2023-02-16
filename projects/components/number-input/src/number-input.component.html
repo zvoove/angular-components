@@ -1,4 +1,4 @@
-<div class="ps-number-input__wrapper">
+<div class="zv-number-input__wrapper">
   <input
     #inputfield
     type="text"
@@ -15,11 +15,11 @@
     (input)="_onInput($event)"
     (focus)="_onFocusChanged(true)"
     (blur)="_onFocusChanged(false)"
-    class="ps-number-input__input mat-input-element"
+    class="zv-number-input__input mat-input-element"
   />
   <button
     type="button"
-    class="ps-number-input__button-up"
+    class="zv-number-input__button-up"
     [disabled]="disabled || readonly"
     tabindex="-1"
     [attr.readonly]="readonly"
@@ -31,7 +31,7 @@
   </button>
   <button
     type="button"
-    class="ps-number-input__button-down"
+    class="zv-number-input__button-down"
     [disabled]="disabled || readonly"
     tabindex="-1"
     [attr.readonly]="readonly"

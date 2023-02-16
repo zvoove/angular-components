@@ -24,11 +24,11 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getSelectUnknownDataSourceError } from './errors';
-import { PsSelectItem } from './models';
-import { DEFAULT_COMPARER, isPsSelectDataSource, PsSelectDataSource } from './select-data-source';
-import { PsSelectOptionTemplateDirective } from './select-option-template.directive';
-import { PsSelectTriggerTemplateDirective } from './select-trigger-template.directive';
-import { PsSelectService } from './select.service';
+import { ZvSelectItem } from './models';
+import { DEFAULT_COMPARER, isZvSelectDataSource, ZvSelectDataSource } from './select-data-source';
+import { ZvSelectOptionTemplateDirective } from './select-option-template.directive';
+import { ZvSelectTriggerTemplateDirective } from './select-trigger-template.directive';
+import { ZvSelectService } from './select.service';
 
 const enum ValueChangeSource {
   matSelect = 1,
@@ -39,7 +39,7 @@ const enum ValueChangeSource {
 
 // Boilerplate for applying mixins to MatSelect.
 /** @docs-private */
-class PsSelectBase {
+class ZvSelectBase {
   readonly stateChanges = new Subject<void>();
 
   constructor(
@@ -51,10 +51,10 @@ class PsSelectBase {
   ) {}
 }
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const _PsSelectMixinBase = mixinDisabled(mixinErrorState(PsSelectBase));
+const _ZvSelectMixinBase = mixinDisabled(mixinErrorState(ZvSelectBase));
 
 @Component({
-  selector: 'ps-select',
+  selector: 'zv-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -63,26 +63,26 @@ const _PsSelectMixinBase = mixinDisabled(mixinErrorState(PsSelectBase));
   inputs: ['disabled'],
   // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
-    '[class.ps-select-multiple]': 'multiple',
-    '[class.ps-select-disabled]': 'disabled',
-    '[class.ps-select-invalid]': 'errorState',
-    '[class.ps-select-required]': 'required',
-    '[class.ps-select-empty]': 'empty',
-    class: 'ps-select',
+    '[class.zv-select-multiple]': 'multiple',
+    '[class.zv-select-disabled]': 'disabled',
+    '[class.zv-select-invalid]': 'errorState',
+    '[class.zv-select-required]': 'required',
+    '[class.zv-select-empty]': 'empty',
+    class: 'zv-select',
   },
-  providers: [{ provide: MatFormFieldControl, useExisting: PsSelectComponent }],
+  providers: [{ provide: MatFormFieldControl, useExisting: ZvSelectComponent }],
 })
-export class PsSelectComponent<T = unknown>
-  extends _PsSelectMixinBase
+export class ZvSelectComponent<T = unknown>
+  extends _ZvSelectMixinBase
   implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy
 {
   public static nextId = 0;
-  @HostBinding() public id = `ps-select-${PsSelectComponent.nextId++}`;
+  @HostBinding() public id = `zv-select-${ZvSelectComponent.nextId++}`;
 
-  @ContentChild(PsSelectOptionTemplateDirective, { read: TemplateRef })
+  @ContentChild(ZvSelectOptionTemplateDirective, { read: TemplateRef })
   public optionTemplate: TemplateRef<any> | null = null;
 
-  @ContentChild(PsSelectTriggerTemplateDirective, { read: TemplateRef })
+  @ContentChild(ZvSelectTriggerTemplateDirective, { read: TemplateRef })
   public triggerTemplate: TemplateRef<any> | null = null;
 
   @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
@@ -169,13 +169,13 @@ export class PsSelectComponent<T = unknown>
     return this._dataSourceInstance?.compareWith ?? DEFAULT_COMPARER;
   }
 
-  public readonly controlType = 'ps-select';
+  public readonly controlType = 'zv-select';
 
   /** FormControl for the search filter */
   public filterCtrl = new FormControl('');
 
   /** The items to display */
-  public items: PsSelectItem<T>[] | ReadonlyArray<PsSelectItem<T>> = [];
+  public items: ZvSelectItem<T>[] | ReadonlyArray<ZvSelectItem<T>> = [];
 
   public toggleAllCheckboxChecked = false;
   public toggleAllCheckboxIndeterminate = false;
@@ -244,7 +244,7 @@ export class PsSelectComponent<T = unknown>
   private _renderChangeSubscription = Subscription.EMPTY;
 
   /** The data source. */
-  private _dataSourceInstance: PsSelectDataSource<T>;
+  private _dataSourceInstance: ZvSelectDataSource<T>;
 
   /** The value the [dataSource] input was called with. */
   private _dataSourceInput: any;
@@ -259,7 +259,7 @@ export class PsSelectComponent<T = unknown>
   constructor(
     elementRef: ElementRef,
     defaultErrorStateMatcher: ErrorStateMatcher,
-    private selectService: PsSelectService,
+    private selectService: ZvSelectService,
     private cd: ChangeDetectorRef,
     @Optional() parentForm: NgForm,
     @Optional() parentFormGroup: FormGroupDirective,
@@ -339,11 +339,11 @@ export class PsSelectComponent<T = unknown>
   }
 
   public onToggleAll(state: boolean) {
-    const newValue = state ? (this.items as PsSelectItem<T>[]).map((x) => x.value) : [];
+    const newValue = state ? (this.items as ZvSelectItem<T>[]).map((x) => x.value) : [];
     this._propagateValueChange(newValue, ValueChangeSource.toggleAll);
   }
 
-  public trackByOptions(_: number, item: PsSelectItem<T>) {
+  public trackByOptions(_: number, item: ZvSelectItem<T>) {
     return `${item.value}#${item.label}`;
   }
 
@@ -386,7 +386,7 @@ export class PsSelectComponent<T = unknown>
     this._renderChangeSubscription.unsubscribe();
 
     this._dataSourceInstance = this.selectService.createDataSource(dataSource, this.ngControl?.control);
-    if (!isPsSelectDataSource(this._dataSourceInstance)) {
+    if (!isZvSelectDataSource(this._dataSourceInstance)) {
       throw getSelectUnknownDataSourceError();
     }
 

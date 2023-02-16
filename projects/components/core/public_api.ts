@@ -1,5 +1,5 @@
-export { IPsButton } from './src/button';
-export { PsErrorMessagePipe, PsErrorMessagePipeModule } from './src/error-message.pipe';
-export { IPsException } from './src/exception';
-export { PsExceptionMessageExtractor } from './src/exception-message-extractor.service';
-export { IPsSavebarIntlTexts, IPsTableIntlTexts, PsIntlKeys, PsIntlService, PsIntlServiceEn } from './src/intl';
+export { IZvButton } from './src/button';
+export { ZvErrorMessagePipe, ZvErrorMessagePipeModule } from './src/error-message.pipe';
+export { IZvException } from './src/exception';
+export { ZvExceptionMessageExtractor } from './src/exception-message-extractor.service';
+export { IZvSavebarIntlTexts, IZvTableIntlTexts, ZvIntlKeys, ZvIntlService, ZvIntlServiceEn } from './src/intl';

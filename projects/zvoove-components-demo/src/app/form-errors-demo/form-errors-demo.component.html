@@ -1,0 +1,9 @@
+<h1>Form Errors Demo</h1>
+
+<div [formGroup]="form">
+  <input type="text" [formControlName]="'input1'" />
+  <input type="text" [formControlName]="'input2'" />
+</div>
+
+Errors:
+<zv-form-errors [form]="form"></zv-form-errors>

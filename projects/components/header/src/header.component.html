@@ -1,16 +1,16 @@
-<div class="ps-header__text">
-  <div class="ps-header__caption mat-title">
+<div class="zv-header__text">
+  <div class="zv-header__caption mat-title">
     <ng-container *ngIf="caption; else customCaptionTemplate">
       {{ caption }}
     </ng-container>
   </div>
-  <div class="ps-header__description mat-body">
+  <div class="zv-header__description mat-body">
     <ng-container *ngIf="description; else customDescriptionTemplate">
       {{ description }}
     </ng-container>
   </div>
 </div>
-<div *ngIf="topButtonSection" class="ps-header__actions">
+<div *ngIf="topButtonSection" class="zv-header__actions">
   <ng-container [ngTemplateOutlet]="topButtonSection"></ng-container>
 </div>
 

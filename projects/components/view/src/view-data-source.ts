@@ -1,10 +1,10 @@
-import { IPsException } from '@prosoft/components/core';
+import { IZvException } from '@zvoove/components/core';
 import { Observable } from 'rxjs';
 
-export interface IPsViewDataSource {
+export interface IZvViewDataSource {
   readonly contentVisible: boolean;
   readonly contentBlocked: boolean;
-  readonly exception: IPsException | null;
+  readonly exception: IZvException | null;
   connect(): Observable<void>;
   disconnect(): void;
 }

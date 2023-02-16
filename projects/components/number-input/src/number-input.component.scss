@@ -1,16 +1,16 @@
-.ps-number-input__wrapper {
+.zv-number-input__wrapper {
   overflow: visible;
   position: relative;
 }
 
-.ps-number-input__input {
+.zv-number-input__input {
   box-sizing: border-box;
   width: 100%;
   padding-right: 1.5em;
 }
 
-.ps-number-input__button-up,
-.ps-number-input__button-down {
+.zv-number-input__button-up,
+.zv-number-input__button-down {
   cursor: pointer;
   display: block;
   height: 50%;
@@ -35,7 +35,7 @@
   }
 
   &:not([disabled]):hover {
-    color: var(--ps-primary);
+    color: var(--zv-primary);
   }
 
   &[disabled] {
@@ -43,10 +43,10 @@
   }
 }
 
-.ps-number-input__button-up {
+.zv-number-input__button-up {
   top: 0;
 }
 
-.ps-number-input__button-down {
+.zv-number-input__button-down {
   bottom: 0;
 }

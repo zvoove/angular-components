@@ -1,2 +1,2 @@
-export { PsFormFieldComponent, PsFormFieldSubscriptType, PS_FORM_FIELD_CONFIG, PsFormFieldConfig } from './src/form-field.component';
-export { PsFormFieldModule } from './src/form-field.module';
+export { ZvFormFieldComponent, ZvFormFieldSubscriptType, ZV_FORM_FIELD_CONFIG, ZvFormFieldConfig } from './src/form-field.component';
+export { ZvFormFieldModule } from './src/form-field.module';

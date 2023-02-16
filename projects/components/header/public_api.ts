@@ -1,7 +1,7 @@
-export { PsHeaderComponent } from './src/header.component';
+export { ZvHeaderComponent } from './src/header.component';
 export {
-  PsHeaderCaptionSectionDirective,
-  PsHeaderDescriptionSectionDirective,
-  PsHeaderTopButtonSectionDirective,
+  ZvHeaderCaptionSectionDirective,
+  ZvHeaderDescriptionSectionDirective,
+  ZvHeaderTopButtonSectionDirective,
 } from './src/header.directives';
-export { PsHeaderModule } from './src/header.module';
+export { ZvHeaderModule } from './src/header.module';

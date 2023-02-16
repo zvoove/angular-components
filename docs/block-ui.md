@@ -1,43 +1,43 @@
 <link href="style.css" rel="stylesheet"></link>
 
-# PsBlockUi <a name="PsBlockUi"></a>
+# ZvBlockUi <a name="ZvBlockUi"></a>
 
-`<ps-block-ui>` is a component for blocking controls. Most common use is to block forms while loading data.
+`<zv-block-ui>` is a component for blocking controls. Most common use is to block forms while loading data.
 
-While `blocked === true` all of `<ps-block-ui>`'s content is overlayed by a transparent frame with a loading spinner and an optional `spinnerText`. During blocked-state it's not possible to click any control underneath the block-ui.
+While `blocked === true` all of `<zv-block-ui>`'s content is overlayed by a transparent frame with a loading spinner and an optional `spinnerText`. During blocked-state it's not possible to click any control underneath the block-ui.
 
 ---
 
-## API <a name="PsBlockUiApi"></a>
+## API <a name="ZvBlockUiApi"></a>
 
-### Import <a name="PsBlockUiImport"></a>
+### Import <a name="ZvBlockUiImport"></a>
 
 ```ts | js
-import { PsBlockUiModule } from '@prosoft/components/block-ui';
+import { ZvBlockUiModule } from '@zvoove/components/block-ui';
 ```
 
 ---
 
-## PsBlockUiComponent <a name="PsBlockUiComponent"></a>
+## ZvBlockUiComponent <a name="ZvBlockUiComponent"></a>
 
-### Properties <a name="PsBlockUiComponentProperties"></a>
+### Properties <a name="ZvBlockUiComponentProperties"></a>
 
-| Name                  | Description                                                                                  |
-| --------------------- | -------------------------------------------------------------------------------------------- |
-| `blocked: boolean`    | Toggles the blocking overlay. However, the blocked content is still accessable via keyboard. |
-| `spinnerText: string` | The text that will be shown under the blocking spinner.                                      |
-| `clickthrough: boolean` | Allows clicking through the blocking overlay.                                              |
+| Name                    | Description                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| `blocked: boolean`      | Toggles the blocking overlay. However, the blocked content is still accessable via keyboard. |
+| `spinnerText: string`   | The text that will be shown under the blocking spinner.                                      |
+| `clickthrough: boolean` | Allows clicking through the blocking overlay.                                                |
 
 ---
 
-## Implementation <a name="PsBlockUiImplementation"></a>
+## Implementation <a name="ZvBlockUiImplementation"></a>
 
 Import the module into your module.
 
 ```ts | js
 @NgModule({
   declarations: [MyComponent],
-  imports: [PsBlockUiModule],
+  imports: [ZvBlockUiModule],
 })
 export class MyModule {}
 ```
@@ -45,9 +45,7 @@ export class MyModule {}
 Now you can use it in your components like this:
 
 ```html
-<ps-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
-  <mat-card>
-    this will be blocked
-  </mat-card>
-</ps-block-ui>
+<zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
+  <mat-card> this will be blocked </mat-card>
+</zv-block-ui>
 ```

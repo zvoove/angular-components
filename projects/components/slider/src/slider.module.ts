@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { PsSliderComponent } from './slider.component';
+import { ZvSliderComponent } from './slider.component';
 
 @NgModule({
   imports: [CommonModule],
-  exports: [PsSliderComponent],
-  declarations: [PsSliderComponent],
+  exports: [ZvSliderComponent],
+  declarations: [ZvSliderComponent],
 })
-export class PsSliderModule {}
+export class ZvSliderModule {}

@@ -22,49 +22,49 @@ import {
 import type { QueryList } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IPsTableIntlTexts, PsExceptionMessageExtractor, PsIntlService } from '@prosoft/components/core';
-import { PsFlipContainerComponent } from '@prosoft/components/flip-container';
+import { IZvTableIntlTexts, ZvExceptionMessageExtractor, ZvIntlService } from '@zvoove/components/core';
+import { ZvFlipContainerComponent } from '@zvoove/components/flip-container';
 import { combineLatest, Subject, Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
-import { PsTableDataSource } from './data/table-data-source';
+import { ZvTableDataSource } from './data/table-data-source';
 import {
-  PsTableColumnDirective,
-  PsTableCustomHeaderDirective,
-  PsTableCustomSettingsDirective,
-  PsTableListActionsDirective,
-  PsTableRowActionsDirective,
-  PsTableRowDetailDirective,
-  PsTableTopButtonSectionDirective,
+  ZvTableColumnDirective,
+  ZvTableCustomHeaderDirective,
+  ZvTableCustomSettingsDirective,
+  ZvTableListActionsDirective,
+  ZvTableRowActionsDirective,
+  ZvTableRowDetailDirective,
+  ZvTableTopButtonSectionDirective,
 } from './directives/table.directives';
-import { PsTableStateManager, PsTableUrlStateManager } from './helper/state-manager';
-import { IPsTableSortDefinition, IPsTableUpdateDataInfo } from './models';
-import { IPsTableSetting, PsTableSettingsService } from './services/table-settings.service';
+import { ZvTableStateManager, ZvTableUrlStateManager } from './helper/state-manager';
+import { IZvTableSortDefinition, IZvTableUpdateDataInfo } from './models';
+import { IZvTableSetting, ZvTableSettingsService } from './services/table-settings.service';
 
 @Component({
-  selector: 'ps-table',
+  selector: 'zv-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
   // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[class.mat-elevation-z1]': `layout === 'card'`,
-    '[class.ps-table--card]': `layout === 'card'`,
-    '[class.ps-table--border]': `layout === 'border'`,
+    '[class.zv-table--card]': `layout === 'card'`,
+    '[class.zv-table--border]': `layout === 'border'`,
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, OnDestroy {
+export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @Input() public caption: string;
-  @Input() public dataSource: PsTableDataSource<any, any>;
+  @Input() public dataSource: ZvTableDataSource<any, any>;
   @Input() public tableId: string;
-  @Input() public intlOverride: Partial<IPsTableIntlTexts>;
+  @Input() public intlOverride: Partial<IZvTableIntlTexts>;
   @Input()
-  public set sortDefinitions(value: IPsTableSortDefinition[]) {
+  public set sortDefinitions(value: IZvTableSortDefinition[]) {
     this._sortDefinitions = value ? [...value] : [];
     this.mergeSortDefinitions();
   }
 
-  public get sortDefinitions(): IPsTableSortDefinition[] {
+  public get sortDefinitions(): IZvTableSortDefinition[] {
     return this._mergedSortDefinitions;
   }
 
@@ -77,16 +77,16 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public layout: 'card' | 'border' | 'flat' = 'card';
 
   @Input()
-  @HostBinding('class.ps-table--striped')
+  @HostBinding('class.zv-table--striped')
   public striped = false;
 
-  @Input() stateManager: PsTableStateManager = new PsTableUrlStateManager(this.router, this.route);
+  @Input() stateManager: ZvTableStateManager = new ZvTableUrlStateManager(this.router, this.route);
 
   @Output() public readonly page = new EventEmitter<PageEvent>();
 
-  @ViewChild(PsFlipContainerComponent, { static: true }) public flipContainer: PsFlipContainerComponent | null = null;
+  @ViewChild(ZvFlipContainerComponent, { static: true }) public flipContainer: ZvFlipContainerComponent | null = null;
 
-  @ContentChild(PsTableCustomHeaderDirective, { read: TemplateRef })
+  @ContentChild(ZvTableCustomHeaderDirective, { read: TemplateRef })
   public set customHeader(value: TemplateRef<any> | null) {
     this._customHeader = value;
     this.cd.markForCheck();
@@ -96,7 +96,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _customHeader: TemplateRef<any> | null = null;
 
-  @ContentChild(PsTableCustomSettingsDirective, { read: TemplateRef })
+  @ContentChild(ZvTableCustomSettingsDirective, { read: TemplateRef })
   public set customSettings(value: TemplateRef<any> | null) {
     this._customSettings = value;
     this.cd.markForCheck();
@@ -106,7 +106,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _customSettings: TemplateRef<any> | null = null;
 
-  @ContentChild(PsTableTopButtonSectionDirective, { read: TemplateRef })
+  @ContentChild(ZvTableTopButtonSectionDirective, { read: TemplateRef })
   public set topButtonSection(value: TemplateRef<any> | null) {
     this._topButtonSection = value;
     this.cd.markForCheck();
@@ -116,7 +116,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _topButtonSection: TemplateRef<any> | null = null;
 
-  @ContentChild(PsTableListActionsDirective, { read: TemplateRef })
+  @ContentChild(ZvTableListActionsDirective, { read: TemplateRef })
   public set listActions(value: TemplateRef<any> | null) {
     this._listActions = value;
     this.updateTableState();
@@ -126,7 +126,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _listActions: TemplateRef<any> | null = null;
 
-  @ContentChild(PsTableRowActionsDirective, { read: TemplateRef })
+  @ContentChild(ZvTableRowActionsDirective, { read: TemplateRef })
   public set rowActions(value: TemplateRef<any> | null) {
     this._rowActions = value;
     this.updateTableState();
@@ -136,26 +136,26 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
   private _rowActions: TemplateRef<any> | null = null;
 
-  @ContentChildren(PsTableColumnDirective)
-  public set columnDefsSetter(queryList: QueryList<PsTableColumnDirective>) {
+  @ContentChildren(ZvTableColumnDirective)
+  public set columnDefsSetter(queryList: QueryList<ZvTableColumnDirective>) {
     this.columnDefs = [...queryList.toArray()];
     this.mergeSortDefinitions();
     this.updateTableState();
   }
 
-  @HostBinding('class.ps-table--row-detail')
-  @ContentChild(PsTableRowDetailDirective)
-  public set rowDetail(value: PsTableRowDetailDirective | null) {
+  @HostBinding('class.zv-table--row-detail')
+  @ContentChild(ZvTableRowDetailDirective)
+  public set rowDetail(value: ZvTableRowDetailDirective | null) {
     this._rowDetail = value;
     this.updateTableState();
   }
   public get rowDetail() {
     return this._rowDetail;
   }
-  private _rowDetail: PsTableRowDetailDirective | null = null;
+  private _rowDetail: ZvTableRowDetailDirective | null = null;
 
   public pageSizeOptions: number[];
-  public columnDefs: PsTableColumnDirective[] = [];
+  public columnDefs: ZvTableColumnDirective[] = [];
 
   public displayedColumns: string[] = [];
 
@@ -221,21 +221,21 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
     return !!this._mergedSortDefinitions.length;
   }
 
-  public intl: IPsTableIntlTexts;
+  public intl: IZvTableIntlTexts;
 
   private subscriptions: Subscription[] = [];
-  private _sortDefinitions: IPsTableSortDefinition[] = [];
-  private _mergedSortDefinitions: IPsTableSortDefinition[] = [];
-  private _tableSettings: Partial<IPsTableSetting> = {};
-  private _urlSettings: Partial<IPsTableUpdateDataInfo> = {};
+  private _sortDefinitions: IZvTableSortDefinition[] = [];
+  private _mergedSortDefinitions: IZvTableSortDefinition[] = [];
+  private _tableSettings: Partial<IZvTableSetting> = {};
+  private _urlSettings: Partial<IZvTableUpdateDataInfo> = {};
   private _intlChangesSub: Subscription;
 
   private ngUnsubscribe$ = new Subject<void>();
 
   constructor(
-    public intlService: PsIntlService,
-    public settingsService: PsTableSettingsService,
-    private exceptionMessageExtractor: PsExceptionMessageExtractor,
+    public intlService: ZvIntlService,
+    public settingsService: ZvTableSettingsService,
+    private exceptionMessageExtractor: ZvExceptionMessageExtractor,
     private cd: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
@@ -381,7 +381,7 @@ export class PsTableComponent implements OnInit, OnChanges, AfterContentInit, On
   private mergeSortDefinitions() {
     const sortableColumns = this.columnDefs
       .filter((def) => def.sortable)
-      .map((def) => <IPsTableSortDefinition>{ prop: def.property, displayName: def.header });
+      .map((def) => <IZvTableSortDefinition>{ prop: def.property, displayName: def.header });
 
     this._mergedSortDefinitions = sortableColumns
       .concat(this._sortDefinitions)

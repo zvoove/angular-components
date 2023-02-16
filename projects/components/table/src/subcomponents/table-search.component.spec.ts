@@ -7,17 +7,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PsTableSearchComponent } from './table-search.component';
+import { ZvTableSearchComponent } from './table-search.component';
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-table-search
+    <zv-table-search
       [searchText]="searchText"
       [debounceTime]="debounceTime"
       [intl]="tableIntl"
       (searchChanged)="onSearchChanged($event)"
-    ></ps-table-search>
+    ></zv-table-search>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -29,20 +29,18 @@ export class TestComponent {
     searchLabel: 'Search',
   };
 
-  @ViewChild(PsTableSearchComponent, { static: true }) tableSearch: PsTableSearchComponent;
+  @ViewChild(ZvTableSearchComponent, { static: true }) tableSearch: ZvTableSearchComponent;
 
   public onSearchChanged(_event: string) {}
 }
 
-describe('PsTableSearchComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
-        declarations: [TestComponent, PsTableSearchComponent],
-      }).compileComponents();
-    })
-  );
+describe('ZvTableSearchComponent', () => {
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+      declarations: [TestComponent, ZvTableSearchComponent],
+    }).compileComponents();
+  }));
 
   it('should emit searchChanged on changes after debounce time', fakeAsync(() => {
     const fixture = TestBed.createComponent(TestComponent);

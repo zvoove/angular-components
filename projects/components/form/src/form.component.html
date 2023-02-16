@@ -1,23 +1,23 @@
-<form *ngIf="dataSource" class="ps-form__main-container" [formGroup]="form" [autocomplete]="autocomplete">
-  <div class="ps-form__cards-container">
-    <ps-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
+<form *ngIf="dataSource" class="zv-form__main-container" [formGroup]="form" [autocomplete]="autocomplete">
+  <div class="zv-form__cards-container">
+    <zv-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
       <ng-content></ng-content>
-    </ps-block-ui>
+    </zv-block-ui>
 
     <div #errorCardWrapper [style.display]="exception ? 'block' : 'none'">
-      <mat-card *ngIf="exception" class="ps-form__error-container" [class.ps-form__error-container--center]="exception.alignCenter">
-        <mat-icon *ngIf="exception.icon" class="ps-form__error-icon">{{ exception.icon }}</mat-icon>
-        <span>{{ exception.errorObject | psErrorMessage }}</span>
+      <mat-card *ngIf="exception" class="zv-form__error-container" [class.zv-form__error-container--center]="exception.alignCenter">
+        <mat-icon *ngIf="exception.icon" class="zv-form__error-icon">{{ exception.icon }}</mat-icon>
+        <span>{{ exception.errorObject | zvErrorMessage }}</span>
       </mat-card>
     </div>
   </div>
 
-  <mat-card *ngIf="!savebarHidden" class="ps-form__savebar" [class.ps-form__savebar--sticky]="savebarSticky">
-    <div class="ps-form__savebar-container">
-      <ps-form-errors [form]="form"></ps-form-errors>
-      <div class="ps-form__savebar-spacer"></div>
-      <div class="ps-form__buttons">
-        <ng-content select="[psFormSavebarButtons]"></ng-content>
+  <mat-card *ngIf="!savebarHidden" class="zv-form__savebar" [class.zv-form__savebar--sticky]="savebarSticky">
+    <div class="zv-form__savebar-container">
+      <zv-form-errors [form]="form"></zv-form-errors>
+      <div class="zv-form__savebar-spacer"></div>
+      <div class="zv-form__buttons">
+        <ng-content select="[zvFormSavebarButtons]"></ng-content>
         <button
           *ngFor="let btn of buttons"
           mat-button

@@ -1,26 +1,26 @@
 import { Directive } from '@angular/core';
 
 @Directive({
-  selector: '[psCardTopButtonSection]',
+  selector: '[zvCardTopButtonSection]',
 })
-export class PsCardTopButtonSectionDirective {}
+export class ZvCardTopButtonSectionDirective {}
 
 @Directive({
-  selector: '[psCardCaptionSection]',
+  selector: '[zvCardCaptionSection]',
 })
-export class PsCardCaptionSectionDirective {}
+export class ZvCardCaptionSectionDirective {}
 
 @Directive({
-  selector: '[psCardDescriptionSection]',
+  selector: '[zvCardDescriptionSection]',
 })
-export class PsCardDescriptionSectionDirective {}
+export class ZvCardDescriptionSectionDirective {}
 
 @Directive({
-  selector: '[psCardFooterSection]',
+  selector: '[zvCardFooterSection]',
 })
-export class PsCardFooterSectionDirective {}
+export class ZvCardFooterSectionDirective {}
 
 @Directive({
-  selector: '[psCardActionsSection]',
+  selector: '[zvCardActionsSection]',
 })
-export class PsCardActionsSectionDirective {}
+export class ZvCardActionsSectionDirective {}

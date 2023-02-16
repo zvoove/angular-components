@@ -3,13 +3,13 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { PsBlockUiModule } from '@prosoft/components/block-ui';
-import { PsErrorMessagePipeModule } from '@prosoft/components/core';
-import { PsDialogWrapperComponent } from './dialog-wrapper.component';
+import { ZvBlockUiModule } from '@zvoove/components/block-ui';
+import { ZvErrorMessagePipeModule } from '@zvoove/components/core';
+import { ZvDialogWrapperComponent } from './dialog-wrapper.component';
 
 @NgModule({
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, PsErrorMessagePipeModule, PsBlockUiModule],
-  exports: [PsDialogWrapperComponent],
-  declarations: [PsDialogWrapperComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, ZvErrorMessagePipeModule, ZvBlockUiModule],
+  exports: [ZvDialogWrapperComponent],
+  declarations: [ZvDialogWrapperComponent],
 })
-export class PsDialogWrapperModule {}
+export class ZvDialogWrapperModule {}

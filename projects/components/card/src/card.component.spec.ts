@@ -3,32 +3,32 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { PsHeaderHarness } from '@prosoft/components/header/src/testing/header.harness';
-import { PsCardComponent } from './card.component';
-import { PsCardModule } from './card.module';
-import { PsCardHarness } from './testing/card.harness';
+import { ZvHeaderHarness } from '@zvoove/components/header/src/testing/header.harness';
+import { ZvCardComponent } from './card.component';
+import { ZvCardModule } from './card.module';
+import { ZvCardHarness } from './testing/card.harness';
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-card [caption]="caption" [description]="description">
-      <ng-container *psCardCaptionSection>
+    <zv-card [caption]="caption" [description]="description">
+      <ng-container *zvCardCaptionSection>
         <h1 *ngIf="addCaptionTemplate">customCaption</h1>
       </ng-container>
-      <ng-container *psCardDescriptionSection>
+      <ng-container *zvCardDescriptionSection>
         <span *ngIf="addDescriptionTemplate">customDescription</span>
       </ng-container>
-      <ng-container *psCardTopButtonSection>
+      <ng-container *zvCardTopButtonSection>
         <button *ngIf="addTopButton" mat-button>testTopButton</button>
       </ng-container>
-      <ng-container *psCardFooterSection>
+      <ng-container *zvCardFooterSection>
         <span *ngIf="addFooterTemplate">testFooter</span>
       </ng-container>
-      <ng-container *psCardActionsSection>
+      <ng-container *zvCardActionsSection>
         <button *ngIf="addCardActionButton" mat-button>testActionButton</button>
       </ng-container>
       <h2>Test content</h2>
-    </ps-card>
+    </zv-card>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -41,18 +41,18 @@ export class TestDataSourceComponent {
   public addCaptionTemplate = false;
   public addDescriptionTemplate = false;
   public addFooterTemplate = false;
-  @ViewChild(PsCardComponent) headerComponent: PsCardComponent;
+  @ViewChild(ZvCardComponent) headerComponent: ZvCardComponent;
 }
 
-describe('PsCardComponent', () => {
+describe('ZvCardComponent', () => {
   let fixture: ComponentFixture<TestDataSourceComponent>;
   let component: TestDataSourceComponent;
   let loader: HarnessLoader;
-  let header: PsHeaderHarness;
-  let card: PsCardHarness;
+  let header: ZvHeaderHarness;
+  let card: ZvCardHarness;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PsCardModule, MatButtonModule],
+      imports: [ZvCardModule, MatButtonModule],
       declarations: [TestDataSourceComponent],
     });
     fixture = TestBed.createComponent(TestDataSourceComponent);
@@ -60,7 +60,7 @@ describe('PsCardComponent', () => {
     expect(component).toBeDefined();
 
     loader = TestbedHarnessEnvironment.loader(fixture);
-    card = await loader.getHarness(PsCardHarness);
+    card = await loader.getHarness(ZvCardHarness);
     header = await card.getHeader();
   });
 

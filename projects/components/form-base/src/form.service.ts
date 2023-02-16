@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { objectToKeyValueArray } from '@prosoft/components/utils';
+import { objectToKeyValueArray } from '@zvoove/components/utils';
 import { merge, Observable, of } from 'rxjs';
 import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 import { getControlType } from './helpers';
-import { IPsFormError, IPsFormErrorData } from './models';
+import { IZvFormError, IZvFormErrorData } from './models';
 
 @Injectable()
-export abstract class PsFormService {
+export abstract class ZvFormService {
   public abstract tryDetectRequired: boolean;
   public abstract getLabel(formControl: FormControl): Observable<string> | null;
 
@@ -17,11 +17,11 @@ export abstract class PsFormService {
    * @param control The control class (MatSlider, MatSelect, ...)
    */
   public abstract getControlType(control: any): string | null;
-  public abstract getControlErrors(control: FormControl): Observable<IPsFormError[]>;
-  public abstract getFormErrors(form: FormGroup, includeControls: boolean): Observable<IPsFormError[]>;
+  public abstract getControlErrors(control: FormControl): Observable<IZvFormError[]>;
+  public abstract getFormErrors(form: FormGroup, includeControls: boolean): Observable<IZvFormError[]>;
 }
 
-export abstract class BasePsFormService extends PsFormService {
+export abstract class BaseZvFormService extends ZvFormService {
   public options = {
     debounceTime: 100,
     includeControlsDefault: false,
@@ -30,11 +30,11 @@ export abstract class BasePsFormService extends PsFormService {
 
   public getControlType = getControlType;
 
-  public getControlErrors(control: FormControl): Observable<IPsFormError[]> {
+  public getControlErrors(control: FormControl): Observable<IZvFormError[]> {
     return this.getErrors(control, true, 'control');
   }
 
-  public getFormErrors(form: FormGroup, includeControls: boolean | null): Observable<IPsFormError[]> {
+  public getFormErrors(form: FormGroup, includeControls: boolean | null): Observable<IZvFormError[]> {
     if (includeControls == null) {
       includeControls = this.options.includeControlsDefault;
     }
@@ -45,15 +45,15 @@ export abstract class BasePsFormService extends PsFormService {
    * Provided to be overwritten to filter the errors.
    */
   public filterErrors(
-    errorData: IPsFormErrorData[],
+    errorData: IZvFormErrorData[],
     _includeControls: boolean,
     _source: 'form' | 'control'
-  ): Observable<IPsFormErrorData[]> {
+  ): Observable<IZvFormErrorData[]> {
     return of(errorData);
   }
-  protected abstract mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]>;
+  protected abstract mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]>;
 
-  private getErrors(control: AbstractControl, includeControls: boolean, source: 'form' | 'control'): Observable<IPsFormError[]> {
+  private getErrors(control: AbstractControl, includeControls: boolean, source: 'form' | 'control'): Observable<IZvFormError[]> {
     const update$ = this.createUpdateTrigger(control);
 
     return update$.pipe(
@@ -67,12 +67,12 @@ export abstract class BasePsFormService extends PsFormService {
     return merge(control.valueChanges, control.statusChanges).pipe(startWith(null as any), debounceTime(this.options.debounceTime));
   }
 
-  private getErrorInfo(control: AbstractControl, includeControls: boolean = false): IPsFormErrorData[] {
+  private getErrorInfo(control: AbstractControl, includeControls: boolean = false): IZvFormErrorData[] {
     return this.getControlErrorInfoInternal(control, '', includeControls);
   }
 
-  private getControlErrorInfoInternal(control: AbstractControl, controlPath: string, includeControls: boolean): IPsFormErrorData[] {
-    const errors: IPsFormErrorData[] = [];
+  private getControlErrorInfoInternal(control: AbstractControl, controlPath: string, includeControls: boolean): IZvFormErrorData[] {
+    const errors: IZvFormErrorData[] = [];
 
     if (control instanceof FormGroup || control instanceof FormArray) {
       for (const childName in control.controls) {
@@ -95,7 +95,7 @@ export abstract class BasePsFormService extends PsFormService {
     return errors;
   }
 
-  private createFormErrorData(error: { key: string; value: any }, control: AbstractControl, controlPath: string): IPsFormErrorData {
+  private createFormErrorData(error: { key: string; value: any }, control: AbstractControl, controlPath: string): IZvFormErrorData {
     return {
       controlPath: controlPath,
       errorKey: error.key,

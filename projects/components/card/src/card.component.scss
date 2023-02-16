@@ -1,12 +1,12 @@
-ps-card {
+zv-card {
   display: grid;
 }
 
-.ps-card__with-header {
+.zv-card__with-header {
   grid-template-rows: auto 1fr;
 }
 
-mat-card.ps-card__content {
+mat-card.zv-card__content {
   display: grid;
   grid-template-rows: 1fr auto;
 }

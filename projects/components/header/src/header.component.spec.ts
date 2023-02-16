@@ -3,23 +3,23 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { PsHeaderComponent, PsHeaderModule } from '..';
-import { PsHeaderHarness } from './testing/header.harness';
+import { ZvHeaderComponent, ZvHeaderModule } from '..';
+import { ZvHeaderHarness } from './testing/header.harness';
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-header [caption]="caption" [description]="description">
-      <ng-container *psHeaderTopButtonSection>
+    <zv-header [caption]="caption" [description]="description">
+      <ng-container *zvHeaderTopButtonSection>
         <button mat-button color="accent" *ngIf="addButtons">testButton</button>
       </ng-container>
-      <ng-container *psHeaderCaptionSection>
+      <ng-container *zvHeaderCaptionSection>
         <h1 style="background-color: cyan;" *ngIf="addCaptionTemplate">caption text</h1>
       </ng-container>
-      <ng-container *psHeaderDescriptionSection>
+      <ng-container *zvHeaderDescriptionSection>
         <span style="background-color: lightblue;" *ngIf="addDescriptionTemplate">description text</span>
       </ng-container>
-    </ps-header>
+    </zv-header>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -30,17 +30,17 @@ export class TestDataSourceComponent {
   public addButtons = false;
   public addCaptionTemplate = false;
   public addDescriptionTemplate = false;
-  @ViewChild(PsHeaderComponent) headerComponent: PsHeaderComponent;
+  @ViewChild(ZvHeaderComponent) headerComponent: ZvHeaderComponent;
 }
 
-describe('PsHeaderComponent', () => {
+describe('ZvHeaderComponent', () => {
   let fixture: ComponentFixture<TestDataSourceComponent>;
   let component: TestDataSourceComponent;
   let loader: HarnessLoader;
-  let header: PsHeaderHarness;
+  let header: ZvHeaderHarness;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PsHeaderModule, MatButtonModule],
+      imports: [ZvHeaderModule, MatButtonModule],
       declarations: [TestDataSourceComponent],
     });
     fixture = TestBed.createComponent(TestDataSourceComponent);
@@ -48,7 +48,7 @@ describe('PsHeaderComponent', () => {
     expect(component).toBeDefined();
 
     loader = TestbedHarnessEnvironment.loader(fixture);
-    header = await loader.getHarness(PsHeaderHarness);
+    header = await loader.getHarness(ZvHeaderHarness);
   });
 
   it('should show caption text', async () => {

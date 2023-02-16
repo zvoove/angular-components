@@ -13,12 +13,12 @@ import {
 } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
-import { IPsTableIntlTexts } from '@prosoft/components/core';
+import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { of, Subject, timer } from 'rxjs';
 import { debounce, takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'ps-table-pagination',
+  selector: 'zv-table-pagination',
   template: `
     <mat-paginator
       [pageIndex]="pageIndex"
@@ -31,7 +31,7 @@ import { debounce, takeUntil } from 'rxjs/operators';
     </mat-paginator>
     <div class="mat-paginator-page-size" style="font-size: 12px;">
       <mat-form-field *ngIf="pages.length > 2" class="mat-paginator-page-size-select">
-        <mat-select class="ps-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
+        <mat-select class="zv-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
           <mat-option *ngFor="let page of pages" [value]="page"> {{ page }}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -39,13 +39,13 @@ import { debounce, takeUntil } from 'rxjs/operators';
   `,
   styles: [
     `
-      ps-table-pagination {
+      zv-table-pagination {
         display: flex;
         justify-content: flex-end;
         background-color: #fff;
         border-radius: 0 0 4px 4px;
       }
-      ps-table-pagination .mat-paginator {
+      zv-table-pagination .mat-paginator {
         background: transparent;
       }
     `,
@@ -53,14 +53,14 @@ import { debounce, takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsTablePaginationComponent implements OnChanges, OnDestroy {
+export class ZvTablePaginationComponent implements OnChanges, OnDestroy {
   public pages: number[] = [];
 
   @Input() public pageSize: number;
   @Input() public dataLength: number;
   @Input() public pageIndex: number;
   @Input() public pageSizeOptions: number[];
-  @Input() public intl: IPsTableIntlTexts;
+  @Input() public intl: IZvTableIntlTexts;
   @Input() public pageDebounce: number;
 
   @Output() public readonly page = new EventEmitter<PageEvent>();

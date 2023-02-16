@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { IPsTableIntlTexts } from '@prosoft/components/core';
+import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
-  selector: 'ps-table-search',
+  selector: 'zv-table-search',
   template: `
     <mat-form-field>
       <mat-label>{{ intl.searchLabel }}</mat-label>
@@ -13,7 +13,7 @@ import { debounceTime } from 'rxjs/operators';
         *ngIf="searchText || currentSearchText"
         mat-icon-button
         matSuffix
-        class="ps-table-search__button"
+        class="zv-table-search__button"
         (click)="onSearch('Escape', null)"
       >
         <mat-icon>close</mat-icon>
@@ -22,13 +22,13 @@ import { debounceTime } from 'rxjs/operators';
   `,
   styles: [
     `
-      ps-table-search {
+      zv-table-search {
         display: block;
       }
-      ps-table-search .mat-form-field {
+      zv-table-search .mat-form-field {
         width: 100%;
       }
-      .ps-table-search__button {
+      .zv-table-search__button {
         color: black;
       }
     `,
@@ -36,8 +36,8 @@ import { debounceTime } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsTableSearchComponent implements OnInit, OnDestroy {
-  @Input() public intl: IPsTableIntlTexts;
+export class ZvTableSearchComponent implements OnInit, OnDestroy {
+  @Input() public intl: IZvTableIntlTexts;
   @Input() public searchText: string;
   @Input() public debounceTime: number;
   @Output() public readonly searchChanged = new EventEmitter<string>();

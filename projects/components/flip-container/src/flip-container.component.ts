@@ -13,7 +13,7 @@ import {
 import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-container.directives';
 
 @Component({
-  selector: 'ps-flip-container',
+  selector: 'zv-flip-container',
   templateUrl: './flip-container.component.html',
   styleUrls: ['./flip-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,23 +36,23 @@ import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-
       transition(
         'fade_front => fade_back',
         sequence([
-          query('.ps-flip-container__side__back', style({ opacity: 0 })),
-          query('.ps-flip-container__side__front', animate('150ms ease-in', style({ opacity: 0 }))),
-          query('.ps-flip-container__side__back', animate('150ms ease-out', style({ opacity: 1 }))),
+          query('.zv-flip-container__side__back', style({ opacity: 0 })),
+          query('.zv-flip-container__side__front', animate('150ms ease-in', style({ opacity: 0 }))),
+          query('.zv-flip-container__side__back', animate('150ms ease-out', style({ opacity: 1 }))),
         ])
       ),
       transition(
         'fade_back => fade_front',
         sequence([
-          query('.ps-flip-container__side__front', style({ opacity: 0 })),
-          query('.ps-flip-container__side__back', animate('150ms ease-in', style({ opacity: 0 }))),
-          query('.ps-flip-container__side__front', animate('150ms ease-out', style({ opacity: 1 }))),
+          query('.zv-flip-container__side__front', style({ opacity: 0 })),
+          query('.zv-flip-container__side__back', animate('150ms ease-in', style({ opacity: 0 }))),
+          query('.zv-flip-container__side__front', animate('150ms ease-out', style({ opacity: 1 }))),
         ])
       ),
     ]),
   ],
 })
-export class PsFlipContainerComponent implements AfterViewInit {
+export class ZvFlipContainerComponent implements AfterViewInit {
   @Input() public removeHiddenNodes = true;
   @Input() public animation: 'flip' | 'fade' = 'flip';
 

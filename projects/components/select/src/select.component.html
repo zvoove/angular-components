@@ -17,7 +17,7 @@
       <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: customTriggerData }"></ng-container>
     </mat-select-trigger>
 
-    <mat-option class="ps-select__search">
+    <mat-option class="zv-select__search">
       <ngx-mat-select-search
         [formControl]="filterCtrl"
         [searching]="loading"
@@ -28,20 +28,18 @@
       ></ngx-mat-select-search>
     </mat-option>
 
-    <mat-option *ngIf="hasError" [disabled]="true" class="ps-select__error">
-      <span class="ps-select__error-message">{{ error | psErrorMessage }}</span>
+    <mat-option *ngIf="hasError" [disabled]="true" class="zv-select__error">
+      <span class="zv-select__error-message">{{ error | zvErrorMessage }}</span>
     </mat-option>
 
-    <mat-option *ngIf="showEmptyInput" class="ps-select__empty-option">
-      --
-    </mat-option>
+    <mat-option *ngIf="showEmptyInput" class="zv-select__empty-option"> -- </mat-option>
 
     <mat-option
       *ngFor="let item of items; trackBy: trackByOptions"
       [value]="item.value"
-      [class.ps-select__option--hidden]="item.hidden"
+      [class.zv-select__option--hidden]="item.hidden"
       [disabled]="item.disabled"
-      class="ps-select__option"
+      class="zv-select__option"
     >
       <ng-container *ngIf="!optionTemplate">
         {{ item.label }}

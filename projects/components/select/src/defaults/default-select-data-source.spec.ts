@@ -2,13 +2,13 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { of, Subject, throwError, BehaviorSubject } from 'rxjs';
 import { delay, switchMap, tap } from 'rxjs/operators';
 
-import { PsSelectItem } from '../models';
-import { DefaultPsSelectDataSource, PsSelectDataSourceOptions, PsSelectLoadTrigger, PsSelectSortBy } from './default-select-data-source';
+import { ZvSelectItem } from '../models';
+import { DefaultZvSelectDataSource, ZvSelectDataSourceOptions, ZvSelectLoadTrigger, ZvSelectSortBy } from './default-select-data-source';
 
-describe('DefaultPsSelectDataSource', () => {
+describe('DefaultZvSelectDataSource', () => {
   it('should work with array data', fakeAsync(() => {
     const item = createItem('item', 1);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([item]));
+    const dataSource = new DefaultZvSelectDataSource(createDataSourceOptions([item]));
 
     let currentRenderOptions;
     dataSource.connect().subscribe((options) => {
@@ -36,7 +36,7 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should work with observable data', fakeAsync(() => {
     const item = createItem('item', 1);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([item])));
+    const dataSource = new DefaultZvSelectDataSource(createDataSourceOptions(of([item])));
 
     let currentRenderOptions;
     dataSource.connect().subscribe((options) => {
@@ -64,7 +64,7 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should subscribe only when connection to data, when it is an observable and no load trigger is configured', fakeAsync(() => {
     let loadDataCallCount = 0;
-    const dataSource = new DefaultPsSelectDataSource(
+    const dataSource = new DefaultZvSelectDataSource(
       createDataSourceOptions(
         of([]).pipe(
           tap(() => {
@@ -86,8 +86,8 @@ describe('DefaultPsSelectDataSource', () => {
   }));
 
   it('should update loading flag', fakeAsync(() => {
-    const dataSource = new DefaultPsSelectDataSource(
-      createDataSourceOptions(() => of([]).pipe(delay(1000)), { loadTrigger: PsSelectLoadTrigger.all })
+    const dataSource = new DefaultZvSelectDataSource(
+      createDataSourceOptions(() => of([]).pipe(delay(1000)), { loadTrigger: ZvSelectLoadTrigger.all })
     );
     expect(dataSource.loading).toBe(false);
 
@@ -129,7 +129,7 @@ describe('DefaultPsSelectDataSource', () => {
     const halloWeltOptionHidden = createIdOption(halloWeltItem, true);
     const halloOptionHidden = createIdOption(halloItem, true);
     const weltOptionHidden = createIdOption(weltItem, true);
-    const dataSource = new DefaultPsSelectDataSource(
+    const dataSource = new DefaultZvSelectDataSource(
       createDataSourceOptions(of([halloWeltItem, halloItem, weltItem]), { searchDebounce: 50 })
     );
 
@@ -162,7 +162,7 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should debounce searchText', fakeAsync(() => {
     const item = createItem('item', 1);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([item]), { searchDebounce: 50 }));
+    const dataSource = new DefaultZvSelectDataSource(createDataSourceOptions(of([item]), { searchDebounce: 50 }));
 
     let currentRenderOptions;
 
@@ -197,7 +197,7 @@ describe('DefaultPsSelectDataSource', () => {
   }));
 
   it('should not refresh options when searchText changes to the same value', fakeAsync(() => {
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of([createItem('item', 1)]), { searchDebounce: 50 }));
+    const dataSource = new DefaultZvSelectDataSource(createDataSourceOptions(of([createItem('item', 1)]), { searchDebounce: 50 }));
 
     let optionsRefreshTime = 0;
     dataSource.connect().subscribe(() => {
@@ -222,7 +222,7 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should by default only load options when connecting', fakeAsync(() => {
     let loadDataCallCount = 0;
-    const dataSource = new DefaultPsSelectDataSource(
+    const dataSource = new DefaultZvSelectDataSource(
       createDataSourceOptions(() => {
         ++loadDataCallCount;
         return of([createItem('item', loadDataCallCount)]);
@@ -253,13 +253,13 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should only load options on first panel open if loadTrigger is FirstPanelOpen', fakeAsync(() => {
     let loadDataCallCount = 0;
-    const dataSource = new DefaultPsSelectDataSource(
+    const dataSource = new DefaultZvSelectDataSource(
       createDataSourceOptions(
         () => {
           ++loadDataCallCount;
           return of([createItem('item', loadDataCallCount)]);
         },
-        { loadTrigger: PsSelectLoadTrigger.firstPanelOpen }
+        { loadTrigger: ZvSelectLoadTrigger.firstPanelOpen }
       )
     );
 
@@ -287,13 +287,13 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should load options on every panel open if loadTrigger is EveryPanelOpen', fakeAsync(() => {
     let loadDataCallCount = 0;
-    const dataSource = new DefaultPsSelectDataSource(
+    const dataSource = new DefaultZvSelectDataSource(
       createDataSourceOptions(
         () => {
           ++loadDataCallCount;
           return of([createItem('item', loadDataCallCount)]);
         },
-        { loadTrigger: PsSelectLoadTrigger.everyPanelOpen }
+        { loadTrigger: ZvSelectLoadTrigger.everyPanelOpen }
       )
     );
 
@@ -330,7 +330,7 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should add selected values to loaded options, if they are missing', fakeAsync(() => {
     const items$ = new Subject<any[]>();
-    const dataSource = new DefaultPsSelectDataSource<number>(createDataSourceOptions(() => items$));
+    const dataSource = new DefaultZvSelectDataSource<number>(createDataSourceOptions(() => items$));
 
     let currentRenderOptions: any[] | null = null;
     dataSource.connect().subscribe((options) => {
@@ -377,7 +377,7 @@ describe('DefaultPsSelectDataSource', () => {
   it('should handle errors', fakeAsync(() => {
     let shouldThrow = true;
     const item = createItem('item', 1);
-    const dataSource = new DefaultPsSelectDataSource(
+    const dataSource = new DefaultZvSelectDataSource(
       createDataSourceOptions(
         () => {
           let items$ = of([item]).pipe(delay(5));
@@ -386,7 +386,7 @@ describe('DefaultPsSelectDataSource', () => {
           }
           return items$;
         },
-        { loadTrigger: PsSelectLoadTrigger.all }
+        { loadTrigger: ZvSelectLoadTrigger.all }
       )
     );
 
@@ -420,7 +420,7 @@ describe('DefaultPsSelectDataSource', () => {
     const item1 = createItem('item 1', 1);
     const item2 = createItem('item 2', 2);
     const item3 = createItem('item 3', 3);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(() => of([item1, item2, item3])));
+    const dataSource = new DefaultZvSelectDataSource(createDataSourceOptions(() => of([item1, item2, item3])));
 
     let currentRenderOptions;
     dataSource.connect().subscribe((options) => {
@@ -447,7 +447,7 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should emit data only when needed', fakeAsync(() => {
     const items$ = new BehaviorSubject([createItem('item 1', 1)]);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(() => items$, { loadTrigger: PsSelectLoadTrigger.all }));
+    const dataSource = new DefaultZvSelectDataSource(createDataSourceOptions(() => items$, { loadTrigger: ZvSelectLoadTrigger.all }));
 
     let dataEmitCount = 0;
     dataSource.connect().subscribe(() => {
@@ -491,8 +491,8 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should set entity of SelectItem in mode id', fakeAsync(() => {
     const item = createItem('1', 1);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([item]));
-    let currentRenderOptions: PsSelectItem[] = [];
+    const dataSource = new DefaultZvSelectDataSource(createDataSourceOptions([item]));
+    let currentRenderOptions: ZvSelectItem[] = [];
 
     dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
@@ -507,8 +507,8 @@ describe('DefaultPsSelectDataSource', () => {
 
   it('should set entity of SelectItem in mode entity', fakeAsync(() => {
     const item = createItem('1', 1);
-    const dataSource = new DefaultPsSelectDataSource(createDataSourceOptions([item], { mode: 'entity' }));
-    let currentRenderOptions: PsSelectItem[] = [];
+    const dataSource = new DefaultZvSelectDataSource(createDataSourceOptions([item], { mode: 'entity' }));
+    let currentRenderOptions: ZvSelectItem[] = [];
 
     dataSource.connect().subscribe((options) => {
       currentRenderOptions = options;
@@ -522,7 +522,7 @@ describe('DefaultPsSelectDataSource', () => {
   }));
 
   describe('should respect sort options', () => {
-    let dataSource: DefaultPsSelectDataSource;
+    let dataSource: DefaultZvSelectDataSource;
     const item1Label1 = createItem('1', 1);
     const item3Label2Selected = createItem('2', 2);
     const item4Label3 = createItem('3', 3);
@@ -530,10 +530,10 @@ describe('DefaultPsSelectDataSource', () => {
     const item6Label5Selected = createItem('5', 5);
     const item5Label6Selected = createItem('6', 6);
     const initialItems = [item1Label1, item2Label4, item3Label2Selected, item4Label3, item5Label6Selected, item6Label5Selected];
-    let currentRenderOptions: PsSelectItem<number>[];
+    let currentRenderOptions: ZvSelectItem<number>[];
 
-    function initDataSource(sort: PsSelectSortBy, sortCompare?: (a: PsSelectItem, b: PsSelectItem) => number) {
-      dataSource = new DefaultPsSelectDataSource(createDataSourceOptions(of(initialItems), { sortBy: sort }));
+    function initDataSource(sort: ZvSelectSortBy, sortCompare?: (a: ZvSelectItem, b: ZvSelectItem) => number) {
+      dataSource = new DefaultZvSelectDataSource(createDataSourceOptions(of(initialItems), { sortBy: sort }));
       if (sortCompare) {
         dataSource.sortCompare = sortCompare;
       }
@@ -559,8 +559,8 @@ describe('DefaultPsSelectDataSource', () => {
       dataSource.disconnect();
     }));
 
-    it('PsSelectSort.None', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.none);
+    it('ZvSelectSort.None', fakeAsync(() => {
+      initDataSource(ZvSelectSortBy.none);
 
       const expectedOptions = initialItems.map((x) => createIdOption(x));
       expect(currentRenderOptions).toEqual(expectedOptions);
@@ -569,8 +569,8 @@ describe('DefaultPsSelectDataSource', () => {
       dataSource.disconnect();
     }));
 
-    it('PsSelectSort.Selected', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.selected);
+    it('ZvSelectSort.Selected', fakeAsync(() => {
+      initDataSource(ZvSelectSortBy.selected);
 
       const expectedOptions = [item3Label2Selected, item5Label6Selected, item6Label5Selected, item1Label1, item2Label4, item4Label3].map(
         (x) => createIdOption(x)
@@ -581,8 +581,8 @@ describe('DefaultPsSelectDataSource', () => {
       dataSource.disconnect();
     }));
 
-    it('PsSelectSort.Comparer', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.comparer);
+    it('ZvSelectSort.Comparer', fakeAsync(() => {
+      initDataSource(ZvSelectSortBy.comparer);
 
       const expectedOptions = [item1Label1, item3Label2Selected, item4Label3, item2Label4, item6Label5Selected, item5Label6Selected].map(
         (x) => createIdOption(x)
@@ -593,8 +593,8 @@ describe('DefaultPsSelectDataSource', () => {
       dataSource.disconnect();
     }));
 
-    it('PsSelectSort.Comparer with custom reverse sorting', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.comparer, (a, b) => b.value - a.value); // reverse sort
+    it('ZvSelectSort.Comparer with custom reverse sorting', fakeAsync(() => {
+      initDataSource(ZvSelectSortBy.comparer, (a, b) => b.value - a.value); // reverse sort
 
       const expectedOptions = [item5Label6Selected, item6Label5Selected, item2Label4, item4Label3, item3Label2Selected, item1Label1].map(
         (x) => createIdOption(x)
@@ -605,8 +605,8 @@ describe('DefaultPsSelectDataSource', () => {
       dataSource.disconnect();
     }));
 
-    it('PsSelectSort.Both', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.both);
+    it('ZvSelectSort.Both', fakeAsync(() => {
+      initDataSource(ZvSelectSortBy.both);
 
       const expectedOptions = [item3Label2Selected, item6Label5Selected, item5Label6Selected, item1Label1, item4Label3, item2Label4].map(
         (x) => createIdOption(x)
@@ -617,8 +617,8 @@ describe('DefaultPsSelectDataSource', () => {
       dataSource.disconnect();
     }));
 
-    it('PsSelectSort.Both with custom reverse sorting', fakeAsync(() => {
-      initDataSource(PsSelectSortBy.both, (a, b) => b.value - a.value); // reverse sort
+    it('ZvSelectSort.Both with custom reverse sorting', fakeAsync(() => {
+      initDataSource(ZvSelectSortBy.both, (a, b) => b.value - a.value); // reverse sort
 
       const expectedOptions = [item5Label6Selected, item6Label5Selected, item3Label2Selected, item2Label4, item4Label3, item1Label1].map(
         (x) => createIdOption(x)
@@ -643,7 +643,7 @@ export function createItem(label: string, value: any): Item {
   };
 }
 
-export function createMissingOption(id: number, hidden = false): PsSelectItem {
+export function createMissingOption(id: number, hidden = false): ZvSelectItem {
   return {
     label: `??? (ID: ${id})`,
     hidden: hidden,
@@ -651,7 +651,7 @@ export function createMissingOption(id: number, hidden = false): PsSelectItem {
   };
 }
 
-export function createIdOption(item: Item, hidden = false, disabled = false): PsSelectItem {
+export function createIdOption(item: Item, hidden = false, disabled = false): ZvSelectItem {
   return {
     label: item.label,
     value: item.value,
@@ -661,7 +661,7 @@ export function createIdOption(item: Item, hidden = false, disabled = false): Ps
   };
 }
 
-export function createEntityOption(item: Item, hidden = false, disabled = false): PsSelectItem {
+export function createEntityOption(item: Item, hidden = false, disabled = false): ZvSelectItem {
   return {
     label: item.label,
     value: item,
@@ -671,6 +671,6 @@ export function createEntityOption(item: Item, hidden = false, disabled = false)
   };
 }
 
-function createDataSourceOptions(items: any, optionOverrides: Partial<PsSelectDataSourceOptions> = {}): PsSelectDataSourceOptions {
+function createDataSourceOptions(items: any, optionOverrides: Partial<ZvSelectDataSourceOptions> = {}): ZvSelectDataSourceOptions {
   return Object.assign({ mode: 'id', idKey: 'value', labelKey: 'label', items: items }, optionOverrides);
 }

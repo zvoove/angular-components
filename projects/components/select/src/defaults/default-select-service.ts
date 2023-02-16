@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { isPsSelectDataSource, PsSelectDataSource } from '../select-data-source';
-import { PsSelectService } from '../select.service';
-import { DefaultPsSelectDataSource, PsSelectDataSourceOptions, isPsSelectOptionsData } from './default-select-data-source';
+import { isZvSelectDataSource, ZvSelectDataSource } from '../select-data-source';
+import { ZvSelectService } from '../select.service';
+import { DefaultZvSelectDataSource, ZvSelectDataSourceOptions, isZvSelectOptionsData } from './default-select-data-source';
 import { Observable, isObservable } from 'rxjs';
 import { getSelectUnknownDataSourceError } from '../errors';
 
-export declare type PsSelectData<T = any> = T[] | Observable<T[]> | PsSelectDataSource | PsSelectDataSourceOptions<T>;
+export declare type ZvSelectData<T = any> = T[] | Observable<T[]> | ZvSelectDataSource | ZvSelectDataSourceOptions<T>;
 
 @Injectable()
-export class DefaultPsSelectService extends PsSelectService {
-  public createDataSource<T>(dataSource: PsSelectData<T>, _: AbstractControl | null): PsSelectDataSource<T> {
-    if (isPsSelectDataSource(dataSource)) {
+export class DefaultZvSelectService extends ZvSelectService {
+  public createDataSource<T>(dataSource: ZvSelectData<T>, _: AbstractControl | null): ZvSelectDataSource<T> {
+    if (isZvSelectDataSource(dataSource)) {
       return dataSource;
     }
 
-    let options: PsSelectDataSourceOptions<T>;
+    let options: ZvSelectDataSourceOptions<T>;
     if (Array.isArray(dataSource) || isObservable(dataSource)) {
       options = {
         mode: 'id',
@@ -23,12 +23,12 @@ export class DefaultPsSelectService extends PsSelectService {
         idKey: 'value' as any,
         items: dataSource,
       };
-    } else if (isPsSelectOptionsData(dataSource)) {
+    } else if (isZvSelectOptionsData(dataSource)) {
       options = dataSource;
     } else {
       throw getSelectUnknownDataSourceError();
     }
 
-    return new DefaultPsSelectDataSource<T>(options);
+    return new DefaultZvSelectDataSource<T>(options);
   }
 }

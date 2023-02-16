@@ -1,12 +1,12 @@
 import { ModuleWithProviders, NgModule, Type } from '@angular/core';
-import { PsFormService } from './form.service';
+import { ZvFormService } from './form.service';
 
 @NgModule({})
-export class PsFormBaseModule {
-  public static forRoot(formsServiceType: Type<PsFormService>): ModuleWithProviders<PsFormBaseModule> {
+export class ZvFormBaseModule {
+  public static forRoot(formsServiceType: Type<ZvFormService>): ModuleWithProviders<ZvFormBaseModule> {
     return {
-      ngModule: PsFormBaseModule,
-      providers: [{ provide: PsFormService, useClass: formsServiceType }],
+      ngModule: ZvFormBaseModule,
+      providers: [{ provide: ZvFormService, useClass: formsServiceType }],
     };
   }
 }

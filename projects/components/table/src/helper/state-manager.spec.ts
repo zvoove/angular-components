@@ -1,11 +1,11 @@
 import { ActivatedRoute, convertToParamMap, NavigationExtras, ParamMap } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
-import { IPsTableUpdateDataInfo } from '../models';
-import { PsTableMemoryStateManager, PsTableUrlStateManager } from './state-manager';
+import { IZvTableUpdateDataInfo } from '../models';
+import { ZvTableMemoryStateManager, ZvTableUrlStateManager } from './state-manager';
 
-describe('PsTableStateManager', () => {
-  it('PsTableUrlStateManager', () => {
+describe('ZvTableStateManager', () => {
+  it('ZvTableUrlStateManager', () => {
     const queryParams$ = new BehaviorSubject<ParamMap>(convertToParamMap({}));
 
     const mockRouter: any = {
@@ -25,9 +25,9 @@ describe('PsTableStateManager', () => {
       }),
       queryParamMap: queryParams$,
     };
-    const stateManager = new PsTableUrlStateManager(mockRouter, route);
+    const stateManager = new ZvTableUrlStateManager(mockRouter, route);
     const source$ = stateManager.createStateSource('tableId');
-    const states: IPsTableUpdateDataInfo[] = [];
+    const states: IZvTableUpdateDataInfo[] = [];
     const sub = source$.subscribe((state) => {
       states.push(state);
     });
@@ -44,10 +44,10 @@ describe('PsTableStateManager', () => {
     sub.unsubscribe();
   });
 
-  it('PsTableMemoryStateManager', () => {
-    const stateManager = new PsTableMemoryStateManager();
+  it('ZvTableMemoryStateManager', () => {
+    const stateManager = new ZvTableMemoryStateManager();
     const source$ = stateManager.createStateSource('tableId');
-    const states: IPsTableUpdateDataInfo[] = [];
+    const states: IZvTableUpdateDataInfo[] = [];
     const sub = source$.subscribe((state) => {
       states.push(state);
     });
@@ -65,6 +65,6 @@ describe('PsTableStateManager', () => {
 });
 
 let count = 0;
-function createTableUpdateDataInfo(): IPsTableUpdateDataInfo {
+function createTableUpdateDataInfo(): IZvTableUpdateDataInfo {
   return { currentPage: ++count, pageSize: 5, searchText: 'test', sortColumn: 'a', sortDirection: 'asc' };
 }

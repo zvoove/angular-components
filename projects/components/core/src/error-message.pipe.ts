@@ -1,18 +1,18 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { PsExceptionMessageExtractor } from './exception-message-extractor.service';
+import { ZvExceptionMessageExtractor } from './exception-message-extractor.service';
 
-@Pipe({ name: 'psErrorMessage', pure: true })
-export class PsErrorMessagePipe implements PipeTransform {
-  constructor(private extractor: PsExceptionMessageExtractor) {}
+@Pipe({ name: 'zvErrorMessage', pure: true })
+export class ZvErrorMessagePipe implements PipeTransform {
+  constructor(private extractor: ZvExceptionMessageExtractor) {}
   public transform(error: unknown) {
     return this.extractor.extractErrorMessage(error) ?? '';
   }
 }
 
 @NgModule({
-  declarations: [PsErrorMessagePipe],
+  declarations: [ZvErrorMessagePipe],
   imports: [],
   providers: [],
-  exports: [PsErrorMessagePipe],
+  exports: [ZvErrorMessagePipe],
 })
-export class PsErrorMessagePipeModule {}
+export class ZvErrorMessagePipeModule {}

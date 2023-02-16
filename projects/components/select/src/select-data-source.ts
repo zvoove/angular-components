@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
-import { PsSelectItem } from './models';
+import { ZvSelectItem } from './models';
 
 export const DEFAULT_COMPARER = (a: any, b: any) => a === b;
 
-export abstract class PsSelectDataSource<T = any> {
+export abstract class ZvSelectDataSource<T = any> {
   /** The flag that indicates if the select is currently loading data. */
   public loading = false;
 
@@ -19,7 +19,7 @@ export abstract class PsSelectDataSource<T = any> {
    *
    * @returns Observable that emits a new value when the data changes.
    */
-  public abstract connect(): Observable<PsSelectItem<T>[] | ReadonlyArray<PsSelectItem<T>>>;
+  public abstract connect(): Observable<ZvSelectItem<T>[] | ReadonlyArray<ZvSelectItem<T>>>;
 
   /**
    * Disconnects a collection viewer (such as a data-table) from this data source. Can be used
@@ -30,13 +30,13 @@ export abstract class PsSelectDataSource<T = any> {
   public abstract panelOpenChanged(panelOpen: boolean): void;
   public abstract searchTextChanged(searchText: string): void;
   public abstract selectedValuesChanged(values: T[]): void;
-  public abstract getItemsForValues(values: T[]): PsSelectItem<T>[];
+  public abstract getItemsForValues(values: T[]): ZvSelectItem<T>[];
 }
 
 /** Checks whether an object is a data source. */
-export function isPsSelectDataSource(value: any): value is PsSelectDataSource<any> {
-  // Check if the value is a PsSelectDataSource by observing if it has a connect function. Cannot
-  // be checked as an `instanceof PsSelectDataSource` since people could create their own sources
-  // that match the interface, but don't extend PsSelectDataSource.
+export function isZvSelectDataSource(value: any): value is ZvSelectDataSource<any> {
+  // Check if the value is a ZvSelectDataSource by observing if it has a connect function. Cannot
+  // be checked as an `instanceof ZvSelectDataSource` since people could create their own sources
+  // that match the interface, but don't extend ZvSelectDataSource.
   return value && typeof value.connect === 'function';
 }

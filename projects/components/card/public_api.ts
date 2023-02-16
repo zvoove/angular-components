@@ -1,9 +1,9 @@
-export { PsCardComponent } from './src/card.component';
+export { ZvCardComponent } from './src/card.component';
 export {
-  PsCardActionsSectionDirective,
-  PsCardCaptionSectionDirective,
-  PsCardDescriptionSectionDirective,
-  PsCardFooterSectionDirective,
-  PsCardTopButtonSectionDirective,
+  ZvCardActionsSectionDirective,
+  ZvCardCaptionSectionDirective,
+  ZvCardDescriptionSectionDirective,
+  ZvCardFooterSectionDirective,
+  ZvCardTopButtonSectionDirective,
 } from './src/card.directives';
-export { PsCardModule } from './src/card.module';
+export { ZvCardModule } from './src/card.module';

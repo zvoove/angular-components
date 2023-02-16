@@ -9,32 +9,32 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, ParamMap, Params, RouterLinkWithHref, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { IPsTableIntlTexts, PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
-import { filterAsync } from '@prosoft/components/utils/src/array';
+import { IZvTableIntlTexts, ZvIntlService, ZvIntlServiceEn } from '@zvoove/components/core';
+import { filterAsync } from '@zvoove/components/utils/src/array';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { PsTableDataSource } from './data/table-data-source';
-import { PsTableColumnDirective } from './directives/table.directives';
-import { PsTableMemoryStateManager } from './helper/state-manager';
-import { IPsTableSortDefinition, PsTableActionScope } from './models';
-import { IPsTableSetting, PsTableSettingsService } from './services/table-settings.service';
-import { PsTablePaginationComponent } from './subcomponents/table-pagination.component';
-import { PsTableComponent } from './table.component';
-import { PsTableModule } from './table.module';
-import { PsTableHarness } from './testing/table.harness';
+import { ZvTableDataSource } from './data/table-data-source';
+import { ZvTableColumnDirective } from './directives/table.directives';
+import { ZvTableMemoryStateManager } from './helper/state-manager';
+import { IZvTableSortDefinition, ZvTableActionScope } from './models';
+import { IZvTableSetting, ZvTableSettingsService } from './services/table-settings.service';
+import { ZvTablePaginationComponent } from './subcomponents/table-pagination.component';
+import { ZvTableComponent } from './table.component';
+import { ZvTableModule } from './table.module';
+import { ZvTableHarness } from './testing/table.harness';
 
 @Injectable()
-class TestSettingsService extends PsTableSettingsService {
-  public settings$ = new BehaviorSubject<{ [id: string]: IPsTableSetting }>({});
+class TestSettingsService extends ZvTableSettingsService {
+  public settings$ = new BehaviorSubject<{ [id: string]: IZvTableSetting }>({});
   public override pageSizeOptions = [1, 5, 25, 50];
   public override settingsEnabled = false;
 
-  public override getStream(tableId: string, _: boolean): Observable<IPsTableSetting> {
+  public override getStream(tableId: string, _: boolean): Observable<IZvTableSetting> {
     return this.settings$.pipe(map((settings) => settings[tableId]));
   }
 
-  public override save(id: string, settings: IPsTableSetting): Observable<void> {
+  public override save(id: string, settings: IZvTableSetting): Observable<void> {
     const currentSettings = this.settings$.getValue();
     currentSettings[id] = settings;
     this.settings$.next(currentSettings);
@@ -62,7 +62,7 @@ const route: ActivatedRoute = <any>{
 };
 
 function createColDef(data: { property?: string; header?: string; sortable?: boolean }) {
-  const colDef = new PsTableColumnDirective();
+  const colDef = new ZvTableColumnDirective();
   colDef.sortable = data.sortable || false;
   colDef.property = data.property || null;
   colDef.header = data.header || null;
@@ -70,9 +70,9 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
 }
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-table
+    <zv-table
       #table
       [caption]="caption"
       [dataSource]="dataSource"
@@ -87,69 +87,69 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
       [stateManager]="stateManager"
       (page)="onPage($event)"
     >
-      <ps-table-column [header]="'id'" property="id" [sortable]="true"></ps-table-column>
-      <ps-table-column
+      <zv-table-column [header]="'id'" property="id" [sortable]="true"></zv-table-column>
+      <zv-table-column
         [header]="'string'"
         property="str"
         [sortable]="false"
         [headerStyles]="{ color: 'green' }"
         [columnStyles]="{ color: 'blue' }"
-      ></ps-table-column>
-      <ps-table-column property="__virtual" [mandatory]="true" [width]="'100px'">
-        <ng-container *psTableColumnHeaderTemplate>
+      ></zv-table-column>
+      <zv-table-column property="__virtual" [mandatory]="true" [width]="'100px'">
+        <ng-container *zvTableColumnHeaderTemplate>
           <i>custom</i>
         </ng-container>
-        <ng-container *psTableColumnTemplate="let item"> custom {{ item.id }} </ng-container>
-      </ps-table-column>
+        <ng-container *zvTableColumnTemplate="let item"> custom {{ item.id }} </ng-container>
+      </zv-table-column>
 
-      <ps-table-column [sortable]="false" property="__custom" [width]="'100px'">
-        <ng-container *psTableColumnTemplate="let item">
+      <zv-table-column [sortable]="false" property="__custom" [width]="'100px'">
+        <ng-container *zvTableColumnTemplate="let item">
           <button (click)="table.toggleRowDetail(item)">customToggle</button>
         </ng-container>
-      </ps-table-column>
+      </zv-table-column>
 
-      <div *psTableCustomHeader>custom header</div>
+      <div *zvTableCustomHeader>custom header</div>
 
-      <div *psTableCustomSettings="let settings">custom settings {{ settings.pageSize }}</div>
+      <div *zvTableCustomSettings="let settings">custom settings {{ settings.pageSize }}</div>
 
-      <div *psTableTopButtonSection>custom button section</div>
+      <div *zvTableTopButtonSection>custom button section</div>
 
-      <ng-container *psTableListActions="let selection">
+      <ng-container *zvTableListActions="let selection">
         <button type="button" mat-menu-item (click)="onCustomListActionClick(selection)">custom list actions</button>
       </ng-container>
 
-      <ng-container *psTableRowActions="let item">
+      <ng-container *zvTableRowActions="let item">
         <button type="button" mat-menu-item (click)="onCustomRowActionClick(item)">item {{ item.id }} custom row actions</button>
       </ng-container>
 
-      <ps-table-row-detail [expanded]="expanded" [showToggleColumn]="showToggleColumn">
-        <ng-container *psTableRowDetailTemplate="let item">item: {{ item.id }}</ng-container>
-      </ps-table-row-detail>
-    </ps-table>
+      <zv-table-row-detail [expanded]="expanded" [showToggleColumn]="showToggleColumn">
+        <ng-container *zvTableRowDetailTemplate="let item">item: {{ item.id }}</ng-container>
+      </zv-table-row-detail>
+    </zv-table>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestComponent {
   public caption = 'title';
-  public dataSource: PsTableDataSource<any>;
+  public dataSource: ZvTableDataSource<any>;
   public tableId = 'tableId';
-  public intlOverride: Partial<IPsTableIntlTexts>;
+  public intlOverride: Partial<IZvTableIntlTexts>;
   public refreshable = true;
   public filterable = true;
   public showSettings = true;
   public layout = 'card';
   public striped = true;
-  public sortDefinitions: IPsTableSortDefinition[] = [{ prop: '__virtual', displayName: 'Virtual Column' }];
+  public sortDefinitions: IZvTableSortDefinition[] = [{ prop: '__virtual', displayName: 'Virtual Column' }];
 
   /** Karma doesn't recognize url changes from code. */
-  public stateManager = new PsTableMemoryStateManager();
+  public stateManager = new ZvTableMemoryStateManager();
 
   public expanded = false;
   public showToggleColumn = true;
 
-  @ViewChild(PsTableComponent, { static: true }) table: PsTableComponent;
-  @ViewChild(PsTablePaginationComponent, { static: true }) paginator: PsTablePaginationComponent;
+  @ViewChild(ZvTableComponent, { static: true }) table: ZvTableComponent;
+  @ViewChild(ZvTablePaginationComponent, { static: true }) paginator: ZvTablePaginationComponent;
 
   public onPage(_event: any) {}
   public onCustomListActionClick(_slectedItems: any[]) {}
@@ -157,17 +157,17 @@ export class TestComponent {
   public onListActionExecute(_selection: any[]) {}
 }
 
-describe('PsTableComponent', () => {
+describe('ZvTableComponent', () => {
   describe('isolated', () => {
-    const intlService = new PsIntlServiceEn();
+    const intlService = new ZvIntlServiceEn();
     const cd = <ChangeDetectorRef>{ markForCheck: () => {} };
 
     let settingsService: TestSettingsService;
-    function createTableInstance(): PsTableComponent {
+    function createTableInstance(): ZvTableComponent {
       settingsService = new TestSettingsService();
-      const table = new PsTableComponent(intlService, settingsService, null, cd, route, router, 'de');
+      const table = new ZvTableComponent(intlService, settingsService, null, cd, route, router, 'de');
       table.tableId = 'tableid';
-      table.dataSource = new PsTableDataSource<any>(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
+      table.dataSource = new ZvTableDataSource<any>(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
       return table;
     }
 
@@ -193,7 +193,7 @@ describe('PsTableComponent', () => {
       expect(settingsService.getStream).toHaveBeenCalledWith(table.tableId, false);
 
       settingsService.settings$.next({
-        tableid: <IPsTableSetting>{
+        tableid: <IZvTableSetting>{
           columnBlacklist: ['prop2'],
           pageSize: 22,
           sortColumn: 'col',
@@ -316,15 +316,15 @@ describe('PsTableComponent', () => {
     it('should merge sort definitions and disable sorting on empty', fakeAsync(() => {
       const table = createTableInstance();
       const customSortDef = { prop: 'custom', displayName: 'Custom' };
-      const notSortableColDef = new PsTableColumnDirective();
+      const notSortableColDef = new ZvTableColumnDirective();
       notSortableColDef.sortable = false;
       notSortableColDef.property = 'no_sort';
       notSortableColDef.header = 'NoSort';
-      const sortableColDef = new PsTableColumnDirective();
+      const sortableColDef = new ZvTableColumnDirective();
       sortableColDef.sortable = true;
       sortableColDef.property = 'sort';
       sortableColDef.header = 'Sort';
-      const colDefs = new QueryList<PsTableColumnDirective>();
+      const colDefs = new QueryList<ZvTableColumnDirective>();
 
       colDefs.reset([notSortableColDef]);
       table.columnDefsSetter = colDefs;
@@ -374,9 +374,9 @@ describe('PsTableComponent', () => {
     });
 
     it('should set locale on the data source', fakeAsync(() => {
-      const initialDataSource = new PsTableDataSource(() => of([]), 'client');
+      const initialDataSource = new ZvTableDataSource(() => of([]), 'client');
       spyOn(initialDataSource, 'updateData');
-      const newDataSource = new PsTableDataSource(() => of([]), 'client');
+      const newDataSource = new ZvTableDataSource(() => of([]), 'client');
       spyOn(newDataSource, 'updateData');
 
       const table = createTableInstance();
@@ -438,7 +438,7 @@ describe('PsTableComponent', () => {
 
     it('should update view when view/content children change', fakeAsync(() => {
       spyOn(cd, 'markForCheck');
-      const table = createTableInstance() as PsTableComponent;
+      const table = createTableInstance() as ZvTableComponent;
       spyOn(table as any, 'updateTableState').and.callThrough();
 
       table.customHeader = null;
@@ -472,15 +472,15 @@ describe('PsTableComponent', () => {
     let fixture: ComponentFixture<TestComponent>;
     let component: TestComponent;
     let loader: HarnessLoader;
-    let table: PsTableHarness;
+    let table: ZvTableHarness;
 
-    async function initTestComponent(tableDataSource: PsTableDataSource<any>) {
+    async function initTestComponent(tableDataSource: ZvTableDataSource<any>) {
       fixture = TestBed.createComponent(TestComponent);
       component = fixture.componentInstance;
       expect(component).toBeDefined();
       component.dataSource = tableDataSource;
       loader = TestbedHarnessEnvironment.loader(fixture);
-      table = await loader.getHarness(PsTableHarness);
+      table = await loader.getHarness(ZvTableHarness);
     }
 
     beforeEach(async () => {
@@ -511,16 +511,16 @@ describe('PsTableComponent', () => {
       ];
 
       await TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, PsTableModule, RouterTestingModule.withRoutes(routes), MatIconTestingModule],
+        imports: [NoopAnimationsModule, CommonModule, ZvTableModule, RouterTestingModule.withRoutes(routes), MatIconTestingModule],
         declarations: [TestComponent],
         providers: [
-          { provide: PsTableSettingsService, useClass: TestSettingsService },
-          { provide: PsIntlService, useClass: PsIntlServiceEn },
+          { provide: ZvTableSettingsService, useClass: TestSettingsService },
+          { provide: ZvIntlService, useClass: ZvIntlServiceEn },
         ],
       });
 
       await initTestComponent(
-        new PsTableDataSource({
+        new ZvTableDataSource({
           loadDataFn: () =>
             of([
               { id: 1, str: 'item 1' },
@@ -533,7 +533,7 @@ describe('PsTableComponent', () => {
     });
 
     it('should resolve intl correctly', async () => {
-      const intlService = TestBed.inject(PsIntlService);
+      const intlService = TestBed.inject(ZvIntlService);
       const defaultTableIntl = intlService.get('table');
       fixture.detectChanges();
       expect(component.table.intl).toEqual(defaultTableIntl);
@@ -554,7 +554,7 @@ describe('PsTableComponent', () => {
     describe('should bind the right properties and events to the ui', () => {
       beforeEach(async () => {
         await initTestComponent(
-          new PsTableDataSource({
+          new ZvTableDataSource({
             loadDataFn: () =>
               of([
                 { id: 1, str: 'item 1' },
@@ -566,7 +566,7 @@ describe('PsTableComponent', () => {
               {
                 label: 'custom action',
                 icon: 'check',
-                scope: PsTableActionScope.all,
+                scope: ZvTableActionScope.all,
                 actionFn: (selection) => component.onListActionExecute(selection),
               },
             ],
@@ -636,7 +636,7 @@ describe('PsTableComponent', () => {
         const dataRows = await table.getRows();
         expect(dataRows.length).toEqual(6); // 3 rows with 3x row detail per row
 
-        const data = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('ps-table-data__row'));
+        const data = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('zv-table-data__row'));
 
         expect(data.length).toEqual(3);
 
@@ -645,7 +645,7 @@ describe('PsTableComponent', () => {
         expect(await strDataCell[0].getText()).toEqual('item 1');
         expect(await (await strDataCell[0].host()).getCssValue('color')).toEqual('rgb(0, 0, 255)');
 
-        const detail = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('ps-table-data__detail-row'));
+        const detail = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('zv-table-data__detail-row'));
 
         expect(detail.every(async (d) => (await (await d.host()).getCssValue('height')) === '0')).toEqual(true);
 
@@ -762,7 +762,7 @@ describe('PsTableComponent', () => {
 
     it('should show "GoToPage"-Select, if there are more then 2 pages', async () => {
       await initTestComponent(
-        new PsTableDataSource({
+        new ZvTableDataSource({
           loadDataFn: () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
           mode: 'client',
         })
@@ -775,7 +775,7 @@ describe('PsTableComponent', () => {
 
     it('should not show "GoToPage"-Select, if there are less then 3 pages', async () => {
       await initTestComponent(
-        new PsTableDataSource({
+        new ZvTableDataSource({
           loadDataFn: () => of(Array.from({ length: 5 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
           mode: 'client',
         })
@@ -787,7 +787,7 @@ describe('PsTableComponent', () => {
 
     it('should go to selected page chosen with "GoToPage"-Select', async () => {
       await initTestComponent(
-        new PsTableDataSource({
+        new ZvTableDataSource({
           loadDataFn: () => of(Array.from({ length: 50 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
           mode: 'client',
         })
@@ -806,7 +806,7 @@ describe('PsTableComponent', () => {
     describe('table actions', () => {
       beforeEach(async () => {
         await initTestComponent(
-          new PsTableDataSource({
+          new ZvTableDataSource({
             loadDataFn: () =>
               of([
                 { id: 1, str: 'item 1' },
@@ -818,18 +818,18 @@ describe('PsTableComponent', () => {
               {
                 label: 'custom all action 1',
                 icon: 'check',
-                scope: PsTableActionScope.all,
+                scope: ZvTableActionScope.all,
                 children: [
                   {
                     label: 'custom all subaction 1',
                     icon: 'check',
-                    scope: PsTableActionScope.row,
+                    scope: ZvTableActionScope.row,
                   },
                   {
                     label: 'custom all subaction 2',
                     icon: 'angular',
                     isSvgIcon: true,
-                    scope: PsTableActionScope.row,
+                    scope: ZvTableActionScope.row,
                   },
                 ],
               },
@@ -837,7 +837,7 @@ describe('PsTableComponent', () => {
                 label: 'custom all action 2',
                 icon: 'angular',
                 isSvgIcon: true,
-                scope: PsTableActionScope.all,
+                scope: ZvTableActionScope.all,
                 isHiddenFn: (items: any[]) => !items.length,
                 routerLink: (items: any[]) => ({
                   path: ['/', 'path', 'to', 'something', items[0].id],
@@ -847,41 +847,41 @@ describe('PsTableComponent', () => {
               {
                 label: 'custom all action 3',
                 icon: 'cancel',
-                scope: PsTableActionScope.all,
+                scope: ZvTableActionScope.all,
                 children: [
                   {
                     label: 'custom all action 3 subaction 1',
                     icon: '',
-                    scope: PsTableActionScope.all,
+                    scope: ZvTableActionScope.all,
                   },
                   {
                     label: 'custom all action 3 subaction 2',
                     icon: '',
-                    scope: PsTableActionScope.all,
+                    scope: ZvTableActionScope.all,
                   },
                 ],
               },
               {
                 label: 'custom list action 1',
                 icon: 'check',
-                scope: PsTableActionScope.list,
+                scope: ZvTableActionScope.list,
               },
               {
                 label: 'custom list action 2',
                 icon: 'angular',
                 isSvgIcon: true,
-                scope: PsTableActionScope.list,
+                scope: ZvTableActionScope.list,
               },
               {
                 label: 'custom row action 1',
                 icon: 'check',
-                scope: PsTableActionScope.row,
+                scope: ZvTableActionScope.row,
               },
               {
                 label: 'custom row action 2',
                 icon: 'angular',
                 isSvgIcon: true,
-                scope: PsTableActionScope.row,
+                scope: ZvTableActionScope.row,
               },
             ],
           })

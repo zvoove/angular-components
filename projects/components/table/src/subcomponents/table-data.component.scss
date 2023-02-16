@@ -1,4 +1,4 @@
-.ps-table-data__table {
+.zv-table-data__table {
   width: 100%;
 
   td.mat-cell,
@@ -7,15 +7,15 @@
     padding: 0 0.25em;
   }
 
-  .ps-table-data__options-column {
+  .zv-table-data__options-column {
     text-align: right;
   }
-  th.ps-table-data__options-column-header {
+  th.zv-table-data__options-column-header {
     color: black;
     text-align: right;
   }
 
-  tr.ps-table-data__detail-row {
+  tr.zv-table-data__detail-row {
     min-height: 0;
     height: auto;
 
@@ -25,12 +25,12 @@
   }
 }
 
-.ps-table-data__detail-row--collapsed > .ps-table-data__detail-cell {
+.zv-table-data__detail-row--collapsed > .zv-table-data__detail-cell {
   border-bottom-width: 0;
 }
 
-ps-table.ps-table--striped:not(.ps-table--row-detail) tbody tr:nth-child(even),
-ps-table.ps-table--striped.ps-table--row-detail tbody tr:nth-child(4n + 3),
-ps-table.ps-table--striped.ps-table--row-detail tbody tr:nth-child(4n + 4) {
+zv-table.zv-table--striped:not(.zv-table--row-detail) tbody tr:nth-child(even),
+zv-table.zv-table--striped.zv-table--row-detail tbody tr:nth-child(4n + 3),
+zv-table.zv-table--striped.zv-table--row-detail tbody tr:nth-child(4n + 4) {
   background-color: #f4f4f4;
 }

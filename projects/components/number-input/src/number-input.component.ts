@@ -30,14 +30,14 @@ import {
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { CanUpdateErrorState, ErrorStateMatcher, mixinErrorState } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { replaceAll } from '@prosoft/components/utils';
+import { replaceAll } from '@zvoove/components/utils';
 import { Subject } from 'rxjs';
 
 let nextUniqueId = 0;
 
-// Boilerplate for applying mixins to PsNumberInput.
+// Boilerplate for applying mixins to ZvNumberInput.
 /** @docs-private */
-class PsNumberInputBase {
+class ZvNumberInputBase {
   readonly stateChanges = new Subject<void>();
 
   constructor(
@@ -48,12 +48,12 @@ class PsNumberInputBase {
     public ngControl: NgControl
   ) {}
 }
-const psNumberInputMixinBase = mixinErrorState(PsNumberInputBase);
+const zvNumberInputMixinBase = mixinErrorState(ZvNumberInputBase);
 
 /** Directive that allows a native input to work inside a `MatFormField`. */
 // eslint-disable-next-line @angular-eslint/no-conflicting-lifecycle
 @Component({
-  selector: 'ps-number-input',
+  selector: 'zv-number-input',
   templateUrl: './number-input.component.html',
   styleUrls: ['./number-input.component.scss'],
   // eslint-disable-next-line @angular-eslint/no-host-metadata-property
@@ -69,12 +69,12 @@ const psNumberInputMixinBase = mixinErrorState(PsNumberInputBase);
     '[attr.aria-invalid]': 'errorState',
     '[attr.aria-required]': 'required.toString()',
   },
-  providers: [{ provide: MatFormFieldControl, useExisting: PsNumberInputComponent }],
+  providers: [{ provide: MatFormFieldControl, useExisting: ZvNumberInputComponent }],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsNumberInputComponent
-  extends psNumberInputMixinBase
+export class ZvNumberInputComponent
+  extends zvNumberInputMixinBase
   implements ControlValueAccessor, MatFormFieldControl<any>, OnChanges, OnDestroy, OnInit, DoCheck, CanUpdateErrorState
 {
   /** Mininum boundary value. */
@@ -123,7 +123,7 @@ export class PsNumberInputComponent
    *
    * @docs-private
    */
-  controlType = 'ps-number-input';
+  controlType = 'zv-number-input';
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -239,7 +239,7 @@ export class PsNumberInputComponent
     return this.focused || !this.empty;
   }
 
-  protected _uid = `ps-number-input-${nextUniqueId++}`;
+  protected _uid = `zv-number-input-${nextUniqueId++}`;
   /** The aria-describedby attribute on the input for improved a11y. */
   _ariaDescribedby: string;
 

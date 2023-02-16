@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { PsBlockUiModule } from '@prosoft/components/block-ui';
-import { PsErrorMessagePipeModule } from '@prosoft/components/core';
-import { PsViewComponent } from './view.component';
+import { ZvBlockUiModule } from '@zvoove/components/block-ui';
+import { ZvErrorMessagePipeModule } from '@zvoove/components/core';
+import { ZvViewComponent } from './view.component';
 
 @NgModule({
-  declarations: [PsViewComponent],
-  imports: [CommonModule, MatCardModule, MatIconModule, PsBlockUiModule, PsErrorMessagePipeModule],
-  exports: [PsViewComponent],
+  declarations: [ZvViewComponent],
+  imports: [CommonModule, MatCardModule, MatIconModule, ZvBlockUiModule, ZvErrorMessagePipeModule],
+  exports: [ZvViewComponent],
 })
-export class PsViewModule {}
+export class ZvViewModule {}

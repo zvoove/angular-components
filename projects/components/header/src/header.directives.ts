@@ -1,16 +1,16 @@
 import { Directive } from '@angular/core';
 
 @Directive({
-  selector: '[psHeaderTopButtonSection]',
+  selector: '[zvHeaderTopButtonSection]',
 })
-export class PsHeaderTopButtonSectionDirective {}
+export class ZvHeaderTopButtonSectionDirective {}
 
 @Directive({
-  selector: '[psHeaderCaptionSection]',
+  selector: '[zvHeaderCaptionSection]',
 })
-export class PsHeaderCaptionSectionDirective {}
+export class ZvHeaderCaptionSectionDirective {}
 
 @Directive({
-  selector: '[psHeaderDescriptionSection]',
+  selector: '[zvHeaderDescriptionSection]',
 })
-export class PsHeaderDescriptionSectionDirective {}
+export class ZvHeaderDescriptionSectionDirective {}

@@ -1,20 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { PsHeaderComponent } from './header.component';
+import { ZvHeaderComponent } from './header.component';
 import {
-  PsHeaderCaptionSectionDirective,
-  PsHeaderDescriptionSectionDirective,
-  PsHeaderTopButtonSectionDirective,
+  ZvHeaderCaptionSectionDirective,
+  ZvHeaderDescriptionSectionDirective,
+  ZvHeaderTopButtonSectionDirective,
 } from './header.directives';
 
 @NgModule({
   declarations: [
-    PsHeaderComponent,
-    PsHeaderTopButtonSectionDirective,
-    PsHeaderCaptionSectionDirective,
-    PsHeaderDescriptionSectionDirective,
+    ZvHeaderComponent,
+    ZvHeaderTopButtonSectionDirective,
+    ZvHeaderCaptionSectionDirective,
+    ZvHeaderDescriptionSectionDirective,
   ],
   imports: [CommonModule],
-  exports: [PsHeaderComponent, PsHeaderTopButtonSectionDirective, PsHeaderCaptionSectionDirective, PsHeaderDescriptionSectionDirective],
+  exports: [ZvHeaderComponent, ZvHeaderTopButtonSectionDirective, ZvHeaderCaptionSectionDirective, ZvHeaderDescriptionSectionDirective],
 })
-export class PsHeaderModule {}
+export class ZvHeaderModule {}

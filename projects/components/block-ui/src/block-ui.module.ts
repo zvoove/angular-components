@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { PsBlockUiComponent } from './block-ui.component';
+import { ZvBlockUiComponent } from './block-ui.component';
 
 @NgModule({
-  declarations: [PsBlockUiComponent],
+  declarations: [ZvBlockUiComponent],
   imports: [CommonModule, MatProgressSpinnerModule],
-  exports: [PsBlockUiComponent],
+  exports: [ZvBlockUiComponent],
 })
-export class PsBlockUiModule {}
+export class ZvBlockUiModule {}

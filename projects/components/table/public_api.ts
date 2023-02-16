@@ -1,27 +1,27 @@
 // reexport
-export { IPsTableIntlTexts } from '@prosoft/components/core';
-export { IPsTableFilterResult, PsTableDataSource } from './src/data/table-data-source';
+export { IZvTableIntlTexts } from '@zvoove/components/core';
+export { IZvTableFilterResult, ZvTableDataSource, ZvTableMode } from './src/data/table-data-source';
 export {
-  PsTableColumnDirective,
-  PsTableColumnHeaderTemplateDirective,
-  PsTableColumnTemplateDirective,
-  PsTableCustomHeaderDirective,
-  PsTableCustomSettingsDirective,
-  PsTableListActionsDirective,
-  PsTableRowActionsDirective,
-  PsTableRowDetailDirective,
-  PsTableRowDetailTemplateDirective,
-  PsTableTopButtonSectionDirective,
+  ZvTableColumnDirective,
+  ZvTableColumnHeaderTemplateDirective,
+  ZvTableColumnTemplateDirective,
+  ZvTableCustomHeaderDirective,
+  ZvTableCustomSettingsDirective,
+  ZvTableListActionsDirective,
+  ZvTableRowActionsDirective,
+  ZvTableRowDetailDirective,
+  ZvTableRowDetailTemplateDirective,
+  ZvTableTopButtonSectionDirective,
 } from './src/directives/table.directives';
-export { PsTableMemoryStateManager, PsTableStateManager, PsTableUrlStateManager } from './src/helper/state-manager';
+export { ZvTableMemoryStateManager, ZvTableStateManager, ZvTableUrlStateManager } from './src/helper/state-manager';
 export {
-  IExtendedPsTableUpdateDataInfo,
-  IPsTableAction,
-  IPsTableSortDefinition,
-  IPsTableUpdateDataInfo,
-  PsTableActionScope,
-  IPsTableActionRouterLink,
+  IExtendedZvTableUpdateDataInfo,
+  IZvTableAction,
+  IZvTableActionRouterLink,
+  IZvTableSortDefinition,
+  IZvTableUpdateDataInfo,
+  ZvTableActionScope,
 } from './src/models';
-export { IPsTableSetting, PsTableSettingsService } from './src/services/table-settings.service';
-export { PsTableComponent } from './src/table.component';
-export { PsTableModule } from './src/table.module';
+export { IZvTableSetting, ZvTableSettingsService } from './src/services/table-settings.service';
+export { ZvTableComponent } from './src/table.component';
+export { ZvTableModule } from './src/table.module';

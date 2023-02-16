@@ -4,14 +4,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { PsBlockUiModule } from '@prosoft/components/block-ui';
-import { PsErrorMessagePipeModule } from '@prosoft/components/core';
-import { PsFormErrorsModule } from '@prosoft/components/form-errors';
+import { ZvBlockUiModule } from '@zvoove/components/block-ui';
+import { ZvErrorMessagePipeModule } from '@zvoove/components/core';
+import { ZvFormErrorsModule } from '@zvoove/components/form-errors';
 
-import { PsFormComponent } from './form.component';
+import { ZvFormComponent } from './form.component';
 
 @NgModule({
-  declarations: [PsFormComponent],
+  declarations: [ZvFormComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -20,10 +20,10 @@ import { PsFormComponent } from './form.component';
     MatIconModule,
     MatButtonModule,
 
-    PsBlockUiModule,
-    PsFormErrorsModule,
-    PsErrorMessagePipeModule,
+    ZvBlockUiModule,
+    ZvFormErrorsModule,
+    ZvErrorMessagePipeModule,
   ],
-  exports: [PsFormComponent],
+  exports: [ZvFormComponent],
 })
-export class PsFormModule {}
+export class ZvFormModule {}

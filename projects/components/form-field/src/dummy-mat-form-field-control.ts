@@ -48,7 +48,7 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
   public placeholder: string;
   public focused = false;
   public errorState = false;
-  public controlType = 'ps-dummy';
+  public controlType = 'zv-dummy';
 
   public autofilled?: boolean;
 

@@ -1,6 +1,6 @@
 @import '~nouislider/dist/nouislider';
 
-ps-slider {
+zv-slider {
   .noUi-target {
     height: 20px;
     border: none;
@@ -23,7 +23,7 @@ ps-slider {
     height: 20px !important;
     width: 20px !important;
     border-radius: 50%;
-    border-color: var(--ps-primary);
+    border-color: var(--zv-primary);
     box-shadow: none;
     transform: translate(-50%, 30%);
     &:hover {
@@ -36,14 +36,14 @@ ps-slider {
 
     &:focus,
     &:active {
-      background: var(--ps-primary);
+      background: var(--zv-primary);
     }
   }
 
   .noUi-connect {
     height: 4px;
     top: calc(50% - 2px);
-    background: var(--ps-accent);
+    background: var(--zv-accent);
   }
 
   .noUi-tooltip {
@@ -59,12 +59,12 @@ ps-slider {
     cursor: grabbing;
   }
 
-  &.ps-slider-invalid {
+  &.zv-slider-invalid {
     .noUi-target {
-      background: linear-gradient(to bottom, transparent 40%, var(--ps-error) 40%, var(--ps-error) 60%, transparent 60%);
+      background: linear-gradient(to bottom, transparent 40%, var(--zv-error) 40%, var(--zv-error) 60%, transparent 60%);
     }
     .noUi-handle {
-      border-color: var(--ps-error);
+      border-color: var(--zv-error);
     }
   }
 }

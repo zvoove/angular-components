@@ -5,11 +5,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { IPsButton, IPsException } from '@prosoft/components/core';
+import { IZvButton, IZvException } from '@zvoove/components/core';
 import { Observable, of, Subject } from 'rxjs';
-import { IPsDialogWrapperDataSource } from './dialog-wrapper.models';
-import { PsDialogWrapperModule } from './dialog-wrapper.module';
-import { PsDialogWrapperHarness } from './testing/dialog-wrapper.harness';
+import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
+import { ZvDialogWrapperModule } from './dialog-wrapper.module';
+import { ZvDialogWrapperHarness } from './testing/dialog-wrapper.harness';
 
 interface ITestDialogWrapperDataSourceOptions {
   dialogTitle: string;
@@ -17,9 +17,9 @@ interface ITestDialogWrapperDataSourceOptions {
   cancelFn: () => void;
 }
 
-export class TestDialogWrapperDataSource implements IPsDialogWrapperDataSource {
+export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
   dialogTitle = this.options.dialogTitle;
-  buttons: IPsButton[] = [
+  buttons: IZvButton[] = [
     {
       label: 'Ok',
       type: 'raised',
@@ -37,7 +37,7 @@ export class TestDialogWrapperDataSource implements IPsDialogWrapperDataSource {
   ];
   contentVisible: boolean;
   contentBlocked: boolean;
-  exception: IPsException;
+  exception: IZvException;
 
   public somethingChanged$ = new Subject<void>();
 
@@ -59,16 +59,16 @@ export class TestDialogWrapperDataSource implements IPsDialogWrapperDataSource {
 }
 
 @Component({
-  selector: 'ps-dialog-wrapper-dialog',
+  selector: 'zv-dialog-wrapper-dialog',
   template: `
-    <ps-dialog-wrapper [dataSource]="dataSource">
+    <zv-dialog-wrapper [dataSource]="dataSource">
       <span>dialogContent</span>
-    </ps-dialog-wrapper>
+    </zv-dialog-wrapper>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class PsDialogWrapperTestDialog {
+export class ZvDialogWrapperTestDialog {
   dataSource = new TestDialogWrapperDataSource({
     dialogTitle: 'MyDialogTitle',
     actionFn: () => this.actionFunction(),
@@ -77,7 +77,7 @@ export class PsDialogWrapperTestDialog {
 
   private _cancelFunctionCalled: number;
 
-  constructor(public dialogRef: MatDialogRef<PsDialogWrapperTestDialog>) {}
+  constructor(public dialogRef: MatDialogRef<ZvDialogWrapperTestDialog>) {}
 
   public actionFunction() {
     return of();
@@ -90,33 +90,33 @@ export class PsDialogWrapperTestDialog {
 }
 
 @Component({
-  selector: 'ps-dialog-wrapper-test',
+  selector: 'zv-dialog-wrapper-test',
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export class PsDialogWrapperTestComponent {
+export class ZvDialogWrapperTestComponent {
   constructor(public dialog: MatDialog) {}
 
   public openDialog() {
-    return this.dialog.open(PsDialogWrapperTestDialog);
+    return this.dialog.open(ZvDialogWrapperTestDialog);
   }
 }
 
 describe('DialogUnitTestComponent', () => {
-  let component: PsDialogWrapperTestComponent;
-  let fixture: ComponentFixture<PsDialogWrapperTestComponent>;
+  let component: ZvDialogWrapperTestComponent;
+  let fixture: ComponentFixture<ZvDialogWrapperTestComponent>;
   let rootLoader: HarnessLoader;
   let overlayContainer: OverlayContainer;
-  let dialogRef: MatDialogRef<PsDialogWrapperTestDialog>;
-  let dialogWrapper: PsDialogWrapperHarness;
+  let dialogRef: MatDialogRef<ZvDialogWrapperTestDialog>;
+  let dialogWrapper: ZvDialogWrapperHarness;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, MatDialogModule, PsDialogWrapperModule],
-      declarations: [PsDialogWrapperTestDialog, PsDialogWrapperTestComponent],
+      imports: [BrowserAnimationsModule, MatDialogModule, ZvDialogWrapperModule],
+      declarations: [ZvDialogWrapperTestDialog, ZvDialogWrapperTestComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PsDialogWrapperTestComponent);
+    fixture = TestBed.createComponent(ZvDialogWrapperTestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
@@ -124,7 +124,7 @@ describe('DialogUnitTestComponent', () => {
     overlayContainer = TestBed.inject(OverlayContainer);
 
     dialogRef = component.openDialog();
-    dialogWrapper = await rootLoader.getHarness(PsDialogWrapperHarness);
+    dialogWrapper = await rootLoader.getHarness(ZvDialogWrapperHarness);
   });
 
   afterEach(async () => {
@@ -158,7 +158,7 @@ describe('DialogUnitTestComponent', () => {
 
     expect(cancelSpy).toHaveBeenCalledTimes(1);
     expect(closeSpy).toHaveBeenCalledTimes(1);
-    expect((await rootLoader.getAllHarnesses(PsDialogWrapperHarness)).length).toEqual(0);
+    expect((await rootLoader.getAllHarnesses(ZvDialogWrapperHarness)).length).toEqual(0);
   });
 
   it('should show errors', async () => {

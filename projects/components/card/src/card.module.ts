@@ -1,33 +1,33 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { PsHeaderModule } from '@prosoft/components/header';
-import { PsCardComponent } from './card.component';
+import { ZvHeaderModule } from '@zvoove/components/header';
+import { ZvCardComponent } from './card.component';
 import {
-  PsCardActionsSectionDirective,
-  PsCardCaptionSectionDirective,
-  PsCardDescriptionSectionDirective,
-  PsCardFooterSectionDirective,
-  PsCardTopButtonSectionDirective,
+  ZvCardActionsSectionDirective,
+  ZvCardCaptionSectionDirective,
+  ZvCardDescriptionSectionDirective,
+  ZvCardFooterSectionDirective,
+  ZvCardTopButtonSectionDirective,
 } from './card.directives';
 
 @NgModule({
-  imports: [CommonModule, MatCardModule, PsHeaderModule],
+  imports: [CommonModule, MatCardModule, ZvHeaderModule],
   exports: [
-    PsCardComponent,
-    PsCardTopButtonSectionDirective,
-    PsCardFooterSectionDirective,
-    PsCardCaptionSectionDirective,
-    PsCardDescriptionSectionDirective,
-    PsCardActionsSectionDirective,
+    ZvCardComponent,
+    ZvCardTopButtonSectionDirective,
+    ZvCardFooterSectionDirective,
+    ZvCardCaptionSectionDirective,
+    ZvCardDescriptionSectionDirective,
+    ZvCardActionsSectionDirective,
   ],
   declarations: [
-    PsCardComponent,
-    PsCardTopButtonSectionDirective,
-    PsCardFooterSectionDirective,
-    PsCardCaptionSectionDirective,
-    PsCardDescriptionSectionDirective,
-    PsCardActionsSectionDirective,
+    ZvCardComponent,
+    ZvCardTopButtonSectionDirective,
+    ZvCardFooterSectionDirective,
+    ZvCardCaptionSectionDirective,
+    ZvCardDescriptionSectionDirective,
+    ZvCardActionsSectionDirective,
   ],
 })
-export class PsCardModule {}
+export class ZvCardModule {}

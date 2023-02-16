@@ -1,20 +1,20 @@
 import { BaseHarnessFilters, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
 
-export interface PsViewHarnessFilters extends BaseHarnessFilters {
+export interface ZvViewHarnessFilters extends BaseHarnessFilters {
   errorText?: string | RegExp;
 }
 
-export class PsViewHarness extends ContentContainerComponentHarness {
-  static hostSelector = 'ps-view';
+export class ZvViewHarness extends ContentContainerComponentHarness {
+  static hostSelector = 'zv-view';
 
-  private _blockUi = this.locatorForOptional('ps-block-ui');
-  private _blockUiOverlay = this.locatorForOptional('.ps-block-ui__overlay');
-  private _errorContainer = this.locatorForOptional('.ps-view__error-container');
-  private _errorText = this.locatorForOptional('.ps-view__error-container span');
-  private _errorIcon = this.locatorForOptional('.ps-view__error-container mat-icon');
+  private _blockUi = this.locatorForOptional('zv-block-ui');
+  private _blockUiOverlay = this.locatorForOptional('.zv-block-ui__overlay');
+  private _errorContainer = this.locatorForOptional('.zv-view__error-container');
+  private _errorText = this.locatorForOptional('.zv-view__error-container span');
+  private _errorIcon = this.locatorForOptional('.zv-view__error-container mat-icon');
 
-  static with(options: PsViewHarnessFilters = {}): HarnessPredicate<PsViewHarness> {
-    return new HarnessPredicate(PsViewHarness, options).addOption('errorText', options.errorText, (harness, text) =>
+  static with(options: ZvViewHarnessFilters = {}): HarnessPredicate<ZvViewHarness> {
+    return new HarnessPredicate(ZvViewHarness, options).addOption('errorText', options.errorText, (harness, text) =>
       HarnessPredicate.stringMatches(harness.getErrorText(), text)
     );
   }
@@ -40,6 +40,6 @@ export class PsViewHarness extends ContentContainerComponentHarness {
   }
 
   async isErrorCentered(): Promise<boolean> {
-    return (await this._errorContainer()).hasClass('ps-view__error-container--center');
+    return (await this._errorContainer()).hasClass('zv-view__error-container--center');
   }
 }

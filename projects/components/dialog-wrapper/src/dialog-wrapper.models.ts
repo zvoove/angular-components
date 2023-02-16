@@ -1,12 +1,12 @@
-import { IPsButton, IPsException } from '@prosoft/components/core';
+import { IZvButton, IZvException } from '@zvoove/components/core';
 import { Observable } from 'rxjs';
 
-export interface IPsDialogWrapperDataSource {
+export interface IZvDialogWrapperDataSource {
   readonly dialogTitle: string | null;
-  readonly buttons: IPsButton[];
+  readonly buttons: IZvButton[];
   readonly contentVisible: boolean;
   readonly contentBlocked: boolean;
-  readonly exception: IPsException | null;
+  readonly exception: IZvException | null;
   connect(): Observable<void>;
   disconnect(): void;
 }

@@ -1,15 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { IPsTableAction } from '../models';
+import { IZvTableAction } from '../models';
 
 /**
  * Filters out hidden actions
  */
 @Pipe({
-  name: 'psTableActionsToRender',
+  name: 'zvTableActionsToRender',
   pure: true,
 })
-export class PsTableActionsToRenderPipe implements PipeTransform {
-  transform<T>(actions: IPsTableAction<T>[], ...args: [T | T[]]): any {
+export class ZvTableActionsToRenderPipe implements PipeTransform {
+  transform<T>(actions: IZvTableAction<T>[], ...args: [T | T[]]): any {
     const elements = Array.isArray(args[0]) ? args[0] : [args[0]];
     return actions.filter((a) => !a.isHiddenFn || !a.isHiddenFn(elements));
   }

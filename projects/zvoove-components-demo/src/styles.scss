@@ -1,0 +1,63 @@
+//==========================================
+@use '@angular/material' as mat;
+//= Font Import
+//==========================================
+// Ohne das ":light,regular,medium,thin,italic,mediumitalic,bold" ist die Schrift teils unscharf
+// @import url('https://fonts.googleapis.com/css?family=Quicksand:light,regular,medium,thin,italic,mediumitalic,bold');
+
+// ==========================================
+// = Material Theme Generierung
+// ==========================================
+@import '@angular/material/theming';
+
+// Define the typography map
+// Name             CSS classes                         Description
+// display-4	    .mat-display-4	                    Large, one-off header, usually at the top of the page (e.g. a hero header).
+// display-3	    .mat-display-3	                    Large, one-off header, usually at the top of the page (e.g. a hero header).
+// display-2	    .mat-display-2	                    Large, one-off header, usually at the top of the page (e.g. a hero header).
+// display-1	    .mat-display-1	                    Large, one-off header, usually at the top of the page (e.g. a hero header).
+// headline	        .mat-h1, .mat-headline	            Section heading corresponding to the <h1> tag.
+// title	        .mat-h2, .mat-title	                Section heading corresponding to the <h2> tag.
+// subheading-2	    .mat-h3, .mat-subheading-2	        Section heading corresponding to the <h3> tag.
+// subheading-1	    .mat-h4, .mat-subheading-1	        Section heading corresponding to the <h4> tag.
+// body-1	        .mat-body, .mat-body-1	            Base body text.
+// body-2	        .mat-body-strong, .mat-body-2	    Bolder body text.
+// caption	        .mat-small, .mat-caption	        Smaller body and hint text.
+// button	        None. Used only in components.	    Buttons and anchors.
+// input	        None. Used only in components.	    Form input fields. Line-height must be unit-less fraction of the font-size.
+$general-typography: mat.define-typography-config() !default;
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// **Be sure that you only ever include this mixin once!**
+@include mat.core($general-typography);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$base-app-primary: mat.define-palette(mat.$indigo-palette);
+$base-app-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$base-app-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$base-app-theme: mat.define-light-theme($base-app-primary, $base-app-accent, $base-app-warn);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($base-app-theme);
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  --zv-error: #f44336;
+  --zv-error-contrast: #ffffff;
+  --zv-primary: #673ab7;
+  --zv-primary-contrast: #ffffff;
+  --zv-accent: #ffd740;
+  --zv-accent-contrast: #ffffff;
+}

@@ -1,11 +1,11 @@
-export interface IPsFormErrorData {
+export interface IZvFormErrorData {
   controlPath: string;
   errorKey: string;
   errorValue: any;
   isControl: boolean;
 }
 
-export interface IPsFormError {
-  data: IPsFormErrorData;
+export interface IZvFormError {
+  data: IZvFormErrorData;
   errorText: string;
 }

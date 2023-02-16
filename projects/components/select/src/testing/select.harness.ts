@@ -8,24 +8,24 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 
 /** A set of criteria that can be used to filter a list of `MatSelectHarness` instances. */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PsSelectHarnessFilters extends BaseHarnessFilters {}
+export interface ZvSelectHarnessFilters extends BaseHarnessFilters {}
 
 /** Harness for interacting with a standard mat-select in tests. */
-export class PsSelectHarness extends MatFormFieldControlHarness {
-  static hostSelector = 'ps-select';
+export class ZvSelectHarness extends MatFormFieldControlHarness {
+  static hostSelector = 'zv-select';
 
   private _matSelect = this.locatorFor(MatSelectHarness);
   private _documentRootLocator = this.documentRootLocatorFactory();
 
   /**
-   * Gets a `HarnessPredicate` that can be used to search for a `PsSelectHarness` that meets
+   * Gets a `HarnessPredicate` that can be used to search for a `ZvSelectHarness` that meets
    * certain criteria.
    *
    * @param options Options for filtering which select instances are considered a match.
    * @return a `HarnessPredicate` configured with the given options.
    */
-  static with(options: PsSelectHarnessFilters = {}): HarnessPredicate<PsSelectHarness> {
-    return new HarnessPredicate(PsSelectHarness, options);
+  static with(options: ZvSelectHarnessFilters = {}): HarnessPredicate<ZvSelectHarness> {
+    return new HarnessPredicate(ZvSelectHarness, options);
   }
 
   /** Gets a boolean promise indicating if the select is disabled. */
@@ -79,7 +79,7 @@ export class PsSelectHarness extends MatFormFieldControlHarness {
     const result = [];
     for (const option of options) {
       const host = await option.host();
-      if (await host.hasClass('ps-select__search')) {
+      if (await host.hasClass('zv-select__search')) {
         continue;
       }
       result.push(option);
@@ -130,14 +130,14 @@ export class PsSelectHarness extends MatFormFieldControlHarness {
 
   /** Gets a boolean promise indicating if the select is in the error state. */
   async isErrorState(): Promise<boolean> {
-    return await (await this.host()).hasClass('ps-select-invalid');
+    return await (await this.host()).hasClass('zv-select-invalid');
   }
 
   /** Gets the option that clears the selected value. */
   async getEmptyOption() {
     const options = await this.getOptions({ text: '--' });
     for (const option of options) {
-      if (await (await option.host()).hasClass('ps-select__empty-option')) {
+      if (await (await option.host()).hasClass('zv-select__empty-option')) {
         return option;
       }
     }
@@ -149,7 +149,7 @@ export class PsSelectHarness extends MatFormFieldControlHarness {
   async getErrorOption() {
     const options = await this.getOptions();
     for (const option of options) {
-      if (await (await option.host()).hasClass('ps-select__error')) {
+      if (await (await option.host()).hasClass('zv-select__error')) {
         return option;
       }
     }
@@ -160,7 +160,7 @@ export class PsSelectHarness extends MatFormFieldControlHarness {
   /** Gets the panel header. */
   async getPanelHeader() {
     return this._documentRootLocator.locatorFor(
-      PsSelectPanelHeaderHarness.with({
+      ZvSelectPanelHeaderHarness.with({
         ancestor: await this._getPanelSelector(),
       })
     )();
@@ -174,9 +174,9 @@ export class PsSelectHarness extends MatFormFieldControlHarness {
 }
 
 /** Harness for interacting with a `mat-option` in tests. */
-export class PsSelectPanelHeaderHarness extends ComponentHarness {
+export class ZvSelectPanelHeaderHarness extends ComponentHarness {
   /** Selector used to locate option instances. */
-  static hostSelector = '.ps-select__search';
+  static hostSelector = '.zv-select__search';
 
   private _loadingSpinner = this.locatorForOptional(MatProgressSpinnerHarness);
   private _filter = this.locatorFor('input.mat-select-search-input.mat-input-element');
@@ -189,7 +189,7 @@ export class PsSelectPanelHeaderHarness extends ComponentHarness {
    * @return a `HarnessPredicate` configured with the given options.
    */
   static with(options: BaseHarnessFilters = {}) {
-    return new HarnessPredicate(PsSelectPanelHeaderHarness, options);
+    return new HarnessPredicate(ZvSelectPanelHeaderHarness, options);
   }
 
   /** Gets the toggle all checkbox. */

@@ -1,10 +1,10 @@
-import { PsTableRowDetailDirective } from './table.directives';
+import { ZvTableRowDetailDirective } from './table.directives';
 
-describe('PsTableRowDetailDirective', () => {
-  let dir: PsTableRowDetailDirective;
+describe('ZvTableRowDetailDirective', () => {
+  let dir: ZvTableRowDetailDirective;
   let item: any;
   beforeEach(() => {
-    dir = new PsTableRowDetailDirective();
+    dir = new ZvTableRowDetailDirective();
     item = {};
   });
 

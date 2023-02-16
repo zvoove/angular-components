@@ -13,59 +13,58 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { PsBlockUiModule } from '@prosoft/components/block-ui';
-import { PsFlipContainerModule } from '@prosoft/components/flip-container';
-import { PsSavebarModule } from '@prosoft/components/savebar';
+import { ZvBlockUiModule } from '@zvoove/components/block-ui';
+import { ZvFlipContainerModule } from '@zvoove/components/flip-container';
 
 import {
-  PsTableColumnDirective,
-  PsTableColumnHeaderTemplateDirective,
-  PsTableColumnTemplateDirective,
-  PsTableCustomHeaderDirective,
-  PsTableCustomSettingsDirective,
-  PsTableListActionsDirective,
-  PsTableRowActionsDirective,
-  PsTableRowDetailDirective,
-  PsTableRowDetailTemplateDirective,
-  PsTableTopButtonSectionDirective,
+  ZvTableColumnDirective,
+  ZvTableColumnHeaderTemplateDirective,
+  ZvTableColumnTemplateDirective,
+  ZvTableCustomHeaderDirective,
+  ZvTableCustomSettingsDirective,
+  ZvTableListActionsDirective,
+  ZvTableRowActionsDirective,
+  ZvTableRowDetailDirective,
+  ZvTableRowDetailTemplateDirective,
+  ZvTableTopButtonSectionDirective,
 } from './directives/table.directives';
-import { PsTableActionsToRenderPipe } from './pipes/table-actions-to-render.pipe';
-import { PsTableActionTypePipe } from './pipes/table-actions-type.pipe';
-import { PsTableActionsComponent } from './subcomponents/table-actions.component';
-import { PsTableDataComponent } from './subcomponents/table-data.component';
-import { PsTableHeaderComponent } from './subcomponents/table-header.component';
-import { PsTablePaginationComponent } from './subcomponents/table-pagination.component';
-import { PsTableRowActionsComponent } from './subcomponents/table-row-actions.component';
+import { ZvTableActionsToRenderPipe } from './pipes/table-actions-to-render.pipe';
+import { ZvTableActionTypePipe } from './pipes/table-actions-type.pipe';
+import { ZvTableActionsComponent } from './subcomponents/table-actions.component';
+import { ZvTableDataComponent } from './subcomponents/table-data.component';
+import { ZvTableHeaderComponent } from './subcomponents/table-header.component';
+import { ZvTablePaginationComponent } from './subcomponents/table-pagination.component';
+import { ZvTableRowActionsComponent } from './subcomponents/table-row-actions.component';
 import { TableRowDetailComponent } from './subcomponents/table-row-detail.component';
-import { PsTableSearchComponent } from './subcomponents/table-search.component';
-import { PsTableSettingsComponent } from './subcomponents/table-settings.component';
-import { PsTableSortComponent } from './subcomponents/table-sort.component';
-import { PsTableComponent } from './table.component';
+import { ZvTableSearchComponent } from './subcomponents/table-search.component';
+import { ZvTableSettingsComponent } from './subcomponents/table-settings.component';
+import { ZvTableSortComponent } from './subcomponents/table-sort.component';
+import { ZvTableComponent } from './table.component';
 
 @NgModule({
   declarations: [
-    PsTableComponent,
-    PsTableDataComponent,
-    PsTableSettingsComponent,
-    PsTableHeaderComponent,
-    PsTableSortComponent,
-    PsTableSearchComponent,
+    ZvTableComponent,
+    ZvTableDataComponent,
+    ZvTableSettingsComponent,
+    ZvTableHeaderComponent,
+    ZvTableSortComponent,
+    ZvTableSearchComponent,
     TableRowDetailComponent,
-    PsTablePaginationComponent,
-    PsTableActionsComponent,
-    PsTableRowActionsComponent,
-    PsTableColumnDirective,
-    PsTableColumnTemplateDirective,
-    PsTableColumnHeaderTemplateDirective,
-    PsTableTopButtonSectionDirective,
-    PsTableListActionsDirective,
-    PsTableRowActionsDirective,
-    PsTableCustomHeaderDirective,
-    PsTableRowDetailDirective,
-    PsTableRowDetailTemplateDirective,
-    PsTableCustomSettingsDirective,
-    PsTableActionsToRenderPipe,
-    PsTableActionTypePipe,
+    ZvTablePaginationComponent,
+    ZvTableActionsComponent,
+    ZvTableRowActionsComponent,
+    ZvTableColumnDirective,
+    ZvTableColumnTemplateDirective,
+    ZvTableColumnHeaderTemplateDirective,
+    ZvTableTopButtonSectionDirective,
+    ZvTableListActionsDirective,
+    ZvTableRowActionsDirective,
+    ZvTableCustomHeaderDirective,
+    ZvTableRowDetailDirective,
+    ZvTableRowDetailTemplateDirective,
+    ZvTableCustomSettingsDirective,
+    ZvTableActionsToRenderPipe,
+    ZvTableActionTypePipe,
   ],
   imports: [
     CommonModule,
@@ -82,22 +81,21 @@ import { PsTableComponent } from './table.component';
     MatInputModule,
     MatCardModule,
     MatTooltipModule,
-    PsFlipContainerModule,
-    PsSavebarModule,
-    PsBlockUiModule,
+    ZvFlipContainerModule,
+    ZvBlockUiModule,
   ],
   exports: [
-    PsTableComponent,
-    PsTableColumnDirective,
-    PsTableColumnTemplateDirective,
-    PsTableColumnHeaderTemplateDirective,
-    PsTableTopButtonSectionDirective,
-    PsTableListActionsDirective,
-    PsTableRowActionsDirective,
-    PsTableCustomHeaderDirective,
-    PsTableRowDetailDirective,
-    PsTableRowDetailTemplateDirective,
-    PsTableCustomSettingsDirective,
+    ZvTableComponent,
+    ZvTableColumnDirective,
+    ZvTableColumnTemplateDirective,
+    ZvTableColumnHeaderTemplateDirective,
+    ZvTableTopButtonSectionDirective,
+    ZvTableListActionsDirective,
+    ZvTableRowActionsDirective,
+    ZvTableCustomHeaderDirective,
+    ZvTableRowDetailDirective,
+    ZvTableRowDetailTemplateDirective,
+    ZvTableCustomSettingsDirective,
   ],
 })
-export class PsTableModule {}
+export class ZvTableModule {}

@@ -1,2 +1,2 @@
-export { PsSliderComponent } from './src/slider.component';
-export { PsSliderModule } from './src/slider.module';
+export { ZvSliderComponent } from './src/slider.component';
+export { ZvSliderModule } from './src/slider.module';

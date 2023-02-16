@@ -1,58 +1,58 @@
 <link href="style.css" rel="stylesheet"></link>
 
-# PsView <a name="PsView"></a>
+# ZvView <a name="ZvView"></a>
 
-`<ps-view>` is a component to manage your readonly views. It automatically blocks the UI via `<ps-block-ui>` while loading data and shows an error view if loading fails.
+`<zv-view>` is a component to manage your readonly views. It automatically blocks the UI via `<zv-block-ui>` while loading data and shows an error view if loading fails.
 
 ---
 
-## API <a name="PsViewApi"></a>
+## API <a name="ZvViewApi"></a>
 
-### Import <a name="PsViewImport"></a>
+### Import <a name="ZvViewImport"></a>
 
 ```ts | js
-import { PsViewModule } from '@prosoft/components/view';
+import { ZvViewModule } from '@zvoove/components/view';
 ```
 
 ---
 
-## PsViewComponent <a name="PsViewComponent"></a>
+## ZvViewComponent <a name="ZvViewComponent"></a>
 
-### Inputs <a name="PsViewComponentProperties"></a>
+### Inputs <a name="ZvViewComponentProperties"></a>
 
 | Name                            | Description                         |
 | ------------------------------- | ----------------------------------- |
-| `dataSource: IPsViewDataSource` | DataSource which controls the view. |
+| `dataSource: IZvViewDataSource` | DataSource which controls the view. |
 
 ---
 
-## IPsViewDataSource <a name="IPsViewDataSource"></a>
+## IZvViewDataSource <a name="IZvViewDataSource"></a>
 
-### Properties <a name="IPsViewDataSourceProperties"></a>
+### Properties <a name="IZvViewDataSourceProperties"></a>
 
-| Name                          | Description                                                         |
-| ----------------------------- | ------------------------------------------------------------------- |
-| `contentVisible: boolean`     | `false` to hide the transcluded `ng-content`.                       |
-| `contentBlocked: boolean`     | `true` to show a loading spinner over the transcluded `ng-content`. |
-| `exception: IPsException` | When set, shows an error view with the provided information.        |
+| Name                      | Description                                                         |
+| ------------------------- | ------------------------------------------------------------------- |
+| `contentVisible: boolean` | `false` to hide the transcluded `ng-content`.                       |
+| `contentBlocked: boolean` | `true` to show a loading spinner over the transcluded `ng-content`. |
+| `exception: IZvException` | When set, shows an error view with the provided information.        |
 
-### Functions <a name="IPsViewDataSourceFunctions"></a>
+### Functions <a name="IZvViewDataSourceFunctions"></a>
 
 | Name                          | Description                                                                                                                                   |
 | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `connect(): Observable<void>` | Called when `ps-view` connects to the datasource. Emits of the returned `Observable` will mark `ps-view` for a check of the change detection. |
-| `disconnect(): void`          | Called when `ps-view` disconnects from the datasource.                                                                                        |
+| `connect(): Observable<void>` | Called when `zv-view` connects to the datasource. Emits of the returned `Observable` will mark `zv-view` for a check of the change detection. |
+| `disconnect(): void`          | Called when `zv-view` disconnects from the datasource.                                                                                        |
 
 ---
 
-## Implementation <a name="PsViewImplementation"></a>
+## Implementation <a name="ZvViewImplementation"></a>
 
 Import the module into your module.
 
 ```ts | js
 @NgModule({
   declarations: [MyComponent],
-  imports: [PsViewModule],
+  imports: [ZvViewModule],
 })
 export class MyModule {}
 ```
@@ -60,9 +60,9 @@ export class MyModule {}
 Now you can use it in your components like this:
 
 ```html
-<ps-view [dataSource]="dataSource">
+<zv-view [dataSource]="dataSource">
   <div>content text</div>
-</ps-view>
+</zv-view>
 ```
 
-Currently no default implementation of `IPsViewDataSource` exists, but could be added in a following release. For guidance on how to implement one yourself, you can take a look at the code of the demo application.
+Currently no default implementation of `IZvViewDataSource` exists, but could be added in a following release. For guidance on how to implement one yourself, you can take a look at the code of the demo application.

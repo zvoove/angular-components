@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { PsNumberInputComponent } from './number-input.component';
-import { psNumberInputModuleImports } from './number-input.module';
+import { ZvNumberInputComponent } from './number-input.component';
+import { zvNumberInputModuleImports } from './number-input.module';
 
-describe('PsNumberInputComponent', () => {
-  let spinner: PsNumberInputComponent;
-  let fixture: ComponentFixture<PsNumberInputComponent>;
+describe('ZvNumberInputComponent', () => {
+  let spinner: ZvNumberInputComponent;
+  let fixture: ComponentFixture<ZvNumberInputComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: psNumberInputModuleImports,
-      declarations: [PsNumberInputComponent],
+      imports: zvNumberInputModuleImports,
+      declarations: [ZvNumberInputComponent],
     });
 
-    fixture = TestBed.createComponent(PsNumberInputComponent);
+    fixture = TestBed.createComponent(ZvNumberInputComponent);
     spinner = fixture.componentInstance;
   });
 
@@ -27,7 +27,7 @@ describe('PsNumberInputComponent', () => {
   it('should have value as 3 when up clicked 3 times', () => {
     fixture.detectChanges();
 
-    const spinnerUp = fixture.nativeElement.querySelector('.ps-number-input__button-up');
+    const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
     const clearTimerSpy = spyOn(spinner, '_clearTimer').and.callThrough();
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mouseup');
@@ -45,7 +45,7 @@ describe('PsNumberInputComponent', () => {
   it('should have value as -3 when down clicked 3 times', () => {
     fixture.detectChanges();
 
-    const spinnerDown = fixture.nativeElement.querySelector('.ps-number-input__button-down');
+    const spinnerDown = fixture.nativeElement.querySelector('.zv-number-input__button-down');
     const clearTimerSpy = spyOn(spinner, '_clearTimer').and.callThrough();
     triggerEvent(spinnerDown, 'mousedown');
     triggerEvent(spinnerDown, 'mouseup');
@@ -64,7 +64,7 @@ describe('PsNumberInputComponent', () => {
     spinner.stepSize = 0.25;
     fixture.detectChanges();
 
-    const spinnerUp = fixture.nativeElement.querySelector('.ps-number-input__button-up');
+    const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mousedown');
@@ -88,9 +88,9 @@ describe('PsNumberInputComponent', () => {
     spinner.disabled = true;
     fixture.detectChanges();
 
-    const spinnerInputField = fixture.nativeElement.querySelector('.ps-number-input__input');
-    const spinnerUp = fixture.nativeElement.querySelector('.ps-number-input__button-up');
-    const spinnerDown = fixture.nativeElement.querySelector('.ps-number-input__button-down');
+    const spinnerInputField = fixture.nativeElement.querySelector('.zv-number-input__input');
+    const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
+    const spinnerDown = fixture.nativeElement.querySelector('.zv-number-input__button-down');
 
     expect(spinnerInputField.disabled).toEqual(true);
     expect(spinnerUp.disabled).toEqual(true);
@@ -106,7 +106,7 @@ describe('PsNumberInputComponent', () => {
     triggerEvent(spinnerInput, 'keyup');
     fixture.detectChanges();
 
-    const spinnerUp = fixture.nativeElement.querySelector('.ps-number-input__button-up');
+    const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
     triggerEvent(spinnerUp, 'mousedown');
 
     expect(spinner.value).toBeNull();
@@ -115,7 +115,7 @@ describe('PsNumberInputComponent', () => {
   it('should have a max', () => {
     spinner.max = 1;
     fixture.detectChanges();
-    const spinnerUp = fixture.nativeElement.querySelector('.ps-number-input__button-up');
+    const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mousedown');
@@ -135,7 +135,7 @@ describe('PsNumberInputComponent', () => {
   it('should have a min', () => {
     spinner.min = -1;
     fixture.detectChanges();
-    const spinnerUp = fixture.nativeElement.querySelector('.ps-number-input__button-down');
+    const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-down');
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mousedown');
@@ -184,8 +184,8 @@ describe('PsNumberInputComponent', () => {
     fixture.detectChanges();
 
     const inputEl = fixture.debugElement.query(By.css('input'));
-    const upButtonEl = fixture.debugElement.query(By.css('.ps-number-input__button-up'));
-    const downButtonEl = fixture.debugElement.query(By.css('.ps-number-input__button-down'));
+    const upButtonEl = fixture.debugElement.query(By.css('.zv-number-input__button-up'));
+    const downButtonEl = fixture.debugElement.query(By.css('.zv-number-input__button-down'));
     expect(inputEl.nativeElement.readOnly).toEqual(true);
     expect(upButtonEl.nativeElement.disabled).toEqual(true);
     expect(downButtonEl.nativeElement.disabled).toEqual(true);

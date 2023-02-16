@@ -1,14 +1,14 @@
 import { Directive, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[psFlipContainerFront]',
+  selector: '[zvFlipContainerFront]',
 })
 export class FlipContainerFrontDirective {
   constructor(public el: ElementRef) {}
 }
 
 @Directive({
-  selector: '[psFlipContainerBack]',
+  selector: '[zvFlipContainerBack]',
 })
 export class FlipContainerBackDirective {
   constructor(public el: ElementRef) {}

@@ -3,29 +3,29 @@ import { TrackByFunction } from '@angular/core';
 import { BehaviorSubject, NEVER, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 import { _isNumberValue } from '../helper/table.helper';
-import { IExtendedPsTableUpdateDataInfo, IPsTableAction, IPsTableUpdateDataInfo, PsTableActionScope } from '../models';
+import { IExtendedZvTableUpdateDataInfo, IZvTableAction, IZvTableUpdateDataInfo, ZvTableActionScope } from '../models';
 /**
  * Corresponds to `Number.MAX_SAFE_INTEGER`. Moved out into a variable here due to
  * flaky browser support and the value not being defined in Closure's typings.
  */
 const MAX_SAFE_INTEGER = 9007199254740991;
 
-export interface PsTableDataSourceOptions<TData, TTrigger = any> {
+export interface ZvTableDataSourceOptions<TData, TTrigger = any> {
   loadTrigger$?: Observable<TTrigger>;
-  loadDataFn: (updateInfo: IExtendedPsTableUpdateDataInfo<TTrigger>) => Observable<TData[] | IPsTableFilterResult<TData>>;
-  actions?: IPsTableAction<TData>[];
-  mode?: PsTableMode;
+  loadDataFn: (updateInfo: IExtendedZvTableUpdateDataInfo<TTrigger>) => Observable<TData[] | IZvTableFilterResult<TData>>;
+  actions?: IZvTableAction<TData>[];
+  mode?: ZvTableMode;
   moreMenuThreshold?: number;
 }
 
-export interface IPsTableFilterResult<T> {
+export interface IZvTableFilterResult<T> {
   items: T[];
   totalItems: number;
 }
 
-declare type PsTableMode = 'client' | 'server';
+export declare type ZvTableMode = 'client' | 'server';
 
-export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
+export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> {
   /** Subject that emits, when the table should be checked by the change detection */
   public _internalDetectChanges = new Subject<void>();
 
@@ -83,20 +83,20 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
   public tableReady = false;
 
   /** Controls if the data sould be paged, filtered and sorted on the client or the server */
-  public readonly mode: PsTableMode;
+  public readonly mode: ZvTableMode;
 
   /** List of actions which can be executed for a single row */
-  public readonly rowActions: IPsTableAction<T>[];
+  public readonly rowActions: IZvTableAction<T>[];
 
   /** List of actions which can be executed for a selection of rows */
-  public readonly listActions: IPsTableAction<T>[];
+  public readonly listActions: IZvTableAction<T>[];
 
   public readonly moreMenuThreshold: number;
 
   /** Stream that emits when a new data array is set on the data source. */
   private readonly _updateDataTrigger$: Observable<any>;
 
-  private readonly _loadData: (updateInfo: IExtendedPsTableUpdateDataInfo<TTrigger>) => Observable<T[] | IPsTableFilterResult<T>>;
+  private readonly _loadData: (updateInfo: IExtendedZvTableUpdateDataInfo<TTrigger>) => Observable<T[] | IZvTableFilterResult<T>>;
 
   /** Stream that emits when a new data array is set on the data source. */
   private readonly _data: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
@@ -124,29 +124,21 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
    */
   private _renderChangesSubscription = Subscription.EMPTY;
 
-  constructor(options: PsTableDataSourceOptions<T, TTrigger>);
-  /**
-   * @deprecated Please use {options: PsTableDataSourceOptions<T, TTrigger>}
-   */
-  constructor(
-    loadDataFn: (updateInfo: IExtendedPsTableUpdateDataInfo<TTrigger>) => Observable<T[] | IPsTableFilterResult<T>>,
-    mode?: PsTableMode
-  );
   constructor(
     optionsOrLoadDataFn:
-      | PsTableDataSourceOptions<T, TTrigger>
-      | ((updateInfo: IExtendedPsTableUpdateDataInfo<TTrigger>) => Observable<T[] | IPsTableFilterResult<T>>),
-    mode?: PsTableMode
+      | ZvTableDataSourceOptions<T, TTrigger>
+      | ((updateInfo: IExtendedZvTableUpdateDataInfo<TTrigger>) => Observable<T[] | IZvTableFilterResult<T>>),
+    mode?: ZvTableMode
   ) {
     super();
-    const options: PsTableDataSourceOptions<T, TTrigger> =
+    const options: ZvTableDataSourceOptions<T, TTrigger> =
       'loadDataFn' in optionsOrLoadDataFn ? optionsOrLoadDataFn : { loadDataFn: optionsOrLoadDataFn, actions: [], mode: mode };
 
     this.mode = options.mode || 'client';
     // eslint-disable-next-line no-bitwise
-    this.rowActions = options.actions?.filter((a) => a.scope & PsTableActionScope.row) || [];
+    this.rowActions = options.actions?.filter((a) => a.scope & ZvTableActionScope.row) || [];
     // eslint-disable-next-line no-bitwise
-    this.listActions = options.actions?.filter((a) => a.scope & PsTableActionScope.list) || [];
+    this.listActions = options.actions?.filter((a) => a.scope & ZvTableActionScope.list) || [];
     this._updateDataTrigger$ = options.loadTrigger$ || NEVER;
     this._loadData = options.loadDataFn;
     this.moreMenuThreshold = options.moreMenuThreshold ?? 3;
@@ -285,10 +277,10 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
   /**
    * Returns the current page, sort and filter state
    */
-  public getUpdateDataInfo(extended?: false): IPsTableUpdateDataInfo;
-  public getUpdateDataInfo(extended: true): IExtendedPsTableUpdateDataInfo<TTrigger>;
-  public getUpdateDataInfo(extended = false): IPsTableUpdateDataInfo | IExtendedPsTableUpdateDataInfo<TTrigger> {
-    const data: IPsTableUpdateDataInfo = {
+  public getUpdateDataInfo(extended?: false): IZvTableUpdateDataInfo;
+  public getUpdateDataInfo(extended: true): IExtendedZvTableUpdateDataInfo<TTrigger>;
+  public getUpdateDataInfo(extended = false): IZvTableUpdateDataInfo | IExtendedZvTableUpdateDataInfo<TTrigger> {
+    const data: IZvTableUpdateDataInfo = {
       pageSize: this.pageSize,
       currentPage: this.pageIndex,
       searchText: this.filter,
@@ -296,7 +288,7 @@ export class PsTableDataSource<T, TTrigger = any> extends DataSource<T> {
       sortDirection: this.sortDirection,
     };
     if (extended) {
-      (data as IExtendedPsTableUpdateDataInfo<TTrigger>).triggerData = this._lastLoadTriggerData;
+      (data as IExtendedZvTableUpdateDataInfo<TTrigger>).triggerData = this._lastLoadTriggerData;
     }
     return data;
   }

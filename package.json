@@ -1,12 +1,12 @@
 {
-  "name": "prosoft-components-demo",
+  "name": "zvoove-components-demo",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve prosoft-components-demo",
+    "start": "ng serve zvoove-components-demo",
     "build": "ng build",
     "build:components": "npm run build:components-lib && npm run build:components-schematics",
-    "build:components-demo": "ng build prosoft-components-demo --configuration production --base-href https://prosoft-edv.github.io/components/",
+    "build:components-demo": "ng build zvoove-components-demo --configuration production --base-href https://prosoft-edv.github.io/components/",
     "build:components-lib": "ng build components --configuration production",
     "build:components-schematics": "tsc -p projects/components/tsconfig.schematics.json",
     "test": "ng test",

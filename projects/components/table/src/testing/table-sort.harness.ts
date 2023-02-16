@@ -2,14 +2,14 @@ import { ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
 
-export class PsTableSortHarness extends ContentContainerComponentHarness {
-  static hostSelector = 'ps-table-sort';
+export class ZvTableSortHarness extends ContentContainerComponentHarness {
+  static hostSelector = 'zv-table-sort';
 
   private _sortSelect = this.locatorFor(MatSelectHarness);
   private _sortDirectionButtons = this.locatorForAll(MatButtonHarness);
 
-  static with(): HarnessPredicate<PsTableSortHarness> {
-    return new HarnessPredicate(PsTableSortHarness, {});
+  static with(): HarnessPredicate<ZvTableSortHarness> {
+    return new HarnessPredicate(ZvTableSortHarness, {});
   }
 
   public async getSortSelect(): Promise<MatSelectHarness> {

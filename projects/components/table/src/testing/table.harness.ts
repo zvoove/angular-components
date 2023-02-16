@@ -5,29 +5,29 @@ import { MatInputHarness } from '@angular/material/input/testing';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { MatHeaderRowHarness, MatRowHarness } from '@angular/material/table/testing';
-import { PsTableActionsHarness } from './table-actions.harness';
-import { PsTableDataHarness } from './table-data.harness';
-import { PsTableHeaderHarness } from './table-header.harness';
-import { PsTablePaginationHarness } from './table-pagination.harness';
-import { PsTableSearchHarness } from './table-search.harness';
-import { PsTableSettingsHarness } from './table-settings.harness';
-import { PsTableSortHarness } from './table-sort.harness';
+import { ZvTableActionsHarness } from './table-actions.harness';
+import { ZvTableDataHarness } from './table-data.harness';
+import { ZvTableHeaderHarness } from './table-header.harness';
+import { ZvTablePaginationHarness } from './table-pagination.harness';
+import { ZvTableSearchHarness } from './table-search.harness';
+import { ZvTableSettingsHarness } from './table-settings.harness';
+import { ZvTableSortHarness } from './table-sort.harness';
 
-export class PsTableHarness extends ContentContainerComponentHarness {
-  static hostSelector = 'ps-table';
+export class ZvTableHarness extends ContentContainerComponentHarness {
+  static hostSelector = 'zv-table';
 
-  private _paginator = this.locatorFor(PsTablePaginationHarness);
-  private _header = this.locatorFor(PsTableHeaderHarness);
-  private _data = this.locatorFor(PsTableDataHarness);
-  private _search = this.locatorFor(PsTableSearchHarness);
-  private _sort = this.locatorFor(PsTableSortHarness);
-  private _settings = this.locatorForOptional(PsTableSettingsHarness);
+  private _paginator = this.locatorFor(ZvTablePaginationHarness);
+  private _header = this.locatorFor(ZvTableHeaderHarness);
+  private _data = this.locatorFor(ZvTableDataHarness);
+  private _search = this.locatorFor(ZvTableSearchHarness);
+  private _sort = this.locatorFor(ZvTableSortHarness);
+  private _settings = this.locatorForOptional(ZvTableSettingsHarness);
 
-  static with(): HarnessPredicate<PsTableHarness> {
-    return new HarnessPredicate(PsTableHarness, {});
+  static with(): HarnessPredicate<ZvTableHarness> {
+    return new HarnessPredicate(ZvTableHarness, {});
   }
 
-  public async getPaginatorHarness(): Promise<PsTablePaginationHarness> {
+  public async getPaginatorHarness(): Promise<ZvTablePaginationHarness> {
     return await this._paginator();
   }
 
@@ -45,8 +45,8 @@ export class PsTableHarness extends ContentContainerComponentHarness {
 
   public async getIsLayout(layout: string): Promise<boolean> {
     const classElevation = await (await this.host()).hasClass('mat-elevation-z1');
-    const classCard = await (await this.host()).hasClass('ps-table--card');
-    const classBorder = await (await this.host()).hasClass('ps-table--border');
+    const classCard = await (await this.host()).hasClass('zv-table--card');
+    const classBorder = await (await this.host()).hasClass('zv-table--border');
 
     switch (layout) {
       case 'card':
@@ -61,7 +61,7 @@ export class PsTableHarness extends ContentContainerComponentHarness {
   }
 
   public async getIsStriped(): Promise<boolean> {
-    return await (await this.host()).hasClass('ps-table--striped');
+    return await (await this.host()).hasClass('zv-table--striped');
   }
 
   public async getCustomHeaderContent(): Promise<TestElement[]> {
@@ -100,11 +100,11 @@ export class PsTableHarness extends ContentContainerComponentHarness {
     return await (await this._data()).getRowActionsButton(rowIndex);
   }
 
-  public async getListActions(): Promise<PsTableActionsHarness> {
+  public async getListActions(): Promise<ZvTableActionsHarness> {
     return await (await this._data()).getListActions();
   }
 
-  public async getSettingsHarness(): Promise<PsTableSettingsHarness> {
+  public async getSettingsHarness(): Promise<ZvTableSettingsHarness> {
     return await this._settings();
   }
 

@@ -18,18 +18,18 @@ import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatSelect } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PsFormBaseModule } from '@prosoft/components/form-base';
-import { PsFormFieldModule } from '@prosoft/components/form-field';
-import { DemoPsFormsService } from 'projects/prosoft-components-demo/src/app/common/demo-ps-form-service';
+import { ZvFormBaseModule } from '@zvoove/components/form-base';
+import { ZvFormFieldModule } from '@zvoove/components/form-field';
+import { DemoZvFormsService } from 'projects/zvoove-components-demo/src/app/common/demo-zv-form-service';
 import { Observable, of, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
-import { DefaultPsSelectDataSource } from './defaults/default-select-data-source';
-import { DefaultPsSelectService, PsSelectData } from './defaults/default-select-service';
-import { PsSelectItem } from './models';
-import { PsSelectDataSource } from './select-data-source';
-import { PsSelectComponent } from './select.component';
-import { PsSelectModule } from './select.module';
-import { PsSelectService } from './select.service';
-import { PsSelectHarness } from './testing/select.harness';
+import { DefaultZvSelectDataSource } from './defaults/default-select-data-source';
+import { DefaultZvSelectService, ZvSelectData } from './defaults/default-select-service';
+import { ZvSelectItem } from './models';
+import { ZvSelectDataSource } from './select-data-source';
+import { ZvSelectComponent } from './select.component';
+import { ZvSelectModule } from './select.module';
+import { ZvSelectService } from './select.service';
+import { ZvSelectHarness } from './testing/select.harness';
 
 function createFakeMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -58,17 +58,17 @@ function createFakeMatSelect(): MatSelect {
   return matSelect;
 }
 
-function createFakeSelectService(): PsSelectService {
-  const service = <PsSelectService>{
+function createFakeSelectService(): ZvSelectService {
+  const service = <ZvSelectService>{
     createDataSource: (ds: any) => ds,
   };
 
   return service;
 }
 
-function createFakeDataSource(items: PsSelectItem[] = []): PsSelectDataSource {
-  const dataSource = <PsSelectDataSource>{
-    connect: () => of<PsSelectItem[]>(items),
+function createFakeDataSource(items: ZvSelectItem[] = []): ZvSelectDataSource {
+  const dataSource = <ZvSelectDataSource>{
+    connect: () => of<ZvSelectItem[]>(items),
     disconnect: () => {},
     selectedValuesChanged: (_: any | any[]) => {},
     panelOpenChanged: (_: boolean) => {},
@@ -78,11 +78,11 @@ function createFakeDataSource(items: PsSelectItem[] = []): PsSelectDataSource {
   return dataSource;
 }
 
-function createPsSelect(options?: { dataSource?: PsSelectDataSource; service: PsSelectService }) {
+function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service: ZvSelectService }) {
   const matSelect = createFakeMatSelect();
   const dataSource = options?.dataSource ?? createFakeDataSource();
   const service = options?.service ?? createFakeSelectService();
-  const component = new PsSelectComponent({ nativeElement: {} }, null, service, <any>{ markForCheck: () => {} }, null, null, <any>{
+  const component = new ZvSelectComponent({ nativeElement: {} }, null, service, <any>{ markForCheck: () => {} }, null, null, <any>{
     control: null,
   });
   component.setMatSelect = matSelect;
@@ -91,16 +91,16 @@ function createPsSelect(options?: { dataSource?: PsSelectDataSource; service: Ps
 }
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
     <div [formGroup]="form">
-      <ps-select
+      <zv-select
         formControlName="select"
         [dataSource]="dataSource"
         [errorStateMatcher]="errorStateMatcher"
         [panelClass]="panelClass"
         [clearable]="clearable"
-      ></ps-select>
+      ></zv-select>
     </div>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -117,7 +117,7 @@ export class TestComponent implements OnDestroy {
   panelClass: { [key: string]: boolean } = {};
   clearable = true;
 
-  @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
+  @ViewChild(ZvSelectComponent, { static: true }) select: ZvSelectComponent;
 
   private valuesSubscription: Subscription;
   constructor() {
@@ -138,8 +138,8 @@ const ITEMS = {
 };
 
 @Component({
-  selector: 'ps-test-multiple-component',
-  template: ` <ps-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true" [showToggleAll]="showToggleAll"></ps-select> `,
+  selector: 'zv-test-multiple-component',
+  template: ` <zv-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true" [showToggleAll]="showToggleAll"></zv-select> `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
@@ -148,14 +148,14 @@ export class TestMultipleComponent {
   dataSource: any = [ITEMS.red, ITEMS.green, ITEMS.blue];
   value: any = null;
 
-  @ViewChild(PsSelectComponent, { static: true }) select: PsSelectComponent;
+  @ViewChild(ZvSelectComponent, { static: true }) select: ZvSelectComponent;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
 
 @Component({
-  selector: 'ps-test-value',
-  template: `<ps-select [(value)]="value" [dataSource]="items"></ps-select>`,
+  selector: 'zv-test-value',
+  template: `<zv-select [(value)]="value" [dataSource]="items"></zv-select>`,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
@@ -165,18 +165,18 @@ export class TestValueComponent {
 }
 
 @Component({
-  selector: 'ps-test-custom-template',
+  selector: 'zv-test-custom-template',
   template: `
-    <ps-select [(value)]="value" [dataSource]="items">
-      <ng-container *psSelectTriggerTemplate="let item">
+    <zv-select [(value)]="value" [dataSource]="items">
+      <ng-container *zvSelectTriggerTemplate="let item">
         trigger:{{ item.value }}:<span [style.color]="item.value">{{ item.viewValue }}</span>
       </ng-container>
-      <ng-container *psSelectOptionTemplate="let item">
+      <ng-container *zvSelectOptionTemplate="let item">
         <div>color:</div>
         <div>{{ item.value }}:</div>
         <div [style.color]="item.value">{{ item.label }}</div>
       </ng-container>
-    </ps-select>
+    </zv-select>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -187,12 +187,12 @@ export class TestCustomTemplateComponent {
 }
 
 @Component({
-  selector: 'ps-test-with-form-field',
+  selector: 'zv-test-with-form-field',
   template: `
-    <ps-form-field>
+    <zv-form-field>
       <mat-label>My Select</mat-label>
-      <ps-select [(ngModel)]="value" [dataSource]="dataSource" [clearable]="clearable"></ps-select>
-    </ps-form-field>
+      <zv-select [(ngModel)]="value" [dataSource]="dataSource" [clearable]="clearable"></zv-select>
+    </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -204,10 +204,10 @@ export class TestWithFormFieldComponent {
 }
 
 @Injectable()
-export class TestPsSelectService extends DefaultPsSelectService {
+export class TestZvSelectService extends DefaultZvSelectService {
   static calledwith: { dataSource: any; control: AbstractControl }[] = [];
-  public override createDataSource<T>(dataSource: PsSelectData<T>, control: AbstractControl | null): PsSelectDataSource<T> {
-    TestPsSelectService.calledwith.push({ dataSource: dataSource, control: control });
+  public override createDataSource<T>(dataSource: ZvSelectData<T>, control: AbstractControl | null): ZvSelectDataSource<T> {
+    TestZvSelectService.calledwith.push({ dataSource: dataSource, control: control });
     return super.createDataSource(dataSource, control);
   }
 }
@@ -216,10 +216,10 @@ async function initTest<T>(
   type: Type<T>,
   additionalImports: any[] = [],
   additionalDeclarations: any[] = []
-): Promise<{ fixture: ComponentFixture<T>; component: T; loader: HarnessLoader; psSelect: PsSelectHarness }> {
-  TestPsSelectService.calledwith = [];
+): Promise<{ fixture: ComponentFixture<T>; component: T; loader: HarnessLoader; zvSelect: ZvSelectHarness }> {
+  TestZvSelectService.calledwith = [];
   await TestBed.configureTestingModule({
-    imports: [NoopAnimationsModule, PsSelectModule.forRoot(TestPsSelectService), FormsModule, ReactiveFormsModule, ...additionalImports],
+    imports: [NoopAnimationsModule, ZvSelectModule.forRoot(TestZvSelectService), FormsModule, ReactiveFormsModule, ...additionalImports],
     declarations: [TestComponent, TestMultipleComponent, TestCustomTemplateComponent, TestValueComponent, ...additionalDeclarations],
   });
   const fixture = TestBed.createComponent(type);
@@ -231,13 +231,13 @@ async function initTest<T>(
     fixture: fixture,
     component: component,
     loader: loader,
-    psSelect: await loader.getHarness(PsSelectHarness),
+    zvSelect: await loader.getHarness(ZvSelectHarness),
   };
 }
 
-describe('PsSelectComponent', () => {
+describe('ZvSelectComponent', () => {
   it('should use right default values', () => {
-    const { component } = createPsSelect();
+    const { component } = createZvSelect();
 
     expect(component.clearable).toBe(true);
     expect(component.showToggleAll).toBe(true);
@@ -250,7 +250,7 @@ describe('PsSelectComponent', () => {
   });
 
   it('should determine empty value correctly', () => {
-    const { component } = createPsSelect();
+    const { component } = createZvSelect();
     component.multiple = true;
 
     const items = [
@@ -286,9 +286,13 @@ describe('PsSelectComponent', () => {
   });
 
   it('should update floating label state', async () => {
-    const { component, psSelect, loader } = await initTest(
+    const {
+      component,
+      zvSelect: zvSelect,
+      loader,
+    } = await initTest(
       TestWithFormFieldComponent,
-      [PsFormFieldModule, PsFormBaseModule.forRoot(DemoPsFormsService)],
+      [ZvFormFieldModule, ZvFormBaseModule.forRoot(DemoZvFormsService)],
       [TestWithFormFieldComponent]
     );
 
@@ -297,29 +301,28 @@ describe('PsSelectComponent', () => {
     component.value = ITEMS.red;
     component.clearable = true;
 
-    await psSelect.open();
-    expect(await psSelect.isEmpty()).toBe(false);
+    await zvSelect.open();
+    expect(await zvSelect.isEmpty()).toBe(false);
     expect(await matFormField.isLabelFloating()).toBe(true);
 
-    await psSelect.close();
-    expect(await psSelect.isEmpty()).toBe(false);
+    await zvSelect.close();
+    expect(await zvSelect.isEmpty()).toBe(false);
     expect(await matFormField.isLabelFloating()).toBe(true);
 
-    await psSelect.open();
-    await (await psSelect.getEmptyOption()).click();
-    expect(await psSelect.isEmpty()).toBe(true);
+    await zvSelect.open();
+    await (await zvSelect.getEmptyOption()).click();
+    expect(await zvSelect.isEmpty()).toBe(true);
     expect(await matFormField.isLabelFloating()).toBe(false);
 
-    await psSelect.open();
-    await psSelect.close();
-    // see https://github.com/prosoft-edv/components/issues/139
+    await zvSelect.open();
+    await zvSelect.close();
     expect(await matFormField.isLabelFloating()).toBe(false);
   });
 
   it('should fix MatSelect.close() not emitting stateChanges', fakeAsync(() => {
     const matSelect = createFakeMatSelect();
 
-    const { component } = createPsSelect();
+    const { component } = createZvSelect();
     component.setMatSelect = matSelect;
 
     spyOn(matSelect.stateChanges, 'next');
@@ -330,7 +333,7 @@ describe('PsSelectComponent', () => {
   }));
 
   it('should update disabled property when calling setDisabledState', () => {
-    const { component } = createPsSelect();
+    const { component } = createZvSelect();
     component.disabled = true;
 
     component.setDisabledState(false);
@@ -341,7 +344,7 @@ describe('PsSelectComponent', () => {
   });
 
   it("should not switch dataSource when dataSource input doesn't change", async () => {
-    const { component, service } = createPsSelect();
+    const { component, service } = createZvSelect();
     const items = [{ value: 1, label: 'i1', hidden: false }];
     const ds = createFakeDataSource(items);
     spyOn(service, 'createDataSource').and.returnValue(ds);
@@ -361,112 +364,112 @@ describe('PsSelectComponent', () => {
   });
 
   it('should work with ngModel', async () => {
-    const { component, psSelect } = await initTest(TestMultipleComponent);
-    await psSelect.clickOptions({ text: ITEMS.green.label });
+    const { component, zvSelect: zvSelect } = await initTest(TestMultipleComponent);
+    await zvSelect.clickOptions({ text: ITEMS.green.label });
     expect(component.value).toEqual([ITEMS.green.value]);
   });
 
   it('should work with value binding', async () => {
-    const { component, psSelect } = await initTest(TestValueComponent);
-    await psSelect.clickOptions({ text: ITEMS.red.label });
+    const { component, zvSelect: zvSelect } = await initTest(TestValueComponent);
+    await zvSelect.clickOptions({ text: ITEMS.red.label });
     expect(component.value).toEqual(ITEMS.red.value);
   });
 
   it('should emit only once when selecting an option', async () => {
-    const { component, psSelect } = await initTest(TestComponent);
-    await psSelect.clickOptions({ text: ITEMS.green.label });
-    await psSelect.clickOptions({ text: '--' });
+    const { component, zvSelect: zvSelect } = await initTest(TestComponent);
+    await zvSelect.clickOptions({ text: ITEMS.green.label });
+    await zvSelect.clickOptions({ text: '--' });
     expect(component.emittedValues).toEqual([ITEMS.green.value, undefined]);
   });
 
   it('should use the error state matcher input', async () => {
-    const { component, psSelect } = await initTest(TestComponent);
+    const { component, zvSelect: zvSelect } = await initTest(TestComponent);
 
     // Default matcher
     component.control.patchValue(null);
-    expect(await psSelect.isErrorState()).toBe(false);
+    expect(await zvSelect.isErrorState()).toBe(false);
 
     // Custom matcher - empty value
     component.errorStateMatcher = {
       isErrorState: (control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean => !!(control && control.invalid),
     };
-    expect(await psSelect.isErrorState()).toBe(true);
+    expect(await zvSelect.isErrorState()).toBe(true);
 
     // Custom matcher - item 1
     component.control.patchValue(1);
-    expect(await psSelect.isErrorState()).toBe(false);
+    expect(await zvSelect.isErrorState()).toBe(false);
   });
 
   it('should use clearable input', async () => {
-    const { component, psSelect } = await initTest(TestComponent);
+    const { component, zvSelect: zvSelect } = await initTest(TestComponent);
     component.clearable = true;
-    await psSelect.open();
-    expect(await psSelect.getEmptyOption()).toBeTruthy();
+    await zvSelect.open();
+    expect(await zvSelect.getEmptyOption()).toBeTruthy();
     component.clearable = false;
-    expect(await psSelect.getEmptyOption()).toBeFalsy();
+    expect(await zvSelect.getEmptyOption()).toBeFalsy();
   });
 
   it('toggle all functionality should work', async () => {
-    const { component, psSelect } = await initTest(TestMultipleComponent);
+    const { component, zvSelect: zvSelect } = await initTest(TestMultipleComponent);
     component.showToggleAll = true;
-    await psSelect.open();
-    const selectSearch = await psSelect.getPanelHeader();
+    await zvSelect.open();
+    const selectSearch = await zvSelect.getPanelHeader();
     const toggle = await selectSearch.getToggleAll();
-    expect(await getOptionIsSelected(psSelect)).toEqual([false, false, false]);
+    expect(await getOptionIsSelected(zvSelect)).toEqual([false, false, false]);
 
     await toggle.check();
-    expect(await getOptionIsSelected(psSelect)).toEqual([true, true, true]);
+    expect(await getOptionIsSelected(zvSelect)).toEqual([true, true, true]);
 
     await toggle.uncheck();
-    expect(await getOptionIsSelected(psSelect)).toEqual([false, false, false]);
+    expect(await getOptionIsSelected(zvSelect)).toEqual([false, false, false]);
 
-    const options = await psSelect.getOptions();
+    const options = await zvSelect.getOptions();
     await last(options).click();
-    expect(await getOptionIsSelected(psSelect)).toEqual([false, false, true]);
+    expect(await getOptionIsSelected(zvSelect)).toEqual([false, false, true]);
     expect(await toggle.isIndeterminate()).toBe(true);
 
     await toggle.check();
-    expect(await getOptionIsSelected(psSelect)).toEqual([true, true, true]);
+    expect(await getOptionIsSelected(zvSelect)).toEqual([true, true, true]);
 
     component.showToggleAll = false;
     expect(await selectSearch.getToggleAll()).toBeFalsy();
   });
 
   it('should set the right css classes', async () => {
-    const { fixture, component, psSelect } = await initTest(TestComponent);
+    const { fixture, component, zvSelect: zvSelect } = await initTest(TestComponent);
 
     let errorState = false;
     component.errorStateMatcher = {
       isErrorState: (_control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean => errorState,
     };
 
-    await psSelect.open();
+    await zvSelect.open();
 
     // Empty
-    assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-empty']);
+    assertZvSelectCssClasses(fixture, ['zv-select', 'zv-select-empty']);
 
     // Item selected
-    const options = await psSelect.getOptions();
+    const options = await zvSelect.getOptions();
     await last(options).click();
     fixture.detectChanges();
-    assertPsSelectCssClasses(fixture, ['ps-select']);
+    assertZvSelectCssClasses(fixture, ['zv-select']);
 
     // Disabled
     component.control.disable();
     fixture.detectChanges();
-    assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-disabled']);
+    assertZvSelectCssClasses(fixture, ['zv-select', 'zv-select-disabled']);
     component.control.enable();
 
     // Invalid
     errorState = true;
     fixture.detectChanges();
-    assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-invalid']);
+    assertZvSelectCssClasses(fixture, ['zv-select', 'zv-select-invalid']);
     errorState = false;
 
     // Required
     component.select.required = true;
     fixture.detectChanges();
-    assertPsSelectCssClasses(fixture, ['ps-select', 'ps-select-required']);
+    assertZvSelectCssClasses(fixture, ['zv-select', 'zv-select-required']);
     component.select.required = false;
 
     // mat-option
@@ -486,20 +489,20 @@ describe('PsSelectComponent', () => {
 
     // mat-select-search
     expect(matOptionNodes.item(0).classList.contains('mat-option-disabled')).toBeTruthy();
-    expect(matOptionNodes.item(0).classList.contains('ps-select__search')).toBeTruthy();
+    expect(matOptionNodes.item(0).classList.contains('zv-select__search')).toBeTruthy();
 
     // empty input
-    expect(matOptionNodes.item(1).classList.contains('ps-select__empty-option')).toBeTruthy();
+    expect(matOptionNodes.item(1).classList.contains('zv-select__empty-option')).toBeTruthy();
 
     // items
-    expect(matOptionNodes.item(2).classList.contains('ps-select__option')).toBeTruthy();
+    expect(matOptionNodes.item(2).classList.contains('zv-select__option')).toBeTruthy();
   });
 
   it('should set multiple css class for multiple mode', async () => {
     const { fixture } = await initTest(TestMultipleComponent);
 
-    const classes = getPsSelectCssClasses(fixture);
-    expect(classes).toContain('ps-select-multiple');
+    const classes = getZvSelectCssClasses(fixture);
+    expect(classes).toContain('zv-select-multiple');
   });
 
   it('should work with custom templates', async () => {
@@ -524,8 +527,8 @@ describe('PsSelectComponent', () => {
   });
 
   it('should disable matOption for item with disable', async () => {
-    const { component, psSelect } = await initTest(TestMultipleComponent);
-    component.dataSource = new DefaultPsSelectDataSource({
+    const { component, zvSelect: zvSelect } = await initTest(TestMultipleComponent);
+    component.dataSource = new DefaultZvSelectDataSource({
       mode: 'id',
       labelKey: 'label',
       idKey: 'value',
@@ -537,15 +540,15 @@ describe('PsSelectComponent', () => {
       ],
     });
 
-    await psSelect.open();
-    expect(await (await psSelect.getOptions({ text: 'disabled' }))[0].isDisabled()).toBeTruthy();
-    expect(await (await psSelect.getOptions({ text: 'active' }))[0].isDisabled()).toBeFalsy();
-    expect(await (await psSelect.getOptions({ text: 'default' }))[0].isDisabled()).toBeFalsy();
+    await zvSelect.open();
+    expect(await (await zvSelect.getOptions({ text: 'disabled' }))[0].isDisabled()).toBeTruthy();
+    expect(await (await zvSelect.getOptions({ text: 'active' }))[0].isDisabled()).toBeFalsy();
+    expect(await (await zvSelect.getOptions({ text: 'default' }))[0].isDisabled()).toBeFalsy();
   });
 
   it('should take DataSource compareWith function', async () => {
-    const { component, psSelect } = await initTest(TestComponent);
-    component.dataSource = new DefaultPsSelectDataSource({
+    const { component, zvSelect: zvSelect } = await initTest(TestComponent);
+    component.dataSource = new DefaultZvSelectDataSource({
       mode: 'id',
       labelKey: 'label',
       idKey: 'value',
@@ -560,18 +563,18 @@ describe('PsSelectComponent', () => {
       return a === 1 && b === 2;
     };
     component.control.patchValue(2);
-    await psSelect.open();
+    await zvSelect.open();
 
-    const optionTexts = await getOptionData(psSelect, (o) => o.getText(), { isSelected: true });
+    const optionTexts = await getOptionData(zvSelect, (o) => o.getText(), { isSelected: true });
     expect(optionTexts).toEqual(['1']);
     expect(calledCount).toBeGreaterThan(0);
   });
 
   it('should switch to new dataSource when new dataSource is set', async () => {
-    const { fixture, component, psSelect } = await initTest(TestComponent);
-    TestPsSelectService.calledwith = [];
+    const { fixture, component, zvSelect: zvSelect } = await initTest(TestComponent);
+    TestZvSelectService.calledwith = [];
 
-    component.dataSource = new DefaultPsSelectDataSource({
+    component.dataSource = new DefaultZvSelectDataSource({
       mode: 'id',
       labelKey: 'label',
       idKey: 'value',
@@ -583,22 +586,22 @@ describe('PsSelectComponent', () => {
     component.control.patchValue(2);
 
     fixture.detectChanges();
-    expect(TestPsSelectService.calledwith.length).toBe(1);
-    expect(TestPsSelectService.calledwith[0].dataSource).toBe(component.dataSource);
-    expect(TestPsSelectService.calledwith[0].control).toBe(component.control);
+    expect(TestZvSelectService.calledwith.length).toBe(1);
+    expect(TestZvSelectService.calledwith[0].dataSource).toBe(component.dataSource);
+    expect(TestZvSelectService.calledwith[0].control).toBe(component.control);
 
-    await psSelect.open();
-    const selectSearch = await psSelect.getPanelHeader();
+    await zvSelect.open();
+    const selectSearch = await zvSelect.getPanelHeader();
 
     {
       await selectSearch.setFilter('2');
 
-      const optionTexts = await getOptionData(psSelect, (o) => o.getText(), { isSelected: true });
+      const optionTexts = await getOptionData(zvSelect, (o) => o.getText(), { isSelected: true });
       expect(optionTexts).toEqual(['2']);
     }
 
     {
-      component.dataSource = new DefaultPsSelectDataSource({
+      component.dataSource = new DefaultZvSelectDataSource({
         mode: 'id',
         labelKey: 'label',
         idKey: 'value',
@@ -609,18 +612,18 @@ describe('PsSelectComponent', () => {
         ],
       });
       fixture.detectChanges();
-      expect(TestPsSelectService.calledwith.length).toBe(2);
-      expect(TestPsSelectService.calledwith[1].dataSource).toBe(component.dataSource);
-      expect(TestPsSelectService.calledwith[1].control).toBe(component.control);
+      expect(TestZvSelectService.calledwith.length).toBe(2);
+      expect(TestZvSelectService.calledwith[1].dataSource).toBe(component.dataSource);
+      expect(TestZvSelectService.calledwith[1].control).toBe(component.control);
 
-      const selectedOptionTexts = await getOptionData(psSelect, (o) => o.getText(), { isSelected: true });
+      const selectedOptionTexts = await getOptionData(zvSelect, (o) => o.getText(), { isSelected: true });
       expect(selectedOptionTexts.length).toBe(1);
       expect(selectedOptionTexts[0]).toContain('???'); // missing options got created
 
-      const options1 = await psSelect.getOptions({ text: '1' });
-      expect(await (await options1[0].host()).hasClass('ps-select__option--hidden')).toBe(true); // filter got applied
+      const options1 = await zvSelect.getOptions({ text: '1' });
+      expect(await (await options1[0].host()).hasClass('zv-select__option--hidden')).toBe(true); // filter got applied
 
-      const optionTexts = await getOptionData(psSelect, (o) => o.getText());
+      const optionTexts = await getOptionData(zvSelect, (o) => o.getText());
       // sorting is correct
       expect(optionTexts[0]).toContain('2');
       expect(optionTexts[1]).toBe('1');
@@ -629,8 +632,8 @@ describe('PsSelectComponent', () => {
   });
 
   it('should show load errors as disabled option, but still show selected option', async () => {
-    const { fixture, component, psSelect } = await initTest(TestComponent);
-    component.dataSource = new DefaultPsSelectDataSource({
+    const { fixture, component, zvSelect: zvSelect } = await initTest(TestComponent);
+    component.dataSource = new DefaultZvSelectDataSource({
       mode: 'id',
       labelKey: 'label',
       idKey: 'value',
@@ -640,9 +643,9 @@ describe('PsSelectComponent', () => {
 
     fixture.detectChanges();
 
-    await psSelect.open();
+    await zvSelect.open();
 
-    let options = await psSelect.getOptions();
+    let options = await zvSelect.getOptions();
     expect(options.length).toBe(3);
 
     expect(await options[0].getText()).toBe('my error');
@@ -656,9 +659,9 @@ describe('PsSelectComponent', () => {
     expect(await options[2].isSelected()).toBe(true);
 
     await options[1].click();
-    await psSelect.open();
+    await zvSelect.open();
 
-    options = await psSelect.getOptions();
+    options = await zvSelect.getOptions();
     expect(options.length).toBe(1);
 
     expect(await options[0].getText()).toBe('my error');
@@ -666,17 +669,17 @@ describe('PsSelectComponent', () => {
   });
 
   it('should show loading spinner while loading and open', async () => {
-    const { component, psSelect } = await initTest(TestComponent);
+    const { component, zvSelect: zvSelect } = await initTest(TestComponent);
     const items$ = new ReplaySubject(1);
-    component.dataSource = new DefaultPsSelectDataSource({
+    component.dataSource = new DefaultZvSelectDataSource({
       mode: 'id',
       labelKey: 'label',
       idKey: 'value',
       items: () => items$ as Observable<any>,
     });
 
-    await psSelect.open();
-    const header = await psSelect.getPanelHeader();
+    await zvSelect.open();
+    const header = await zvSelect.getPanelHeader();
     expect(await header.isLoading()).toBe(true);
 
     items$.next([]);
@@ -688,31 +691,31 @@ describe('PsSelectComponent', () => {
   });
 });
 
-async function getOptionIsSelected(psSelect: PsSelectHarness) {
-  return getOptionData(psSelect, (o) => o.isSelected());
+async function getOptionIsSelected(zvSelect: ZvSelectHarness) {
+  return getOptionData(zvSelect, (o) => o.isSelected());
 }
 
 async function getOptionData<T>(
-  psSelect: PsSelectHarness,
+  zvSelect: ZvSelectHarness,
   transform: (option: MatOptionHarness) => Promise<T>,
   filter?: Omit<OptionHarnessFilters, 'ancestor'>
 ) {
-  const options = await psSelect.getOptions(filter);
+  const options = await zvSelect.getOptions(filter);
   return Promise.all(options.map((o) => transform(o)));
 }
 
-function getPsSelectCssClasses(fixture: ComponentFixture<any>) {
+function getZvSelectCssClasses(fixture: ComponentFixture<any>) {
   const testComponentElement: HTMLElement = fixture.nativeElement;
   const classes = testComponentElement
-    .querySelector('ps-select')
+    .querySelector('zv-select')
     .className.split(' ')
-    .filter((x) => x.startsWith('ps-'))
+    .filter((x) => x.startsWith('zv-'))
     .sort();
   return classes;
 }
 
-function assertPsSelectCssClasses(fixture: ComponentFixture<any>, exprectedClasses: string[]) {
-  const classes = getPsSelectCssClasses(fixture);
+function assertZvSelectCssClasses(fixture: ComponentFixture<any>, exprectedClasses: string[]) {
+  const classes = getZvSelectCssClasses(fixture);
   expect(classes).toEqual(exprectedClasses.sort());
 }
 

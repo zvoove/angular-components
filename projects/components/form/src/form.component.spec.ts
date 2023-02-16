@@ -5,25 +5,25 @@ import { FormGroup } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PsBlockUiComponent } from '@prosoft/components/block-ui';
-import { PsIntlService, PsIntlServiceEn } from '@prosoft/components/core';
-import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
+import { ZvBlockUiComponent } from '@zvoove/components/block-ui';
+import { ZvIntlService, ZvIntlServiceEn } from '@zvoove/components/core';
+import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormService } from '@zvoove/components/form-base';
 import { Observable, of, Subject, Subscription } from 'rxjs';
-import { IPsFormDataSource, IPsFormDataSourceConnectOptions } from './form-data-source';
-import { dependencies, PsFormComponent } from './form.component';
-import { PsFormModule } from './form.module';
+import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
+import { dependencies, ZvFormComponent } from './form.component';
+import { ZvFormModule } from './form.module';
 
 @Injectable()
-class TestPsFormService extends BasePsFormService {
+class TestZvFormService extends BaseZvFormService {
   constructor() {
     super();
     this.options.debounceTime = null;
   }
 
   public getLabel(formControl: any): Observable<string> | null {
-    return formControl.psLabel ? of(formControl.psLabel) : null;
+    return formControl.zvLabel ? of(formControl.zvLabel) : null;
   }
-  protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
+  protected mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]> {
     return of(
       errorData.map((data) => ({
         errorText: data.errorKey,
@@ -34,38 +34,36 @@ class TestPsFormService extends BasePsFormService {
 }
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-form [dataSource]="dataSource">
+    <zv-form [dataSource]="dataSource">
       <div id="content">content text</div>
       <div id="hight-strech" style="height: 2000px;">hight strech</div>
-      <ng-container psFormSavebarButtons>
+      <ng-container zvFormSavebarButtons>
         <button type="button">btnCus</button>
       </ng-container>
-    </ps-form>
+    </zv-form>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestDataSourceComponent {
-  public dataSource: IPsFormDataSource;
-  @ViewChild(PsFormComponent) formComponent: PsFormComponent;
+  public dataSource: IZvFormDataSource;
+  @ViewChild(ZvFormComponent) formComponent: ZvFormComponent;
 }
 
-describe('PsFormComponent', () => {
+describe('ZvFormComponent', () => {
   describe('integration with dataSource', () => {
-    beforeEach(
-      waitForAsync(() => {
-        TestBed.configureTestingModule({
-          imports: [NoopAnimationsModule, CommonModule, PsFormModule],
-          declarations: [TestDataSourceComponent],
-          providers: [
-            { provide: PsFormService, useClass: TestPsFormService },
-            { provide: PsIntlService, useClass: PsIntlServiceEn },
-          ],
-        }).compileComponents();
-      })
-    );
+    beforeEach(waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, CommonModule, ZvFormModule],
+        declarations: [TestDataSourceComponent],
+        providers: [
+          { provide: ZvFormService, useClass: TestZvFormService },
+          { provide: ZvIntlService, useClass: ZvIntlServiceEn },
+        ],
+      }).compileComponents();
+    }));
 
     it('should render buttons correctly', async () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
@@ -139,7 +137,7 @@ describe('PsFormComponent', () => {
 
       let errorContainer = getErrorContainer(fixture);
       expect(errorContainer).not.toBe(null);
-      expect(errorContainer.classes['ps-form__error-container--center']).toBeFalsy();
+      expect(errorContainer.classes['zv-form__error-container--center']).toBeFalsy();
       expect(getErrorIcon(fixture)).toBe(null);
       expect(getErrorText(fixture)).toBe('');
 
@@ -149,7 +147,7 @@ describe('PsFormComponent', () => {
 
       errorContainer = getErrorContainer(fixture);
       expect(errorContainer).not.toBe(null);
-      expect(errorContainer.classes['ps-form__error-container--center']).toBeFalsy();
+      expect(errorContainer.classes['zv-form__error-container--center']).toBeFalsy();
       expect(getErrorIcon(fixture)).toBe(null);
       expect(getErrorText(fixture)).toBe('error1');
 
@@ -157,7 +155,7 @@ describe('PsFormComponent', () => {
       dataSource.cdTrigger$.next();
       fixture.detectChanges();
       errorContainer = getErrorContainer(fixture);
-      expect(errorContainer.classes['ps-form__error-container--center']).toBe(true);
+      expect(errorContainer.classes['zv-form__error-container--center']).toBe(true);
 
       dataSource.exception.icon = 'asdf-icon';
       dataSource.cdTrigger$.next();
@@ -252,7 +250,7 @@ describe('PsFormComponent', () => {
 
       const ds = createDataSource();
       const errorInViewValues: boolean[] = [];
-      let opts: IPsFormDataSourceConnectOptions;
+      let opts: IZvFormDataSourceConnectOptions;
       let errorInViewSub: Subscription;
       ds.connect = (options) => {
         opts = options;
@@ -288,10 +286,10 @@ describe('PsFormComponent', () => {
   });
 });
 
-type ITestPsFormDataSource = {
-  -readonly [K in keyof IPsFormDataSource]: IPsFormDataSource[K];
+type ITestZvFormDataSource = {
+  -readonly [K in keyof IZvFormDataSource]: IZvFormDataSource[K];
 };
-function createDataSource(override: Partial<IPsFormDataSource> = {}): ITestPsFormDataSource & { cdTrigger$: Subject<void> } {
+function createDataSource(override: Partial<IZvFormDataSource> = {}): ITestZvFormDataSource & { cdTrigger$: Subject<void> } {
   const cdTrigger$ = new Subject<void>();
   return {
     autocomplete: 'off',
@@ -309,16 +307,16 @@ function createDataSource(override: Partial<IPsFormDataSource> = {}): ITestPsFor
 }
 
 function getButtons(fixture: ComponentFixture<TestDataSourceComponent>): DebugElement[] {
-  return fixture.debugElement.query(By.css('.ps-form__buttons')).children;
+  return fixture.debugElement.query(By.css('.zv-form__buttons')).children;
 }
 function getClasses(node: DebugElement): string[] {
   return (node.nativeElement.className as string).split(' ');
 }
 function getBlockUi(fixture: ComponentFixture<any>): DebugElement {
-  return fixture.debugElement.query(By.directive(PsBlockUiComponent));
+  return fixture.debugElement.query(By.directive(ZvBlockUiComponent));
 }
 function getErrorContainer(fixture: ComponentFixture<any>): DebugElement {
-  return fixture.debugElement.query(By.css('.ps-form__error-container'));
+  return fixture.debugElement.query(By.css('.zv-form__error-container'));
 }
 function getErrorIcon(fixture: ComponentFixture<any>): DebugElement {
   return getErrorContainer(fixture).query(By.directive(MatIcon));

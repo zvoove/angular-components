@@ -1,23 +1,23 @@
 import { BaseHarnessFilters, ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
 import { ButtonHarnessFilters, MatButtonHarness } from '@angular/material/button/testing';
 
-export interface PsDialogWrapperHarnessFilters extends BaseHarnessFilters {
+export interface ZvDialogWrapperHarnessFilters extends BaseHarnessFilters {
   caption?: string | RegExp;
   description?: string | RegExp;
 }
 
-export const enum PsDialogWrapperSection {
+export const enum ZvDialogWrapperSection {
   dialogTitle = '.mat-dialog-title',
 }
 
-export class PsDialogWrapperHarness extends ContentContainerComponentHarness<PsDialogWrapperSection> {
-  static hostSelector = 'ps-dialog-wrapper';
+export class ZvDialogWrapperHarness extends ContentContainerComponentHarness<ZvDialogWrapperSection> {
+  static hostSelector = 'zv-dialog-wrapper';
 
-  private _dialogTitle = this.locatorForOptional(PsDialogWrapperSection.dialogTitle);
-  private _error = this.locatorForOptional('.ps-dialog-wrapper__error');
+  private _dialogTitle = this.locatorForOptional(ZvDialogWrapperSection.dialogTitle);
+  private _error = this.locatorForOptional('.zv-dialog-wrapper__error');
 
-  static with(options: PsDialogWrapperHarnessFilters = {}): HarnessPredicate<PsDialogWrapperHarness> {
-    return new HarnessPredicate(PsDialogWrapperHarness, options).addOption('caption', options.caption, (harness, title) =>
+  static with(options: ZvDialogWrapperHarnessFilters = {}): HarnessPredicate<ZvDialogWrapperHarness> {
+    return new HarnessPredicate(ZvDialogWrapperHarness, options).addOption('caption', options.caption, (harness, title) =>
       HarnessPredicate.stringMatches(harness.getDialogTitle(), title)
     );
   }

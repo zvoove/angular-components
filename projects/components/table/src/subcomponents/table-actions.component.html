@@ -5,7 +5,7 @@
 <mat-menu #menu>
   <ng-template matMenuContent>
     <ng-container *ngFor="let action of actions">
-      <ng-container [ngSwitch]="action | psTableActionType">
+      <ng-container [ngSwitch]="action | zvTableActionType">
         <button
           *ngSwitchCase="'button'"
           mat-menu-item
@@ -29,12 +29,12 @@
             <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
             {{ action.label }}
           </button>
-          <ps-table-actions
+          <zv-table-actions
             #innerPanel
-            [actions]="action.children | psTableActionsToRender: items"
+            [actions]="action.children | zvTableActionsToRender: items"
             [items]="items"
             [root]="false"
-          ></ps-table-actions>
+          ></zv-table-actions>
         </ng-container>
       </ng-container>
     </ng-container>

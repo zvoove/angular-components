@@ -7,20 +7,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { PsTableHeaderComponent } from './table-header.component';
-import { PsTableSearchComponent } from './table-search.component';
-import { PsTableSortComponent } from './table-sort.component';
+import { ZvTableHeaderComponent } from './table-header.component';
+import { ZvTableSearchComponent } from './table-search.component';
+import { ZvTableSortComponent } from './table-sort.component';
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-table-header
+    <zv-table-header
       [caption]="caption"
       [showSorting]="showSorting"
       [filterable]="filterable"
       [topButtonSection]="topButtonSection"
       [intl]="tableIntl"
-    ></ps-table-header>
+    ></zv-table-header>
     <ng-template #tpl></ng-template>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -33,21 +33,19 @@ export class TestComponent {
   public tableIntl = {};
   public topButtonSection: TemplateRef<any> | null = null;
 
-  @ViewChild(PsTableHeaderComponent, { static: true }) cmp: PsTableHeaderComponent;
+  @ViewChild(ZvTableHeaderComponent, { static: true }) cmp: ZvTableHeaderComponent;
 
   @ViewChild('tpl', { read: TemplateRef, static: true })
   public dummyTpl: TemplateRef<any> | null = null;
 }
 
-describe('PsTableHeaderComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
-        declarations: [TestComponent, PsTableHeaderComponent, PsTableSearchComponent, PsTableSortComponent],
-      }).compileComponents();
-    })
-  );
+describe('ZvTableHeaderComponent', () => {
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
+      declarations: [TestComponent, ZvTableHeaderComponent, ZvTableSearchComponent, ZvTableSortComponent],
+    }).compileComponents();
+  }));
 
   it('should only add top padding if sort, search or action buttons are visible without a caption', () => {
     const fixture = TestBed.createComponent(TestComponent);

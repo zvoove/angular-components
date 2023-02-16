@@ -1,20 +1,20 @@
 import { ContentChild, Directive, ElementRef, Input, TemplateRef } from '@angular/core';
 
-@Directive({ selector: '[psTableColumnTemplate]' })
-export class PsTableColumnTemplateDirective {
+@Directive({ selector: '[zvTableColumnTemplate]' })
+export class ZvTableColumnTemplateDirective {
   constructor(public templateRef: TemplateRef<any>) {}
 }
 
-@Directive({ selector: '[psTableColumnHeaderTemplate]' })
-export class PsTableColumnHeaderTemplateDirective {
+@Directive({ selector: '[zvTableColumnHeaderTemplate]' })
+export class ZvTableColumnHeaderTemplateDirective {
   constructor(public templateRef: TemplateRef<any>) {}
 }
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'ps-table-column',
+  selector: 'zv-table-column',
 })
-export class PsTableColumnDirective {
+export class ZvTableColumnDirective {
   @Input() public header = '';
   @Input() public property = '';
   @Input() public sortable = true;
@@ -22,68 +22,68 @@ export class PsTableColumnDirective {
   @Input() public width = 'auto';
   @Input() public headerStyles: { [key: string]: string } = {};
   @Input() public columnStyles: { [key: string]: string } = {};
-  @ContentChild(PsTableColumnTemplateDirective, { read: TemplateRef })
+  @ContentChild(ZvTableColumnTemplateDirective, { read: TemplateRef })
   public columnTemplate: TemplateRef<any> | null = null;
-  @ContentChild(PsTableColumnHeaderTemplateDirective, { read: TemplateRef })
+  @ContentChild(ZvTableColumnHeaderTemplateDirective, { read: TemplateRef })
   public headerTemplate: TemplateRef<any> | null = null;
 }
 
 @Directive({
-  selector: '[psTableTopButtonSection]',
+  selector: '[zvTableTopButtonSection]',
 })
-export class PsTableTopButtonSectionDirective {
+export class ZvTableTopButtonSectionDirective {
   constructor(public el: ElementRef) {}
 }
 
 /**
- * @deprecated Please use actions from PsTableDataSource
+ * @deprecated Please use actions from ZvTableDataSource
  */
 @Directive({
-  selector: '[psTableListActions]',
+  selector: '[zvTableListActions]',
 })
-export class PsTableListActionsDirective {
+export class ZvTableListActionsDirective {
   constructor(public el: ElementRef) {}
 }
 
 /**
- * @deprecated Please use actions from PsTableDataSource
+ * @deprecated Please use actions from ZvTableDataSource
  */
 @Directive({
-  selector: '[psTableRowActions]',
+  selector: '[zvTableRowActions]',
 })
-export class PsTableRowActionsDirective {
+export class ZvTableRowActionsDirective {
   constructor(public el: ElementRef) {}
 }
 
 @Directive({
-  selector: '[psTableCustomHeader]',
+  selector: '[zvTableCustomHeader]',
 })
-export class PsTableCustomHeaderDirective {
+export class ZvTableCustomHeaderDirective {
   constructor(public el: ElementRef) {}
 }
 
 @Directive({
-  selector: '[psTableCustomSettings]',
+  selector: '[zvTableCustomSettings]',
 })
-export class PsTableCustomSettingsDirective {
+export class ZvTableCustomSettingsDirective {
   constructor(public el: ElementRef) {}
 }
 
-@Directive({ selector: '[psTableRowDetailTemplate]' })
-export class PsTableRowDetailTemplateDirective {
+@Directive({ selector: '[zvTableRowDetailTemplate]' })
+export class ZvTableRowDetailTemplateDirective {
   constructor(public templateRef: TemplateRef<any>) {}
 }
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'ps-table-row-detail',
+  selector: 'zv-table-row-detail',
 })
-export class PsTableRowDetailDirective {
+export class ZvTableRowDetailDirective {
   /** Gibt an, ob die Row Details initial expanded sein sollen */
   @Input() public expanded = false;
   @Input() public showToggleColumn: boolean | ((row: any) => boolean) = true;
 
-  @ContentChild(PsTableRowDetailTemplateDirective, { read: TemplateRef })
+  @ContentChild(ZvTableRowDetailTemplateDirective, { read: TemplateRef })
   public template: TemplateRef<any> | null = null;
 
   private expandedItems = new WeakSet();

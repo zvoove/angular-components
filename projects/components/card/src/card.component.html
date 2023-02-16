@@ -1,9 +1,9 @@
-<ps-header *ngIf="showHeader" [caption]="caption" [description]="description">
-  <ng-container *psHeaderCaptionSection [ngTemplateOutlet]="captionSection"></ng-container>
-  <ng-container *psHeaderDescriptionSection [ngTemplateOutlet]="descriptionSection"></ng-container>
-  <ng-container *psHeaderTopButtonSection [ngTemplateOutlet]="topButtonSection"></ng-container>
-</ps-header>
-<mat-card class="ps-card__content" [style.padding]="contentPadding">
+<zv-header *ngIf="showHeader" [caption]="caption" [description]="description">
+  <ng-container *zvHeaderCaptionSection [ngTemplateOutlet]="captionSection"></ng-container>
+  <ng-container *zvHeaderDescriptionSection [ngTemplateOutlet]="descriptionSection"></ng-container>
+  <ng-container *zvHeaderTopButtonSection [ngTemplateOutlet]="topButtonSection"></ng-container>
+</zv-header>
+<mat-card class="zv-card__content" [style.padding]="contentPadding">
   <mat-card-content>
     <ng-content></ng-content>
   </mat-card-content>

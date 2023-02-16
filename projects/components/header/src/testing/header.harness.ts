@@ -1,27 +1,27 @@
 import { BaseHarnessFilters, ContentContainerComponentHarness, HarnessPredicate, TestElement } from '@angular/cdk/testing';
 
-export interface PsHeaderHarnessFilters extends BaseHarnessFilters {
+export interface ZvHeaderHarnessFilters extends BaseHarnessFilters {
   caption?: string | RegExp;
   description?: string | RegExp;
 }
 
-export const enum PsHeaderSection {
-  caption = '.ps-header__caption',
-  description = '.ps-header__description',
-  actions = '.ps-header__actions',
+export const enum ZvHeaderSection {
+  caption = '.zv-header__caption',
+  description = '.zv-header__description',
+  actions = '.zv-header__actions',
 }
 
-export class PsHeaderHarness extends ContentContainerComponentHarness<PsHeaderSection> {
-  static hostSelector = 'ps-header';
+export class ZvHeaderHarness extends ContentContainerComponentHarness<ZvHeaderSection> {
+  static hostSelector = 'zv-header';
 
-  private _caption = this.locatorForOptional(PsHeaderSection.caption);
-  private _captionChildren = this.locatorForAll(PsHeaderSection.caption + ' > *');
-  private _description = this.locatorForOptional(PsHeaderSection.description);
-  private _descriptionChildren = this.locatorForAll(PsHeaderSection.description + ' > *');
-  private _actionsChildren = this.locatorForAll(PsHeaderSection.actions + ' > *');
+  private _caption = this.locatorForOptional(ZvHeaderSection.caption);
+  private _captionChildren = this.locatorForAll(ZvHeaderSection.caption + ' > *');
+  private _description = this.locatorForOptional(ZvHeaderSection.description);
+  private _descriptionChildren = this.locatorForAll(ZvHeaderSection.description + ' > *');
+  private _actionsChildren = this.locatorForAll(ZvHeaderSection.actions + ' > *');
 
-  static with(options: PsHeaderHarnessFilters = {}): HarnessPredicate<PsHeaderHarness> {
-    return new HarnessPredicate(PsHeaderHarness, options)
+  static with(options: ZvHeaderHarnessFilters = {}): HarnessPredicate<ZvHeaderHarness> {
+    return new HarnessPredicate(ZvHeaderHarness, options)
       .addOption('caption', options.caption, (harness, title) => HarnessPredicate.stringMatches(harness.getCaptionText(), title))
       .addOption('description', options.description, (harness, subtitle) =>
         HarnessPredicate.stringMatches(harness.getDescriptionText(), subtitle)

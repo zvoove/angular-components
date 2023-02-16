@@ -1,19 +1,19 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
 
-import { PsTableRowDetailDirective } from '../directives/table.directives';
+import { ZvTableRowDetailDirective } from '../directives/table.directives';
 
 @Component({
-  selector: 'ps-table-row-detail',
+  selector: 'zv-table-row-detail',
   template: `
     <div
-      class="ps-table-row-detail__container"
+      class="zv-table-row-detail__container"
       [@detailExpand]="animationState"
       (@detailExpand.start)="rowDetailToggleStart()"
       (@detailExpand.done)="rowDetailToggleEnd()"
     >
       <!--
-        ps-iframe autoheight funktioniert nur, wenn das iframe beim Initialisieren sichtbar ist.
+        zv-iframe autoheight funktioniert nur, wenn das iframe beim Initialisieren sichtbar ist.
         Deshalb sorgen wir hier mit ngIf dafür, das es erst beim Aufklappen initialisiert wird.
       -->
       <ng-container *ngIf="visible">
@@ -23,7 +23,7 @@ import { PsTableRowDetailDirective } from '../directives/table.directives';
   `,
   styles: [
     `
-      .ps-table-row-detail__container {
+      .zv-table-row-detail__container {
         overflow: hidden;
       }
     `,
@@ -39,7 +39,7 @@ import { PsTableRowDetailDirective } from '../directives/table.directives';
   encapsulation: ViewEncapsulation.None,
 })
 export class TableRowDetailComponent {
-  @Input() public rowDetail: PsTableRowDetailDirective;
+  @Input() public rowDetail: ZvTableRowDetailDirective;
   @Input() public element: any;
   @Input() public show: boolean;
 

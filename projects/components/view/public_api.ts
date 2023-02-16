@@ -1,3 +1,3 @@
-export { IPsViewDataSource } from './src/view-data-source';
-export { PsViewComponent } from './src/view.component';
-export { PsViewModule } from './src/view.module';
+export { IZvViewDataSource } from './src/view-data-source';
+export { ZvViewComponent } from './src/view.component';
+export { ZvViewModule } from './src/view.module';

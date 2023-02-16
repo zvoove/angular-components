@@ -1,4 +1,4 @@
-import { IPsTableUpdateDataInfo } from '../models';
+import { IZvTableUpdateDataInfo } from '../models';
 import { asQueryParams, fromQueryParams, _isNumberValue } from './table.helper';
 
 describe('asQueryParams', () => {
@@ -17,7 +17,7 @@ describe('asQueryParams', () => {
 
 describe('fromQueryParams', () => {
   it('should return data when all values are valid', () => {
-    expect(fromQueryParams('22◬2◬asdf◬Column1◬desc')).toEqual(<IPsTableUpdateDataInfo>{
+    expect(fromQueryParams('22◬2◬asdf◬Column1◬desc')).toEqual(<IZvTableUpdateDataInfo>{
       pageSize: 22,
       currentPage: 2,
       searchText: 'asdf',
@@ -27,7 +27,7 @@ describe('fromQueryParams', () => {
   });
 
   it('should never return NaN for a parameter', () => {
-    expect(fromQueryParams('foo◬foo◬asdf◬Column1◬desc')).toEqual(<IPsTableUpdateDataInfo>{
+    expect(fromQueryParams('foo◬foo◬asdf◬Column1◬desc')).toEqual(<IZvTableUpdateDataInfo>{
       pageSize: null,
       currentPage: null,
       searchText: 'asdf',
@@ -37,7 +37,7 @@ describe('fromQueryParams', () => {
   });
 
   it('should return partial data when some values are set', () => {
-    expect(fromQueryParams('22◬2◬◬◬desc')).toEqual(<IPsTableUpdateDataInfo>{
+    expect(fromQueryParams('22◬2◬◬◬desc')).toEqual(<IZvTableUpdateDataInfo>{
       pageSize: 22,
       currentPage: 2,
       searchText: null,
@@ -45,7 +45,7 @@ describe('fromQueryParams', () => {
       sortDirection: 'desc',
     });
 
-    expect(fromQueryParams('◬◬test◬◬')).toEqual(<IPsTableUpdateDataInfo>{
+    expect(fromQueryParams('◬◬test◬◬')).toEqual(<IZvTableUpdateDataInfo>{
       pageSize: null,
       currentPage: null,
       searchText: 'test',

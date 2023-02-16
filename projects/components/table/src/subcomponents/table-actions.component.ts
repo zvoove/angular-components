@@ -1,21 +1,21 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
-import { IPsTableIntlTexts } from '@prosoft/components/core';
+import { IZvTableIntlTexts } from '@zvoove/components/core';
 
-import { IPsTableAction } from '../models';
+import { IZvTableAction } from '../models';
 
 @Component({
-  selector: 'ps-table-actions',
+  selector: 'zv-table-actions',
   templateUrl: './table-actions.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PsTableActionsComponent implements OnChanges {
+export class ZvTableActionsComponent implements OnChanges {
   @Input() public root = true;
-  @Input() public actions: IPsTableAction<unknown>[];
+  @Input() public actions: IZvTableAction<unknown>[];
   @Input() public items: unknown[];
   @Input() public refreshable: boolean;
   @Input() public settingsEnabled: boolean;
-  @Input() public intl: IPsTableIntlTexts;
+  @Input() public intl: IZvTableIntlTexts;
 
   @Output() public readonly refreshData = new EventEmitter<void>();
   @Output() public readonly showSettings = new EventEmitter<void>();

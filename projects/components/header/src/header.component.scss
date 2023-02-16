@@ -1,22 +1,22 @@
-ps-header {
+zv-header {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1em;
   width: 100%;
   margin: 0;
-  // margin directly on the ps-header makes it possible for users to override it
+  // margin directly on the zv-header makes it possible for users to override it
   margin-bottom: 2em;
 }
 
-.ps-header__text {
+.zv-header__text {
   flex: 1 0 auto;
 }
 
-.ps-header__caption {
+.zv-header__caption {
   margin-bottom: 0;
 }
 
-.ps-header__actions {
+.zv-header__actions {
   align-self: flex-end;
 }

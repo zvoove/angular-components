@@ -2,18 +2,18 @@ import { ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatHeaderRowHarness, MatRowHarness, MatTableHarness } from '@angular/material/table/testing';
-import { PsTableActionsHarness } from './table-actions.harness';
+import { ZvTableActionsHarness } from './table-actions.harness';
 
-export class PsTableDataHarness extends ContentContainerComponentHarness {
-  static hostSelector = 'ps-table-data';
+export class ZvTableDataHarness extends ContentContainerComponentHarness {
+  static hostSelector = 'zv-table-data';
 
   private _matTable = this.locatorFor(MatTableHarness);
-  private _listActions = this.locatorFor(PsTableActionsHarness);
+  private _listActions = this.locatorFor(ZvTableActionsHarness);
   private _listActionsButton = this.locatorForAll(MatMenuHarness);
   private _selectCheckboxes = this.locatorForAll(MatCheckboxHarness);
 
-  static with(): HarnessPredicate<PsTableDataHarness> {
-    return new HarnessPredicate(PsTableDataHarness, {});
+  static with(): HarnessPredicate<ZvTableDataHarness> {
+    return new HarnessPredicate(ZvTableDataHarness, {});
   }
 
   public async getHeaderRows(): Promise<MatHeaderRowHarness[]> {
@@ -35,7 +35,7 @@ export class PsTableDataHarness extends ContentContainerComponentHarness {
   }
 
   /** Action menus are sorted the way they appear in the UI (Header, Row1, Row2, ...) */
-  public async getListActions(): Promise<PsTableActionsHarness> {
+  public async getListActions(): Promise<ZvTableActionsHarness> {
     return await this._listActions();
   }
 

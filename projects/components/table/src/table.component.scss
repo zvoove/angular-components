@@ -1,28 +1,28 @@
-ps-table {
+zv-table {
   display: block;
   border-radius: 4px;
 
-  .ps-table__no-entries-text,
-  .ps-table__error-text {
+  .zv-table__no-entries-text,
+  .zv-table__error-text {
     font-size: large;
     background-color: white;
     padding: 1em 0;
     text-align: center;
   }
 
-  .ps-table__error-text {
+  .zv-table__error-text {
     color: red;
   }
 
-  .ps-table__shadow {
+  .zv-table__shadow {
     box-shadow: 0 -1px 6px -2px rgba(0, 0, 0, 0.2);
   }
 }
 
-.ps-table--card {
+.zv-table--card {
   background-color: #fafafa;
 }
 
-.ps-table--border {
+.zv-table--border {
   border: thin solid rgba(0, 0, 0, 0.12);
 }

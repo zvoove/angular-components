@@ -3,16 +3,16 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
-import { BasePsFormService } from './form.service';
+import { BaseZvFormService } from './form.service';
 import { getControlType } from './helpers';
-import { IPsFormError, IPsFormErrorData } from './models';
+import { IZvFormError, IZvFormErrorData } from './models';
 
 @Injectable()
-class TestPsFormService extends BasePsFormService {
+class TestZvFormService extends BaseZvFormService {
   public getLabel(_formControl: FormControl): Observable<string> | null {
     return null;
   }
-  protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
+  protected mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]> {
     return of(
       errorData.map((data) => ({
         errorText: `${data.controlPath}:${data.errorKey}`,
@@ -22,18 +22,18 @@ class TestPsFormService extends BasePsFormService {
   }
 }
 
-describe('BasePsFormService', () => {
+describe('BaseZvFormService', () => {
   describe('getControlType', () => {
     it('should be the instance from the helpers', () => {
-      const service = new TestPsFormService();
+      const service = new TestZvFormService();
       expect(service.getControlType).toBe(getControlType);
     });
   });
 
   describe('filterErrors', () => {
-    let service: TestPsFormService;
+    let service: TestZvFormService;
     beforeEach(() => {
-      service = new TestPsFormService();
+      service = new TestZvFormService();
     });
 
     it('should call filterErrors for getFormErrors', fakeAsync(() => {
@@ -59,7 +59,7 @@ describe('BasePsFormService', () => {
     }));
 
     it('result should be used', fakeAsync(() => {
-      const expected = <IPsFormErrorData>{
+      const expected = <IZvFormErrorData>{
         errorKey: 'key',
         controlPath: null,
         errorValue: {
@@ -70,7 +70,7 @@ describe('BasePsFormService', () => {
 
       service.filterErrors = () => of([expected]);
       const form = new FormControl({});
-      let result: IPsFormError[];
+      let result: IZvFormError[];
       service.getControlErrors(form).subscribe((errors) => {
         result = errors;
       });
@@ -82,9 +82,9 @@ describe('BasePsFormService', () => {
   });
 
   describe('getControlErrors', () => {
-    let service: TestPsFormService;
+    let service: TestZvFormService;
     beforeEach(() => {
-      service = new TestPsFormService();
+      service = new TestZvFormService();
     });
 
     it('should return errors in the right order', fakeAsync(() => {
@@ -124,9 +124,9 @@ describe('BasePsFormService', () => {
   });
 
   describe('getFormErrors', () => {
-    let service: TestPsFormService;
+    let service: TestZvFormService;
     beforeEach(() => {
-      service = new TestPsFormService();
+      service = new TestZvFormService();
     });
 
     it('should return errors in the right order', fakeAsync(() =>

@@ -24,11 +24,11 @@ import { API, create, Options } from 'nouislider';
 import { Subject } from 'rxjs';
 import { DefaultFormatter } from './formatter';
 
-declare type PsSliderConnect = boolean | boolean[];
+declare type ZvSliderConnect = boolean | boolean[];
 
-// Boilerplate for applying mixins to PsSlider.
+// Boilerplate for applying mixins to ZvSlider.
 /** @docs-private */
-export class PsSliderBase {
+export class ZvSliderBase {
   readonly stateChanges = new Subject<void>();
 
   constructor(
@@ -39,27 +39,27 @@ export class PsSliderBase {
   ) {}
 }
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const _PsSliderMixinBase = mixinErrorState(PsSliderBase);
+export const _ZvSliderMixinBase = mixinErrorState(ZvSliderBase);
 
 // eslint-disable-next-line @angular-eslint/no-conflicting-lifecycle
 @Component({
-  selector: 'ps-slider',
+  selector: 'zv-slider',
   template: ` <div></div> `,
   styleUrls: ['./slider.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  providers: [{ provide: MatFormFieldControl, useExisting: PsSliderComponent }],
+  providers: [{ provide: MatFormFieldControl, useExisting: ZvSliderComponent }],
   // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[attr.id]': 'id',
-    '[class.ps-slider-invalid]': 'errorState',
+    '[class.zv-slider-invalid]': 'errorState',
     '[attr.aria-describedby]': '_ariaDescribedby || null',
     '[attr.aria-invalid]': 'errorState',
     '[attr.aria-required]': 'required.toString()',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PsSliderComponent
-  extends _PsSliderMixinBase
+export class ZvSliderComponent
+  extends _ZvSliderMixinBase
   implements ControlValueAccessor, MatFormFieldControl<number | number[]>, OnInit, OnChanges, DoCheck
 {
   public static nextId = 0;
@@ -89,17 +89,17 @@ export class PsSliderComponent
   /**
    * Defines if and how the slider handle should be connected to the sides or the other handle
    */
-  @Input() public connect: PsSliderConnect;
+  @Input() public connect: ZvSliderConnect;
 
   /**
-   * Implemented as part of PsFormFieldControl.
+   * Implemented as part of ZvFormFieldControl.
    *
    * @docs-private
    */
   public shouldLabelFloat = true;
 
   /**
-   * Implemented as part of PsFormFieldControl.
+   * Implemented as part of ZvFormFieldControl.
    *
    * @docs-private
    */
@@ -118,7 +118,7 @@ export class PsSliderComponent
     this._id = value || this._uid;
   }
   protected _id: string;
-  protected _uid = `ps-slider-${PsSliderComponent.nextId++}`;
+  protected _uid = `zv-slider-${ZvSliderComponent.nextId++}`;
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -139,7 +139,7 @@ export class PsSliderComponent
    *
    * @docs-private
    */
-  public controlType = 'ps-slider';
+  public controlType = 'zv-slider';
   /**
    * Implemented as part of MatFormFieldControl.
    *

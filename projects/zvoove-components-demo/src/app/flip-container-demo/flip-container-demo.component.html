@@ -1,0 +1,41 @@
+<h1>Flip Container Demo</h1>
+<div style="display: flex; gap: 1em">
+  Counter: {{ counter }}
+  <mat-checkbox [(ngModel)]="removeHiddenNodes">Remove invisible content from DOM</mat-checkbox>
+</div>
+
+<h2>Flip animation</h2>
+<zv-flip-container #flip [removeHiddenNodes]="removeHiddenNodes" class="app-flip-container-demo__flip-container">
+  <div *zvFlipContainerFront class="app-flip-container-demo__page-content">
+    Front
+    <button (click)="counter = counter + 1" style="cursor: pointer">increase count</button>
+  </div>
+  <div *zvFlipContainerBack class="app-flip-container-demo__page-content">
+    Back
+    <zv-form-field>
+      <mat-label>Some label text</mat-label>
+      <input matInput type="text" />
+    </zv-form-field>
+  </div>
+</zv-flip-container>
+<button (click)="flip.toggleFlip()">toggle</button>
+<button (click)="flip.showFront()">front</button>
+<button (click)="flip.showBack()">back</button>
+
+<h2>Fade animation</h2>
+<zv-flip-container #fade [animation]="'fade'" [removeHiddenNodes]="removeHiddenNodes" class="app-flip-container-demo__flip-container">
+  <div *zvFlipContainerFront class="app-flip-container-demo__page-content">
+    Front
+    <button (click)="counter = counter + 1" style="cursor: pointer">increase count</button>
+  </div>
+  <div *zvFlipContainerBack class="app-flip-container-demo__page-content">
+    Back
+    <zv-form-field>
+      <mat-label>Some label text</mat-label>
+      <input matInput type="text" />
+    </zv-form-field>
+  </div>
+</zv-flip-container>
+<button (click)="fade.toggleFlip()">toggle</button>
+<button (click)="fade.showFront()">front</button>
+<button (click)="fade.showBack()">back</button>

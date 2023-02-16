@@ -12,16 +12,16 @@ import {
 import type { ElementRef } from '@angular/core';
 
 @Component({
-  selector: 'ps-block-ui',
+  selector: 'zv-block-ui',
   template: `
-    <div #content class="ps-block-ui__content">
+    <div #content class="zv-block-ui__content">
       <ng-content></ng-content>
     </div>
     <ng-container *ngIf="blocked">
-      <div class="ps-block-ui__overlay">
-        <div class="ps-block-ui__overlay-content">
-          <div class="ps-block-ui__spinner-container">
-            <mat-spinner class="ps-block-ui__spinner" [diameter]="spinnerDiameter"></mat-spinner>
+      <div class="zv-block-ui__overlay">
+        <div class="zv-block-ui__overlay-content">
+          <div class="zv-block-ui__spinner-container">
+            <mat-spinner class="zv-block-ui__spinner" [diameter]="spinnerDiameter"></mat-spinner>
           </div>
           <div *ngIf="spinnerText">{{ spinnerText }}</div>
         </div>
@@ -30,25 +30,25 @@ import type { ElementRef } from '@angular/core';
   `,
   styles: [
     `
-      ps-block-ui {
+      zv-block-ui {
         display: grid;
         position: relative;
       }
 
-      .ps-block-ui__clickthrough {
+      .zv-block-ui__clickthrough {
         pointer-events: none;
       }
 
-      .ps-block-ui__clickthrough > .ps-block-ui__content {
+      .zv-block-ui__clickthrough > .zv-block-ui__content {
         pointer-events: auto;
       }
 
-      .ps-block-ui__content {
+      .zv-block-ui__content {
         grid-column: 1;
         grid-row: 1;
       }
 
-      .ps-block-ui__overlay {
+      .zv-block-ui__overlay {
         grid-column: 1;
         grid-row: 1;
         z-index: 2;
@@ -59,18 +59,18 @@ import type { ElementRef } from '@angular/core';
         align-items: center;
       }
 
-      .ps-block-ui__spinner-container {
+      .zv-block-ui__spinner-container {
         overflow: hidden;
       }
 
-      .ps-block-ui__spinner {
+      .zv-block-ui__spinner {
         display: inline-block;
         margin: auto;
-        color: var(--ps-primary);
+        color: var(--zv-primary);
         opacity: 1;
       }
 
-      .ps-block-ui__overlay-content {
+      .zv-block-ui__overlay-content {
         text-align: center;
 
         position: sticky;
@@ -82,10 +82,10 @@ import type { ElementRef } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsBlockUiComponent implements OnChanges, AfterViewInit {
+export class ZvBlockUiComponent implements OnChanges, AfterViewInit {
   @Input() public blocked: boolean;
   @Input() public spinnerText: string;
-  @HostBinding('class.ps-block-ui__clickthrough')
+  @HostBinding('class.zv-block-ui__clickthrough')
   @Input()
   public clickthrough = false;
 

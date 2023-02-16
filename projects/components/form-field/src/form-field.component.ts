@@ -29,22 +29,22 @@ import {
   MatSuffix,
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
 } from '@angular/material/form-field';
-import { hasRequiredField, IPsFormError, PsFormService } from '@prosoft/components/form-base';
+import { hasRequiredField, IZvFormError, ZvFormService } from '@zvoove/components/form-base';
 import { Observable, of, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
 
-export declare type PsFormFieldSubscriptType = 'bubble' | 'resize' | 'single-line';
+export declare type ZvFormFieldSubscriptType = 'bubble' | 'resize' | 'single-line';
 
-export interface PsFormFieldConfig {
-  subscriptType?: PsFormFieldSubscriptType;
+export interface ZvFormFieldConfig {
+  subscriptType?: ZvFormFieldSubscriptType;
   hintToggle?: boolean;
 }
 
-export const PS_FORM_FIELD_CONFIG = new InjectionToken<PsFormFieldConfig>('PS_FORM_FIELD_CONFIG');
+export const ZV_FORM_FIELD_CONFIG = new InjectionToken<ZvFormFieldConfig>('ZV_FORM_FIELD_CONFIG');
 
 @Component({
-  selector: 'ps-form-field',
+  selector: 'zv-form-field',
   template: `
     <mat-form-field
       style="width: 100%;"
@@ -78,12 +78,12 @@ export const PS_FORM_FIELD_CONFIG = new InjectionToken<PsFormFieldConfig>('PS_FO
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDestroy {
+export class ZvFormFieldComponent implements OnChanges, AfterContentInit, OnDestroy {
   @Input() public createLabel = true;
   @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
   @Input() public hint: string = null;
   @Input() public appearance: MatFormFieldAppearance = this.matDefaults?.appearance || 'legacy';
-  @Input() public subscriptType: PsFormFieldSubscriptType = this.defaults ? this.defaults.subscriptType : 'resize';
+  @Input() public subscriptType: ZvFormFieldSubscriptType = this.defaults ? this.defaults.subscriptType : 'resize';
   @Input() public hintToggle: boolean | null = null;
 
   @ViewChild(MatFormField, { static: true }) public _matFormField: MatFormField;
@@ -107,13 +107,13 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
   @ContentChildren(MatPrefix) public _prefixChildren: QueryList<MatPrefix>;
   @ContentChildren(MatSuffix) public _suffixChildren: QueryList<MatSuffix>;
 
-  @HostBinding('class.ps-form-field--bubble') public get showBubble() {
+  @HostBinding('class.zv-form-field--bubble') public get showBubble() {
     return this.subscriptType === 'bubble' && (!!this.visibleHint || this.hasError);
   }
-  @HostBinding('class.ps-form-field--error-bubble') public get showErrorBubble() {
+  @HostBinding('class.zv-form-field--error-bubble') public get showErrorBubble() {
     return this.subscriptType === 'bubble' && this.hasError;
   }
-  @HostBinding('class.ps-form-field--subscript-resize') public get autoResizeHintError() {
+  @HostBinding('class.zv-form-field--subscript-resize') public get autoResizeHintError() {
     return this.subscriptType === 'resize';
   }
 
@@ -135,7 +135,7 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
   }
 
   /** The error messages to show */
-  public errors$: Observable<IPsFormError[]> = of([]);
+  public errors$: Observable<IZvFormError[]> = of([]);
 
   /** indicates if the control is no real MatFormFieldControl */
   public emulated = false;
@@ -162,8 +162,8 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
 
   constructor(
     private _elementRef: ElementRef,
-    private formsService: PsFormService,
-    @Optional() @Inject(PS_FORM_FIELD_CONFIG) private defaults?: PsFormFieldConfig,
+    private formsService: ZvFormService,
+    @Optional() @Inject(ZV_FORM_FIELD_CONFIG) private defaults?: ZvFormFieldConfig,
     @Optional() @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) private matDefaults?: MatFormFieldDefaultOptions
   ) {
     if (!this.defaults) {
@@ -188,7 +188,7 @@ export class PsFormFieldComponent implements OnChanges, AfterContentInit, OnDest
     this.realFormControl = getRealFormControl(this._ngControl, this.matFormFieldControl);
 
     this.controlType = this.formsService.getControlType(this.realFormControl) || 'unknown';
-    this._elementRef.nativeElement.classList.add(`ps-form-field-type-${this.controlType}`);
+    this._elementRef.nativeElement.classList.add(`zv-form-field-type-${this.controlType}`);
 
     this.noUnderline = this.emulated || !!this.realFormControl.noUnderline;
     if (this.floatLabel === 'auto' && (this.emulated || this.realFormControl.shouldLabelFloat === undefined)) {

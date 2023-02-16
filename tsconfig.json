@@ -37,7 +37,7 @@
     "lib": ["es2020", "dom"],
 
     "paths": {
-      "@prosoft/components/*": ["projects/components/*"]
+      "@zvoove/components/*": ["projects/components/*"]
     }
   }
 }

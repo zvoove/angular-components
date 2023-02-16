@@ -1,52 +1,52 @@
-.ps-form__main-container {
+.zv-form__main-container {
   box-sizing: border-box;
 }
 
-.ps-form__cards-container {
+.zv-form__cards-container {
   display: grid;
   grid-gap: 1em;
 }
 
-mat-card.ps-form__error-container {
-  color: var(--ps-error);
+mat-card.zv-form__error-container {
+  color: var(--zv-error);
 }
 
-mat-card.ps-form__error-container--center {
+mat-card.zv-form__error-container--center {
   display: grid;
   justify-items: center;
 }
 
-mat-icon.ps-form__error-icon {
-  color: var(--ps-error);
+mat-icon.zv-form__error-icon {
+  color: var(--zv-error);
   font-size: 72px;
   height: 72px;
   width: 72px;
 }
 
-.ps-form__buttons button {
+.zv-form__buttons button {
   margin: 0.25em;
 }
 
-.ps-form__error-notfier-button {
+.zv-form__error-notfier-button {
   vertical-align: middle;
   cursor: pointer;
 }
 
-.ps-form__savebar {
+.zv-form__savebar {
   bottom: -1px;
   margin: 1em 0 1em 0;
   z-index: 5;
   padding: 1em !important;
   display: flex;
   justify-content: space-between;
-  border-top: solid var(--ps-accent) 5px;
+  border-top: solid var(--zv-accent) 5px;
 }
 
-mat-card.ps-form__savebar--sticky {
+mat-card.zv-form__savebar--sticky {
   position: sticky;
 }
 
-.ps-form__savebar-container {
+.zv-form__savebar-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -58,12 +58,12 @@ mat-card.ps-form__savebar--sticky {
   }
 }
 
-.ps-form__savebar-spacer {
+.zv-form__savebar-spacer {
   margin-right: auto;
 }
 
 @media only screen and (max-width: 35em) {
-  mat-card.ps-form__savebar--sticky {
+  mat-card.zv-form__savebar--sticky {
     position: initial;
   }
 }

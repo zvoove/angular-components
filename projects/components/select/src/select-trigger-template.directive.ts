@@ -1,6 +1,6 @@
 import { TemplateRef, Directive } from '@angular/core';
 
-@Directive({ selector: '[psSelectTriggerTemplate]' })
-export class PsSelectTriggerTemplateDirective {
+@Directive({ selector: '[zvSelectTriggerTemplate]' })
+export class ZvSelectTriggerTemplateDirective {
   constructor(public templateRef: TemplateRef<any>) {}
 }

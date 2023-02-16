@@ -5,36 +5,36 @@ import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Subject } from 'rxjs';
-import { PsViewHarness } from './testing/view.harness';
-import { IPsViewDataSource } from './view-data-source';
-import { PsViewComponent } from './view.component';
-import { PsViewModule } from './view.module';
+import { ZvViewHarness } from './testing/view.harness';
+import { IZvViewDataSource } from './view-data-source';
+import { ZvViewComponent } from './view.component';
+import { ZvViewModule } from './view.module';
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-view [dataSource]="dataSource">
+    <zv-view [dataSource]="dataSource">
       <div id="content">content text</div>
       <div id="hight-strech" style="height: 2000px;">hight strech</div>
-    </ps-view>
+    </zv-view>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestDataSourceComponent {
-  public dataSource: IPsViewDataSource;
-  @ViewChild(PsViewComponent) formComponent: PsViewComponent;
+  public dataSource: IZvViewDataSource;
+  @ViewChild(ZvViewComponent) formComponent: ZvViewComponent;
 }
 
-describe('PsViewComponent', () => {
+describe('ZvViewComponent', () => {
   describe('integration with dataSource', () => {
     let fixture: ComponentFixture<TestDataSourceComponent>;
     let component: TestDataSourceComponent;
     let loader: HarnessLoader;
-    let view: PsViewHarness;
+    let view: ZvViewHarness;
     beforeEach(async () => {
       await TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, PsViewModule],
+        imports: [NoopAnimationsModule, CommonModule, ZvViewModule],
         declarations: [TestDataSourceComponent],
       });
       fixture = TestBed.createComponent(TestDataSourceComponent);
@@ -42,7 +42,7 @@ describe('PsViewComponent', () => {
       expect(component).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
-      view = await loader.getHarness(PsViewHarness);
+      view = await loader.getHarness(ZvViewHarness);
     });
 
     it('should show error view, when exception property is not null', async () => {
@@ -120,11 +120,11 @@ describe('PsViewComponent', () => {
   });
 });
 
-type ITestPsViewDataSource = {
-  -readonly [K in keyof IPsViewDataSource]: IPsViewDataSource[K];
+type ITestZvViewDataSource = {
+  -readonly [K in keyof IZvViewDataSource]: IZvViewDataSource[K];
 };
 
-const createDataSource = (override: Partial<IPsViewDataSource> = {}): ITestPsViewDataSource & { cdTrigger$: Subject<void> } => {
+const createDataSource = (override: Partial<IZvViewDataSource> = {}): ITestZvViewDataSource & { cdTrigger$: Subject<void> } => {
   const cdTrigger$ = new Subject<void>();
   return {
     cdTrigger$: cdTrigger$,

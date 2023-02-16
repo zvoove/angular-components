@@ -1,15 +1,15 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { IPsTableAction } from '../models';
+import { IZvTableAction } from '../models';
 
 /**
  * Filters out hidden actions
  */
 @Pipe({
-  name: 'psTableActionType',
+  name: 'zvTableActionType',
   pure: true,
 })
-export class PsTableActionTypePipe implements PipeTransform {
-  public transform<T>(action: IPsTableAction<T>): string {
+export class ZvTableActionTypePipe implements PipeTransform {
+  public transform<T>(action: IZvTableAction<T>): string {
     if (action.routerLink) {
       return 'link';
     }

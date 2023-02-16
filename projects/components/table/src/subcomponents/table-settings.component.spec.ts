@@ -9,19 +9,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { IPsTableIntlTexts } from '@prosoft/components/core';
+import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { PsTableColumnDirective } from '../directives/table.directives';
-import { IPsTableSortDefinition } from '../models';
-import { IPsTableSetting, PsTableSettingsService } from '../services/table-settings.service';
-import { PsTableSettingsComponent } from './table-settings.component';
-import { PsTableSortComponent } from './table-sort.component';
+import { ZvTableColumnDirective } from '../directives/table.directives';
+import { IZvTableSortDefinition } from '../models';
+import { IZvTableSetting, ZvTableSettingsService } from '../services/table-settings.service';
+import { ZvTableSettingsComponent } from './table-settings.component';
+import { ZvTableSortComponent } from './table-sort.component';
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-table-settings
+    <zv-table-settings
       [tableId]="tableId"
       [columnDefinitions]="columnDefinitions"
       [sortDefinitions]="sortDefinitions"
@@ -29,45 +29,43 @@ import { PsTableSortComponent } from './table-sort.component';
       [intl]="intl"
       (settingsSaved)="onSettingsSaved($event)"
       (settingsAborted)="onSettingsAborted($event)"
-    ></ps-table-settings>
+    ></zv-table-settings>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestComponent {
-  public intl: Partial<IPsTableIntlTexts> = {
+  public intl: Partial<IZvTableIntlTexts> = {
     sortLabel: 'sort label',
   };
   public tableId: string;
-  public columnDefinitions: PsTableColumnDirective[] = [];
-  public sortDefinitions: IPsTableSortDefinition[] = [];
+  public columnDefinitions: ZvTableColumnDirective[] = [];
+  public sortDefinitions: IZvTableSortDefinition[] = [];
   public pageSizeOptions: number[] = [1, 3, 7];
 
-  @ViewChild(PsTableSettingsComponent, { static: true }) tableSearch: PsTableSettingsComponent;
+  @ViewChild(ZvTableSettingsComponent, { static: true }) tableSearch: ZvTableSettingsComponent;
 
   public onSettingsSaved() {}
   public onSettingsAborted() {}
 }
 
-describe('PsTableSettingsComponent', () => {
+describe('ZvTableSettingsComponent', () => {
   describe('integration', () => {
-    beforeEach(
-      waitForAsync(() => {
-        TestBed.configureTestingModule({
-          imports: [
-            NoopAnimationsModule,
-            CommonModule,
-            MatCardModule,
-            MatFormFieldModule,
-            MatSelectModule,
-            MatCheckboxModule,
-            MatButtonModule,
-            MatIconModule,
-          ],
-          declarations: [TestComponent, PsTableSettingsComponent, PsTableSortComponent],
-        }).compileComponents();
-      })
-    );
+    beforeEach(waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          NoopAnimationsModule,
+          CommonModule,
+          MatCardModule,
+          MatFormFieldModule,
+          MatSelectModule,
+          MatCheckboxModule,
+          MatButtonModule,
+          MatIconModule,
+        ],
+        declarations: [TestComponent, ZvTableSettingsComponent, ZvTableSortComponent],
+      }).compileComponents();
+    }));
 
     it('should emit settingsAborted on cancel click', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestComponent);
@@ -86,7 +84,7 @@ describe('PsTableSettingsComponent', () => {
       const fixture = TestBed.createComponent(TestComponent);
       const component = fixture.componentInstance;
 
-      const settings: IPsTableSetting = {
+      const settings: IZvTableSetting = {
         columnBlacklist: ['prop_b'],
         pageSize: 11,
         sortColumn: 'prop_a',
@@ -136,19 +134,19 @@ describe('PsTableSettingsComponent', () => {
 
   describe('isolated', () => {
     it('should get settings from the service by tableId', fakeAsync(() => {
-      const tableSetting: IPsTableSetting = {
+      const tableSetting: IZvTableSetting = {
         columnBlacklist: ['prop_b'],
         pageSize: 10,
         sortColumn: 'prop_a',
         sortDirection: 'desc',
       };
-      const settingsService = new PsTableSettingsService();
-      const component = new PsTableSettingsComponent(settingsService);
+      const settingsService = new ZvTableSettingsService();
+      const component = new ZvTableSettingsComponent(settingsService);
       component.tableId = 'table.1';
       spyOn(settingsService, 'getStream').and.returnValue(of(tableSetting));
       component.ngOnInit();
 
-      let asyncSettings: IPsTableSetting;
+      let asyncSettings: IZvTableSetting;
       component.settings$.subscribe((settings) => {
         asyncSettings = settings;
       });
@@ -158,12 +156,12 @@ describe('PsTableSettingsComponent', () => {
     }));
 
     it("should use default settings if service doesn't return settings", fakeAsync(() => {
-      const settingsService = new PsTableSettingsService();
-      const component = new PsTableSettingsComponent(settingsService);
+      const settingsService = new ZvTableSettingsService();
+      const component = new ZvTableSettingsComponent(settingsService);
       component.tableId = 'table.1';
       component.ngOnInit();
 
-      let asyncSettings: IPsTableSetting;
+      let asyncSettings: IZvTableSetting;
       component.settings$.subscribe((settings) => {
         asyncSettings = settings;
       });
@@ -177,17 +175,17 @@ describe('PsTableSettingsComponent', () => {
     }));
 
     it('columnVisible should return false for blacklisted columns', fakeAsync(() => {
-      const settingsService = new PsTableSettingsService();
-      const component = new PsTableSettingsComponent(settingsService);
-      function createSettings(blacklist: string[]): IPsTableSetting {
+      const settingsService = new ZvTableSettingsService();
+      const component = new ZvTableSettingsComponent(settingsService);
+      function createSettings(blacklist: string[]): IZvTableSetting {
         return {
           columnBlacklist: blacklist,
-        } as Partial<IPsTableSetting> as any;
+        } as Partial<IZvTableSetting> as any;
       }
-      function createColumnDef(propName: string): PsTableColumnDirective {
+      function createColumnDef(propName: string): ZvTableColumnDirective {
         return {
           property: propName,
-        } as Partial<IPsTableSetting> as any;
+        } as Partial<IZvTableSetting> as any;
       }
       expect(component.columnVisible(createSettings(['prop']), createColumnDef('prop'))).toEqual(false);
       expect(component.columnVisible(createSettings(['a']), createColumnDef('prop'))).toEqual(true);
@@ -195,14 +193,14 @@ describe('PsTableSettingsComponent', () => {
     }));
 
     describe('onSortChanged', () => {
-      const settingsService = new PsTableSettingsService();
-      const component = new PsTableSettingsComponent(settingsService);
-      function createSettings(blacklist: string[], sortColumn: string, sortDirection: 'asc' | 'desc'): IPsTableSetting {
+      const settingsService = new ZvTableSettingsService();
+      const component = new ZvTableSettingsComponent(settingsService);
+      function createSettings(blacklist: string[], sortColumn: string, sortDirection: 'asc' | 'desc'): IZvTableSetting {
         return {
           columnBlacklist: blacklist,
           sortColumn: sortColumn,
           sortDirection: sortDirection,
-        } as Partial<IPsTableSetting> as any;
+        } as Partial<IZvTableSetting> as any;
       }
       function createColumnDef(sortColumn: string, sortDirection: 'asc' | 'desc') {
         return { sortColumn: sortColumn, sortDirection: sortDirection };
@@ -230,13 +228,13 @@ describe('PsTableSettingsComponent', () => {
     });
 
     it('onColumnVisibilityChange should toggle column in blacklist', fakeAsync(() => {
-      const settingsService = new PsTableSettingsService();
-      const component = new PsTableSettingsComponent(settingsService);
+      const settingsService = new ZvTableSettingsService();
+      const component = new ZvTableSettingsComponent(settingsService);
 
-      const settings: IPsTableSetting = {
+      const settings: IZvTableSetting = {
         columnBlacklist: [],
       } as any;
-      const columnDef: PsTableColumnDirective = {
+      const columnDef: ZvTableColumnDirective = {
         property: '',
       } as any;
       const event = new MatCheckboxChange();

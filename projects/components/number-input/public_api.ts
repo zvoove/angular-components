@@ -1,2 +1,2 @@
-export { PsNumberInputComponent } from './src/number-input.component';
-export { PsNumberInputModule } from './src/number-input.module';
+export { ZvNumberInputComponent } from './src/number-input.component';
+export { ZvNumberInputModule } from './src/number-input.module';

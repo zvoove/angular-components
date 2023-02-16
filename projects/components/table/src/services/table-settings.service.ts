@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EMPTY, Observable, of } from 'rxjs';
 
-export interface IPsTableSetting {
+export interface IZvTableSetting {
   columnBlacklist: string[];
   sortColumn: string;
   sortDirection: 'asc' | 'desc';
@@ -9,10 +9,10 @@ export interface IPsTableSetting {
 }
 
 @Injectable({ providedIn: 'root' })
-export class PsTableSettingsService {
+export class ZvTableSettingsService {
   public settingsEnabled = false;
   public pageSizeOptions = [5, 10, 25, 50];
-  public getStream(_tableId: string, _onlySaved: boolean): Observable<IPsTableSetting> {
+  public getStream(_tableId: string, _onlySaved: boolean): Observable<IZvTableSetting> {
     return of({
       columnBlacklist: [],
       sortColumn: null,
@@ -21,7 +21,7 @@ export class PsTableSettingsService {
     });
   }
 
-  public save(_: string, __: IPsTableSetting): Observable<void> {
+  public save(_: string, __: IZvTableSetting): Observable<void> {
     return EMPTY;
   }
 }

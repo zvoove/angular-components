@@ -1,10 +1,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { PsTableDataSource } from '../data/table-data-source';
-import { PsTableDataComponent } from './table-data.component';
+import { ZvTableDataSource } from '../data/table-data-source';
+import { ZvTableDataComponent } from './table-data.component';
 
-describe('PsTableDataComponent', () => {
+describe('ZvTableDataComponent', () => {
   it('onShowSettingsClicked should emit showSettingsClicked', () => {
-    const component = new PsTableDataComponent(null);
+    const component = new ZvTableDataComponent(null);
 
     spyOn(component.showSettingsClicked, 'emit');
     component.onShowSettingsClicked();
@@ -12,7 +12,7 @@ describe('PsTableDataComponent', () => {
   });
 
   it('onRefreshDataClicked should emit refreshDataClicked', () => {
-    const component = new PsTableDataComponent(null);
+    const component = new ZvTableDataComponent(null);
 
     spyOn(component.refreshDataClicked, 'emit');
     component.onRefreshDataClicked();
@@ -20,7 +20,7 @@ describe('PsTableDataComponent', () => {
   });
 
   it('isMasterToggleChecked should only return true when there are visible rows and they are all selected', () => {
-    const component = new PsTableDataComponent(null);
+    const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();
 
     (<any>component.dataSource).allVisibleRowsSelected = false;
@@ -37,7 +37,7 @@ describe('PsTableDataComponent', () => {
   });
 
   it('isMasterToggleIndeterminate should only return true when some but not all rows are selected', () => {
-    const component = new PsTableDataComponent(null);
+    const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();
 
     (<any>component.dataSource).allVisibleRowsSelected = false;
@@ -55,7 +55,7 @@ describe('PsTableDataComponent', () => {
 
   it('toggleRowDetail should toggle the row detail and trigger change detection', () => {
     const cd: any = { markForCheck: () => {} };
-    const component = new PsTableDataComponent(cd);
+    const component = new ZvTableDataComponent(cd);
     let toggledRow: any = null;
     component.rowDetail = <any>{
       toggle: (x: any) => {
@@ -73,7 +73,7 @@ describe('PsTableDataComponent', () => {
   });
 
   it('onMasterToggleChange should call toggleVisibleRowSelection on data source', () => {
-    const component = new PsTableDataComponent(null);
+    const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();
 
     spyOn(component.dataSource, 'toggleVisibleRowSelection');
@@ -82,7 +82,7 @@ describe('PsTableDataComponent', () => {
   });
 
   it('onRowToggleChange should toggle row', () => {
-    const component = new PsTableDataComponent(null);
+    const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();
 
     const row = { a: 'b' };
@@ -93,7 +93,7 @@ describe('PsTableDataComponent', () => {
   });
 
   it('isRowSelected should only return true if row is selected', () => {
-    const component = new PsTableDataComponent(null);
+    const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();
 
     const row = { a: 'b' };
@@ -104,7 +104,7 @@ describe('PsTableDataComponent', () => {
   });
 
   it('getSelectedRows should return selected rows', () => {
-    const component = new PsTableDataComponent(null);
+    const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();
 
     const row1 = { a: 'b' };
@@ -116,10 +116,10 @@ describe('PsTableDataComponent', () => {
 });
 
 function createDataSourceMock() {
-  const dataSource: PsTableDataSource<any> = ({
+  const dataSource: ZvTableDataSource<any> = {
     allVisibleRowsSelected: true,
     selectionModel: new SelectionModel(true),
     toggleVisibleRowSelection: () => {},
-  } as Partial<PsTableDataSource<any>>) as any;
+  } as Partial<ZvTableDataSource<any>> as any;
   return dataSource;
 }

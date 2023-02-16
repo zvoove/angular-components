@@ -1,15 +1,15 @@
-<ng-container *ngIf="actions | psTableActionsToRender: item as visibleActions">
+<ng-container *ngIf="actions | zvTableActionsToRender: item as visibleActions">
   <ng-container *ngIf="visibleActions.length >= moreMenuThreshold || actionsTemplate; else thresholdReachedTemplate">
     <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu">
       <mat-icon>more_vert</mat-icon>
     </button>
-    <ps-table-actions #rowActionsComponent [actions]="actions" [items]="itemAsArray">
+    <zv-table-actions #rowActionsComponent [actions]="actions" [items]="itemAsArray">
       <ng-container [ngTemplateOutlet]="actionsTemplate" [ngTemplateOutletContext]="{ $implicit: item }"></ng-container>
-    </ps-table-actions>
+    </zv-table-actions>
   </ng-container>
   <ng-template #thresholdReachedTemplate>
     <ng-container *ngFor="let action of visibleActions">
-      <ng-container [ngSwitch]="action | psTableActionType">
+      <ng-container [ngSwitch]="action | zvTableActionType">
         <button
           type="button"
           *ngSwitchCase="'button'"
@@ -40,7 +40,7 @@
           >
             <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
           </button>
-          <ps-table-actions #iconActions [actions]="action.children" [items]="itemAsArray" [root]="false"></ps-table-actions>
+          <zv-table-actions #iconActions [actions]="action.children" [items]="itemAsArray" [root]="false"></zv-table-actions>
         </ng-container>
       </ng-container>
     </ng-container>

@@ -1,4 +1,4 @@
-# @prosoft/components [![npm version](https://img.shields.io/npm/v/@prosoft/components.svg?style=flat)](https://www.npmjs.com/package/@prosoft/components)
+# @zvoove/components [![npm version](https://img.shields.io/npm/v/@zvoove/components.svg?style=flat)](https://www.npmjs.com/package/@zvoove/components)
 
 A set of angular components compatible with and/or dependent on @angular/material.
 

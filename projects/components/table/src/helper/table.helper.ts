@@ -1,11 +1,11 @@
 import { coerceNumberProperty } from '@angular/cdk/coercion';
-import { IPsTableUpdateDataInfo } from '../models';
+import { IZvTableUpdateDataInfo } from '../models';
 
-export function asQueryParams(settings: IPsTableUpdateDataInfo): string {
+export function asQueryParams(settings: IZvTableUpdateDataInfo): string {
   return [settings.pageSize, settings.currentPage, settings.searchText, settings.sortColumn, settings.sortDirection].join('◬');
 }
 
-export function fromQueryParams(settingsString: string): IPsTableUpdateDataInfo {
+export function fromQueryParams(settingsString: string): IZvTableUpdateDataInfo {
   if (!settingsString) {
     return null;
   }

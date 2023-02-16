@@ -13,27 +13,27 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
-import { PsSelectItem } from '../models';
-import { PsSelectDataSource } from '../select-data-source';
+import { ZvSelectItem } from '../models';
+import { ZvSelectDataSource } from '../select-data-source';
 
 export declare type MaybeObservable<T> = T | Observable<T>;
 
-export interface PsSelectDataSourceOptions<T = any> {
+export interface ZvSelectDataSourceOptions<T = any> {
   mode: 'id' | 'entity';
   idKey: keyof T;
   labelKey: keyof T;
   disabledKey?: keyof T;
   items: MaybeObservable<T[]> | (() => MaybeObservable<T[]>);
   searchDebounce?: number;
-  loadTrigger?: PsSelectLoadTrigger;
-  sortBy?: PsSelectSortBy;
+  loadTrigger?: ZvSelectLoadTrigger;
+  sortBy?: ZvSelectSortBy;
 }
 
-export function isPsSelectOptionsData(value: any): value is PsSelectDataSourceOptions {
+export function isZvSelectOptionsData(value: any): value is ZvSelectDataSourceOptions {
   return typeof value === 'object' && 'idKey' in value && 'labelKey' in value && 'items' in value && 'mode' in value;
 }
 
-export const enum PsSelectLoadTrigger {
+export const enum ZvSelectLoadTrigger {
   // eslint-disable-next-line no-bitwise
   initial = 1 << 0,
   // eslint-disable-next-line no-bitwise
@@ -43,7 +43,7 @@ export const enum PsSelectLoadTrigger {
   all = initial + firstPanelOpen + everyPanelOpen,
 }
 
-export const enum PsSelectSortBy {
+export const enum ZvSelectSortBy {
   // eslint-disable-next-line no-bitwise
   none = 0,
   // eslint-disable-next-line no-bitwise
@@ -53,24 +53,24 @@ export const enum PsSelectSortBy {
   both = selected + comparer,
 }
 
-export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
+export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
   private _searchDebounceTime: number;
-  private _loadTrigger: PsSelectLoadTrigger;
-  private _sortBy: PsSelectSortBy;
+  private _loadTrigger: ZvSelectLoadTrigger;
+  private _sortBy: ZvSelectSortBy;
   private _isPanelOpen$ = new BehaviorSubject<boolean>(false);
   private _searchText$ = new BehaviorSubject<string>('');
   private _currentValues$ = new BehaviorSubject<T[]>([]);
   private _ngUnsubscribe$ = new Subject<void>();
-  private _loadData: () => Observable<PsSelectItem<T>[]>;
+  private _loadData: () => Observable<ZvSelectItem<T>[]>;
 
-  constructor(options: PsSelectDataSourceOptions) {
+  constructor(options: ZvSelectDataSourceOptions) {
     super();
 
     this._searchDebounceTime = options.searchDebounce ?? 300;
-    this._loadTrigger = options.loadTrigger ?? PsSelectLoadTrigger.initial;
-    this._sortBy = options.sortBy ?? PsSelectSortBy.both;
+    this._loadTrigger = options.loadTrigger ?? ZvSelectLoadTrigger.initial;
+    this._sortBy = options.sortBy ?? ZvSelectSortBy.both;
 
-    let loadData: () => Observable<PsSelectItem<T>[]>;
+    let loadData: () => Observable<ZvSelectItem<T>[]>;
     const entityToSelectItem = createEntityToSelectItemMapper(options.mode, options.idKey, options.labelKey, options.disabledKey);
 
     const items = options.items;
@@ -97,7 +97,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
       return loadData().pipe(
         catchError((err: Error | any) => {
           this.error = err;
-          return of([] as PsSelectItem<T>[]);
+          return of([] as ZvSelectItem<T>[]);
         }),
         tap(() => {
           this.loading = false;
@@ -106,11 +106,11 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     };
   }
 
-  public connect(): Observable<PsSelectItem<T>[]> {
+  public connect(): Observable<ZvSelectItem<T>[]> {
     const optionsLoadTrigger$ = this._createOptionsLoadTrigger();
     const loadedOptions$ = optionsLoadTrigger$.pipe(
       switchMap(() => this._loadData()),
-      startWith<PsSelectItem<T>[]>([]),
+      startWith<ZvSelectItem<T>[]>([]),
       map((options) => options.map(normalizeLabel)),
       shareReplay({ bufferSize: 1, refCount: true })
     );
@@ -186,7 +186,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     this._currentValues$.next(values);
   }
 
-  public getItemsForValues(values: T[]): PsSelectItem<T>[] {
+  public getItemsForValues(values: T[]): ZvSelectItem<T>[] {
     return values.map((v) => ({
       value: v,
       label: `??? (ID: ${v})`,
@@ -197,17 +197,17 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
    * Sort comparer for the items.
    * Note: Selected items will still be at the top.
    */
-  public sortCompare = (a: PsSelectItem, b: PsSelectItem): number => a.label.localeCompare(b.label);
+  public sortCompare = (a: ZvSelectItem, b: ZvSelectItem): number => a.label.localeCompare(b.label);
 
   /**
    * Search comparer for the items.
    */
-  public searchCompare = (option: PsSelectItem, searchText: string): boolean => option.label.toLowerCase().indexOf(searchText) === -1;
+  public searchCompare = (option: ZvSelectItem, searchText: string): boolean => option.label.toLowerCase().indexOf(searchText) === -1;
 
   private _createOptionsLoadTrigger(): Observable<void> {
     const loadTriggers: Observable<any>[] = [];
     // eslint-disable-next-line no-bitwise
-    if (this._loadTrigger & PsSelectLoadTrigger.initial) {
+    if (this._loadTrigger & ZvSelectLoadTrigger.initial) {
       loadTriggers.push(of(null));
     }
 
@@ -216,10 +216,10 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
       filter((panelOpen) => panelOpen)
     );
     // eslint-disable-next-line no-bitwise
-    if (this._loadTrigger & PsSelectLoadTrigger.everyPanelOpen) {
+    if (this._loadTrigger & ZvSelectLoadTrigger.everyPanelOpen) {
       loadTriggers.push(panelOpen$);
       // eslint-disable-next-line no-bitwise
-    } else if (this._loadTrigger & PsSelectLoadTrigger.firstPanelOpen) {
+    } else if (this._loadTrigger & ZvSelectLoadTrigger.firstPanelOpen) {
       loadTriggers.push(panelOpen$.pipe(take(1)));
     }
 
@@ -241,10 +241,10 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     return merge(panelCloseEvent$, valueChangedWhileClosed$).pipe(startWith(0));
   }
 
-  private _cloneAndSort(unsortedOptions: PsSelectItem<T>[]) {
-    let selectedOptionsSet: WeakSet<PsSelectItem> = null;
+  private _cloneAndSort(unsortedOptions: ZvSelectItem<T>[]) {
+    let selectedOptionsSet: WeakSet<ZvSelectItem> = null;
     // eslint-disable-next-line no-bitwise
-    if (this._sortBy & PsSelectSortBy.selected) {
+    if (this._sortBy & ZvSelectSortBy.selected) {
       const selectedOptions = unsortedOptions.filter((option) =>
         this._currentValues$.value.find((value) => this.compareWith(option.value, value))
       );
@@ -252,7 +252,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
     }
     const sortedOptions = unsortedOptions.slice().sort((a, b) => {
       // eslint-disable-next-line no-bitwise
-      if (this._sortBy & PsSelectSortBy.selected) {
+      if (this._sortBy & ZvSelectSortBy.selected) {
         const aSelected = +selectedOptionsSet.has(a);
         const bSelected = +selectedOptionsSet.has(b);
         const selectedDifferent = bSelected - aSelected;
@@ -262,7 +262,7 @@ export class DefaultPsSelectDataSource<T = any> extends PsSelectDataSource<T> {
       }
 
       // eslint-disable-next-line no-bitwise
-      return this._sortBy & PsSelectSortBy.comparer ? this.sortCompare(a, b) : 0;
+      return this._sortBy & ZvSelectSortBy.comparer ? this.sortCompare(a, b) : 0;
     });
     return sortedOptions;
   }
@@ -280,7 +280,7 @@ function createEntityToSelectItemMapper(
   idKey: keyof any,
   labelKey: keyof any,
   disabledKey: keyof any
-): (item: any) => PsSelectItem<any> {
+): (item: any) => ZvSelectItem<any> {
   if (mode === 'id') {
     return (item: any) => ({
       value: item[idKey],
@@ -323,7 +323,7 @@ function createEntityComparer(idKey: keyof any) {
   };
 }
 
-function normalizeLabel(option: PsSelectItem) {
+function normalizeLabel(option: ZvSelectItem) {
   if (!option.label) {
     option.label = '';
   } else if (!(typeof option.label === 'string')) {

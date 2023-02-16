@@ -1,27 +1,27 @@
 <link href="style.css" rel="stylesheet"></link>
 
-# PsFormField <a name="PsFormField"></a>
+# ZvFormField <a name="ZvFormField"></a>
 
-`<ps-form-field>` extends the [MatFormFieldComponent](https://material.angular.io/components/form-field/overview) from Angular Material with features like:
+`<zv-form-field>` extends the [MatFormFieldComponent](https://material.angular.io/components/form-field/overview) from Angular Material with features like:
 
 - Label handling (labels can be extracted from FormControl information for example)
 - Handling controls with no `formControlName` given
 
 ---
 
-## API <a name="PsFormFieldApi"></a>
+## API <a name="ZvFormFieldApi"></a>
 
-### Import <a name="PsFormFieldImport"></a>
+### Import <a name="ZvFormFieldImport"></a>
 
 ```ts | js
-import { PsFormFieldModule } from '@prosoft/components/form-field';
+import { ZvFormFieldModule } from '@zvoove/components/form-field';
 ```
 
 ---
 
-## PsFormFieldComponent <a name="PsFormFieldComponent"></a>
+## ZvFormFieldComponent <a name="ZvFormFieldComponent"></a>
 
-### Properties <a name="PsFormFieldComponentProperties"></a>
+### Properties <a name="ZvFormFieldComponentProperties"></a>
 
 | Name                                                       | Description                                                                                                                                                                                    |
 | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -32,26 +32,26 @@ import { PsFormFieldModule } from '@prosoft/components/form-field';
 
 ---
 
-## Prerequisites/Requirements <a name="PsFormFieldRequirements"></a>
+## Prerequisites/Requirements <a name="ZvFormFieldRequirements"></a>
 
-1. You have to override `BasePsFormService` and implement the following two functions:
+1. You have to override `BaseZvFormService` and implement the following two functions:
 
 - > `getLabel(formControl: any): Observable<string>` which should return the FormControls label.
-- > `mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]>` which should return `IPsFormError` with the required information `errorText` and `data`.
+- > `mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]>` which should return `IZvFormError` with the required information `errorText` and `data`.
 
-2. Import the PsFormBaseModule using `.forRoot()` with the created service in your AppModule. Like this:
-   `PsFormBaseModule.forRoot(DemoPsFormsService)`
+2. Import the ZvFormBaseModule using `.forRoot()` with the created service in your AppModule. Like this:
+   `ZvFormBaseModule.forRoot(DemoZvFormsService)`
 
 ---
 
-## Implementation <a name="PsFormFieldImplementation"></a>
+## Implementation <a name="ZvFormFieldImplementation"></a>
 
 Import the module into your module.
 
 ```ts | js
 @NgModule({
   declarations: [MyComponent],
-  imports: [PsFormFieldModule],
+  imports: [ZvFormFieldModule],
 })
 export class MyModule {}
 ```
@@ -60,9 +60,9 @@ Now you can use it in your components like this:
 
 ```html
 <form [formGroup]="form">
-  <ps-form-field [appearance]="'fill'" [hint]="'hint text'">
+  <zv-form-field [appearance]="'fill'" [hint]="'hint text'">
     <mat-label>Fill</mat-label>
     <input matInput type="text" />
-  </ps-form-field>
+  </zv-form-field>
 </form>
 ```

@@ -1,4 +1,4 @@
-export { PsFormBaseModule } from './src/form-base.module';
-export { BasePsFormService, PsFormService } from './src/form.service';
+export { ZvFormBaseModule } from './src/form-base.module';
+export { BaseZvFormService, ZvFormService } from './src/form.service';
 export { hasRequiredField } from './src/helpers';
-export { IPsFormError, IPsFormErrorData } from './src/models';
+export { IZvFormError, IZvFormErrorData } from './src/models';

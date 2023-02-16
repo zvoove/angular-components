@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { Subject } from 'rxjs';
 
-export interface IPsSavebarIntlTexts {
+export interface IZvSavebarIntlTexts {
   saveLabel: string;
   saveAndCloseLabel: string;
   cancelLabel: string;
@@ -13,7 +13,7 @@ type Pick<T, K extends keyof T> = { [P in K]: T[P] };
 type Exclude<T, U> = T extends U ? never : T;
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-export interface IPsTableIntlTexts extends Omit<MatPaginatorIntl, 'changes'> {
+export interface IZvTableIntlTexts extends Omit<MatPaginatorIntl, 'changes'> {
   searchLabel: string;
   sortLabel: string;
   refreshListLabel: string;
@@ -24,15 +24,15 @@ export interface IPsTableIntlTexts extends Omit<MatPaginatorIntl, 'changes'> {
   displayedColumnsLabel: string;
 }
 
-export declare type PsIntlKeys = 'form' | 'savebar' | 'table';
+export declare type ZvIntlKeys = 'form' | 'savebar' | 'table';
 
 @Injectable({ providedIn: 'root' })
-export abstract class PsIntlService {
+export abstract class ZvIntlService {
   public intlChanged$ = new Subject<void>();
 
-  public abstract get(intlKey: 'table'): IPsTableIntlTexts;
-  public abstract get(intlKey: 'savebar'): IPsSavebarIntlTexts;
-  public abstract get(intlKey: PsIntlKeys): IPsSavebarIntlTexts | IPsTableIntlTexts;
+  public abstract get(intlKey: 'table'): IZvTableIntlTexts;
+  public abstract get(intlKey: 'savebar'): IZvSavebarIntlTexts;
+  public abstract get(intlKey: ZvIntlKeys): IZvSavebarIntlTexts | IZvTableIntlTexts;
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   public merge<T extends {}>(intl1: T, overrides: Partial<T>): T {
@@ -50,15 +50,15 @@ export abstract class PsIntlService {
 }
 
 @Injectable()
-export class PsIntlServiceEn extends PsIntlService {
+export class ZvIntlServiceEn extends ZvIntlService {
   private paginatorIntl = new MatPaginatorIntl();
-  private formSavebarIntl: IPsSavebarIntlTexts = {
+  private formSavebarIntl: IZvSavebarIntlTexts = {
     saveLabel: 'Save',
     saveAndCloseLabel: 'Save & close',
     cancelLabel: 'Cancel',
   };
 
-  private tableIntl: IPsTableIntlTexts = {
+  private tableIntl: IZvTableIntlTexts = {
     saveLabel: 'Save',
     cancelLabel: 'Cancel',
     searchLabel: 'Search',
@@ -76,9 +76,9 @@ export class PsIntlServiceEn extends PsIntlService {
     getRangeLabel: this.paginatorIntl.getRangeLabel,
   };
 
-  public get(intlKey: 'table'): IPsTableIntlTexts;
-  public get(intlKey: 'savebar'): IPsSavebarIntlTexts;
-  public get(intlKey: PsIntlKeys): IPsSavebarIntlTexts | IPsTableIntlTexts {
+  public get(intlKey: 'table'): IZvTableIntlTexts;
+  public get(intlKey: 'savebar'): IZvSavebarIntlTexts;
+  public get(intlKey: ZvIntlKeys): IZvSavebarIntlTexts | IZvTableIntlTexts {
     switch (intlKey) {
       case 'table':
         return this.tableIntl;

@@ -3,13 +3,13 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { NEVER, of, Subject, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 
-import { PsTableDataSource, PsTableDataSourceOptions } from '../data/table-data-source';
-import { IExtendedPsTableUpdateDataInfo } from '../models';
+import { ZvTableDataSource, ZvTableDataSourceOptions } from '../data/table-data-source';
+import { IExtendedZvTableUpdateDataInfo } from '../models';
 
-describe('PsTableDataSource', () => {
+describe('ZvTableDataSource', () => {
   it('should have sensible default values', fakeAsync(() => {
     const loadedData = [{ prop: 'x' }];
-    const dataSource = new PsTableDataSource<any>(() => of(loadedData).pipe(delay(500)));
+    const dataSource = new ZvTableDataSource<any>(() => of(loadedData).pipe(delay(500)));
     dataSource.tableReady = true;
 
     expect(dataSource.loading).toBe(true);
@@ -28,7 +28,7 @@ describe('PsTableDataSource', () => {
   }));
 
   it('should return empty array on connect, even if data is not loaded yet', fakeAsync(() => {
-    const dataSource = new PsTableDataSource<any>(() => <any>NEVER);
+    const dataSource = new ZvTableDataSource<any>(() => <any>NEVER);
     dataSource.tableReady = true;
 
     const renderDataUpdates: any[] = [];
@@ -43,7 +43,7 @@ describe('PsTableDataSource', () => {
   }));
 
   it('should not start loading data on connect (the table has to triggers this)', fakeAsync(() => {
-    const dataSource = new PsTableDataSource<any>(() => <any>NEVER);
+    const dataSource = new ZvTableDataSource<any>(() => <any>NEVER);
     dataSource.tableReady = true;
 
     spyOn(dataSource, 'updateData');
@@ -56,7 +56,7 @@ describe('PsTableDataSource', () => {
 
   it('should not load data until the table is ready', fakeAsync(() => {
     let dataLoadCalled = false;
-    const dataSource = new PsTableDataSource<any>(() => {
+    const dataSource = new ZvTableDataSource<any>(() => {
       dataLoadCalled = true;
       return <any>NEVER;
     });
@@ -76,12 +76,12 @@ describe('PsTableDataSource', () => {
   }));
 
   it('should work with minimal options object and set default values', fakeAsync(() => {
-    const options: PsTableDataSourceOptions<any> = {
+    const options: ZvTableDataSourceOptions<any> = {
       loadDataFn: () => of([]),
     };
     spyOn(options, 'loadDataFn').and.callThrough();
 
-    const dataSource = new PsTableDataSource<any>(options);
+    const dataSource = new ZvTableDataSource<any>(options);
     dataSource.tableReady = true;
     expect(dataSource.mode).toEqual('client');
 
@@ -98,14 +98,14 @@ describe('PsTableDataSource', () => {
 
   it('should work with complete options object', fakeAsync(() => {
     const trigger$ = new Subject<void>();
-    const options: PsTableDataSourceOptions<any> = {
+    const options: ZvTableDataSourceOptions<any> = {
       loadTrigger$: trigger$,
       loadDataFn: () => of([]),
       mode: 'server',
     };
     spyOn(options, 'loadDataFn').and.callThrough();
 
-    const dataSource = new PsTableDataSource<any>(options);
+    const dataSource = new ZvTableDataSource<any>(options);
     dataSource.tableReady = true;
     expect(dataSource.mode).toEqual('server');
 
@@ -127,7 +127,7 @@ describe('PsTableDataSource', () => {
     let beforeVisibleRows: any[] = [];
     const beforeDataItem = {};
     const loadedData = [{ prop: 'x' }, { prop: 'y' }];
-    const dataSource = new PsTableDataSource<any>(() => {
+    const dataSource = new ZvTableDataSource<any>(() => {
       let result = of(loadedData).pipe(delay(500));
       if (doThrowError) {
         result = result.pipe(
@@ -274,8 +274,8 @@ describe('PsTableDataSource', () => {
 
   it('should not sort/filter/page, but provide info to loadData when mode is server', () => {
     const loadedData = Array.from(new Array(20).keys()).map((x) => ({ prop: x }));
-    let lastUpdateInfo: IExtendedPsTableUpdateDataInfo<any> = null;
-    const dataSource = new PsTableDataSource<any>((updateInfo) => {
+    let lastUpdateInfo: IExtendedZvTableUpdateDataInfo<any> = null;
+    const dataSource = new ZvTableDataSource<any>((updateInfo) => {
       lastUpdateInfo = updateInfo;
       return of(loadedData);
     }, 'server');
@@ -320,7 +320,7 @@ describe('PsTableDataSource', () => {
 
   it('should call sortData with the right parameters when mode is client', fakeAsync(() => {
     const loadedData = [{ prop: 'a' }];
-    const dataSource = new PsTableDataSource<any>(() => of(loadedData), 'client');
+    const dataSource = new ZvTableDataSource<any>(() => of(loadedData), 'client');
     dataSource.tableReady = true;
 
     spyOn(dataSource, 'sortData').and.returnValue([{ x: 'sorted' }]);
@@ -353,7 +353,7 @@ describe('PsTableDataSource', () => {
     const dataProvider = {
       loadData: () => (throwErr ? throwError(new Error('error')) : of([{ a: ++counter }])),
     };
-    const clientDataSource = new PsTableDataSource<any>(() => dataProvider.loadData(), 'client');
+    const clientDataSource = new ZvTableDataSource<any>(() => dataProvider.loadData(), 'client');
     clientDataSource.tableReady = true;
 
     let renderData: any[] = [];
@@ -391,7 +391,7 @@ describe('PsTableDataSource', () => {
     };
     spyOn(dataProvider, 'loadData').and.callThrough();
 
-    const serverDataSource = new PsTableDataSource<any>(() => dataProvider.loadData(), 'server');
+    const serverDataSource = new ZvTableDataSource<any>(() => dataProvider.loadData(), 'server');
     serverDataSource.tableReady = true;
     serverDataSource.updateData(false);
     serverDataSource.updateData(false);
@@ -402,7 +402,7 @@ describe('PsTableDataSource', () => {
 
   describe('sortingDataAccessor', () => {
     it('should return the requested property value', () => {
-      const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
+      const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
       expect(dataSource.sortingDataAccessor({ prop: 5 }, 'prop')).toBe(5);
       expect(dataSource.sortingDataAccessor({ prop: 'a' }, 'prop')).toBe('a');
@@ -413,7 +413,7 @@ describe('PsTableDataSource', () => {
   });
   describe('sortData', () => {
     function sortAssert<T>(inData: T[], ascExpectedData: T[], descExpectedData: T[]) {
-      const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
+      const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
 
       const data = inData.map((x) => ({ prop: x }));
@@ -444,7 +444,7 @@ describe('PsTableDataSource', () => {
       sortAssert([now, future, past], [past, now, future], [future, now, past]);
     });
     it('should use sortingDataAccessor to get the sort property', () => {
-      const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
+      const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
       spyOn(dataSource, 'sortingDataAccessor').and.callThrough();
 
@@ -457,7 +457,7 @@ describe('PsTableDataSource', () => {
 
   it('should call filterPredicate with the right parameters when mode is client', fakeAsync(() => {
     const loadedData = [{ prop: 'a' }];
-    const dataSource = new PsTableDataSource<any>(() => of(loadedData), 'client');
+    const dataSource = new ZvTableDataSource<any>(() => of(loadedData), 'client');
     dataSource.tableReady = true;
 
     spyOn(dataSource, 'filterPredicate').and.callThrough();
@@ -484,7 +484,7 @@ describe('PsTableDataSource', () => {
 
   describe('filterProperties', () => {
     it('should return all object keys, but no nested keys', () => {
-      const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
+      const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
 
       expect(dataSource.filterProperties({ a: 5, b: { b_a: 3 }, 'c c': 4 })).toEqual(['a', 'b', 'c c']);
@@ -493,7 +493,7 @@ describe('PsTableDataSource', () => {
 
   describe('filterValues', () => {
     it('should call filterProperties and return the values of the given properties', () => {
-      const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
+      const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
       spyOn(dataSource, 'filterProperties').and.returnValue(['a', 'c c']);
 
@@ -505,7 +505,7 @@ describe('PsTableDataSource', () => {
 
   describe('filterPredicate', () => {
     it('should call filterValues and search for the filter text on the values', () => {
-      const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
+      const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
       spyOn(dataSource, 'filterValues').and.returnValue(['value 1', 'value 2']);
 
@@ -516,7 +516,7 @@ describe('PsTableDataSource', () => {
     });
 
     it('should work with different casing and values types', () => {
-      const dataSource = new PsTableDataSource<any>(() => of([]), 'client');
+      const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
 
       expect(dataSource.filterPredicate({ a: 'hallo' }, 'HALLO')).toBe(true);
@@ -529,7 +529,7 @@ describe('PsTableDataSource', () => {
   describe('getUpdateDataInfo', () => {
     it('should work', () => {
       const loadTrigger$ = new Subject<string>();
-      const dataSource = new PsTableDataSource({
+      const dataSource = new ZvTableDataSource({
         loadTrigger$: loadTrigger$,
         loadDataFn: () => of([]),
         mode: 'client',
@@ -581,7 +581,7 @@ describe('PsTableDataSource', () => {
 
   it('selection should work', () => {
     const loadedData = Array.from(new Array(6).keys()).map((x) => ({ prop: x }));
-    const dataSource = new PsTableDataSource<any>(() => of(loadedData), 'client');
+    const dataSource = new ZvTableDataSource<any>(() => of(loadedData), 'client');
     const sub = dataSource.connect().subscribe();
     dataSource.tableReady = true;
     dataSource.pageIndex = 1;
@@ -615,7 +615,7 @@ describe('PsTableDataSource', () => {
 
   it('should update visibleRows but not data on client pagination', () => {
     const loadedData = Array.from(new Array(6).keys()).map((x) => ({ prop: x }));
-    const dataSource = new PsTableDataSource<any>(() => of(loadedData), 'client');
+    const dataSource = new ZvTableDataSource<any>(() => of(loadedData), 'client');
     let renderData: any[] = [];
     const sub = dataSource.connect().subscribe((data) => {
       renderData = data;
@@ -642,7 +642,7 @@ describe('PsTableDataSource', () => {
   });
 
   it('should update visibleRows, data and dataLength on server pagination', () => {
-    const dataSource = new PsTableDataSource<any>((filter) => of({ items: [{ prop: filter.currentPage }], totalItems: 100 }), 'server');
+    const dataSource = new ZvTableDataSource<any>((filter) => of({ items: [{ prop: filter.currentPage }], totalItems: 100 }), 'server');
     dataSource.tableReady = true;
     dataSource.pageIndex = 0;
     dataSource.pageSize = 1;
@@ -671,7 +671,7 @@ describe('PsTableDataSource', () => {
   });
 
   it('should fix pageIndex when currentPage would have no items on server pagination', () => {
-    const dataSource = new PsTableDataSource<any>((filter) => of({ items: [{ prop: filter.currentPage }], totalItems: 1 }), 'server');
+    const dataSource = new ZvTableDataSource<any>((filter) => of({ items: [{ prop: filter.currentPage }], totalItems: 1 }), 'server');
     dataSource.tableReady = true;
     dataSource.pageIndex = 1;
     dataSource.pageSize = 1;
@@ -704,7 +704,7 @@ describe('PsTableDataSource', () => {
   it('should pass last loadTrigger$ value to loadDataFn', () => {
     const loadTrigger$ = new Subject<string>();
     const loadTriggerValues: string[] = [];
-    const dataSource = new PsTableDataSource<any>({
+    const dataSource = new ZvTableDataSource<any>({
       loadTrigger$: loadTrigger$,
       loadDataFn: (filter) => {
         loadTriggerValues.push(filter.triggerData);

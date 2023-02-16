@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { IPsException } from '@prosoft/components/core';
+import { IZvException } from '@zvoove/components/core';
 import { Subscription } from 'rxjs';
 
-import { IPsViewDataSource } from './view-data-source';
+import { IZvViewDataSource } from './view-data-source';
 
 @Component({
-  selector: 'ps-view',
+  selector: 'zv-view',
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsViewComponent implements OnDestroy {
-  @Input() public set dataSource(value: IPsViewDataSource) {
+export class ZvViewComponent implements OnDestroy {
+  @Input() public set dataSource(value: IZvViewDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
       this._dataSourceSub.unsubscribe();
@@ -24,10 +24,10 @@ export class PsViewComponent implements OnDestroy {
       this.activateDataSource();
     }
   }
-  public get dataSource(): IPsViewDataSource {
+  public get dataSource(): IZvViewDataSource {
     return this._dataSource;
   }
-  private _dataSource: IPsViewDataSource;
+  private _dataSource: IZvViewDataSource;
 
   public get contentVisible(): boolean {
     return this.dataSource.contentVisible;
@@ -37,7 +37,7 @@ export class PsViewComponent implements OnDestroy {
     return this.dataSource.contentBlocked;
   }
 
-  public get exception(): IPsException | null {
+  public get exception(): IZvException | null {
     return this.dataSource.exception;
   }
 

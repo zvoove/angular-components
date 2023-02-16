@@ -6,14 +6,14 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BasePsFormService, IPsFormError, IPsFormErrorData, PsFormService } from '@prosoft/components/form-base';
+import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormService } from '@zvoove/components/form-base';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { PsFormFieldComponent, PsFormFieldSubscriptType } from './form-field.component';
-import { PsFormFieldModule } from './form-field.module';
+import { ZvFormFieldComponent, ZvFormFieldSubscriptType } from './form-field.component';
+import { ZvFormFieldModule } from './form-field.module';
 
 @Injectable()
-class TestPsFormService extends BasePsFormService {
+class TestZvFormService extends BaseZvFormService {
   public labelDelay = 0;
   constructor() {
     super();
@@ -21,15 +21,15 @@ class TestPsFormService extends BasePsFormService {
   }
 
   public getLabel(formControl: any): Observable<string> | null {
-    if (!formControl.psLabel) {
+    if (!formControl.zvLabel) {
       return null;
     }
     if (this.labelDelay) {
-      return of(formControl.psLabel).pipe(delay(this.labelDelay));
+      return of(formControl.zvLabel).pipe(delay(this.labelDelay));
     }
-    return of(formControl.psLabel);
+    return of(formControl.zvLabel);
   }
-  protected mapDataToError(errorData: IPsFormErrorData[]): Observable<IPsFormError[]> {
+  protected mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]> {
     return of(
       errorData.map((data) => ({
         errorText: data.errorKey,
@@ -40,31 +40,31 @@ class TestPsFormService extends BasePsFormService {
 }
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-form-field #f1>
+    <zv-form-field #f1>
       <input type="text" matInput />
-    </ps-form-field>
-    <ps-form-field #f2>
+    </zv-form-field>
+    <zv-form-field #f2>
       <input type="text" />
-    </ps-form-field>
+    </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestNoFormComponent {
-  @ViewChild('f1', { static: true }) formField: PsFormFieldComponent;
-  @ViewChild('f2', { static: true }) formFieldEmulated: PsFormFieldComponent;
+  @ViewChild('f1', { static: true }) formField: ZvFormFieldComponent;
+  @ViewChild('f2', { static: true }) formFieldEmulated: ZvFormFieldComponent;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-form-field>
+    <zv-form-field>
       <input type="text" [(ngModel)]="value" matInput />
-    </ps-form-field>
+    </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -72,18 +72,18 @@ export class TestNoFormComponent {
 export class TestNgModelComponent {
   value: any = null;
 
-  @ViewChild(PsFormFieldComponent, { static: true }) formField: PsFormFieldComponent;
+  @ViewChild(ZvFormFieldComponent, { static: true }) formField: ZvFormFieldComponent;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-form-field [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+    <zv-form-field [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
       <mat-label *ngIf="customLabel">{{ customLabel }}</mat-label>
       <input type="text" [formControl]="formControl" matInput />
-    </ps-form-field>
+    </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -92,23 +92,23 @@ export class TestFormComponent {
   formControl = new FormControl('', [Validators.pattern('pattern'), Validators.minLength(5)]);
   customLabel: string = null;
   hint: string = null;
-  subscriptType: PsFormFieldSubscriptType = null;
+  subscriptType: ZvFormFieldSubscriptType = null;
   hintToggle = false;
 
-  @ViewChild(PsFormFieldComponent, { static: true }) formField: PsFormFieldComponent;
+  @ViewChild(ZvFormFieldComponent, { static: true }) formField: ZvFormFieldComponent;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-form-field #f1 class="template-label">
+    <zv-form-field #f1 class="template-label">
       <mat-checkbox [formControl]="formControl">{{ asyncLabel$ | async }}</mat-checkbox>
-    </ps-form-field>
-    <ps-form-field #f2 class="no-label">
+    </zv-form-field>
+    <zv-form-field #f2 class="no-label">
       <mat-checkbox [formControl]="formControl"></mat-checkbox>
-    </ps-form-field>
+    </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -117,54 +117,47 @@ export class TestCheckboxComponent {
   public asyncLabel$ = of('async label');
   formControl = new FormControl('');
 
-  @ViewChild('f1', { static: true }) formFieldTemplateLabel: PsFormFieldComponent;
-  @ViewChild('f2', { static: true }) formFieldNoLabel: PsFormFieldComponent;
+  @ViewChild('f1', { static: true }) formFieldTemplateLabel: ZvFormFieldComponent;
+  @ViewChild('f2', { static: true }) formFieldNoLabel: ZvFormFieldComponent;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
 
-describe('PsFormFieldComponent', () => {
+describe('ZvFormFieldComponent', () => {
   describe('checkbox', () => {
-    beforeEach(
-      waitForAsync(() => {
-        TestBed.configureTestingModule({
-          imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
-          declarations: [TestCheckboxComponent],
-          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-        }).compileComponents();
-      })
-    );
+    beforeEach(waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, ZvFormFieldModule],
+        declarations: [TestCheckboxComponent],
+        providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
+      }).compileComponents();
+    }));
 
-    it(
-      'should set checkbox label if no label is set in the template',
-      waitForAsync(() => {
-        const fixture = TestBed.createComponent(TestCheckboxComponent);
-        const component = fixture.componentInstance;
-        expect(component).toBeDefined();
+    it('should set checkbox label if no label is set in the template', waitForAsync(() => {
+      const fixture = TestBed.createComponent(TestCheckboxComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
 
-        (<any>component.formControl).psLabel = 'service label';
-        fixture.detectChanges();
+      (<any>component.formControl).zvLabel = 'service label';
+      fixture.detectChanges();
 
-        expect(
-          fixture.debugElement.query(By.css('.template-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()
-        ).toBe('async label');
-        expect(fixture.debugElement.query(By.css('.no-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()).toBe(
-          'service label'
-        );
-      })
-    );
+      expect(
+        fixture.debugElement.query(By.css('.template-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()
+      ).toBe('async label');
+      expect(fixture.debugElement.query(By.css('.no-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()).toBe(
+        'service label'
+      );
+    }));
   });
 
   describe('formControl', () => {
-    beforeEach(
-      waitForAsync(() => {
-        TestBed.configureTestingModule({
-          imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, PsFormFieldModule],
-          declarations: [TestFormComponent],
-          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-        }).compileComponents();
-      })
-    );
+    beforeEach(waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, ZvFormFieldModule],
+        declarations: [TestFormComponent],
+        providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
+      }).compileComponents();
+    }));
 
     it('should set label', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestFormComponent);
@@ -172,7 +165,7 @@ describe('PsFormFieldComponent', () => {
       expect(component).toBeDefined();
 
       // Label calculated from the service
-      (<any>component.formControl).psLabel = 'service label';
+      (<any>component.formControl).zvLabel = 'service label';
       fixture.detectChanges();
       expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('service label');
 
@@ -183,8 +176,8 @@ describe('PsFormFieldComponent', () => {
 
       // Label calculated from the service with delay
       component.customLabel = null;
-      (<any>component.formControl).psLabel = 'async label';
-      (TestBed.inject(PsFormService) as TestPsFormService).labelDelay = 10;
+      (<any>component.formControl).zvLabel = 'async label';
+      (TestBed.inject(ZvFormService) as TestZvFormService).labelDelay = 10;
       fixture.detectChanges();
       tick(10);
       fixture.detectChanges();
@@ -278,51 +271,49 @@ describe('PsFormFieldComponent', () => {
       detectChangesAndIgnoreChangeAfterChecked(fixture);
 
       let classes = getFormFieldClasses(fixture);
-      expect(classes.contains('ps-form-field--bubble')).toBeFalsy();
-      expect(classes.contains('ps-form-field--error-bubble')).toBeFalsy();
-      expect(classes.contains('ps-form-field--subscript-resize')).toBeFalsy();
+      expect(classes.contains('zv-form-field--bubble')).toBeFalsy();
+      expect(classes.contains('zv-form-field--error-bubble')).toBeFalsy();
+      expect(classes.contains('zv-form-field--subscript-resize')).toBeFalsy();
 
       component.subscriptType = 'resize';
       detectChangesAndIgnoreChangeAfterChecked(fixture);
       classes = getFormFieldClasses(fixture);
-      expect(classes.contains('ps-form-field--bubble')).toBeFalsy();
-      expect(classes.contains('ps-form-field--error-bubble')).toBeFalsy();
-      expect(classes.contains('ps-form-field--subscript-resize')).toBeTruthy();
+      expect(classes.contains('zv-form-field--bubble')).toBeFalsy();
+      expect(classes.contains('zv-form-field--error-bubble')).toBeFalsy();
+      expect(classes.contains('zv-form-field--subscript-resize')).toBeTruthy();
 
       component.subscriptType = 'bubble';
       detectChangesAndIgnoreChangeAfterChecked(fixture);
       classes = getFormFieldClasses(fixture);
-      expect(classes.contains('ps-form-field--bubble')).toBeTruthy();
-      expect(classes.contains('ps-form-field--error-bubble')).toBeFalsy();
-      expect(classes.contains('ps-form-field--subscript-resize')).toBeFalsy();
+      expect(classes.contains('zv-form-field--bubble')).toBeTruthy();
+      expect(classes.contains('zv-form-field--error-bubble')).toBeFalsy();
+      expect(classes.contains('zv-form-field--subscript-resize')).toBeFalsy();
 
       component.formControl.setErrors({ a: 'b' });
       tick(1);
       detectChangesAndIgnoreChangeAfterChecked(fixture);
       classes = getFormFieldClasses(fixture);
-      expect(classes.contains('ps-form-field--bubble')).toBeTruthy();
-      expect(classes.contains('ps-form-field--error-bubble')).toBeTruthy();
-      expect(classes.contains('ps-form-field--subscript-resize')).toBeFalsy();
+      expect(classes.contains('zv-form-field--bubble')).toBeTruthy();
+      expect(classes.contains('zv-form-field--error-bubble')).toBeTruthy();
+      expect(classes.contains('zv-form-field--subscript-resize')).toBeFalsy();
 
       component.subscriptType = 'resize';
       detectChangesAndIgnoreChangeAfterChecked(fixture);
       classes = getFormFieldClasses(fixture);
-      expect(classes.contains('ps-form-field--bubble')).toBeFalsy();
-      expect(classes.contains('ps-form-field--error-bubble')).toBeFalsy();
-      expect(classes.contains('ps-form-field--subscript-resize')).toBeTruthy();
+      expect(classes.contains('zv-form-field--bubble')).toBeFalsy();
+      expect(classes.contains('zv-form-field--error-bubble')).toBeFalsy();
+      expect(classes.contains('zv-form-field--subscript-resize')).toBeTruthy();
     }));
   });
 
   describe('ngModel', () => {
-    beforeEach(
-      waitForAsync(() => {
-        TestBed.configureTestingModule({
-          imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormFieldModule],
-          declarations: [TestNgModelComponent],
-          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-        }).compileComponents();
-      })
-    );
+    beforeEach(waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, FormsModule, MatInputModule, ZvFormFieldModule],
+        declarations: [TestNgModelComponent],
+        providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
+      }).compileComponents();
+    }));
 
     it('should work with ngModel', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestNgModelComponent);
@@ -344,15 +335,13 @@ describe('PsFormFieldComponent', () => {
   });
 
   describe('no form', () => {
-    beforeEach(
-      waitForAsync(() => {
-        TestBed.configureTestingModule({
-          imports: [NoopAnimationsModule, FormsModule, MatInputModule, PsFormFieldModule],
-          declarations: [TestNoFormComponent],
-          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-        }).compileComponents();
-      })
-    );
+    beforeEach(waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, FormsModule, MatInputModule, ZvFormFieldModule],
+        declarations: [TestNoFormComponent],
+        providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
+      }).compileComponents();
+    }));
 
     it('should work without form binding', fakeAsync(() => {
       const fixture = TestBed.createComponent(TestNoFormComponent);
@@ -385,47 +374,41 @@ describe('PsFormFieldComponent', () => {
   });
 
   describe('initialization', () => {
-    it(
-      'should initialize properly with its own default settings',
-      waitForAsync(() => {
-        TestBed.configureTestingModule({
-          imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
-          declarations: [TestFormComponent],
-          providers: [{ provide: PsFormService, useClass: TestPsFormService }],
-        }).compileComponents();
+    it('should initialize properly with its own default settings', waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, ZvFormFieldModule],
+        declarations: [TestFormComponent],
+        providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
+      }).compileComponents();
 
-        const fixture = TestBed.createComponent(TestFormComponent);
-        const component = fixture.componentInstance;
-        expect(component).toBeDefined();
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
 
-        expect(component.formField.appearance).toEqual('legacy');
-        expect(component.formField.floatLabel).toEqual('auto');
-      })
-    );
+      expect(component.formField.appearance).toEqual('legacy');
+      expect(component.formField.floatLabel).toEqual('auto');
+    }));
 
-    it(
-      'should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings',
-      waitForAsync(() => {
-        TestBed.configureTestingModule({
-          imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, PsFormFieldModule],
-          declarations: [TestFormComponent],
-          providers: [
-            { provide: PsFormService, useClass: TestPsFormService },
-            {
-              provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-              useValue: { floatLabel: 'always', hideRequiredMarker: false, appearance: 'outline' },
-            },
-          ],
-        }).compileComponents();
+    it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, ZvFormFieldModule],
+        declarations: [TestFormComponent],
+        providers: [
+          { provide: ZvFormService, useClass: TestZvFormService },
+          {
+            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+            useValue: { floatLabel: 'always', hideRequiredMarker: false, appearance: 'outline' },
+          },
+        ],
+      }).compileComponents();
 
-        const fixture = TestBed.createComponent(TestFormComponent);
-        const component = fixture.componentInstance;
-        expect(component).toBeDefined();
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
 
-        expect(component.formField.appearance).toEqual('outline');
-        expect(component.formField.floatLabel).toEqual('always');
-      })
-    );
+      expect(component.formField.appearance).toEqual('outline');
+      expect(component.formField.floatLabel).toEqual('always');
+    }));
   });
 });
 
@@ -443,7 +426,7 @@ function getShownHelpText(fixture: ComponentFixture<any>): string {
 }
 
 function getFormFieldClasses(fixture: ComponentFixture<any>): DOMTokenList {
-  const node = fixture.debugElement.query(By.directive(PsFormFieldComponent));
+  const node = fixture.debugElement.query(By.directive(ZvFormFieldComponent));
   if (node) {
     return node.nativeElement.classList;
   }

@@ -8,40 +8,40 @@ import {
   ViewEncapsulation,
   HostBinding,
 } from '@angular/core';
-import { IPsTableIntlTexts } from '@prosoft/components/core';
-import { IPsTableSortDefinition } from '../models';
+import { IZvTableIntlTexts } from '@zvoove/components/core';
+import { IZvTableSortDefinition } from '../models';
 
 @Component({
-  selector: 'ps-table-header',
+  selector: 'zv-table-header',
   template: `
-    <h2 *ngIf="caption" class="ps-table-header__caption">{{ caption }}</h2>
-    <div *ngIf="customHeader" class="ps-table-header__custom-content">
+    <h2 *ngIf="caption" class="zv-table-header__caption">{{ caption }}</h2>
+    <div *ngIf="customHeader" class="zv-table-header__custom-content">
       <ng-container [ngTemplateOutlet]="customHeader"></ng-container>
     </div>
-    <ps-table-sort
+    <zv-table-sort
       *ngIf="showSorting"
-      class="ps-table-header__sort"
+      class="zv-table-header__sort"
       [sortColumn]="sortColumn"
       [sortDirection]="sortDirection"
       [sortDefinitions]="sortDefinitions"
       [intl]="intl"
       (sortChanged)="sortChanged.emit($event)"
-    ></ps-table-sort>
-    <ps-table-search
+    ></zv-table-sort>
+    <zv-table-search
       *ngIf="filterable"
-      class="ps-table-header__search"
+      class="zv-table-header__search"
       [searchText]="searchText"
       [debounceTime]="300"
       [intl]="intl"
       (searchChanged)="searchChanged.emit($event)"
-    ></ps-table-search>
-    <div *ngIf="topButtonSection" class="ps-table-header__actions">
+    ></zv-table-search>
+    <div *ngIf="topButtonSection" class="zv-table-header__actions">
       <ng-container [ngTemplateOutlet]="topButtonSection" [ngTemplateOutletContext]="{ $implicit: selectedRows }"></ng-container>
     </div>
   `,
   styles: [
     `
-      ps-table-header {
+      zv-table-header {
         padding: 0 16px;
 
         display: flex;
@@ -50,20 +50,20 @@ import { IPsTableSortDefinition } from '../models';
         justify-content: space-between;
       }
 
-      .ps-table-header__caption {
+      .zv-table-header__caption {
         flex-basis: 100%;
       }
 
-      .ps-table-header__sort {
+      .zv-table-header__sort {
         flex: 0 1 350px;
         margin-right: auto; /* This counters the margin of the actions to push the search back to the middle */
       }
 
-      .ps-table-header__search {
+      .zv-table-header__search {
         flex: 0 1 800px;
       }
 
-      .ps-table-header__actions {
+      .zv-table-header__actions {
         flex-basis: auto;
         margin: 0.3em 8px 1em;
         text-align: end;
@@ -75,8 +75,8 @@ import { IPsTableSortDefinition } from '../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsTableHeaderComponent {
-  @Input() public intl: IPsTableIntlTexts;
+export class ZvTableHeaderComponent {
+  @Input() public intl: IZvTableIntlTexts;
   @Input() public caption: string;
   @Input() public topButtonSection: TemplateRef<any> | null;
   @Input() public customHeader: TemplateRef<any> | null;
@@ -84,7 +84,7 @@ export class PsTableHeaderComponent {
   @Input() public showSorting: boolean;
   @Input() public sortColumn: string;
   @Input() public sortDirection: 'asc' | 'desc';
-  @Input() public sortDefinitions: IPsTableSortDefinition[] = [];
+  @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
   @Input() public filterable: boolean;
   @Input() public searchText: string;
 

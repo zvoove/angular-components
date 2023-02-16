@@ -9,11 +9,11 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { IPsButton, IPsException } from '@prosoft/components/core';
+import { IZvButton, IZvException } from '@zvoove/components/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { IPsFormDataSource, IPsFormDataSourceConnectOptions } from './form-data-source';
+import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
 
 import type { ElementRef } from '@angular/core';
 export const dependencies = {
@@ -21,14 +21,14 @@ export const dependencies = {
 };
 
 @Component({
-  selector: 'ps-form',
+  selector: 'zv-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsFormComponent implements AfterViewInit, OnDestroy {
-  @Input() public set dataSource(value: IPsFormDataSource) {
+export class ZvFormComponent implements AfterViewInit, OnDestroy {
+  @Input() public set dataSource(value: IZvFormDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
       this._dataSourceSub.unsubscribe();
@@ -42,10 +42,10 @@ export class PsFormComponent implements AfterViewInit, OnDestroy {
       this.activateDataSource();
     }
   }
-  public get dataSource(): IPsFormDataSource {
+  public get dataSource(): IZvFormDataSource {
     return this._dataSource;
   }
-  private _dataSource: IPsFormDataSource;
+  private _dataSource: IZvFormDataSource;
 
   public get autocomplete() {
     return this.dataSource.autocomplete;
@@ -55,7 +55,7 @@ export class PsFormComponent implements AfterViewInit, OnDestroy {
     return this.dataSource.form;
   }
 
-  public get buttons(): IPsButton[] {
+  public get buttons(): IZvButton[] {
     return this.dataSource.buttons;
   }
 
@@ -82,7 +82,7 @@ export class PsFormComponent implements AfterViewInit, OnDestroy {
     return this.dataSource.contentBlocked;
   }
 
-  public get exception(): IPsException | null {
+  public get exception(): IZvException | null {
     return this.dataSource.exception;
   }
 
@@ -125,7 +125,7 @@ export class PsFormComponent implements AfterViewInit, OnDestroy {
       scrollToError: () => {
         this.errorCardWrapper.nativeElement.scrollIntoView({ behavior: 'smooth' });
       },
-    } as IPsFormDataSourceConnectOptions;
+    } as IZvFormDataSourceConnectOptions;
 
     this._dataSourceSub = this._dataSource.connect(options).subscribe(() => {
       this.cd.markForCheck();

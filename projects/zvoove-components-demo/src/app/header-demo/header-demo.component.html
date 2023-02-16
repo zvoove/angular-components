@@ -1,0 +1,61 @@
+<zv-header [caption]="'ZvHeader with card underneath'"></zv-header>
+<mat-card>
+  <div class="app-header-demo__content-wrapper">
+    <h2 class="app-header-demo__content">Content goes here</h2>
+  </div>
+</mat-card>
+
+<zv-header style="margin-top: 3em; width: 50%" [caption]="'ZvHeader with table underneath'" [description]="'Here goes your description'">
+  <ng-container *zvHeaderTopButtonSection>
+    <button mat-raised-button>
+      <mat-icon>add</mat-icon>
+      Add
+    </button>
+  </ng-container>
+</zv-header>
+<table style="width: 50%; background-color: white">
+  <tr style="text-align: left">
+    <th>Column 1</th>
+    <th>Column 2</th>
+    <th>Column 3</th>
+    <th>Column 4</th>
+    <th>Column 5</th>
+  </tr>
+  <tr *ngFor="let data of demoTableData">
+    <td>{{ data.value1 }}</td>
+    <td>{{ data.value2 }}</td>
+    <td>{{ data.value3 | date }}</td>
+    <td>{{ data.value4 }}</td>
+    <td>{{ data.value5 }}</td>
+  </tr>
+</table>
+
+<zv-header style="margin-top: 3em" [caption]="'ZvHeader with tabs underneath'" [description]="'Here goes your description'">
+  <ng-container *zvHeaderTopButtonSection>
+    <button mat-mini-fab color="accent">
+      <mat-icon>add</mat-icon>
+    </button>
+  </ng-container>
+</zv-header>
+<mat-tab-group>
+  <mat-tab [label]="'Tab 1'">
+    <div class="app-header-demo__content-wrapper">
+      <h2 class="app-header-demo__content">Content goes here</h2>
+    </div>
+  </mat-tab>
+  <mat-tab [label]="'Tab 2'">
+    <div class="app-header-demo__content-wrapper">
+      <h2 class="app-header-demo__content">Content goes here</h2>
+    </div>
+  </mat-tab>
+  <mat-tab [label]="'Tab 3'">
+    <div class="app-header-demo__content-wrapper">
+      <h2 class="app-header-demo__content">Content goes here</h2>
+    </div>
+  </mat-tab>
+  <mat-tab [label]="'Tab 4'">
+    <div class="app-header-demo__content-wrapper">
+      <h2 class="app-header-demo__content">Content goes here</h2>
+    </div>
+  </mat-tab>
+</mat-tab-group>

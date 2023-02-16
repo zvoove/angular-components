@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
-import { IPsTableAction } from '../models';
+import { IZvTableAction } from '../models';
 
 @Component({
-  selector: 'ps-table-row-actions',
+  selector: 'zv-table-row-actions',
   templateUrl: './table-row-actions.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PsTableRowActionsComponent implements OnChanges {
+export class ZvTableRowActionsComponent implements OnChanges {
   @Input() public root = true;
-  @Input() public actions: IPsTableAction<any>[];
+  @Input() public actions: IZvTableAction<any>[];
   @Input() public actionsTemplate: TemplateRef<any> | null = null;
   @Input() public moreMenuThreshold: number;
   @Input() public item: any;

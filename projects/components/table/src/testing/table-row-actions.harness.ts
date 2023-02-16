@@ -1,9 +1,9 @@
 import { ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
 
-export class PsTableRowActionsHarness extends ContentContainerComponentHarness {
-  static hostSelector = 'ps-table-row-actions';
+export class ZvTableRowActionsHarness extends ContentContainerComponentHarness {
+  static hostSelector = 'zv-table-row-actions';
 
-  static with(): HarnessPredicate<PsTableRowActionsHarness> {
-    return new HarnessPredicate(PsTableRowActionsHarness, {});
+  static with(): HarnessPredicate<ZvTableRowActionsHarness> {
+    return new HarnessPredicate(ZvTableRowActionsHarness, {});
   }
 }

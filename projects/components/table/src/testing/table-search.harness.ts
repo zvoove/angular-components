@@ -1,13 +1,13 @@
 import { ContentContainerComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 
-export class PsTableSearchHarness extends ContentContainerComponentHarness {
-  static hostSelector = 'ps-table-search';
+export class ZvTableSearchHarness extends ContentContainerComponentHarness {
+  static hostSelector = 'zv-table-search';
 
   private _searchInput = this.locatorFor(MatInputHarness);
 
-  static with(): HarnessPredicate<PsTableSearchHarness> {
-    return new HarnessPredicate(PsTableSearchHarness, {});
+  static with(): HarnessPredicate<ZvTableSearchHarness> {
+    return new HarnessPredicate(ZvTableSearchHarness, {});
   }
 
   public async getSearchInput(): Promise<MatInputHarness> {

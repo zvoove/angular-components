@@ -1,15 +1,10 @@
 {
   "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "table-card-layout-to-layout": {
-      "version": "0.1.0-alpha.23",
-      "description": "Replace ps-table input 'cardLayout' with 'layout'.",
-      "factory": "./table-card-layout-to-layout/index"
-    },
-    "ps-select-load-trigger-and-sort-by-rename": {
-      "version": "3.0.3",
-      "description": "Rename ps-select enums 'LoadTrigger' and 'SortBy' from PascalCase to camelCase.",
-      "factory": "./ps-select-load-trigger-and-sort-by-rename/index"
+    "ng-add": {
+      "version": "14.0.0",
+      "description": "Replace all prosoft occurences with zvoove and change the prefix to zv",
+      "factory": "./rename-prosoft-to-zvoove/index"
     }
   }
 }

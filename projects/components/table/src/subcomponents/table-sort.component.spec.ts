@@ -9,19 +9,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { IPsTableSortDefinition } from '../models';
-import { PsTableSortComponent } from './table-sort.component';
+import { IZvTableSortDefinition } from '../models';
+import { ZvTableSortComponent } from './table-sort.component';
 
 @Component({
-  selector: 'ps-test-component',
+  selector: 'zv-test-component',
   template: `
-    <ps-table-sort
+    <zv-table-sort
       [sortColumn]="sortColumn"
       [sortDirection]="sortDirection"
       [sortDefinitions]="sortDefinitions"
       [intl]="tableIntl"
       (sortChanged)="onSortChanged($event)"
-    ></ps-table-sort>
+    ></zv-table-sort>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -29,7 +29,7 @@ import { PsTableSortComponent } from './table-sort.component';
 export class TestComponent {
   public sortColumn = 'prop';
   public sortDirection = 'asc';
-  public sortDefinitions: IPsTableSortDefinition[] = [
+  public sortDefinitions: IZvTableSortDefinition[] = [
     { prop: 'prop', displayName: 'Sort Prop' },
     { prop: 'prop2', displayName: 'Sort Prop' },
   ];
@@ -37,20 +37,18 @@ export class TestComponent {
     sortLabel: 'sort',
   };
 
-  @ViewChild(PsTableSortComponent, { static: true }) tableSort: PsTableSortComponent;
+  @ViewChild(ZvTableSortComponent, { static: true }) tableSort: ZvTableSortComponent;
 
   public onSortChanged(_event: any) {}
 }
 
-describe('PsTableSortComponent', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatIconModule],
-        declarations: [TestComponent, PsTableSortComponent],
-      }).compileComponents();
-    })
-  );
+describe('ZvTableSortComponent', () => {
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatIconModule],
+      declarations: [TestComponent, ZvTableSortComponent],
+    }).compileComponents();
+  }));
 
   it('should emit sortChanged on changes', async () => {
     const fixture = TestBed.createComponent(TestComponent);

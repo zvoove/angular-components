@@ -1,0 +1,5 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "RenameProsoftToZvoove",
+  "title": "Components - Rename prosoft to zvoove and ps to zv"
+}

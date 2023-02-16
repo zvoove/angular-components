@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class PsExceptionMessageExtractor {
+export class ZvExceptionMessageExtractor {
   /**
    * Extracts a error message from a given error object
    *

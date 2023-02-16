@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
-import { PsNumberInputComponent } from './number-input.component';
+import { ZvNumberInputComponent } from './number-input.component';
 
-export const psNumberInputModuleImports = [CommonModule, MatIconModule];
+export const zvNumberInputModuleImports = [CommonModule, MatIconModule];
 
 @NgModule({
-  imports: psNumberInputModuleImports,
-  exports: [PsNumberInputComponent],
-  declarations: [PsNumberInputComponent],
+  imports: zvNumberInputModuleImports,
+  exports: [ZvNumberInputComponent],
+  declarations: [ZvNumberInputComponent],
 })
-export class PsNumberInputModule {}
+export class ZvNumberInputModule {}

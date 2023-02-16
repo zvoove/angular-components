@@ -1,15 +1,15 @@
-export { PsSelectComponent } from './src/select.component';
-export { PsSelectItem } from './src/models';
-export { isPsSelectDataSource, PsSelectDataSource } from './src/select-data-source';
-export { PsSelectModule } from './src/select.module';
-export { PsSelectService } from './src/select.service';
+export { ZvSelectComponent } from './src/select.component';
+export { ZvSelectItem } from './src/models';
+export { isZvSelectDataSource, ZvSelectDataSource } from './src/select-data-source';
+export { ZvSelectModule } from './src/select.module';
+export { ZvSelectService } from './src/select.service';
 export {
-  DefaultPsSelectDataSource,
-  PsSelectLoadTrigger,
-  PsSelectSortBy,
-  PsSelectDataSourceOptions,
-  isPsSelectOptionsData,
+  DefaultZvSelectDataSource,
+  ZvSelectLoadTrigger,
+  ZvSelectSortBy,
+  ZvSelectDataSourceOptions,
+  isZvSelectOptionsData,
 } from './src/defaults/default-select-data-source';
-export { DefaultPsSelectService, PsSelectData } from './src/defaults/default-select-service';
-export { PsSelectOptionTemplateDirective } from './src/select-option-template.directive';
-export { PsSelectTriggerTemplateDirective } from './src/select-trigger-template.directive';
+export { DefaultZvSelectService, ZvSelectData } from './src/defaults/default-select-service';
+export { ZvSelectOptionTemplateDirective } from './src/select-option-template.directive';
+export { ZvSelectTriggerTemplateDirective } from './src/select-trigger-template.directive';

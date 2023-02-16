@@ -1,32 +1,32 @@
 import { BaseHarnessFilters, ContentContainerComponentHarness, HarnessPredicate, TestElement } from '@angular/cdk/testing';
-import { PsHeaderHarness } from '@prosoft/components/header/src/testing/header.harness';
+import { ZvHeaderHarness } from '@zvoove/components/header/src/testing/header.harness';
 
-export interface PsCardHarnessFilters extends BaseHarnessFilters {
+export interface ZvCardHarnessFilters extends BaseHarnessFilters {
   caption?: string | RegExp;
   description?: string | RegExp;
 }
 
-export const enum PsCardSection {
+export const enum ZvCardSection {
   footer = '.mat-card-footer',
   actions = '.mat-card-actions',
 }
 
-export class PsCardHarness extends ContentContainerComponentHarness<PsCardSection> {
-  static hostSelector = 'ps-card';
+export class ZvCardHarness extends ContentContainerComponentHarness<ZvCardSection> {
+  static hostSelector = 'zv-card';
 
-  private _header = this.locatorForOptional(PsHeaderHarness);
-  private _actionsChildren = this.locatorForAll(PsCardSection.actions + ' > *');
-  private _footerChildren = this.locatorForAll(PsCardSection.footer + ' > *');
+  private _header = this.locatorForOptional(ZvHeaderHarness);
+  private _actionsChildren = this.locatorForAll(ZvCardSection.actions + ' > *');
+  private _footerChildren = this.locatorForAll(ZvCardSection.footer + ' > *');
 
-  static with(options: PsCardHarnessFilters = {}): HarnessPredicate<PsCardHarness> {
-    return new HarnessPredicate(PsCardHarness, options)
+  static with(options: ZvCardHarnessFilters = {}): HarnessPredicate<ZvCardHarness> {
+    return new HarnessPredicate(ZvCardHarness, options)
       .addOption('caption', options.caption, (harness, title) => HarnessPredicate.stringMatches(harness.getCaptionText(), title))
       .addOption('description', options.description, (harness, subtitle) =>
         HarnessPredicate.stringMatches(harness.getDescriptionText(), subtitle)
       );
   }
 
-  async getHeader(): Promise<PsHeaderHarness> {
+  async getHeader(): Promise<ZvHeaderHarness> {
     return await this._header();
   }
 

@@ -1,17 +1,17 @@
-.ps-dialog-wrapper__action-bar-container {
+.zv-dialog-wrapper__action-bar-container {
   display: flex;
   width: 100%;
 }
 
-.ps-dialog-wrapper__error {
-  color: var(--ps-error);
+.zv-dialog-wrapper__error {
+  color: var(--zv-error);
 }
 
-.ps-dialog-wrapper__buttons {
+.zv-dialog-wrapper__buttons {
   margin-left: auto;
 }
 
-ps-dialog-wrapper {
+zv-dialog-wrapper {
   display: block;
   /** Max possible width a MatDialog can be without showing a horizontal scrollbar  */
   max-width: calc(80vw - 48px);

@@ -1,0 +1,26 @@
+<mat-toolbar color="primary" [style.height]="'50px'"> @zvoove/components </mat-toolbar>
+<mat-sidenav-container style="height: calc(100% - 50px)">
+  <mat-sidenav mode="side" opened>
+    <mat-nav-list role="list">
+      <a mat-list-item [routerLink]="['form']">Form</a>
+      <a mat-list-item [routerLink]="['savebar']">Savebar</a>
+      <a mat-list-item [routerLink]="['form-field']">Form Field</a>
+      <a mat-list-item [routerLink]="['form-errors']">Form Errors</a>
+
+      <a mat-list-item [routerLink]="['select']">Select</a>
+      <a mat-list-item [routerLink]="['number-input']">Number Input</a>
+      <a mat-list-item [routerLink]="['slider']">Slider</a>
+
+      <a mat-list-item [routerLink]="['flip-container']">Flip Container</a>
+      <a mat-list-item [routerLink]="['block-ui']">Block Ui</a>
+      <a mat-list-item [routerLink]="['table']">Table</a>
+      <a mat-list-item [routerLink]="['view']">View</a>
+      <a mat-list-item [routerLink]="['card']">Card</a>
+      <a mat-list-item [routerLink]="['header']">Header</a>
+      <a mat-list-item [routerLink]="['dialog-wrapper']">Dialog Wrapper</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content style="padding: 1em; box-sizing: border-box">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

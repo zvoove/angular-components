@@ -1,20 +1,20 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { IPsButton, IPsException } from '@prosoft/components/core';
+import { IZvButton, IZvException } from '@zvoove/components/core';
 import { Subject, Subscription } from 'rxjs';
-import { IPsDialogWrapperDataSource } from './dialog-wrapper.models';
+import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
 
 @Component({
-  selector: 'ps-dialog-wrapper',
+  selector: 'zv-dialog-wrapper',
   templateUrl: './dialog-wrapper.component.html',
   styleUrls: ['./dialog-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PsDialogWrapperComponent implements OnDestroy {
+export class ZvDialogWrapperComponent implements OnDestroy {
   public get dialogTitle(): string {
     return this.dataSource.dialogTitle;
   }
-  public get buttons(): IPsButton[] {
+  public get buttons(): IZvButton[] {
     return this.dataSource.buttons;
   }
   public get contentVisible(): boolean {
@@ -23,10 +23,10 @@ export class PsDialogWrapperComponent implements OnDestroy {
   public get contentBlocked(): boolean {
     return this.dataSource.contentBlocked;
   }
-  public get exception(): IPsException | null {
+  public get exception(): IZvException | null {
     return this.dataSource.exception;
   }
-  @Input() public set dataSource(value: IPsDialogWrapperDataSource) {
+  @Input() public set dataSource(value: IZvDialogWrapperDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
       this._dataSourceSubscription.unsubscribe();
@@ -40,10 +40,10 @@ export class PsDialogWrapperComponent implements OnDestroy {
       });
     }
   }
-  public get dataSource(): IPsDialogWrapperDataSource {
+  public get dataSource(): IZvDialogWrapperDataSource {
     return this._dataSource;
   }
-  private _dataSource: IPsDialogWrapperDataSource;
+  private _dataSource: IZvDialogWrapperDataSource;
 
   private _dataSourceSubscription = Subscription.EMPTY;
   private _ngUnsubscribe$ = new Subject<void>();
