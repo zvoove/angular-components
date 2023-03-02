@@ -41,10 +41,6 @@ import { AppComponent } from './app.component';
         loadChildren: () => import('./form-field-demo/form-field-demo.module').then((m) => m.FormFieldDemoModule),
       },
       {
-        path: 'savebar',
-        loadChildren: () => import('./savebar-demo/savebar-demo.module').then((m) => m.SavebarDemoModule),
-      },
-      {
         path: 'block-ui',
         loadChildren: () => import('./block-ui-demo/block-ui-demo.module').then((m) => m.BlockUiDemoModule),
       },
