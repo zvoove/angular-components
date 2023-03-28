@@ -3,7 +3,7 @@
     <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu">
       <mat-icon>more_vert</mat-icon>
     </button>
-    <zv-table-actions #rowActionsComponent [actions]="actions" [items]="itemAsArray">
+    <zv-table-actions #rowActionsComponent [actions]="visibleActions" [items]="itemAsArray">
       <ng-container [ngTemplateOutlet]="actionsTemplate" [ngTemplateOutletContext]="{ $implicit: item }"></ng-container>
     </zv-table-actions>
   </ng-container>
