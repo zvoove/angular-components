@@ -161,8 +161,11 @@ export class ZvSelectComponent<T = unknown>
   }
 
   public get focused() {
-    // eslint-disable-next-line import/no-deprecated
-    return this._matSelect.focused;
+    const matFocus = this._matSelect.focused;
+    if (matFocus != null) {
+      return this._focused || matFocus;
+    }
+    return this._focused;
   }
 
   public get compareWith(): (o1: any, o2: any) => boolean {
@@ -251,6 +254,10 @@ export class ZvSelectComponent<T = unknown>
 
   private _matSelect!: MatSelect;
 
+  private _onModelTouched: any;
+
+  private _focused = false;
+
   private _onInitCalled = false;
 
   /** View -> model callback called when value changes */
@@ -317,7 +324,7 @@ export class ZvSelectComponent<T = unknown>
   }
 
   public registerOnTouched(fn: any): void {
-    this._matSelect.registerOnTouched(fn);
+    this._onModelTouched = fn;
   }
 
   public setDisabledState(isDisabled: boolean): void {
@@ -330,6 +337,7 @@ export class ZvSelectComponent<T = unknown>
   }
 
   public onOpenedChange(open: boolean) {
+    this._onFocusChanged(open);
     this.openedChange.emit(open);
     this._dataSourceInstance.panelOpenChanged(open);
   }
@@ -349,7 +357,7 @@ export class ZvSelectComponent<T = unknown>
 
   private _propagateValueChange(value: any, source: ValueChangeSource) {
     this._value = value;
-    this.empty = this.multiple ? !value?.length : !value;
+    this.empty = this.multiple ? !value?.length : value == null || value === '';
     this._updateToggleAllCheckbox();
     this._pushSelectedValuesToDataSource(value);
     if (source !== ValueChangeSource.valueInput) {
@@ -406,6 +414,17 @@ export class ZvSelectComponent<T = unknown>
       const selectedValueCount = this._value.length;
       this.toggleAllCheckboxChecked = this.items.length === selectedValueCount;
       this.toggleAllCheckboxIndeterminate = selectedValueCount > 0 && selectedValueCount < this.items.length;
+    }
+  }
+
+  /** Callback for the cases where the focused state of the input changes. */
+  private _onFocusChanged(isFocused: boolean) {
+    if (isFocused !== this.focused) {
+      this._focused = isFocused;
+      this.stateChanges.next();
+    }
+    if (!isFocused && this._onModelTouched != null) {
+      this._onModelTouched();
     }
   }
 }

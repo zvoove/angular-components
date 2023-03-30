@@ -87,7 +87,7 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service: Zv
   });
   component.setMatSelect = matSelect;
   component.dataSource = dataSource;
-  return { component: component, matSelect: matSelect, service: service, dataSource: dataSource };
+  return { component: component, matSelect: matSelect, service: service, dataSource: dataSource, focused: component.focused };
 }
 
 @Component({
@@ -247,6 +247,7 @@ describe('ZvSelectComponent', () => {
     expect(component.placeholder).toBe(null);
     expect(component.required).toBe(false);
     expect(component.disabled).toBe(false);
+    expect(component.focused).toBe(false);
   });
 
   it('should determine empty value correctly', () => {
@@ -282,6 +283,9 @@ describe('ZvSelectComponent', () => {
     expect(component.empty).toBe(true);
 
     component.value = 'some value';
+    expect(component.empty).toBe(false);
+
+    component.value = 0;
     expect(component.empty).toBe(false);
   });
 
@@ -433,6 +437,22 @@ describe('ZvSelectComponent', () => {
 
     component.showToggleAll = false;
     expect(await selectSearch.getToggleAll()).toBeFalsy();
+  });
+
+  it('should set the focus corectly', async () => {
+    const { component, zvSelect } = await initTest(TestComponent);
+    const items$ = new ReplaySubject(1);
+    component.dataSource = new DefaultZvSelectDataSource({
+      mode: 'id',
+      labelKey: 'label',
+      idKey: 'value',
+      items: () => items$ as Observable<any>,
+    });
+    expect(component.select.focused).toBe(false);
+    await zvSelect.open();
+    expect(component.select.focused).toBe(true);
+    await zvSelect.close();
+    expect(component.select.focused).toBe(false);
   });
 
   it('should set the right css classes', async () => {
