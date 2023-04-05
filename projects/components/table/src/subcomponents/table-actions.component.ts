@@ -7,6 +7,7 @@ import { IZvTableAction } from '../models';
 @Component({
   selector: 'zv-table-actions',
   templateUrl: './table-actions.component.html',
+  styleUrls: ['./table-actions.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZvTableActionsComponent implements OnChanges {
@@ -14,6 +15,7 @@ export class ZvTableActionsComponent implements OnChanges {
   @Input() public actions: IZvTableAction<unknown>[];
   @Input() public items: unknown[];
   @Input() public refreshable: boolean;
+  @Input() public loading: boolean;
   @Input() public settingsEnabled: boolean;
   @Input() public intl: IZvTableIntlTexts;
 

@@ -13,6 +13,11 @@ const MAX_SAFE_INTEGER = 9007199254740991;
 export interface ZvTableDataSourceOptions<TData, TTrigger = any> {
   loadTrigger$?: Observable<TTrigger>;
   loadDataFn: (updateInfo: IExtendedZvTableUpdateDataInfo<TTrigger>) => Observable<TData[] | IZvTableFilterResult<TData>>;
+  loadRowActionFn?: (data: TData, actions: IZvTableAction<TData>[]) => Observable<IZvTableAction<TData>[]>;
+  openRowMenuActionFn?: (
+    data: TData,
+    actions: IZvTableAction<TData>[]
+  ) => Observable<IZvTableAction<TData>[]> | IZvTableAction<any>[] | null;
   actions?: IZvTableAction<TData>[];
   mode?: ZvTableMode;
   moreMenuThreshold?: number;
@@ -91,6 +96,15 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> {
   /** List of actions which can be executed for a selection of rows */
   public readonly listActions: IZvTableAction<T>[];
 
+  /** Component action init or changes callback of actions which can be executed for a selection of rows */
+  public readonly loadRowActionFn: (data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]>;
+
+  /** Component open callbacks of actions which can be executed for a selection of rows */
+  public readonly openMenuRowActionFn: (
+    data: T,
+    actions: IZvTableAction<T>[]
+  ) => Observable<IZvTableAction<T>[]> | IZvTableAction<any>[] | null;
+
   public readonly moreMenuThreshold: number;
 
   /** Stream that emits when a new data array is set on the data source. */
@@ -141,6 +155,8 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> {
     this.listActions = options.actions?.filter((a) => a.scope & ZvTableActionScope.list) || [];
     this._updateDataTrigger$ = options.loadTrigger$ || NEVER;
     this._loadData = options.loadDataFn;
+    this.loadRowActionFn = options.loadRowActionFn;
+    this.openMenuRowActionFn = options.openRowMenuActionFn;
     this.moreMenuThreshold = options.moreMenuThreshold ?? 3;
   }
 

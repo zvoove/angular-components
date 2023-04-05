@@ -67,10 +67,13 @@
     <td class="zv-table-data__options-column" mat-cell *matCellDef="let element">
       <zv-table-row-actions
         [actions]="dataSource.rowActions"
+        [loadActionsFn]="dataSource.loadRowActionFn"
+        [openMenuFn]="dataSource.openMenuRowActionFn"
         [actionsTemplate]="rowActions"
         [item]="element"
         [moreMenuThreshold]="dataSource.moreMenuThreshold"
-      ></zv-table-row-actions>
+      >
+      </zv-table-row-actions>
     </td>
   </ng-container>
 

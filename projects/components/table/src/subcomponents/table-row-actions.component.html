@@ -1,9 +1,9 @@
 <ng-container *ngIf="actions | zvTableActionsToRender: item as visibleActions">
-  <ng-container *ngIf="visibleActions.length >= moreMenuThreshold || actionsTemplate; else thresholdReachedTemplate">
-    <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu">
+  <ng-container *ngIf="visibleActions.length >= moreMenuThreshold || actionsTemplate || openMenuFn !== null; else thresholdReachedTemplate">
+    <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu" (click)="onMenuButtonClicked()">
       <mat-icon>more_vert</mat-icon>
     </button>
-    <zv-table-actions #rowActionsComponent [actions]="visibleActions" [items]="itemAsArray">
+    <zv-table-actions #rowActionsComponent [actions]="visibleActions" [items]="itemAsArray" [loading]="loading">
       <ng-container [ngTemplateOutlet]="actionsTemplate" [ngTemplateOutletContext]="{ $implicit: item }"></ng-container>
     </zv-table-actions>
   </ng-container>
@@ -34,6 +34,7 @@
             type="button"
             *ngIf="action.children?.length"
             mat-icon-button
+            (click)="onMenuButtonClicked()"
             [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
             [matMenuTriggerFor]="iconActions.menu"
             [matTooltip]="action.label"
@@ -46,6 +47,7 @@
     </ng-container>
   </ng-template>
 </ng-container>
+
 <ng-template let-action #actionIcon>
   <!-- Setting either [innerHTML] or [svgIcon] seems not to work correctly. -->
   <mat-icon *ngIf="!action.isSvgIcon" [style.color]="action.iconColor">{{ action.icon }}</mat-icon>

@@ -91,9 +91,11 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this._customHeader = value;
     this.cd.markForCheck();
   }
+
   public get customHeader() {
     return this._customHeader;
   }
+
   private _customHeader: TemplateRef<any> | null = null;
 
   @ContentChild(ZvTableCustomSettingsDirective, { read: TemplateRef })
@@ -101,9 +103,11 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this._customSettings = value;
     this.cd.markForCheck();
   }
+
   public get customSettings() {
     return this._customSettings;
   }
+
   private _customSettings: TemplateRef<any> | null = null;
 
   @ContentChild(ZvTableTopButtonSectionDirective, { read: TemplateRef })
@@ -111,9 +115,11 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this._topButtonSection = value;
     this.cd.markForCheck();
   }
+
   public get topButtonSection() {
     return this._topButtonSection;
   }
+
   private _topButtonSection: TemplateRef<any> | null = null;
 
   @ContentChild(ZvTableListActionsDirective, { read: TemplateRef })
@@ -121,9 +127,11 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this._listActions = value;
     this.updateTableState();
   }
+
   public get listActions() {
     return this._listActions;
   }
+
   private _listActions: TemplateRef<any> | null = null;
 
   @ContentChild(ZvTableRowActionsDirective, { read: TemplateRef })
@@ -131,9 +139,11 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this._rowActions = value;
     this.updateTableState();
   }
+
   public get rowActions() {
     return this._rowActions;
   }
+
   private _rowActions: TemplateRef<any> | null = null;
 
   @ContentChildren(ZvTableColumnDirective)
@@ -149,9 +159,11 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this._rowDetail = value;
     this.updateTableState();
   }
+
   public get rowDetail() {
     return this._rowDetail;
   }
+
   private _rowDetail: ZvTableRowDetailDirective | null = null;
 
   public pageSizeOptions: number[];
@@ -162,6 +174,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public get sortDirection(): 'asc' | 'desc' {
     return this.dataSource.sortDirection;
   }
+
   public set sortDirection(value: 'asc' | 'desc') {
     this.dataSource.sortDirection = value;
   }
@@ -169,6 +182,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public get sortColumn(): string {
     return this.dataSource.sortColumn;
   }
+
   public set sortColumn(value: string) {
     this.dataSource.sortColumn = value;
   }
@@ -176,6 +190,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public get pageIndex(): number {
     return this.dataSource.pageIndex;
   }
+
   public set pageIndex(value: number) {
     this.dataSource.pageIndex = value;
   }
@@ -183,6 +198,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public get pageSize(): number {
     return this.dataSource.pageSize;
   }
+
   public set pageSize(value: number) {
     this.dataSource.pageSize = value;
   }
@@ -194,6 +210,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public get filterText(): string {
     return this.dataSource.filter;
   }
+
   public set filterText(value: string) {
     this.dataSource.filter = value;
   }
@@ -205,18 +222,23 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public get errorMessage(): string {
     return this.exceptionMessageExtractor.extractErrorMessage(this.dataSource.error);
   }
+
   public get showError(): boolean {
     return !!this.dataSource.error;
   }
+
   public get showLoading(): boolean {
     return this.dataSource.loading;
   }
+
   public get settingsEnabled(): boolean {
     return !!(this.tableId && this.settingsService.settingsEnabled && this.showSettings);
   }
+
   public get showListActions(): boolean {
     return !!this.listActions || !!this.dataSource.listActions.length || this.settingsEnabled || this.refreshable;
   }
+
   public get showSorting(): boolean {
     return !!this._mergedSortDefinitions.length;
   }

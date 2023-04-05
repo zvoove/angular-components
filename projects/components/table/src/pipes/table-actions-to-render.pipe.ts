@@ -11,6 +11,6 @@ import { IZvTableAction } from '../models';
 export class ZvTableActionsToRenderPipe implements PipeTransform {
   transform<T>(actions: IZvTableAction<T>[], ...args: [T | T[]]): any {
     const elements = Array.isArray(args[0]) ? args[0] : [args[0]];
-    return actions.filter((a) => !a.isHiddenFn || !a.isHiddenFn(elements));
+    return actions?.filter((a) => !a.isHiddenFn || !a.isHiddenFn(elements));
   }
 }

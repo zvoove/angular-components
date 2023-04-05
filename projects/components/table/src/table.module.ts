@@ -40,6 +40,7 @@ import { ZvTableSearchComponent } from './subcomponents/table-search.component';
 import { ZvTableSettingsComponent } from './subcomponents/table-settings.component';
 import { ZvTableSortComponent } from './subcomponents/table-sort.component';
 import { ZvTableComponent } from './table.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { ZvTableComponent } from './table.component';
     MatTooltipModule,
     ZvFlipContainerModule,
     ZvBlockUiModule,
+    MatProgressBarModule,
   ],
   exports: [
     ZvTableComponent,

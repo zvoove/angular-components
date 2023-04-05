@@ -3,52 +3,54 @@
   https://github.com/angular/components/issues/16457
 -->
 <mat-menu #menu>
-  <ng-template matMenuContent>
-    <ng-container *ngFor="let action of actions">
-      <ng-container [ngSwitch]="action | zvTableActionType">
-        <button
-          *ngSwitchCase="'button'"
-          mat-menu-item
-          [disabled]="action.isDisabledFn && action.isDisabledFn(items)"
-          (click)="action.actionFn(items)"
-        >
-          <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
-          {{ action.label }}
-        </button>
-        <a
-          *ngSwitchCase="'link'"
-          mat-menu-item
-          [routerLink]="action.routerLink(items).path"
-          [queryParams]="action.routerLink(items).queryParams"
-        >
-          <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
-          {{ action.label }}
-        </a>
-        <ng-container *ngSwitchCase="'menu'">
-          <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu">
+  <zv-block-ui [blocked]="loading">
+    <ng-template matMenuContent>
+      <ng-container *ngFor="let action of actions">
+        <ng-container [ngSwitch]="action | zvTableActionType">
+          <button
+            *ngSwitchCase="'button'"
+            mat-menu-item
+            [disabled]="action.isDisabledFn && action.isDisabledFn(items)"
+            (click)="action.actionFn(items)"
+          >
             <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
             {{ action.label }}
           </button>
-          <zv-table-actions
-            #innerPanel
-            [actions]="action.children | zvTableActionsToRender: items"
-            [items]="items"
-            [root]="false"
-          ></zv-table-actions>
+          <a
+            *ngSwitchCase="'link'"
+            mat-menu-item
+            [routerLink]="action.routerLink(items).path"
+            [queryParams]="action.routerLink(items).queryParams"
+          >
+            <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
+            {{ action.label }}
+          </a>
+          <ng-container *ngSwitchCase="'menu'">
+            <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu">
+              <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
+              {{ action.label }}
+            </button>
+            <zv-table-actions
+              #innerPanel
+              [actions]="action.children | zvTableActionsToRender: items"
+              [items]="items"
+              [root]="false"
+            ></zv-table-actions>
+          </ng-container>
         </ng-container>
       </ng-container>
-    </ng-container>
-    <!-- ng-content is deprecated here, as it doesn't work correctly, if it contains a mat-menu-item with a child met-menu -->
-    <ng-content></ng-content>
-    <button *ngIf="refreshable" type="button" mat-menu-item (click)="refreshData.emit()">
-      <mat-icon>refresh</mat-icon>
-      {{ intl.refreshListLabel }}
-    </button>
-    <button *ngIf="settingsEnabled" type="button" mat-menu-item (click)="showSettings.emit()">
-      <mat-icon>settings</mat-icon>
-      {{ intl.settingsLabel }}
-    </button>
-  </ng-template>
+      <!-- ng-content is deprecated here, as it doesn't work correctly, if it contains a mat-menu-item with a child met-menu -->
+      <ng-content></ng-content>
+      <button *ngIf="refreshable" type="button" mat-menu-item (click)="refreshData.emit()">
+        <mat-icon>refresh</mat-icon>
+        {{ intl.refreshListLabel }}
+      </button>
+      <button *ngIf="settingsEnabled" type="button" mat-menu-item (click)="showSettings.emit()">
+        <mat-icon>settings</mat-icon>
+        {{ intl.settingsLabel }}
+      </button>
+    </ng-template>
+  </zv-block-ui>
 </mat-menu>
 <ng-template let-action #actionIcon>
   <!-- Setting either [innerHTML] or [svgIcon] seems not to work correctly. -->
