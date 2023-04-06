@@ -1,5 +1,3 @@
-<link href="style.css" rel="stylesheet"></link>
-
 # ZvSelect <a name="ZvSelect"></a>
 
 `<zv-select>` enhances `<mat-select>` with some comfort and additional features. For basic behaviour check [MatSelect](https://material.angular.io/components/select/overview).

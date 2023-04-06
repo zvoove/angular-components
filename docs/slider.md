@@ -6,6 +6,12 @@
 
 ---
 
+# Deprecated
+
+Use the `mat-slider` instead.
+
+---
+
 ## API <a name="ZvSliderApi"></a>
 
 ### Import <a name="ZvSliderImport"></a>

@@ -109,7 +109,7 @@ describe('ZvTablePaginationComponent', () => {
       const onPageSpy = spyOn(component, 'onPage');
 
       const paginatorNextButtonEl = debugElement.nativeElement
-        .querySelectorAll('.mat-paginator-navigation-next')
+        .querySelectorAll('.mat-mdc-paginator-navigation-next')
         .item(0) as HTMLButtonElement;
       paginatorNextButtonEl.dispatchEvent(new MouseEvent('click'));
 

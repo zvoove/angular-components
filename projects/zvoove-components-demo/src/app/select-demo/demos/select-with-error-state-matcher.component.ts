@@ -12,25 +12,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'app-select-with-error-state-matcher',
-  template: `
-    <h2>Disabled form with custom error state matcher</h2>
-    <div>
-      <button (click)="toggleDiabled()">toggle disabled</button>
-    </div>
-    <span [formGroup]="form">
-      <mat-form-field style="display:inline-block">
-        <mat-label>select</mat-label>
-        <zv-select formControlName="select" [dataSource]="items$" [errorStateMatcher]="errorStateMatcher"></zv-select>
-      </mat-form-field>
-    </span>
-    value: {{ form.value.select | json }}<br />
-    last 5 values: {{ lastFiveValues$ | async }}
-    <ul>
-      <li>Should be disabled initially</li>
-      <li>Should be invalid/red on enabling</li>
-      <li>Should be valid/grey when disabling (without choosing value)</li>
-    </ul>
-  `,
+  templateUrl: './select-with-error-state-matcher.component.html',
+  styleUrls: ['./select-with-error-state-matcher.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectWithErrorStateMatcherComponent {

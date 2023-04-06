@@ -1,5 +1,8 @@
 zv-card {
   display: grid;
+  mat-card-actions {
+    margin: 0 8px 0 auto;
+  }
 }
 
 .zv-card__with-header {

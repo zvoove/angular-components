@@ -1,4 +1,4 @@
-<ng-container *ngIf="actions | zvTableActionsToRender: item as visibleActions">
+<ng-container *ngIf="actions | zvTableActionsToRender : item as visibleActions">
   <ng-container *ngIf="visibleActions.length >= moreMenuThreshold || actionsTemplate || openMenuFn !== null; else thresholdReachedTemplate">
     <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu" (click)="onMenuButtonClicked()">
       <mat-icon>more_vert</mat-icon>

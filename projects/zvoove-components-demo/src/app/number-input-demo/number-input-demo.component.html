@@ -1,0 +1,98 @@
+<mat-card>
+  <mat-card-content>
+    <h1>zv-number-input</h1>
+
+    <div class="app-number-input-demo__settings">
+      <div class="app-number-input-demo__checkboxes">
+        <mat-checkbox [(ngModel)]="disabled" (change)="onDisabledChanged()">disabled</mat-checkbox>
+        <mat-checkbox [(ngModel)]="readonly">readonly</mat-checkbox>
+        <mat-checkbox [(ngModel)]="required">required</mat-checkbox>
+        <mat-checkbox [(ngModel)]="validatorRequired" (change)="onValidatorChange()">required validator</mat-checkbox>
+        <mat-checkbox [(ngModel)]="useErrorStateMatcher" (change)="onUseErrorStateMatcherChange()"
+          >errorStateMatcher (always invalid)</mat-checkbox
+        >
+      </div>
+      <zv-form-field>
+        <mat-label>min value</mat-label>
+        <input matInput type="number" [(ngModel)]="min" />
+      </zv-form-field>
+      <zv-form-field>
+        <mat-label>max value</mat-label>
+        <input matInput type="number" [(ngModel)]="max" />
+      </zv-form-field>
+      <zv-form-field>
+        <mat-label>step size</mat-label>
+        <input matInput type="number" [(ngModel)]="stepSize" />
+      </zv-form-field>
+      <zv-form-field>
+        <mat-label>decimals</mat-label>
+        <input matInput type="number" [(ngModel)]="decimals" />
+      </zv-form-field>
+      <zv-form-field>
+        <mat-label>placeholder</mat-label>
+        <input matInput type="text" [(ngModel)]="placeholder" />
+      </zv-form-field>
+      <button type="button" mat-stroked-button (click)="setValues(null)">set values null</button>
+    </div>
+
+    <div class="app-number-input-demo__input-block">
+      <zv-form-field [hint]="'Value: ' + value">
+        <mat-label>value</mat-label>
+        <zv-number-input
+          [min]="min"
+          [max]="max"
+          [stepSize]="stepSize"
+          [decimals]="decimals"
+          [placeholder]="placeholder"
+          [required]="required"
+          [disabled]="disabled"
+          [readonly]="readonly"
+          [errorStateMatcher]="errorStateMatcher"
+          [(value)]="value"
+        ></zv-number-input>
+      </zv-form-field>
+      Code:
+      <pre class="app-number-input-demo__code">{{ getCodeSnippet('value') }}</pre>
+    </div>
+
+    <div class="app-number-input-demo__input-block">
+      <zv-form-field [hint]="'Value: ' + model">
+        <mat-label>ngModel</mat-label>
+        <zv-number-input
+          [min]="min"
+          [max]="max"
+          [stepSize]="stepSize"
+          [decimals]="decimals"
+          [placeholder]="placeholder"
+          [required]="required"
+          [disabled]="disabled"
+          [readonly]="readonly"
+          [errorStateMatcher]="errorStateMatcher"
+          [(ngModel)]="model"
+        ></zv-number-input>
+      </zv-form-field>
+      Code:
+      <pre class="app-number-input-demo__code">{{ getCodeSnippet('ngmodel') }}</pre>
+    </div>
+
+    <div class="app-number-input-demo__input-block" [formGroup]="form">
+      <zv-form-field [hint]="'Value: ' + form.get('control').value">
+        <mat-label>form</mat-label>
+        <zv-number-input
+          [min]="min"
+          [max]="max"
+          [stepSize]="stepSize"
+          [decimals]="decimals"
+          [placeholder]="placeholder"
+          [required]="required"
+          [disabled]="disabled"
+          [readonly]="readonly"
+          [errorStateMatcher]="errorStateMatcher"
+          formControlName="control"
+        ></zv-number-input>
+      </zv-form-field>
+      Code:
+      <pre class="app-number-input-demo__code">{{ getCodeSnippet('form') }}</pre>
+    </div>
+  </mat-card-content>
+</mat-card>

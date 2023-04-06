@@ -1,0 +1,12 @@
+<mat-card class="app-form-demo__settings">
+  <mat-card-content>
+    <mat-form-field>
+      <mat-select [(ngModel)]="demoType">
+        <mat-option [value]="'dataSource'">dataSource</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>
+<ng-container [ngSwitch]="demoType">
+  <app-form-data-source-demo *ngSwitchCase="'dataSource'"></app-form-data-source-demo>
+</ng-container>

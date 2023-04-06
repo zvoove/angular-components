@@ -1,0 +1,17 @@
+zv-table-pagination {
+  display: flex;
+  justify-content: flex-end;
+  background-color: #fff;
+  border-radius: 0 0 4px 4px;
+  margin-bottom: 0.5em;
+}
+zv-table-pagination .mat-paginator {
+  background: transparent;
+}
+zv-table-pagination .mat-paginator-page-size {
+  padding-right: 1em;
+}
+zv-table-pagination .mat-paginator-page-size .mat-mdc-paginator-page-size-select {
+  margin-top: 7px;
+  width: 84px;
+}

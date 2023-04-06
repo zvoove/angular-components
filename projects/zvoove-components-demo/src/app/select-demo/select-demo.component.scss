@@ -1,0 +1,16 @@
+.app-select-demo__settings {
+  display: grid !important;
+  grid-auto-flow: column;
+  gap: 1em;
+
+  margin-bottom: 1em;
+}
+.app-select-demo__settings-box {
+  display: grid !important;
+  gap: 1em;
+  align-content: start;
+}
+
+.app-select-demo__panel .mdc-list-item__primary-text {
+  color: green;
+}

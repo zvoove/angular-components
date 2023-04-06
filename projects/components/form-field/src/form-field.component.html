@@ -1,0 +1,27 @@
+<mat-form-field
+  style="width: 100%"
+  [class.mat-form-field--emulated]="emulated"
+  [class.mat-form-field--no-underline]="noUnderline"
+  [floatLabel]="floatLabel"
+  [hintLabel]="visibleHint"
+  [appearance]="appearance"
+>
+  <mat-label *ngIf="_labelChild">
+    <ng-content select="mat-label"></ng-content>
+  </mat-label>
+  <mat-label *ngIf="!_labelChild && calculatedLabel">
+    <mat-label>{{ calculatedLabel }}</mat-label>
+  </mat-label>
+  <ng-container matPrefix *ngIf="_prefixChildren.length">
+    <ng-content select="[matPrefix]"></ng-content>
+  </ng-container>
+  <ng-content></ng-content>
+  <ng-container matSuffix *ngIf="_suffixChildren.length">
+    <ng-content select="[matSuffix]"></ng-content>
+  </ng-container>
+  <button type="button" mat-icon-button matSuffix (click)="toggleHint($event)" *ngIf="showHintToggle">
+    <mat-icon>info_outline</mat-icon>
+  </button>
+
+  <mat-error *ngFor="let error of errors$ | async">{{ error.errorText }}</mat-error>
+</mat-form-field>

@@ -1,0 +1,24 @@
+<h2 *ngIf="caption" class="zv-table-header__caption">{{ caption }}</h2>
+<div *ngIf="customHeader" class="zv-table-header__custom-content">
+  <ng-container [ngTemplateOutlet]="customHeader"></ng-container>
+</div>
+<zv-table-sort
+  *ngIf="showSorting"
+  class="zv-table-header__sort"
+  [sortColumn]="sortColumn"
+  [sortDirection]="sortDirection"
+  [sortDefinitions]="sortDefinitions"
+  [intl]="intl"
+  (sortChanged)="sortChanged.emit($event)"
+></zv-table-sort>
+<zv-table-search
+  *ngIf="filterable"
+  class="zv-table-header__search"
+  [searchText]="searchText"
+  [debounceTime]="300"
+  [intl]="intl"
+  (searchChanged)="searchChanged.emit($event)"
+></zv-table-search>
+<div *ngIf="topButtonSection" class="zv-table-header__actions">
+  <ng-container [ngTemplateOutlet]="topButtonSection" [ngTemplateOutletContext]="{ $implicit: selectedRows }"></ng-container>
+</div>

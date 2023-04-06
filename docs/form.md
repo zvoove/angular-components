@@ -31,9 +31,9 @@ import { ZvFormModule } from '@zvoove/components/form';
 ### Properties <a name="IZvFormDataSourceProperties"></a>
 
 | Name                          | Description                                                         |
-| ----------------------------- | ------------------------------------------------------------------- | ------------------------------------------------- |
+| ----------------------------- | ------------------------------------------------------------------- |
 | `form: FormGroup`             | The `FormGroup` to be forwarded to the `zv-savebar`.                |
-| `autocomplete: 'on'           | 'off'`                                                              | The autocomplete attribute for the HTML form tag. |
+| `autocomplete: 'on' \| 'off'` | The autocomplete attribute for the HTML form tag.                   |
 | `buttons: IZvButton[]`        | The buttons to show in the `zv-savebar`.                            |
 | `contentVisible: boolean`     | `false` to hide the transcluded `ng-content`.                       |
 | `contentBlocked: boolean`     | `true` to show a loading spinner over the transcluded `ng-content`. |

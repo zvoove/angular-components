@@ -75,51 +75,8 @@ class DemoZvViewDataSource<TParams, TData> implements IZvViewDataSource {
 
 @Component({
   selector: 'app-view-demo',
-  template: `
-    <mat-card class="app-view-data-source-demo__settings">
-      <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
-      <button mat-flat-button type="button" color="accent" (click)="reload()">reload</button>
-    </mat-card>
-    <div class="app-form-data-source-demo__grid">
-      <zv-view [dataSource]="dataSource">
-        <mat-card>
-          <pre>{{ item | json }}</pre>
-        </mat-card>
-        <mat-card style="height: 500px; margin-top: 1em;">dummy card</mat-card>
-      </zv-view>
-      <mat-card class="app-view-data-source-demo__logs">
-        <div *ngFor="let log of logs" class="app-view-data-source-demo__log-item">{{ log | json }}</div>
-      </mat-card>
-    </div>
-  `,
-  styles: [
-    `
-      .app-view-data-source-demo__settings {
-        margin-bottom: 1em;
-      }
-
-      .app-view-data-source-demo__settings mat-checkbox {
-        margin: 1em;
-      }
-
-      .app-view-data-source-demo__grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        grid-gap: 1em;
-      }
-
-      .app-view-data-source-demo__logs {
-        margin-top: 1em;
-      }
-
-      .app-view-data-source-demo__log-item {
-        margin-bottom: 0.25em;
-        padding-bottom: 0.25em;
-        border-bottom: 1px solid #ccc;
-        font-size: 0.95em;
-      }
-    `,
-  ],
+  templateUrl: './view-demo.component.html',
+  styleUrls: ['./view-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewDemoComponent {

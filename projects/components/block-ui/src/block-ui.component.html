@@ -1,0 +1,13 @@
+<div #content class="zv-block-ui__content">
+  <ng-content></ng-content>
+</div>
+<ng-container *ngIf="blocked">
+  <div class="zv-block-ui__overlay">
+    <div class="zv-block-ui__overlay-content">
+      <div class="zv-block-ui__spinner-container">
+        <mat-spinner class="zv-block-ui__spinner" [diameter]="spinnerDiameter"></mat-spinner>
+      </div>
+      <div *ngIf="spinnerText">{{ spinnerText }}</div>
+    </div>
+  </div>
+</ng-container>

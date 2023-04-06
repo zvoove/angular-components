@@ -1,0 +1,17 @@
+zv-table-sort {
+  display: grid;
+  grid-template-columns: 1fr min-content min-content;
+}
+
+.zv-table-sort__dir-button {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  margin-top: 16px;
+  margin-left: 0.2em;
+}
+
+.zv-table-sort__dir-button--inactive {
+  background-color: transparent !important;
+  color: black !important;
+}

@@ -25,7 +25,7 @@ import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { getSelectUnknownDataSourceError } from './errors';
 import { ZvSelectItem } from './models';
-import { DEFAULT_COMPARER, isZvSelectDataSource, ZvSelectDataSource } from './select-data-source';
+import { DEFAULT_COMPARER, ZvSelectDataSource, isZvSelectDataSource } from './select-data-source';
 import { ZvSelectOptionTemplateDirective } from './select-option-template.directive';
 import { ZvSelectTriggerTemplateDirective } from './select-trigger-template.directive';
 import { ZvSelectService } from './select.service';

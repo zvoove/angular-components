@@ -1,8 +1,3 @@
-.zv-dialog-wrapper__action-bar-container {
-  display: flex;
-  width: 100%;
-}
-
 .zv-dialog-wrapper__error {
   color: var(--zv-error);
 }
@@ -11,12 +6,12 @@
   margin-left: auto;
 }
 
+.zv-dialog-wrapper__action-button {
+  margin: 0.25em;
+}
+
 zv-dialog-wrapper {
   display: block;
   /** Max possible width a MatDialog can be without showing a horizontal scrollbar  */
   max-width: calc(80vw - 48px);
-
-  .mat-dialog-actions {
-    margin-bottom: -16px;
-  }
 }

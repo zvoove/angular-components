@@ -11,7 +11,7 @@ interface IDemoDialogWrapperDataSourceOptions {
 }
 
 export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
-  dialogTitle = this.options.dialogTitle;
+  dialogTitle: string;
   buttons: IZvButton[] = [
     {
       label: 'Ok',
@@ -34,7 +34,9 @@ export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
 
   public somethingChanged$ = new Subject<void>();
 
-  constructor(private options: IDemoDialogWrapperDataSourceOptions) {}
+  constructor(private options: IDemoDialogWrapperDataSourceOptions) {
+    this.dialogTitle = this.options.dialogTitle;
+  }
 
   connect(): Observable<void> {
     return this.somethingChanged$;
@@ -53,8 +55,7 @@ export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
 
 @Component({
   selector: 'app-dialog-wrapper-demo',
-  template: ` <button mat-raised-button color="accent" (click)="openDialog()">Open Dialog</button> `,
-  styles: [``],
+  template: `<button mat-raised-button color="accent" (click)="openDialog()">Open Dialog</button>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogWrapperDemoComponent {
@@ -66,22 +67,14 @@ export class DialogWrapperDemoComponent {
 
 @Component({
   selector: 'app-dialog-wrapper-demo',
-  template: `
-    <zv-dialog-wrapper [dataSource]="dataSource">
-      <div style="margin: 1em;">
-        <div>Action function called: {{ actionFunctionCalled }}</div>
-        <button type="button" mat-button (click)="toggleError()">Create error</button>
-        <button type="button" mat-stroked-button (click)="block()">Block for 2 seconds</button>
-      </div>
-    </zv-dialog-wrapper>
-  `,
+  templateUrl: './dialog-wrapper-demo.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogWrapperDemoDialog {
   public actionFunctionCalled = 0;
   public dataSource = new DemoDialogWrapperDataSource({
-    actionFn: () => this.actionFunction(),
     dialogTitle: 'My Dialog Title',
+    actionFn: () => this.actionFunction(),
     cancelFn: () => this.cancelFunction(),
   });
 

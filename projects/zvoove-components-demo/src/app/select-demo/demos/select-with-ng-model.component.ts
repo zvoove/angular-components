@@ -2,21 +2,8 @@ import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/
 
 @Component({
   selector: 'app-select-with-ng-model',
-  template: `
-    <h2>ngModel</h2>
-    <div>
-      <button (click)="random()">select random value</button>
-    </div>
-    <mat-form-field>
-      <mat-label>ngModel bound</mat-label>
-      <zv-select [(ngModel)]="ngModelValue" [dataSource]="items"></zv-select>
-    </mat-form-field>
-    value: {{ ngModelValue | json }}
-    <ul>
-      <li>'Item 11'/'id11' should be initially selected</li>
-      <li>Changing the selection should update the selected value</li>
-    </ul>
-  `,
+  templateUrl: './select-with-ng-model.component.html',
+  styleUrls: ['./select-with-ng-model.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectWithNgModelComponent {

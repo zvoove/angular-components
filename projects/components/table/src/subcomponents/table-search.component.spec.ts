@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatButtonModule, MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInput, MatInputModule } from '@angular/material/input';
@@ -98,7 +98,7 @@ describe('ZvTableSearchComponent', () => {
     component.searchText = 'initial text';
     fixture.detectChanges();
 
-    const clearButton = fixture.debugElement.query(By.directive(MatButton));
+    const clearButton = fixture.debugElement.query(By.directive(MatIconButton));
 
     clearButton.triggerEventHandler('click', new MouseEvent('click'));
 
@@ -123,22 +123,22 @@ describe('ZvTableSearchComponent', () => {
     component.searchText = 'text';
     component.tableSearch.currentSearchText = '';
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.directive(MatButton))).not.toBe(null);
+    expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText = '';
     component.tableSearch.currentSearchText = 'text';
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.directive(MatButton))).not.toBe(null);
+    expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText = 'text';
     component.tableSearch.currentSearchText = 'text';
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.directive(MatButton))).not.toBe(null);
+    expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText = '';
     component.tableSearch.currentSearchText = '';
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.directive(MatButton))).toBe(null);
+    expect(fixture.debugElement.query(By.directive(MatIconButton))).toBe(null);
   }));
 
   it('should clear input on escape and ignore debounce time', fakeAsync(() => {

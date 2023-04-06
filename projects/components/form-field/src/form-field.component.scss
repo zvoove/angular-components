@@ -1,51 +1,58 @@
-.mat-form-field--no-underline .mat-form-field-underline,
-.mat-form-field--no-underline .mat-form-field-underline::before,
-.mat-form-field--no-underline .mat-form-field-flex,
-.mat-form-field--no-underline .mat-form-field-ripple {
+.mat-form-field--no-underline:hover .mdc-text-field--filled:not(.mdc-text-field--disabled) .mat-mdc-form-field-focus-overlay {
+  opacity: 0;
+}
+.mat-form-field--no-underline .mdc-text-field--filled:not(.mdc-text-field--disabled) {
   background-color: transparent !important;
 }
-
-.mat-form-field--no-underline .mat-form-field-outline {
-  display: none !important;
+.mat-form-field--no-underline .mdc-line-ripple::before,
+.mat-form-field--no-underline .mdc-line-ripple::after {
+  border: 0 !important;
 }
 
-zv-form-field .mat-form-field-invalid .mat-checkbox-frame,
-zv-form-field .mat-form-field-invalid .mat-radio-outer-circle,
-zv-form-field .mat-form-field-invalid .mat-slider-thumb {
+.mat-form-field--no-underline .mdc-notched-outline .mdc-notched-outline__leading,
+.mat-form-field--no-underline .mdc-notched-outline .mdc-notched-outline__notch,
+.mat-form-field--no-underline .mdc-notched-outline .mdc-notched-outline__trailing {
+  border: none;
+}
+
+zv-form-field .mat-mdc-form-field {
+  margin: 0.25em 0;
+}
+
+zv-form-field .mat-form-field-invalid .mdc-checkbox__background,
+zv-form-field .mat-form-field-invalid .mdc-radio__outer-circle,
+zv-form-field .mat-form-field-invalid .mdc-slider__thumb-knob {
   border-color: var(--zv-error) !important;
 }
-
-/* Falls für emulated die Schrift rot sein soll:
-.mat-form-field--emulated.mat-form-field-invalid .mat-form-field-wrapper {
-  color: var(--zv-error) !important;
-}
-*/
-
-// Centers suffix icons for appearances other than legacy
-.mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix {
+/* Centers suffix icon */
+.mat-mdc-form-field-icon-suffix {
   display: flex;
-  align-items: center;
+}
+
+zv-form-field .mat-form-field-invalid .mat-mdc-form-field-error {
+  line-height: 1em;
 }
 
 /* Allow multiline errors/hints */
-.zv-form-field--subscript-resize .mat-form-field-underline,
-.zv-form-field--subscript-resize .mat-form-field-subscript-wrapper {
-  position: static;
+.zv-form-field--subscript-resize .mat-mdc-form-field-bottom-align::before {
+  display: block;
+  height: auto;
 }
-.zv-form-field--subscript-resize .mat-form-field-wrapper {
-  padding-bottom: 0;
+.zv-form-field--subscript-resize .mat-mdc-form-field-hint-wrapper,
+.zv-form-field--subscript-resize .mat-mdc-form-field-error-wrapper {
+  position: static;
 }
 
 /* hint/error bubble container */
-.zv-form-field--bubble .mat-form-field-subscript-wrapper {
-  padding-top: 1.25em !important;
+.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper {
+  padding-top: 1.58em !important;
   overflow: visible;
   z-index: 1;
   margin-top: 0.25em;
 }
 
 /* hint/error bubble */
-.zv-form-field--bubble .mat-form-field-subscript-wrapper > div {
+.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper > div {
   display: block;
   position: absolute;
   top: 0;
@@ -64,18 +71,18 @@ zv-form-field .mat-form-field-invalid .mat-slider-thumb {
 }
 
 /* hint bubble position */
-.zv-form-field--bubble .mat-form-field-subscript-wrapper > .mat-form-field-hint-wrapper {
+.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper > .mat-mdc-form-field-hint-wrapper {
   left: auto;
   right: 0;
 }
 /* error bubble position */
-.zv-form-field--bubble .mat-form-field-subscript-wrapper > div:not(.mat-form-field-hint-wrapper) {
+.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper > div:not(.mat-mdc-form-field-hint-wrapper) {
   left: 0;
   right: auto;
 }
 
 /* hint/error bubble anchor */
-.zv-form-field--bubble .mat-form-field-subscript-wrapper:before {
+.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper:before {
   content: '';
   position: absolute;
   top: -3px;
@@ -91,54 +98,54 @@ zv-form-field .mat-form-field-invalid .mat-slider-thumb {
 }
 
 /* hint bubble anchor position */
-.zv-form-field--bubble .mat-form-field-subscript-wrapper:before {
+.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper:before {
   left: auto;
   right: 10px;
 }
 /* error bubble anchor position */
-.zv-form-field--error-bubble .mat-form-field-subscript-wrapper:before {
+.zv-form-field--error-bubble .mat-mdc-form-field-subscript-wrapper:before {
   left: 10px;
   right: auto;
 }
 
 /* hint bubble colors */
-.zv-form-field--bubble .mat-form-field-subscript-wrapper > div,
-.zv-form-field--bubble .mat-form-field-subscript-wrapper:before {
+.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper > div,
+.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper:before {
   border-color: rgba(0, 0, 0, 0.2);
   background-color: #fff;
 }
 
 /* error bubble colors */
-.zv-form-field--error-bubble .mat-form-field-subscript-wrapper > div,
-.zv-form-field--error-bubble .mat-form-field-subscript-wrapper:before {
+.zv-form-field--error-bubble .mat-mdc-form-field-subscript-wrapper > div,
+.zv-form-field--error-bubble .mat-mdc-form-field-subscript-wrapper:before {
   border-color: #f99;
   background-color: #fcc;
 }
 
-.zv-form-field--bubble .mat-error {
+.zv-form-field--bubble .mat-mdc-form-field-error {
   display: inline;
   color: black;
 }
 
-.zv-form-field--bubble .mat-hint {
+.zv-form-field--bubble .mat-mdc-form-field-hint {
   display: inline;
   color: rgba(0, 0, 0, 0.54);
 }
 
-.zv-form-field--bubble:hover .mat-form-field-subscript-wrapper > div,
-.zv-form-field--bubble .mat-focused .mat-form-field-subscript-wrapper > div {
+.zv-form-field--bubble:hover .mat-mdc-form-field-subscript-wrapper > div,
+.zv-form-field--bubble .mat-focused .mat-mdc-form-field-subscript-wrapper > div {
   bottom: initial !important;
   white-space: initial;
 }
 
-.zv-form-field--bubble:hover .mat-form-field-subscript-wrapper,
-.zv-form-field--bubble .mat-focused .mat-form-field-subscript-wrapper {
+.zv-form-field--bubble:hover .mat-mdc-form-field-subscript-wrapper,
+.zv-form-field--bubble .mat-focused .mat-mdc-form-field-subscript-wrapper {
   z-index: 10;
 }
 
-.zv-form-field--bubble:hover .mat-error,
+.zv-form-field--bubble:hover .mat-mdc-form-field-error,
 .zv-form-field--bubble .mat-focused .mat-error,
-.zv-form-field--bubble:hover .mat-hint,
+.zv-form-field--bubble:hover .mat-mdc-form-field-hint,
 .zv-form-field--bubble .mat-focused .mat-hint {
   display: block;
 }

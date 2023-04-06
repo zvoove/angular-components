@@ -3,18 +3,7 @@ import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-select-with-events-only',
-  template: `
-    <h2>Event output only (no form)</h2>
-    <mat-form-field>
-      <mat-label>selectionChange only</mat-label>
-      <zv-select [dataSource]="items" (selectionChange)="onSelectionChange($event)"></zv-select>
-    </mat-form-field>
-    change event values: {{ values | json }}
-    <ul>
-      <li>Initialliy no event should be fired</li>
-      <li>When changing the selection, the id of the selected item should be added to the events values above</li>
-    </ul>
-  `,
+  templateUrl: './select-with-events-only.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectWithEventsOnlyComponent {

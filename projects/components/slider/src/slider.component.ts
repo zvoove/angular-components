@@ -41,6 +41,10 @@ export class ZvSliderBase {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _ZvSliderMixinBase = mixinErrorState(ZvSliderBase);
 
+/**
+ * @deprecated please use the material slider instead
+ * This will be removed in the v16 release
+ */
 // eslint-disable-next-line @angular-eslint/no-conflicting-lifecycle
 @Component({
   selector: 'zv-slider',

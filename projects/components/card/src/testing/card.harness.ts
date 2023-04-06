@@ -7,8 +7,8 @@ export interface ZvCardHarnessFilters extends BaseHarnessFilters {
 }
 
 export const enum ZvCardSection {
-  footer = '.mat-card-footer',
-  actions = '.mat-card-actions',
+  footer = '.mat-mdc-card-footer',
+  actions = '.mat-mdc-card-actions',
 }
 
 export class ZvCardHarness extends ContentContainerComponentHarness<ZvCardSection> {

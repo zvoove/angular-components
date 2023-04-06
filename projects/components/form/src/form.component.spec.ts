@@ -99,7 +99,7 @@ describe('ZvFormComponent', () => {
         const btn1Button = buttons.find((x) => x.nativeElement.textContent.trim() === 'btn1');
         expect(btn1Button).toBeTruthy();
         const btn1Classes = getClasses(btn1Button);
-        expect(btn1Classes).toContain('mat-stroked-button');
+        expect(btn1Classes).toContain('mat-mdc-outlined-button');
         expect(btn1Classes).toContain('mat-primary');
         expect(btn1Button.attributes.type).toEqual('button');
         expect(btn1Button.attributes.disabled).toEqual('true');
@@ -109,7 +109,7 @@ describe('ZvFormComponent', () => {
         const btn2Button = buttons.find((x) => x.nativeElement.textContent.trim() === 'btn2');
         expect(btn2Button).toBeTruthy();
         const btn2Classes = getClasses(btn2Button);
-        expect(btn2Classes).toContain('mat-raised-button');
+        expect(btn2Classes).toContain('mat-mdc-raised-button');
         expect(btn2Classes).toContain('mat-accent');
         expect(btn2Button.attributes.type).toEqual('button');
         expect(btn2Button.attributes.disabled).toBeFalsy();

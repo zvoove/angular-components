@@ -1,0 +1,16 @@
+<mat-paginator
+  [pageIndex]="pageIndex"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  [length]="dataLength"
+  [showFirstLastButtons]="true"
+  (page)="onPage($event)"
+>
+</mat-paginator>
+<div class="mat-paginator-page-size">
+  <mat-form-field *ngIf="pages.length > 2" class="mat-mdc-paginator-page-size-select mat-mdc-paginator">
+    <mat-select class="zv-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
+      <mat-option *ngFor="let page of pages" [value]="page"> {{ page }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

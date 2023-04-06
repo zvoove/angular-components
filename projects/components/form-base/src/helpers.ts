@@ -36,7 +36,7 @@ export function getControlType(control: any): string | null {
     return parts.join('-');
   }
 
-  if (control.step !== undefined && control.thumbLabel !== undefined) {
+  if (control._slider !== undefined || (control._knobRadius !== undefined && control._step !== undefined)) {
     return 'mat-slider';
   }
 

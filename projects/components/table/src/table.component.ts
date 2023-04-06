@@ -278,6 +278,9 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     if (changes.intlOverride) {
       this.updateIntl();
     }
+    if (changes.dataSource && !changes.dataSource.firstChange) {
+      this.dataSource.tableReady = changes.dataSource.previousValue.tableReady;
+    }
 
     this.updateTableState();
   }
@@ -346,7 +349,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     this.subscriptions.push(
       combineLatest([stateSettings$, tableSettings$])
         .pipe(
-          // guards agains multiple data updates, when multiple emits happen at the same time.
+          // guards against multiple data updates, when multiple emits happen at the same time.
           debounceTime(0)
         )
         .subscribe({

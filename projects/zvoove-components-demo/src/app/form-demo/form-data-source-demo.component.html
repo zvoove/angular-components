@@ -1,0 +1,37 @@
+<mat-card class="app-form-data-source-demo__settings">
+  <mat-card-content>
+    <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
+    <mat-checkbox [(ngModel)]="saveError">save error</mat-checkbox>
+    <button mat-flat-button type="button" color="accent" (click)="reload()">reload</button>
+  </mat-card-content>
+</mat-card>
+<div class="app-form-data-source-demo__grid">
+  <zv-form [dataSource]="dataSource">
+    <mat-card>
+      <mat-card-content>
+        <form [formGroup]="form">
+          <mat-form-field>
+            <mat-label>Input 1</mat-label>
+            <input type="text" matInput formControlName="input1" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Input 2</mat-label>
+            <input type="text" matInput formControlName="input2" />
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="app-form-data-source-demo__dummy-card">
+      <mat-card-content>dummy card</mat-card-content>
+    </mat-card>
+    <ng-container zvFormSavebarButtons>
+      <button mat-stroked-button type="button">dummy button 1</button>
+      <button mat-stroked-button type="button">dummy button 2</button>
+    </ng-container>
+  </zv-form>
+  <mat-card>
+    <mat-card-content>
+      <div *ngFor="let log of logs" class="app-form-data-source-demo__log-item">{{ log | json }}</div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,15 @@
+<mat-card class="app-view-data-source-demo__settings">
+  <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
+  <button mat-flat-button type="button" color="accent" (click)="reload()">reload</button>
+</mat-card>
+<div class="app-form-data-source-demo__grid">
+  <zv-view [dataSource]="dataSource">
+    <mat-card>
+      <pre>{{ item | json }}</pre>
+    </mat-card>
+    <mat-card style="height: 500px; margin-top: 1em">dummy card</mat-card>
+  </zv-view>
+  <mat-card class="app-view-data-source-demo__logs">
+    <div *ngFor="let log of logs" class="app-view-data-source-demo__log-item">{{ log | json }}</div>
+  </mat-card>
+</div>

@@ -1,0 +1,3 @@
+<mat-chip-listbox class="zv-form-errors__container" *ngIf="errors$ | async as errors">
+  <mat-chip class="zv-form-errors__item" *ngFor="let error of errors">{{ error.errorText }}</mat-chip>
+</mat-chip-listbox>

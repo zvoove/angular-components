@@ -1,0 +1,13 @@
+<h2>ngModel</h2>
+<div class="app-select-with-ng-model__button-wrapper">
+  <button mat-stroked-button (click)="random()">select random value</button>
+</div>
+<mat-form-field>
+  <mat-label>ngModel bound</mat-label>
+  <zv-select [(ngModel)]="ngModelValue" [dataSource]="items"></zv-select>
+</mat-form-field>
+value: {{ ngModelValue | json }}
+<ul>
+  <li>'Item 11'/'id11' should be initially selected</li>
+  <li>Changing the selection should update the selected value</li>
+</ul>

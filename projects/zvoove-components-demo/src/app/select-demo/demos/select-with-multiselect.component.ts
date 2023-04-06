@@ -4,25 +4,7 @@ import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-select-with-multiselect',
-  template: `
-    <h2>Multiselect</h2>
-    <div>
-      <mat-checkbox [(ngModel)]="showToggleAll">show toggle all</mat-checkbox>
-    </div>
-    <span [formGroup]="form">
-      <mat-form-field style="display:inline-block">
-        <mat-label>select</mat-label>
-        <zv-select formControlName="select" [dataSource]="items$" [multiple]="true" [showToggleAll]="showToggleAll"></zv-select>
-      </mat-form-field>
-    </span>
-    value: {{ form.value.select | json }}<br />
-    <ul>
-      <li>Multiple items should be selectable</li>
-      <li>On mouseover the selected items should be shown in a tooltip</li>
-      <li>When selecting a item, the dropdown should stay open and shouldnt reorder the items</li>
-      <li>When closing and reopening the dropdown, all selected items should be at the top</li>
-    </ul>
-  `,
+  templateUrl: './select-with-multiselect.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectWithMultiselectComponent {

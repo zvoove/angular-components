@@ -20,6 +20,7 @@ import { SelectWithNgModelComponent } from './demos/select-with-ng-model.compone
 import { SelectWithOtherLoadTriggerComponent } from './demos/select-with-other-load-trigger.component';
 import { SelectWithSelectedItemNotInDataSourceComponent } from './demos/select-with-selected-item-not-in-datasource.component';
 import { SelectDemoComponent } from './select-demo.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SelectDemoComponent } from './select-demo.component';
     CommonModule,
     MatFormFieldModule,
     MatRadioModule,
+    MatButtonModule,
     MatCheckboxModule,
     MatCardModule,
     MatInputModule,

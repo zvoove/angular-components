@@ -42,6 +42,8 @@ import { ZvFormFieldModule } from '@zvoove/components/form-field';
 2. Import the ZvFormBaseModule using `.forRoot()` with the created service in your AppModule. Like this:
    `ZvFormBaseModule.forRoot(DemoZvFormsService)`
 
+3. When using `<input>` inside the `zv-form-field` you always need a `matInput`  (Versions < 14 do not need a `matInput`)
+
 ---
 
 ## Implementation <a name="ZvFormFieldImplementation"></a>

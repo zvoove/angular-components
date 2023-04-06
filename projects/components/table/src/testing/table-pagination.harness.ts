@@ -6,7 +6,7 @@ export class ZvTablePaginationHarness extends ContentContainerComponentHarness {
   static hostSelector = 'zv-table-pagination';
 
   private _matPaginator = this.locatorFor(MatPaginatorHarness);
-  private _matPaginatorItemsPerPageLabel = this.locatorFor('mat-paginator div.mat-paginator-page-size-label');
+  private _matPaginatorItemsPerPageLabel = this.locatorFor('mat-paginator div.mat-mdc-paginator-page-size-label');
   private _gotoPageSelect = this.locatorForAll(MatSelectHarness);
 
   static with(): HarnessPredicate<ZvTablePaginationHarness> {

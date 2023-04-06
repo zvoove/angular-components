@@ -1,6 +1,6 @@
 import type { QueryList } from '@angular/core';
 import {
-  AfterContentInit,
+  AfterContentChecked,
   ChangeDetectionStrategy,
   Component,
   ContentChild,
@@ -45,44 +45,16 @@ export const ZV_FORM_FIELD_CONFIG = new InjectionToken<ZvFormFieldConfig>('ZV_FO
 
 @Component({
   selector: 'zv-form-field',
-  template: `
-    <mat-form-field
-      style="width: 100%;"
-      [class.mat-form-field--emulated]="emulated"
-      [class.mat-form-field--no-underline]="noUnderline"
-      [floatLabel]="floatLabel"
-      [hintLabel]="visibleHint"
-      [appearance]="appearance"
-    >
-      <mat-label *ngIf="_labelChild">
-        <ng-content select="mat-label"></ng-content>
-      </mat-label>
-      <mat-label *ngIf="!_labelChild && calculatedLabel">
-        <mat-label>{{ calculatedLabel }}</mat-label>
-      </mat-label>
-      <ng-container matPrefix *ngIf="_prefixChildren.length">
-        <ng-content select="[matPrefix]"></ng-content>
-      </ng-container>
-      <ng-content></ng-content>
-      <ng-container matSuffix *ngIf="_suffixChildren.length">
-        <ng-content select="[matSuffix]"></ng-content>
-      </ng-container>
-      <button type="button" mat-icon-button matSuffix (click)="toggleHint($event)" *ngIf="showHintToggle">
-        <mat-icon>info_outline</mat-icon>
-      </button>
-
-      <mat-error *ngFor="let error of errors$ | async">{{ error.errorText }}</mat-error>
-    </mat-form-field>
-  `,
+  templateUrl: './form-field.component.html',
   styleUrls: ['./form-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ZvFormFieldComponent implements OnChanges, AfterContentInit, OnDestroy {
+export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnDestroy {
   @Input() public createLabel = true;
-  @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
   @Input() public hint: string = null;
-  @Input() public appearance: MatFormFieldAppearance = this.matDefaults?.appearance || 'legacy';
+  @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
+  @Input() public appearance: MatFormFieldAppearance = this.matDefaults?.appearance || 'outline';
   @Input() public subscriptType: ZvFormFieldSubscriptType = this.defaults ? this.defaults.subscriptType : 'resize';
   @Input() public hintToggle: boolean | null = null;
 
@@ -137,10 +109,10 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentInit, OnDest
   /** The error messages to show */
   public errors$: Observable<IZvFormError[]> = of([]);
 
-  /** indicates if the control is no real MatFormFieldControl */
+  /** Indicates if the control is no real MatFormFieldControl */
   public emulated = false;
 
-  /** ide the underline for the control */
+  /** Hide the underline for the control */
   public noUnderline = false;
   public showHint = false;
   public calculatedLabel: string = null;
@@ -159,6 +131,8 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentInit, OnDest
   private hasError = false;
 
   private labelTextSubscription: Subscription;
+
+  private initialized = false;
 
   constructor(
     private _elementRef: ElementRef,
@@ -180,13 +154,28 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentInit, OnDest
     }
   }
 
-  public ngAfterContentInit(): void {
+  public ngAfterContentChecked(): void {
+    if (this.initialized) {
+      return;
+    }
     this.formControl = this._ngControl && (this._ngControl.control as FormControl);
+    // Slider is not initialized the first time we enter this method, therefore we need to check if it got initialized already or not
+    if (this.formControl) {
+      this.initialized = true;
+    }
+    // We hope noone subscribed matFormFieldControl.stateChanges already - 🤞
+    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
+      // eslint-disable-next-line @angular-eslint/no-lifecycle-call
+      this.matFormFieldControl.ngOnDestroy();
+    }
     this.matFormFieldControl = this._control || new DummyMatFormFieldControl(this._ngControl, this.formControl);
     this._matFormField._control = this.matFormFieldControl;
     this.emulated = this.matFormFieldControl instanceof DummyMatFormFieldControl;
+    // This tells the mat-input that it is inside a mat-form-field
+    if ((this.matFormFieldControl as any)._isInFormField !== undefined) {
+      (this.matFormFieldControl as any)._isInFormField = true;
+    }
     this.realFormControl = getRealFormControl(this._ngControl, this.matFormFieldControl);
-
     this.controlType = this.formsService.getControlType(this.realFormControl) || 'unknown';
     this._elementRef.nativeElement.classList.add(`zv-form-field-type-${this.controlType}`);
 
@@ -241,13 +230,13 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentInit, OnDest
       this.labelTextSubscription.unsubscribe();
     }
     this.labelTextSubscription = labelText$.subscribe((label) => {
-      if (this.controlType.startsWith('mat-checkbox')) {
-        const labelNode = this._elementRef.nativeElement.querySelectorAll('.mat-checkbox-label')[0];
+      if (this.controlType.startsWith('mat-mdc-checkbox')) {
+        const labelNode = this._elementRef.nativeElement.querySelectorAll('label')[0];
         if (!labelNode.innerText.trim()) {
           if (labelNode.childNodes.length === 1) {
-            labelNode.appendChild(document.createTextNode(label));
+            labelNode.childNodes.nodeValue = label;
           } else {
-            labelNode.childNodes[1].nodeValue = label;
+            labelNode.appendChild(document.createTextNode(label));
           }
         }
       } else {

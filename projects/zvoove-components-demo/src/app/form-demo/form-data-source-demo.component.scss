@@ -1,0 +1,27 @@
+.app-form-data-source-demo__dummy-card {
+  height: 500px;
+  margin-top: 1em;
+}
+.app-form-data-source-demo__settings {
+  margin-bottom: 1em;
+}
+
+.app-form-data-source-demo__settings mat-checkbox {
+  margin: 1em;
+}
+
+.app-form-data-source-demo__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 1em;
+}
+
+.app-form-data-source-demo__log-item {
+  margin-bottom: 0.25em;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid #ccc;
+}
+
+app-form-demo .mat-mdc-form-field {
+  display: block;
+}

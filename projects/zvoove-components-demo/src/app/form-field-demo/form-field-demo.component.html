@@ -5,14 +5,6 @@
     <a href="https://material.angular.io/components/form-field/overview#form-field-appearance-variants"
       >https://material.angular.io/components/form-field/overview#form-field-appearance-variants</a
     >
-    <zv-form-field style="margin: 0.5em" [appearance]="'legacy'" [hint]="'hint text'">
-      <mat-label>Legacy</mat-label>
-      <input matInput type="text" />
-    </zv-form-field>
-    <zv-form-field style="margin: 0.5em" [appearance]="'standard'" [hint]="'hint text'">
-      <mat-label>Standard</mat-label>
-      <input matInput type="text" />
-    </zv-form-field>
     <zv-form-field style="margin: 0.5em" [appearance]="'fill'" [hint]="'hint text'">
       <mat-label>Fill</mat-label>
       <input matInput type="text" />
@@ -28,22 +20,16 @@
       <input matInput type="text" />
     </zv-form-field>
 
-    <h2>No form binding and no MatFormFieldControl</h2>
+    <h2>No form binding but with hint</h2>
     <zv-form-field [hint]="'hint text'">
       <mat-label>Referenz Column</mat-label>
-      <input type="text" />
+      <input matInput type="text" />
     </zv-form-field>
 
     <h2>NgModel</h2>
     <zv-form-field [hint]="'hint text'">
       <mat-label>Referenz Column</mat-label>
       <input matInput type="text" [(ngModel)]="value" />
-    </zv-form-field>
-
-    <h2>NgModel without MatFormFieldControl</h2>
-    <zv-form-field [hint]="'hint text'">
-      <mat-label>Referenz Column</mat-label>
-      <input type="text" [(ngModel)]="value" />
     </zv-form-field>
   </div>
   <div>
@@ -63,8 +49,6 @@
     <mat-form-field style="margin: 0.5em">
       <mat-label>appearance</mat-label>
       <mat-select [(ngModel)]="appearance">
-        <mat-option [value]="'legacy'">legacy</mat-option>
-        <mat-option [value]="'standard'">standard</mat-option>
         <mat-option [value]="'fill'">fill</mat-option>
         <mat-option [value]="'outline'">outline</mat-option>
       </mat-select>
@@ -81,46 +65,6 @@
         Use the following style to align the heights of checkboxes, radio groups and sliders for the selected appearance. <br />
         CSS rules may need adjustments if you do not use the default material typography.
         <ng-container [ngSwitch]="appearance">
-          <pre *ngSwitchCase="'legacy'">
-            {{
-              '
-.zv-form-field-type-mat-slider .mat-form-field-appearance-legacy mat-slider {
-  margin: -0.5em 0;
-  width: 100%;
-}
-.zv-form-field-type-mat-radio-group .mat-form-field-appearance-legacy .mat-form-field-infix {
-  padding: 0.36em 0;
-}
-.zv-form-field-type-mat-checkbox .mat-form-field-appearance-legacy .mat-form-field-infix {
-  padding: 0.25em 0;
-}
-
-.zv-form-field-type-mat-slider .mat-form-field-infix {
-  padding: 0;
-}
-              '
-            }}
-          </pre>
-          <pre *ngSwitchCase="'standard'">
-            {{
-              '
-.zv-form-field-type-mat-slider .mat-form-field-appearance-standard mat-slider {
-  margin: -0.435em 0;
-  width: 100%;
-}
-.zv-form-field-type-mat-radio-group .mat-form-field-appearance-standard .mat-form-field-infix {
-  padding: 0.42em 0;
-}
-.zv-form-field-type-mat-checkbox .mat-form-field-appearance-standard .mat-form-field-infix {
-  padding: 0.315em 0;
-}
-
-.zv-form-field-type-mat-slider .mat-form-field-infix {
-  padding: 0;
-}
-              '
-            }}
-          </pre>
           <pre *ngSwitchCase="'fill'">
             {{
               '
@@ -144,19 +88,23 @@
           <pre *ngSwitchCase="'outline'">
             {{
               '
-.zv-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider {
-  margin: 0.06em 0;
+.zv-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider,
+.zv-form-field-type-mat-slider .mat-form-field-appearance-fill mat-slider {
+  margin: -1em 0;
   width: 100%;
 }
-.zv-form-field-type-mat-radio-group .mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0.92em 0;
+// Fill appearance modifications
+.zv-form-field-type-mat-radio-group .mat-form-field-appearance-fill .mat-mdc-form-field-infix {
+  padding: 0.42em 0;
 }
-.zv-form-field-type-mat-checkbox .mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0.81em 0;
+.zv-form-field-type-mat-mdc-checkbox .mat-form-field-appearance-fill .mat-mdc-form-field-infix {
+  padding: 0.31em 0;
 }
 
-.zv-form-field-type-mat-slider .mat-form-field-infix {
-  padding: 0;
+// Outline appearance modifications
+.zv-form-field-type-mat-radio-group .mat-form-field-appearance-outline .mat-mdc-form-field-infix,
+.zv-form-field-type-mat-mdc-checkbox .mat-form-field-appearance-outline .mat-mdc-form-field-infix {
+  padding: 0.5em 0;
 }
               '
             }}
@@ -232,7 +180,7 @@
       <div>
         <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-label *ngIf="customLabel">Custom Label</mat-label>
-          <mat-slider formControlName="slider"></mat-slider>
+          <mat-slider><input matSliderThumb formControlName="slider" /></mat-slider>
         </zv-form-field>
       </div>
       <div>
@@ -299,7 +247,7 @@
               mat-icon-button
               [disabled]="form.controls.radio.disabled || form.controls.radio.value === null"
               (click)="form.controls.radio.patchValue(null)"
-              style="height: 20px; width: 20px; line-height: 20px"
+              style="height: 40px; width: 40px; padding-left: 10px"
             >
               <mat-icon style="line-height: 20px">clear</mat-icon>
             </button>

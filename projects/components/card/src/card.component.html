@@ -7,10 +7,10 @@
   <mat-card-content>
     <ng-content></ng-content>
   </mat-card-content>
-  <mat-card-footer *ngIf="footerSection">
-    <ng-container [ngTemplateOutlet]="footerSection"></ng-container>
-  </mat-card-footer>
   <mat-card-actions *ngIf="actionsSection">
     <ng-container [ngTemplateOutlet]="actionsSection"></ng-container>
   </mat-card-actions>
+  <mat-card-footer *ngIf="footerSection">
+    <ng-container [ngTemplateOutlet]="footerSection"></ng-container>
+  </mat-card-footer>
 </mat-card>

@@ -115,7 +115,7 @@
     "components": {
       "projectType": "library",
       "root": "projects/components",
-      "sourceRoot": "projects/components/src",
+      "sourceRoot": "projects/components",
       "prefix": "zv",
       "architect": {
         "build": {
@@ -133,7 +133,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/components/test.ts",
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/components/tsconfig.spec.json",
             "karmaConfig": "projects/components/karma.conf.js"
           }
@@ -150,5 +150,13 @@
   "cli": {
     "analytics": false,
     "schematicCollections": ["@angular-eslint/schematics"]
+  },
+  "schematics": {
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
+    }
   }
 }

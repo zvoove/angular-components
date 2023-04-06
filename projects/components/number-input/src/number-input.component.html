@@ -3,7 +3,7 @@
     #inputfield
     type="text"
     [value]="_formattedValue || null"
-    [attr.aria-valumin]="min"
+    [attr.aria-valuemin]="min"
     [attr.aria-valuemax]="max"
     [attr.aria-valuenow]="value"
     [attr.tabindex]="tabindex"
@@ -15,7 +15,7 @@
     (input)="_onInput($event)"
     (focus)="_onFocusChanged(true)"
     (blur)="_onFocusChanged(false)"
-    class="zv-number-input__input mat-input-element"
+    class="zv-number-input__input mat-mdc-input-element"
   />
   <button
     type="button"

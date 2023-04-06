@@ -18,7 +18,7 @@ export class ReferenceColumnComponent {
   @Input() public subscriptType: ZvFormFieldSubscriptType = 'single-line';
   @Input() public hintToggle = false;
   @Input() public hint = 'hint text';
-  @Input() public appearance: MatFormFieldAppearance = 'legacy';
+  @Input() public appearance: MatFormFieldAppearance = 'outline';
   public value = '';
 }
 

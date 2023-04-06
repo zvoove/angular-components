@@ -6,31 +6,7 @@ import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-with-other-load-trigger',
-  template: `
-    <h2>Custom load trigger with 1 second loading delay</h2>
-    <div>
-      <mat-radio-group [(ngModel)]="currentLoadTrigger" (change)="onTriggerChanged($event.value)">
-        <mat-radio-button value="initial">initial</mat-radio-button>
-        <mat-radio-button value="firstopen">first panel open</mat-radio-button>
-        <mat-radio-button value="everyopen">every panel open</mat-radio-button>
-      </mat-radio-group>
-    </div>
-    <span [formGroup]="form">
-      <mat-form-field style="display:inline-block">
-        <mat-label>select</mat-label>
-        <zv-select formControlName="select" [dataSource]="dataSource"></zv-select>
-      </mat-form-field>
-    </span>
-    value: {{ form.value.select | json }}<br />
-    current load trigger: {{ currentLoadTrigger }}<br />
-    load trigger count: {{ loadCount }}
-    <ul>
-      <li>Initially '??? (ID: idx)' should be selected and load trigger should be 'initial' with count 1</li>
-      <li>For load trigger 'first panel open' count should be 0, increase to 1 on first open. It should never go beyond 1</li>
-      <li>For load trigger 'every panel open' count should be 0 and increase by 1 on every open</li>
-      <li>When switching the load trigger, the selected value shouldn't vanish</li>
-    </ul>
-  `,
+  templateUrl: './select-with-other-load-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectWithOtherLoadTriggerComponent {

@@ -6,22 +6,8 @@ import type { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'zv-form-errors',
-  template: `
-    <mat-chip-list class="zv-form-errors__container" *ngIf="errors$ | async as errors">
-      <mat-chip class="zv-form-errors__item" *ngFor="let error of errors">{{ error.errorText }}</mat-chip>
-    </mat-chip-list>
-  `,
-  styles: [
-    `
-      .zv-form-errors__container {
-        font-size: 12px;
-      }
-      .mat-chip.zv-form-errors__item {
-        background-color: var(--zv-error);
-        color: var(--zv-error-contrast);
-      }
-    `,
-  ],
+  templateUrl: './form-errors.component.html',
+  styleUrls: ['./form-errors.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })

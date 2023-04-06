@@ -11,20 +11,43 @@
     {{ exception.errorObject | zvErrorMessage }}
   </div>
   <div class="zv-dialog-wrapper__buttons">
-    <button
-      *ngFor="let btn of buttons"
-      type="button"
-      style="margin: 0.25em"
-      mat-button
-      [class.mat-raised-button]="btn.type === 'raised'"
-      [class.mat-stroked-button]="btn.type === 'stroked'"
-      [class.mat-icon-button]="btn.type === 'icon'"
-      [color]="btn.color"
-      [disabled]="btn.disabled && btn.disabled()"
-      (click)="btn.click()"
-    >
-      <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
-      {{ btn.label }}
-    </button>
+    <ng-container *ngFor="let btn of buttons" [ngSwitch]="btn.type">
+      <button
+        *ngSwitchCase="'raised'"
+        type="button"
+        class="zv-dialog-wrapper__action-button"
+        mat-raised-button
+        [color]="btn.color"
+        [disabled]="btn.disabled && btn.disabled()"
+        (click)="btn.click()"
+      >
+        <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon
+        >{{ btn.label }}
+      </button>
+      <button
+        *ngSwitchCase="'stroked'"
+        type="button"
+        class="zv-dialog-wrapper__action-button"
+        mat-stroked-button
+        [color]="btn.color"
+        [disabled]="btn.disabled && btn.disabled()"
+        (click)="btn.click()"
+      >
+        <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon
+        >{{ btn.label }}
+      </button>
+      <button
+        *ngSwitchCase="'icon'"
+        type="button"
+        class="zv-dialog-wrapper__action-button"
+        mat-icon-button
+        [color]="btn.color"
+        [disabled]="btn.disabled && btn.disabled()"
+        (click)="btn.click()"
+      >
+        <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon
+        >{{ btn.label }}
+      </button>
+    </ng-container>
   </div>
 </mat-dialog-actions>

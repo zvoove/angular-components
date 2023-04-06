@@ -5,34 +5,8 @@ import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'zv-table-search',
-  template: `
-    <mat-form-field>
-      <mat-label>{{ intl.searchLabel }}</mat-label>
-      <input #i type="text" matInput [value]="searchText" autocomplete="off" (keyup)="onSearch($event.key, i.value)" />
-      <button
-        *ngIf="searchText || currentSearchText"
-        mat-icon-button
-        matSuffix
-        class="zv-table-search__button"
-        (click)="onSearch('Escape', null)"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  `,
-  styles: [
-    `
-      zv-table-search {
-        display: block;
-      }
-      zv-table-search .mat-form-field {
-        width: 100%;
-      }
-      .zv-table-search__button {
-        color: black;
-      }
-    `,
-  ],
+  templateUrl: './table-search.component.html',
+  styleUrls: ['./table-search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })

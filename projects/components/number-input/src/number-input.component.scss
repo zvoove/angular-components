@@ -7,6 +7,12 @@
   box-sizing: border-box;
   width: 100%;
   padding-right: 1.5em;
+  border: none;
+  outline: 0;
+  font: inherit;
+  &[disabled] {
+    background-color: transparent;
+  }
 }
 
 .zv-number-input__button-up,

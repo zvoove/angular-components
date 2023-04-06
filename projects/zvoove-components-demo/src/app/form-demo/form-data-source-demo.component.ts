@@ -213,65 +213,8 @@ class DemoZvFormDataSource<TParams, TData> implements IZvFormDataSource {
 
 @Component({
   selector: 'app-form-data-source-demo',
-  template: `
-    <mat-card class="app-form-data-source-demo__settings">
-      <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
-      <mat-checkbox [(ngModel)]="saveError">save error</mat-checkbox>
-      <button mat-flat-button type="button" color="accent" (click)="reload()">reload</button>
-    </mat-card>
-    <div class="app-form-data-source-demo__grid">
-      <zv-form [dataSource]="dataSource">
-        <mat-card>
-          <form [formGroup]="form">
-            <mat-form-field>
-              <mat-label>Input 1</mat-label>
-              <input type="text" matInput formControlName="input1" />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Input 2</mat-label>
-              <input type="text" matInput formControlName="input2" />
-            </mat-form-field>
-          </form>
-        </mat-card>
-        <mat-card style="height: 500px; margin-top: 1em;">dummy card</mat-card>
-        <ng-container zvFormSavebarButtons>
-          <button mat-stroked-button type="button">dummy button 1</button>
-          <button mat-stroked-button type="button">dummy button 2</button>
-        </ng-container>
-      </zv-form>
-      <mat-card class="app-form-data-source-demo__logs">
-        <div *ngFor="let log of logs" class="app-form-data-source-demo__log-item">{{ log | json }}</div>
-      </mat-card>
-    </div>
-  `,
-  styles: [
-    `
-      .app-form-data-source-demo__settings {
-        margin-bottom: 1em;
-      }
-
-      .app-form-data-source-demo__settings mat-checkbox {
-        margin: 1em;
-      }
-
-      .app-form-data-source-demo__grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        grid-gap: 1em;
-      }
-
-      .app-form-data-source-demo__log-item {
-        margin-bottom: 0.25em;
-        padding-bottom: 0.25em;
-        border-bottom: 1px solid #ccc;
-        font-size: 0.95em;
-      }
-
-      app-form-demo .mat-form-field {
-        display: block;
-      }
-    `,
-  ],
+  templateUrl: './form-data-source-demo.component.html',
+  styleUrls: ['./form-data-source-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })

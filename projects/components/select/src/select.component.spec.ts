@@ -496,19 +496,19 @@ describe('ZvSelectComponent', () => {
     component.panelClass = { 'custom-mat-option-class': true };
     fixture.detectChanges();
 
-    const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
+    const matSelectTrigger = fixture.debugElement.query(By.css('.mat-mdc-select-trigger'));
     matSelectTrigger.triggerEventHandler('click', new Event('click'));
     fixture.detectChanges();
 
     // select panel
-    const selectPanelNode = document.querySelector('.mat-select-panel');
+    const selectPanelNode = document.querySelector('.mat-mdc-select-panel');
     expect(selectPanelNode).not.toBeNull();
     expect(selectPanelNode.classList).toContain('custom-mat-option-class');
 
     const matOptionNodes = selectPanelNode.querySelectorAll('mat-option');
 
     // mat-select-search
-    expect(matOptionNodes.item(0).classList.contains('mat-option-disabled')).toBeTruthy();
+    expect(matOptionNodes.item(0).classList.contains('mdc-list-item--disabled')).toBeTruthy();
     expect(matOptionNodes.item(0).classList.contains('zv-select__search')).toBeTruthy();
 
     // empty input
@@ -528,12 +528,12 @@ describe('ZvSelectComponent', () => {
   it('should work with custom templates', async () => {
     const { fixture } = await initTest(TestCustomTemplateComponent);
 
-    const matSelectTrigger = fixture.debugElement.query(By.css('.mat-select-trigger'));
+    const matSelectTrigger = fixture.debugElement.query(By.css('.mat-mdc-select-trigger'));
     matSelectTrigger.triggerEventHandler('click', new Event('click'));
     fixture.detectChanges();
 
     // mat-option text
-    const selectPanelNode = document.querySelector('.mat-select-panel');
+    const selectPanelNode = document.querySelector('.mat-mdc-select-panel');
     const matOptionNodes = selectPanelNode.querySelectorAll('mat-option');
     const itemNode = matOptionNodes.item(2);
     expect(itemNode.textContent.trim()).toEqual('color:blue:Blue');
@@ -616,6 +616,8 @@ describe('ZvSelectComponent', () => {
     {
       await selectSearch.setFilter('2');
 
+      const options1 = await zvSelect.getOptions({ text: '1' });
+      expect(await (await options1[0].host()).hasClass('zv-select__option--hidden')).toBe(true); // filter got applied
       const optionTexts = await getOptionData(zvSelect, (o) => o.getText(), { isSelected: true });
       expect(optionTexts).toEqual(['2']);
     }

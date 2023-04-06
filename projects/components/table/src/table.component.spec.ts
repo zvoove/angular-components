@@ -7,7 +7,7 @@ import { IconType, MatIconHarness, MatIconTestingModule } from '@angular/materia
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, convertToParamMap, ParamMap, Params, RouterLinkWithHref, Routes } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, ParamMap, Params, RouterLink, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IZvTableIntlTexts, ZvIntlService, ZvIntlServiceEn } from '@zvoove/components/core';
 import { filterAsync } from '@zvoove/components/utils/src/array';
@@ -902,7 +902,7 @@ describe('ZvTableComponent', () => {
         const listActions = await listActionsMenu.getItems();
         expect(listActions.length).toEqual(5);
 
-        const links = fixture.debugElement.queryAll(By.directive(RouterLinkWithHref));
+        const links = fixture.debugElement.queryAll(By.directive(RouterLink));
         expect(links).toBeTruthy();
         expect(links[0].attributes.href).toEqual('/path/to/something/1?a=item_1');
       });

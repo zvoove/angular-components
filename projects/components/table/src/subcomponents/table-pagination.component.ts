@@ -19,37 +19,8 @@ import { debounce, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'zv-table-pagination',
-  template: `
-    <mat-paginator
-      [pageIndex]="pageIndex"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="pageSizeOptions"
-      [length]="dataLength"
-      [showFirstLastButtons]="true"
-      (page)="onPage($event)"
-    >
-    </mat-paginator>
-    <div class="mat-paginator-page-size" style="font-size: 12px;">
-      <mat-form-field *ngIf="pages.length > 2" class="mat-paginator-page-size-select">
-        <mat-select class="zv-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
-          <mat-option *ngFor="let page of pages" [value]="page"> {{ page }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  `,
-  styles: [
-    `
-      zv-table-pagination {
-        display: flex;
-        justify-content: flex-end;
-        background-color: #fff;
-        border-radius: 0 0 4px 4px;
-      }
-      zv-table-pagination .mat-paginator {
-        background: transparent;
-      }
-    `,
-  ],
+  templateUrl: './table-pagination.component.html',
+  styleUrls: ['./table-pagination.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })

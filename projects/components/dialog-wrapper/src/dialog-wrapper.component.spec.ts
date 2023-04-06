@@ -18,7 +18,7 @@ interface ITestDialogWrapperDataSourceOptions {
 }
 
 export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
-  dialogTitle = this.options.dialogTitle;
+  dialogTitle: string = this.options.dialogTitle;
   buttons: IZvButton[] = [
     {
       label: 'Ok',

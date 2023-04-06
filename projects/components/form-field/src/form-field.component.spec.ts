@@ -141,12 +141,10 @@ describe('ZvFormFieldComponent', () => {
       (<any>component.formControl).zvLabel = 'service label';
       fixture.detectChanges();
 
-      expect(
-        fixture.debugElement.query(By.css('.template-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()
-      ).toBe('async label');
-      expect(fixture.debugElement.query(By.css('.no-label')).query(By.css('.mat-checkbox-label')).nativeElement.textContent.trim()).toBe(
-        'service label'
+      expect(fixture.debugElement.query(By.css('.template-label')).query(By.css('label')).nativeElement.textContent.trim()).toBe(
+        'async label'
       );
+      expect(fixture.debugElement.query(By.css('.no-label')).query(By.css('label')).nativeElement.textContent.trim()).toBe('service label');
     }));
   });
 
@@ -385,7 +383,7 @@ describe('ZvFormFieldComponent', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      expect(component.formField.appearance).toEqual('legacy');
+      expect(component.formField.appearance).toEqual('outline');
       expect(component.formField.floatLabel).toEqual('auto');
     }));
 
@@ -397,7 +395,7 @@ describe('ZvFormFieldComponent', () => {
           { provide: ZvFormService, useClass: TestZvFormService },
           {
             provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-            useValue: { floatLabel: 'always', hideRequiredMarker: false, appearance: 'outline' },
+            useValue: { floatLabel: 'always', hideRequiredMarker: false, appearance: 'fill' },
           },
         ],
       }).compileComponents();
@@ -405,15 +403,14 @@ describe('ZvFormFieldComponent', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-
-      expect(component.formField.appearance).toEqual('outline');
+      expect(component.formField.appearance).toEqual('fill');
       expect(component.formField.floatLabel).toEqual('always');
     }));
   });
 });
 
 function getHelpButton(fixture: ComponentFixture<any>): DebugElement {
-  const button = fixture.debugElement.query(By.css('.mat-icon-button'));
+  const button = fixture.debugElement.query(By.css('.mdc-icon-button'));
   if (button && button.nativeElement.textContent.indexOf('info_outline') !== -1) {
     return button;
   }
@@ -421,7 +418,7 @@ function getHelpButton(fixture: ComponentFixture<any>): DebugElement {
 }
 
 function getShownHelpText(fixture: ComponentFixture<any>): string {
-  const bubble = fixture.debugElement.query(By.css('.mat-form-field-hint-wrapper'));
+  const bubble = fixture.debugElement.query(By.css('.mat-mdc-form-field-hint-wrapper'));
   return bubble && bubble.nativeElement.textContent.trim();
 }
 

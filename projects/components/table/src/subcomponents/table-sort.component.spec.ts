@@ -2,7 +2,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatButtonModule, MatMiniFabButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -60,7 +60,7 @@ describe('ZvTableSortComponent', () => {
     component.sortDirection = 'asc';
     fixture.detectChanges();
 
-    const [descButton, ascButton] = fixture.debugElement.queryAll(By.directive(MatButton));
+    const [descButton, ascButton] = fixture.debugElement.queryAll(By.directive(MatMiniFabButton));
 
     descButton.triggerEventHandler('click', new MouseEvent('click'));
     expect(component.onSortChanged).toHaveBeenCalledWith({
@@ -103,7 +103,7 @@ describe('ZvTableSortComponent', () => {
     component.sortDirection = 'asc';
     fixture.detectChanges();
 
-    const [descButton, ascButton] = fixture.debugElement.queryAll(By.directive(MatButton));
+    const [descButton, ascButton] = fixture.debugElement.queryAll(By.directive(MatMiniFabButton));
 
     ascButton.triggerEventHandler('click', new MouseEvent('click'));
     expect(component.onSortChanged).not.toHaveBeenCalled();

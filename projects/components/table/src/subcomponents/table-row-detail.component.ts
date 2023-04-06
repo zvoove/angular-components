@@ -5,29 +5,8 @@ import { ZvTableRowDetailDirective } from '../directives/table.directives';
 
 @Component({
   selector: 'zv-table-row-detail',
-  template: `
-    <div
-      class="zv-table-row-detail__container"
-      [@detailExpand]="animationState"
-      (@detailExpand.start)="rowDetailToggleStart()"
-      (@detailExpand.done)="rowDetailToggleEnd()"
-    >
-      <!--
-        zv-iframe autoheight funktioniert nur, wenn das iframe beim Initialisieren sichtbar ist.
-        Deshalb sorgen wir hier mit ngIf dafür, das es erst beim Aufklappen initialisiert wird.
-      -->
-      <ng-container *ngIf="visible">
-        <ng-template [ngTemplateOutlet]="rowDetail.template" [ngTemplateOutletContext]="{ $implicit: element }"> </ng-template>
-      </ng-container>
-    </div>
-  `,
-  styles: [
-    `
-      .zv-table-row-detail__container {
-        overflow: hidden;
-      }
-    `,
-  ],
+  templateUrl: './table-row-detail.component.html',
+  styleUrls: ['./table-row-detail.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),

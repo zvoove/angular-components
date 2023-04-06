@@ -1,0 +1,7 @@
+<zv-dialog-wrapper [dataSource]="dataSource">
+  <div style="margin: 1em">
+    <div>Action function called: {{ actionFunctionCalled }}</div>
+    <button type="button" mat-button (click)="toggleError()">Create error</button>
+    <button type="button" mat-stroked-button (click)="block()">Block for 2 seconds</button>
+  </div>
+</zv-dialog-wrapper>

@@ -1,0 +1,160 @@
+<div class="app-select-demo__settings">
+  <mat-card>
+    <mat-card-content class="app-select-demo__settings-box">
+      <strong>zv-select</strong>
+      <span>[dataSource] = new DefaultZvSelectDataSource(...)</span>
+      <mat-checkbox [(ngModel)]="multiple" (change)="recreate()">[multiple]</mat-checkbox>
+      <mat-checkbox [(ngModel)]="clearable">[clearable]</mat-checkbox>
+      <mat-checkbox [(ngModel)]="disabled" (change)="disabledChanged()">[disabled]</mat-checkbox>
+      <mat-checkbox [(ngModel)]="required">[required]</mat-checkbox>
+      <span>[errorStateMatcher]</span>
+      <mat-checkbox [(ngModel)]="panelClass">[panelClass] (color: green)</mat-checkbox>
+
+      <div>(openedChange) $event = boolean</div>
+      <div>(selectionChange) $event = MatSelectChange</div>
+
+      <mat-checkbox [(ngModel)]="customTriggerTpl">*zvSelectTriggerTemplate="let item"</mat-checkbox>
+      <mat-checkbox [(ngModel)]="customOptionTpl">*zvSelectOptionTemplate="let item"</mat-checkbox>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-content class="app-select-demo__settings-box">
+      <strong>DefaultZvSelectDataSource</strong>
+      <mat-form-field>
+        <mat-label>items</mat-label>
+        <mat-select [(ngModel)]="dataSourceItems" (selectionChange)="resetDataSource()">
+          <mat-option [value]="'default'">500 items</mat-option>
+          <mat-option [value]="'error'">error while loading</mat-option>
+          <mat-option [value]="'loading'">endless loading</mat-option>
+          <mat-option [value]="'empty'">empty result</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <strong>items array</strong>
+      <mat-checkbox [(ngModel)]="itemsAsObservable" (change)="resetDataSource()">wrapped in observable</mat-checkbox>
+      <mat-checkbox [(ngModel)]="itemsAsFunction" (change)="resetDataSource()">result of load function</mat-checkbox>
+
+      <mat-form-field>
+        <mat-label>mode</mat-label>
+        <mat-select [(ngModel)]="dataSourceMode" (selectionChange)="resetDataSource()">
+          <mat-option [value]="'id'">id</mat-option>
+          <mat-option [value]="'entity'">entity</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>idKey</mat-label>
+        <mat-select [(ngModel)]="dataSourceIdKey" (selectionChange)="resetDataSource()">
+          <mat-option [value]="'id'">id property</mat-option>
+          <mat-option [value]="'strId'">strId property</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>labelKey</mat-label>
+        <mat-select [(ngModel)]="dataSourceLabelKey" (selectionChange)="resetDataSource()">
+          <mat-option [value]="'labelA'">labelA property</mat-option>
+          <mat-option [value]="'labelB'">labelB property</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>searchDebounce</mat-label>
+        <input matInput type="number" [(ngModel)]="dataSourceSearchDebounce" (change)="resetDataSource()" />
+      </mat-form-field>
+
+      <strong>loadTrigger</strong>
+      <mat-checkbox [(ngModel)]="loadTriggerInitial" (change)="resetDataSource()">Initial</mat-checkbox>
+      <mat-checkbox [(ngModel)]="loadTriggerFirstPanelOpen" (change)="resetDataSource()">FirstPanelOpen</mat-checkbox>
+      <mat-checkbox [(ngModel)]="loadTriggerEveryPanelOpen" (change)="resetDataSource()">EveryPanelOpen</mat-checkbox>
+
+      <strong>sortBy</strong>
+      <mat-checkbox [(ngModel)]="sortBySelected" (change)="resetDataSource()">Selected</mat-checkbox>
+      <mat-checkbox [(ngModel)]="sortByComparer" (change)="resetDataSource()">Comparer</mat-checkbox>
+
+      <strong>sortCompare</strong>
+      <mat-checkbox [(ngModel)]="reverseSort" (change)="resetDataSource()">custom (reverse by id)</mat-checkbox>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<mat-card *ngIf="visible" style="margin-bottom: 1em">
+  <mat-card-content>
+    <mat-form-field style="width: 100%">
+      <mat-label>ngModel</mat-label>
+      <zv-select
+        [(ngModel)]="ngModel"
+        [dataSource]="ngModelDataSource"
+        [multiple]="multiple"
+        [clearable]="clearable"
+        [disabled]="disabled"
+        [required]="required"
+        [panelClass]="{ 'app-select-demo__panel': panelClass }"
+      >
+        <ng-container *ngIf="customTriggerTpl">
+          <ng-container *zvSelectTriggerTemplate="let item">
+            {{ item | json }}
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="customOptionTpl">
+          <ng-container *zvSelectOptionTemplate="let item">
+            {{ item | json }}
+          </ng-container>
+        </ng-container>
+      </zv-select>
+    </mat-form-field>
+    <div [formGroup]="form">
+      <mat-form-field style="width: 100%">
+        <mat-label>FormControl</mat-label>
+        <zv-select
+          formControlName="ctrl"
+          [dataSource]="formDataSource"
+          [multiple]="multiple"
+          [clearable]="clearable"
+          [disabled]="disabled"
+          [required]="required"
+          [panelClass]="{ 'app-select-demo__panel': panelClass }"
+        >
+          <ng-container *ngIf="customTriggerTpl">
+            <ng-container *zvSelectTriggerTemplate="let item">
+              {{ item | json }}
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="customOptionTpl">
+            <ng-container *zvSelectOptionTemplate="let item">
+              {{ item | json }}
+            </ng-container>
+          </ng-container>
+        </zv-select>
+      </mat-form-field>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card style="margin-bottom: 1em">
+  <mat-card-content>
+    <strong>ngModel logs</strong>
+    <div>value: {{ ngModel | json }}</div>
+    <div>load count: {{ ngModelLogs.loadCount }}</div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card style="margin-bottom: 1em">
+  <mat-card-content>
+    <strong>FormControl logs</strong>
+    <div>value: {{ form.value.ctrl | json }}</div>
+    <div>load count: {{ formLogs.loadCount }}</div>
+  </mat-card-content>
+</mat-card>
+
+<app-select-with-multiselect></app-select-with-multiselect>
+<app-select-with-events-only></app-select-with-events-only>
+<app-select-with-ng-model></app-select-with-ng-model>
+<app-select-with-selected-item-not-in-datasource></app-select-with-selected-item-not-in-datasource>
+<app-select-with-endless-loading-datasource></app-select-with-endless-loading-datasource>
+<app-select-with-error-in-datasource></app-select-with-error-in-datasource>
+<app-select-with-other-load-trigger></app-select-with-other-load-trigger>
+<app-select-with-custom-select-service></app-select-with-custom-select-service>
+<app-select-with-custom-template></app-select-with-custom-template>
+<app-select-with-error-state-matcher></app-select-with-error-state-matcher>

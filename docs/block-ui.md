@@ -46,6 +46,6 @@ Now you can use it in your components like this:
 
 ```html
 <zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
-  <mat-card> this will be blocked </mat-card>
+  <div>this will be blocked</div>
 </zv-block-ui>
 ```

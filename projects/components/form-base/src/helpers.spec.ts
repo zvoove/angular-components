@@ -1,4 +1,5 @@
-import { ElementRef, NgZone } from '@angular/core';
+import { Directionality } from '@angular/cdk/bidi';
+import { ElementRef, NgZone, EventEmitter } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { getControlType, hasRequiredField } from './helpers';
@@ -43,7 +44,12 @@ describe('getControlType', () => {
   it('should work with mat-slider', () => {
     const elementRef: ElementRef = { nativeElement: { classList: { add: () => {} }, addEventListener: () => {} } };
     const zone: NgZone = { runOutsideAngular: (x: any) => x } as any;
-    const control = new MatSlider(elementRef, null, null, null, null, zone, null, null);
+    const dir: Directionality = {
+      value: 'ltr',
+      change: new EventEmitter() as any,
+      ngOnDestroy: () => {},
+    };
+    const control = new MatSlider(zone, null, null, elementRef, dir, null, null);
     expect(getControlType(control)).toBe('mat-slider');
   });
   it('should return unknown when not type is found', () => {

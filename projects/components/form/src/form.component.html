@@ -6,33 +6,70 @@
 
     <div #errorCardWrapper [style.display]="exception ? 'block' : 'none'">
       <mat-card *ngIf="exception" class="zv-form__error-container" [class.zv-form__error-container--center]="exception.alignCenter">
-        <mat-icon *ngIf="exception.icon" class="zv-form__error-icon">{{ exception.icon }}</mat-icon>
-        <span>{{ exception.errorObject | zvErrorMessage }}</span>
+        <mat-card-content>
+          <mat-icon *ngIf="exception.icon" class="zv-form__error-icon">{{ exception.icon }}</mat-icon>
+          <span>{{ exception.errorObject | zvErrorMessage }}</span>
+        </mat-card-content>
       </mat-card>
     </div>
   </div>
 
   <mat-card *ngIf="!savebarHidden" class="zv-form__savebar" [class.zv-form__savebar--sticky]="savebarSticky">
-    <div class="zv-form__savebar-container">
-      <zv-form-errors [form]="form"></zv-form-errors>
-      <div class="zv-form__savebar-spacer"></div>
-      <div class="zv-form__buttons">
-        <ng-content select="[zvFormSavebarButtons]"></ng-content>
-        <button
-          *ngFor="let btn of buttons"
-          mat-button
-          [class.mat-raised-button]="btn.type === 'raised'"
-          [class.mat-stroked-button]="btn.type === 'stroked'"
-          [class.mat-icon-button]="btn.type === 'icon'"
-          type="button"
-          [color]="btn.color"
-          [disabled]="btn.disabled && btn.disabled()"
-          (click)="btn.click()"
-        >
-          <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
-          {{ btn.label }}
-        </button>
+    <mat-card-content>
+      <div class="zv-form__savebar-container">
+        <zv-form-errors [form]="form"></zv-form-errors>
+        <div class="zv-form__savebar-spacer"></div>
+        <div class="zv-form__buttons">
+          <ng-content select="[zvFormSavebarButtons]"></ng-content>
+          <ng-container *ngFor="let btn of buttons" [ngSwitch]="btn.type">
+            <button
+              *ngSwitchCase="'stroked'"
+              mat-stroked-button
+              type="button"
+              [color]="btn.color"
+              [disabled]="btn.disabled && btn.disabled()"
+              (click)="btn.click()"
+            >
+              <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
+              {{ btn.label }}
+            </button>
+            <button
+              *ngSwitchCase="'raised'"
+              mat-raised-button
+              type="button"
+              [color]="btn.color"
+              [disabled]="btn.disabled && btn.disabled()"
+              (click)="btn.click()"
+            >
+              <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
+              {{ btn.label }}
+            </button>
+            <button
+              *ngSwitchCase="'icon'"
+              mat-icon-button
+              type="button"
+              class="zv-form__error-icon-btn"
+              [color]="btn.color"
+              [disabled]="btn.disabled && btn.disabled()"
+              (click)="btn.click()"
+            >
+              <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
+              {{ btn.label }}
+            </button>
+            <button
+              *ngSwitchDefault
+              mat-button
+              type="button"
+              [color]="btn.color"
+              [disabled]="btn.disabled && btn.disabled()"
+              (click)="btn.click()"
+            >
+              <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
+              {{ btn.label }}
+            </button>
+          </ng-container>
+        </div>
       </div>
-    </div>
+    </mat-card-content>
   </mat-card>
 </form>

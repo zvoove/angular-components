@@ -23,8 +23,15 @@ mat-icon.zv-form__error-icon {
   width: 72px;
 }
 
-.zv-form__buttons button {
-  margin: 0.25em;
+.zv-form__buttons {
+  display: flex;
+  align-items: center;
+}
+
+.zv-form__error-icon-btn {
+  width: 25px !important;
+  height: 25px !important;
+  padding: 0 !important;
 }
 
 .zv-form__error-notfier-button {
@@ -36,7 +43,6 @@ mat-icon.zv-form__error-icon {
   bottom: -1px;
   margin: 1em 0 1em 0;
   z-index: 5;
-  padding: 1em !important;
   display: flex;
   justify-content: space-between;
   border-top: solid var(--zv-accent) 5px;
