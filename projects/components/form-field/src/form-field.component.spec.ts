@@ -9,7 +9,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormService } from '@zvoove/components/form-base';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { ZvFormFieldComponent, ZvFormFieldSubscriptType } from './form-field.component';
+import { ZV_FORM_FIELD_CONFIG, ZvFormFieldComponent, ZvFormFieldSubscriptType } from './form-field.component';
 import { ZvFormFieldModule } from './form-field.module';
 
 @Injectable()
@@ -82,7 +82,7 @@ export class TestNgModelComponent {
   template: `
     <zv-form-field [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
       <mat-label *ngIf="customLabel">{{ customLabel }}</mat-label>
-      <input type="text" [formControl]="formControl" matInput />
+      <input type="text" [formControl]="formControl" matInput [required]="required" />
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -94,6 +94,7 @@ export class TestFormComponent {
   hint: string = null;
   subscriptType: ZvFormFieldSubscriptType = null;
   hintToggle = false;
+  required = false;
 
   @ViewChild(ZvFormFieldComponent, { static: true }) formField: ZvFormFieldComponent;
 
@@ -405,6 +406,71 @@ describe('ZvFormFieldComponent', () => {
       expect(component).toBeDefined();
       expect(component.formField.appearance).toEqual('fill');
       expect(component.formField.floatLabel).toEqual('always');
+    }));
+  });
+
+  describe('hint', () => {
+    it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is set', waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, ZvFormFieldModule],
+        declarations: [TestFormComponent],
+        providers: [
+          { provide: ZvFormService, useClass: TestZvFormService },
+          { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: 'dummy' } },
+        ],
+      }).compileComponents();
+
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      // not required & no hint -> no hint
+      expect(getShownHelpText(fixture)).toEqual(null);
+
+      // required & no hint -> required text in hint
+      component.required = true;
+      fixture.detectChanges();
+      expect(getShownHelpText(fixture)).toEqual('dummy');
+
+      // required & hint -> required text and the hint separated by ". "
+      component.hint = 'test';
+      fixture.detectChanges();
+      expect(getShownHelpText(fixture)).toEqual('dummy. test');
+
+      // not required & hint -> only the hint
+      component.required = false;
+      fixture.detectChanges();
+      expect(getShownHelpText(fixture)).toEqual('test');
+    }));
+
+    it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is not set', waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, ZvFormFieldModule],
+        declarations: [TestFormComponent],
+        providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
+      }).compileComponents();
+
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      // not required & no hint -> no hint
+      expect(getShownHelpText(fixture)).toEqual(null);
+
+      // required & no hint -> no hint
+      component.required = true;
+      fixture.detectChanges();
+      expect(getShownHelpText(fixture)).toEqual('');
+
+      // required & hint -> only the hint
+      component.hint = 'dummy';
+      fixture.detectChanges();
+      expect(getShownHelpText(fixture)).toEqual('dummy');
+
+      // not required & hint -> only the hint
+      component.required = false;
+      fixture.detectChanges();
+      expect(getShownHelpText(fixture)).toEqual('dummy');
     }));
   });
 });

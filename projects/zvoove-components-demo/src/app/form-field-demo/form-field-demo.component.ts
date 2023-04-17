@@ -9,7 +9,7 @@ import { of } from 'rxjs';
   template: `
     <zv-form-field [appearance]="appearance" [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
       <mat-label>Referenz Column</mat-label>
-      <input matInput [(ngModel)]="value" type="text" />
+      <input matInput [(ngModel)]="value" type="text" [required]="required" />
     </zv-form-field>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +19,7 @@ export class ReferenceColumnComponent {
   @Input() public hintToggle = false;
   @Input() public hint = 'hint text';
   @Input() public appearance: MatFormFieldAppearance = 'outline';
+  @Input() public required = false;
   public value = '';
 }
 
@@ -37,6 +38,8 @@ export class FormFieldDemoComponent {
   public asyncLabel$ = of('Custom Label');
   public ctrlCountNumbers = Array(7).fill(1);
   public value = '';
+  public required = false;
+
   public get disabled(): boolean {
     return this._disabled;
   }

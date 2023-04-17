@@ -39,6 +39,7 @@ export declare type ZvFormFieldSubscriptType = 'bubble' | 'resize' | 'single-lin
 export interface ZvFormFieldConfig {
   subscriptType?: ZvFormFieldSubscriptType;
   hintToggle?: boolean;
+  requiredText?: string;
 }
 
 export const ZV_FORM_FIELD_CONFIG = new InjectionToken<ZvFormFieldConfig>('ZV_FORM_FIELD_CONFIG');
@@ -80,7 +81,7 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
   @ContentChildren(MatSuffix) public _suffixChildren: QueryList<MatSuffix>;
 
   @HostBinding('class.zv-form-field--bubble') public get showBubble() {
-    return this.subscriptType === 'bubble' && (!!this.visibleHint || this.hasError);
+    return this.subscriptType === 'bubble' && (!!this.hintText || this.hasError);
   }
   @HostBinding('class.zv-form-field--error-bubble') public get showErrorBubble() {
     return this.subscriptType === 'bubble' && this.hasError;
@@ -102,8 +103,20 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
     return !!this.hint && this.hintToggleOptionActive;
   }
 
-  public get visibleHint(): string | null {
-    return this.showHint || !this.hintToggleOptionActive ? this.hint : null;
+  public get hintText(): string {
+    const hintShouldBeShown = this.showHint || !this.hintToggleOptionActive;
+
+    if (!hintShouldBeShown) {
+      return null;
+    }
+
+    const isRequired = this._control?.required;
+    const requiredText = this.defaults?.requiredText;
+    if (!isRequired) {
+      return this.hint;
+    }
+
+    return [requiredText, this.hint].filter((s) => !!s).join('. ');
   }
 
   /** The error messages to show */
@@ -140,12 +153,11 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
     @Optional() @Inject(ZV_FORM_FIELD_CONFIG) private defaults?: ZvFormFieldConfig,
     @Optional() @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) private matDefaults?: MatFormFieldDefaultOptions
   ) {
-    if (!this.defaults) {
-      this.defaults = {
-        hintToggle: false,
-        subscriptType: 'resize',
-      };
-    }
+    this.defaults = {
+      hintToggle: this.defaults?.hintToggle ?? false,
+      subscriptType: this.defaults?.subscriptType ?? 'resize',
+      requiredText: this.defaults?.requiredText ?? null,
+    } as ZvFormFieldConfig;
   }
 
   public ngOnChanges(changes: SimpleChanges) {

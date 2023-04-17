@@ -37,6 +37,7 @@
     <mat-checkbox [(ngModel)]="disabled" style="margin: 0.5em">disabled</mat-checkbox>
     <mat-checkbox [(ngModel)]="customLabel" style="margin: 0.5em">custom label</mat-checkbox>
     <mat-checkbox [(ngModel)]="error" style="margin: 0.5em">error</mat-checkbox>
+    <mat-checkbox [(ngModel)]="required" style="margin: 0.5em">required</mat-checkbox>
     <mat-checkbox [(ngModel)]="hintToggle" style="margin: 0.5em">hint toggle button</mat-checkbox>
     <mat-form-field style="margin: 0.5em">
       <mat-label>subscriptType</mat-label>
@@ -131,6 +132,7 @@
           [hint]="hintText"
           [hintToggle]="hintToggle"
           [subscriptType]="subscriptType"
+          [required]="required"
         ></app-reference-column>
       </div>
     </div>
@@ -141,6 +143,7 @@
           [hint]="hintText"
           [hintToggle]="hintToggle"
           [subscriptType]="subscriptType"
+          [required]="required"
         ></app-reference-column>
       </div>
       <div>
@@ -209,6 +212,7 @@
           [hint]="hintText"
           [hintToggle]="hintToggle"
           [subscriptType]="subscriptType"
+          [required]="required"
         ></app-reference-column>
       </div>
       <div>
@@ -235,6 +239,7 @@
           [hint]="hintText"
           [hintToggle]="hintToggle"
           [subscriptType]="subscriptType"
+          [required]="required"
         ></app-reference-column>
       </div>
       <div>
@@ -288,6 +293,7 @@
           <zv-select
             formControlName="zvSelect"
             [dataSource]="{ mode: 'id', idKey: 'key', labelKey: 'label', items: zvSelectData }"
+            [required]="required"
           ></zv-select>
         </zv-form-field>
       </div>

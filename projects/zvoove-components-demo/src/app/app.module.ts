@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { ZV_FORM_FIELD_CONFIG } from '@zvoove/components/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -85,6 +86,7 @@ import { AppComponent } from './app.component';
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
+    { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: '* Required' } },
     { provide: ZvIntlService, useClass: ZvIntlServiceEn },
   ],
   bootstrap: [AppComponent],
