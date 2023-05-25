@@ -1,5 +1,5 @@
 <ng-container *ngIf="actions | zvTableActionsToRender : item as visibleActions">
-  <ng-container *ngIf="visibleActions.length >= moreMenuThreshold || actionsTemplate || openMenuFn !== null; else thresholdReachedTemplate">
+  <ng-container *ngIf="visibleActions.length >= moreMenuThreshold || actionsTemplate || openMenuFn; else inlineActionsTemplate">
     <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu" (click)="onMenuButtonClicked()">
       <mat-icon>more_vert</mat-icon>
     </button>
@@ -7,7 +7,7 @@
       <ng-container [ngTemplateOutlet]="actionsTemplate" [ngTemplateOutletContext]="{ $implicit: item }"></ng-container>
     </zv-table-actions>
   </ng-container>
-  <ng-template #thresholdReachedTemplate>
+  <ng-template #inlineActionsTemplate>
     <ng-container *ngFor="let action of visibleActions">
       <ng-container [ngSwitch]="action | zvTableActionType">
         <button
