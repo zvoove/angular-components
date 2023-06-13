@@ -118,6 +118,24 @@ describe('ZvFormComponent', () => {
       }
     });
 
+    it('should show progress', async () => {
+      const fixture = TestBed.createComponent(TestDataSourceComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+
+      component.dataSource = createDataSource({ progress: null });
+      fixture.detectChanges();
+
+      expect(getProgress(fixture)).toBe(null);
+      expect(isProgressBarVisible(fixture)).toBe(false);
+
+      component.dataSource = createDataSource({ progress: 50 });
+      fixture.detectChanges();
+
+      expect(getProgress(fixture)).toBe('50%');
+      expect(isProgressBarVisible(fixture)).toBe(true);
+    });
+
     it('should show error view, when exception property is not null', async () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
       const component = fixture.componentInstance;
@@ -329,4 +347,10 @@ function getErrorText(fixture: ComponentFixture<any>): string {
     errorText = errorText.substr(errorIconText.length);
   }
   return errorText;
+}
+function getProgress(fixture: ComponentFixture<any>): string {
+  return fixture.debugElement.query(By.css('.zv-form__savebar-progress'))?.nativeElement.textContent.trim() ?? null;
+}
+function isProgressBarVisible(fixture: ComponentFixture<any>): boolean {
+  return !!fixture.debugElement.query(By.css('mat-progress-bar'));
 }

@@ -30,6 +30,8 @@ class DemoZvFormDataSource<TParams, TData> implements IZvFormDataSource {
     return this._hasLoadError ? 'hide' : 'auto';
   }
 
+  public progress: number | null = null;
+
   private _originalData: TData = null;
   private _loading = false;
   private _hasLoadError = false;
@@ -98,6 +100,7 @@ class DemoZvFormDataSource<TParams, TData> implements IZvFormDataSource {
   public save(): void {
     this._saving = true;
     this.exception = null;
+    this.progress = 0;
     this.stateChanges$.next();
 
     const formValue: TData = this.form.getRawValue();
@@ -109,10 +112,12 @@ class DemoZvFormDataSource<TParams, TData> implements IZvFormDataSource {
           this.markDataSaved();
           this.setEditMode(false);
           this._saving = false;
+          this.progress = null;
           this.stateChanges$.next();
         },
         error: (err) => {
           this._saving = false;
+          this.progress = null;
           this.exception = {
             errorObject: err,
           };
@@ -271,5 +276,9 @@ export class FormDataSourceDemoComponent {
 
   public reload() {
     this.loadTrigger$.next(++this.counter);
+  }
+
+  public hideProgress() {
+    this.dataSource.progress = null;
   }
 }

@@ -16,6 +16,7 @@ export interface IZvFormDataSource {
   readonly contentBlocked: boolean;
   readonly exception: IZvException | null;
   readonly savebarMode: IZvSavebarMode;
+  readonly progress?: number | null;
   connect(options: IZvFormDataSourceConnectOptions): Observable<void>;
   disconnect(): void;
 }

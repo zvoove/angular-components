@@ -45,7 +45,6 @@ mat-icon.zv-form__error-icon {
   z-index: 5;
   display: flex;
   justify-content: space-between;
-  border-top: solid var(--zv-accent) 5px;
 }
 
 mat-card.zv-form__savebar--sticky {
@@ -62,6 +61,26 @@ mat-card.zv-form__savebar--sticky {
   button {
     margin: 0.25em;
   }
+}
+
+.zv-form__savebar-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: var(--mdc-elevated-card-container-shape, var(--mdc-shape-medium, 4px));
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  overflow: hidden;
+  min-height: 4px;
+}
+
+.zv-form__savebar-border--accent {
+  background-color: var(--zv-accent);
+}
+
+.zv-form__savebar-progress {
+  align-self: center;
 }
 
 .zv-form__savebar-spacer {

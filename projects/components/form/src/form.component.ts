@@ -59,6 +59,14 @@ export class ZvFormComponent implements AfterViewInit, OnDestroy {
     return this.dataSource.buttons;
   }
 
+  public get progress(): number | null | undefined {
+    return this.dataSource.progress;
+  }
+
+  public get showProgress(): boolean {
+    return this.progress != null && this.progress >= 0;
+  }
+
   public get savebarMode(): string {
     return this.dataSource.savebarMode || 'auto';
   }

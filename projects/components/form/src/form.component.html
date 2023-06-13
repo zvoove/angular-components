@@ -17,6 +17,10 @@
   <mat-card *ngIf="!savebarHidden" class="zv-form__savebar" [class.zv-form__savebar--sticky]="savebarSticky">
     <mat-card-content>
       <div class="zv-form__savebar-container">
+        <div class="zv-form__savebar-border" [class.zv-form__savebar-border--accent]="!showProgress">
+          <mat-progress-bar *ngIf="showProgress" mode="determinate" [value]="progress"></mat-progress-bar>
+        </div>
+        <div *ngIf="showProgress" class="zv-form__savebar-progress">{{ progress }}%</div>
         <zv-form-errors [form]="form"></zv-form-errors>
         <div class="zv-form__savebar-spacer"></div>
         <div class="zv-form__buttons">
