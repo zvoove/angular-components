@@ -7,6 +7,10 @@
   </zv-block-ui>
 </mat-dialog-content>
 <mat-dialog-actions class="zv-dialog-wrapper__action-bar-container">
+  <div class="zv-dialog-wrapper__progress-container">
+    <mat-progress-bar *ngIf="showProgress" mode="determinate" [value]="progress" class="zv-dialog-wrapper__progres-bar"></mat-progress-bar>
+  </div>
+  <div *ngIf="showProgress" class="zv-dialog-wrapper__progress-text">{{ progress }}%</div>
   <div *ngIf="exception" class="zv-dialog-wrapper__error">
     {{ exception.errorObject | zvErrorMessage }}
   </div>

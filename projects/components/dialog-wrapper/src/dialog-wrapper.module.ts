@@ -6,9 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { ZvBlockUiModule } from '@zvoove/components/block-ui';
 import { ZvErrorMessagePipeModule } from '@zvoove/components/core';
 import { ZvDialogWrapperComponent } from './dialog-wrapper.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, ZvErrorMessagePipeModule, ZvBlockUiModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, MatProgressBarModule, ZvErrorMessagePipeModule, ZvBlockUiModule],
   exports: [ZvDialogWrapperComponent],
   declarations: [ZvDialogWrapperComponent],
 })

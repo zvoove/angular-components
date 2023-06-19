@@ -26,6 +26,12 @@ export class ZvDialogWrapperComponent implements OnDestroy {
   public get exception(): IZvException | null {
     return this.dataSource.exception;
   }
+  public get progress(): number | null | undefined {
+    return this.dataSource.progress;
+  }
+  public get showProgress(): boolean {
+    return this.progress != null && this.progress >= 0;
+  }
   @Input() public set dataSource(value: IZvDialogWrapperDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();

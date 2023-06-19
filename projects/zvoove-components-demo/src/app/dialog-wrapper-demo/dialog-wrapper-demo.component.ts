@@ -31,6 +31,7 @@ export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
   contentVisible = true;
   contentBlocked = false;
   exception: IZvException;
+  progress: number | null = null;
 
   public somethingChanged$ = new Subject<void>();
 
@@ -50,6 +51,11 @@ export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
 
   close() {
     this.options.cancelFn();
+  }
+
+  setProgress(p: number | null) {
+    this.progress = p;
+    this.somethingChanged$.next();
   }
 }
 
@@ -108,5 +114,9 @@ export class DialogWrapperDemoDialog {
       this.dataSource.contentBlocked = false;
       this.dataSource.somethingChanged$.next();
     }, 2000);
+  }
+
+  public toggleProgress() {
+    this.dataSource.setProgress(this.dataSource.progress ? null : 50);
   }
 }

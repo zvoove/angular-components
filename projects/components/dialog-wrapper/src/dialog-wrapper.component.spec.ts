@@ -38,6 +38,7 @@ export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
   contentVisible: boolean;
   contentBlocked: boolean;
   exception: IZvException;
+  progress: number | null = null;
 
   public somethingChanged$ = new Subject<void>();
 
@@ -55,6 +56,11 @@ export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
 
   close() {
     this.options.cancelFn();
+  }
+
+  setProgress(p: number | null) {
+    this.progress = p;
+    this.somethingChanged$.next();
   }
 }
 
@@ -168,5 +174,16 @@ describe('DialogUnitTestComponent', () => {
 
     dialogRef.componentInstance.dataSource.somethingChanged$.next();
     expect(await dialogWrapper.getError()).toEqual('error 2');
+  });
+
+  it('should show progress', async () => {
+    expect(await dialogWrapper.getProgress()).toEqual(null);
+    expect(await dialogWrapper.getProgressBar()).toEqual(null);
+    dialogRef.componentInstance.dataSource.setProgress(50);
+
+    expect(await dialogWrapper.getProgress()).toEqual('50%');
+    const progressBar = await dialogWrapper.getProgressBar();
+    expect(progressBar).toBeTruthy();
+    expect(await progressBar.getValue()).toEqual(50);
   });
 });

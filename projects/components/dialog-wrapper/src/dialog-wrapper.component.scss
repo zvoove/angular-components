@@ -15,3 +15,15 @@ zv-dialog-wrapper {
   /** Max possible width a MatDialog can be without showing a horizontal scrollbar  */
   max-width: calc(80vw - 48px);
 }
+
+.zv-dialog-wrapper__progress-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  min-height: 4px;
+}
+.zv-dialog-wrapper__progress-text {
+  align-self: center;
+}

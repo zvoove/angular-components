@@ -7,6 +7,7 @@ export interface IZvDialogWrapperDataSource {
   readonly contentVisible: boolean;
   readonly contentBlocked: boolean;
   readonly exception: IZvException | null;
+  readonly progress?: number | null;
   connect(): Observable<void>;
   disconnect(): void;
 }
