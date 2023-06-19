@@ -32,6 +32,7 @@
               type="button"
               [color]="btn.color"
               [disabled]="btn.disabled && btn.disabled()"
+              [attr.data-cy]="btn.dataCy"
               (click)="btn.click()"
             >
               <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
@@ -43,6 +44,7 @@
               type="button"
               [color]="btn.color"
               [disabled]="btn.disabled && btn.disabled()"
+              [attr.data-cy]="btn.dataCy"
               (click)="btn.click()"
             >
               <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
@@ -55,6 +57,7 @@
               class="zv-form__error-icon-btn"
               [color]="btn.color"
               [disabled]="btn.disabled && btn.disabled()"
+              [attr.data-cy]="btn.dataCy"
               (click)="btn.click()"
             >
               <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
@@ -66,6 +69,7 @@
               type="button"
               [color]="btn.color"
               [disabled]="btn.disabled && btn.disabled()"
+              [attr.data-cy]="btn.dataCy"
               (click)="btn.click()"
             >
               <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>

@@ -77,6 +77,7 @@ describe('ZvFormComponent', () => {
           {
             type: 'raised',
             label: 'btn2',
+            dataCy: 'btn2',
             color: 'accent',
             disabled: () => false,
             click: () => {
@@ -113,6 +114,7 @@ describe('ZvFormComponent', () => {
         expect(btn2Classes).toContain('mat-accent');
         expect(btn2Button.attributes.type).toEqual('button');
         expect(btn2Button.attributes.disabled).toBeFalsy();
+        expect(btn2Button.attributes['data-cy']).toEqual('btn2');
         btn2Button.triggerEventHandler('click', null);
         expect(btn2Clicked).toBeTruthy();
       }

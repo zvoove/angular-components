@@ -6,5 +6,6 @@ export interface IZvButton {
   color?: ThemePalette | null;
   icon?: string;
   disabled?: () => boolean;
+  dataCy?: string;
   click: () => void;
 }
