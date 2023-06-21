@@ -346,7 +346,7 @@ function getErrorText(fixture: ComponentFixture<any>): string {
   const errorIconNode = getErrorIcon(fixture);
   if (errorIconNode) {
     const errorIconText = errorIconNode.nativeElement.textContent.trim();
-    errorText = errorText.substr(errorIconText.length);
+    errorText = errorText.substring(errorIconText.length);
   }
   return errorText;
 }

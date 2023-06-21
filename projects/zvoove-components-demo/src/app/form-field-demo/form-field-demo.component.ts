@@ -45,10 +45,10 @@ export class FormFieldDemoComponent {
   }
   public set disabled(value: boolean) {
     for (const ctrlName in this.form.controls) {
-      if (!this.form.controls.hasOwnProperty(ctrlName)) {
+      if (!Object.prototype.hasOwnProperty.call(this.form.controls, ctrlName)) {
         continue;
       }
-      const ctrl = this.form.controls[ctrlName];
+      const ctrl = this.form.controls[ctrlName as keyof typeof this.form.controls];
       if (value) {
         ctrl.disable();
       } else {
@@ -64,10 +64,10 @@ export class FormFieldDemoComponent {
   }
   public set error(value: boolean) {
     for (const ctrlName in this.form.controls) {
-      if (!this.form.controls.hasOwnProperty(ctrlName)) {
+      if (!Object.prototype.hasOwnProperty.call(this.form.controls, ctrlName)) {
         continue;
       }
-      const ctrl = this.form.controls[ctrlName];
+      const ctrl = this.form.controls[ctrlName as keyof typeof this.form.controls];
       if (value) {
         ctrl.setValidators(() => ({
           error1: 'error value 1',
@@ -103,10 +103,10 @@ export class FormFieldDemoComponent {
 
   constructor(private cd: ChangeDetectorRef) {
     for (const ctrlName in this.form.controls) {
-      if (!this.form.controls.hasOwnProperty(ctrlName)) {
+      if (!Object.prototype.hasOwnProperty.call(this.form.controls, ctrlName)) {
         continue;
       }
-      const ctrl = this.form.controls[ctrlName];
+      const ctrl = this.form.controls[ctrlName as keyof typeof this.form.controls];
       (ctrl as any).zvLabel = ctrlName;
     }
   }

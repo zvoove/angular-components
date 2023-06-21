@@ -19,7 +19,7 @@ import type { ElementRef } from '@angular/core';
   encapsulation: ViewEncapsulation.None,
 })
 export class ZvBlockUiComponent implements OnChanges, AfterViewInit {
-  @Input() public blocked: boolean;
+  @Input({ required: true }) public blocked: boolean;
   @Input() public spinnerText: string;
   @HostBinding('class.zv-block-ui__clickthrough')
   @Input()

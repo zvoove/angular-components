@@ -1,7 +1,9 @@
 <mat-form-field>
   <mat-label>{{ intl.sortLabel }}</mat-label>
   <mat-select [value]="sortColumn" (selectionChange)="onSortColumnChange($event)">
-    <mat-option *ngFor="let sortDefinition of sortDefinitions" [value]="sortDefinition.prop">{{ sortDefinition.displayName }}</mat-option>
+    <mat-option *ngFor="let sortDefinition of sortDefinitions; trackBy: trackBy" [value]="sortDefinition.prop">{{
+      sortDefinition.displayName
+    }}</mat-option>
   </mat-select>
 </mat-form-field>
 <button

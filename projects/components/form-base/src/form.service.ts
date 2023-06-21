@@ -67,7 +67,7 @@ export abstract class BaseZvFormService extends ZvFormService {
     return merge(control.valueChanges, control.statusChanges).pipe(startWith(null as any), debounceTime(this.options.debounceTime));
   }
 
-  private getErrorInfo(control: AbstractControl, includeControls: boolean = false): IZvFormErrorData[] {
+  private getErrorInfo(control: AbstractControl, includeControls = false): IZvFormErrorData[] {
     return this.getControlErrorInfoInternal(control, '', includeControls);
   }
 
@@ -76,7 +76,7 @@ export abstract class BaseZvFormService extends ZvFormService {
 
     if (control instanceof FormGroup || control instanceof FormArray) {
       for (const childName in control.controls) {
-        if (!control.controls.hasOwnProperty(childName)) {
+        if (!Object.prototype.hasOwnProperty.call(control.controls, childName)) {
           continue;
         }
         const childControl = (<{ [key: string]: AbstractControl }>control.controls)[childName];

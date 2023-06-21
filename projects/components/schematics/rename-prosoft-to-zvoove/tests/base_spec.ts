@@ -23,7 +23,7 @@ export class DemoModule {}
 describe('rename-prosoft-to-zvoove', () => {
   it('should work with empty tree', async () => {
     const runner = new SchematicTestRunner('test', require.resolve('../../migrations.json'));
-    const tree = await runner.runSchematicAsync('ng-add', {}, Tree.empty()).toPromise();
+    const tree = await runner.runSchematic('ng-add', {}, Tree.empty());
     expect(tree.files).toEqual([]);
   });
 
@@ -32,7 +32,7 @@ describe('rename-prosoft-to-zvoove', () => {
     const tree = Tree.empty();
     tree.create('/dist/dist.component.html', testHtmlContent);
     tree.create('/some-folder/node_modules/node.component.ts', testTsContent);
-    const resultTree = await runner.runSchematicAsync('ng-add', {}, tree).toPromise();
+    const resultTree = await runner.runSchematic('ng-add', {}, tree);
     validateHtmlFile(resultTree.get('/dist/dist.component.html'));
     validateTsFile(resultTree.get('/some-folder/node_modules/node.component.ts'));
   });

@@ -39,7 +39,6 @@ describe('ZvViewComponent', () => {
       });
       fixture = TestBed.createComponent(TestDataSourceComponent);
       component = fixture.componentInstance;
-      expect(component).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
       view = await loader.getHarness(ZvViewHarness);

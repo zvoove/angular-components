@@ -12,6 +12,7 @@ import { ZvTablePaginationHarness } from './table-pagination.harness';
 import { ZvTableSearchHarness } from './table-search.harness';
 import { ZvTableSettingsHarness } from './table-settings.harness';
 import { ZvTableSortHarness } from './table-sort.harness';
+import { ZvTableRowActionsHarness } from './table-row-actions.harness';
 
 export class ZvTableHarness extends ContentContainerComponentHarness {
   static hostSelector = 'zv-table';
@@ -98,6 +99,10 @@ export class ZvTableHarness extends ContentContainerComponentHarness {
 
   public async getRowActionsButton(rowIndex: number): Promise<MatMenuHarness> {
     return await (await this._data()).getRowActionsButton(rowIndex);
+  }
+
+  public async getRowActions(rowIndex: number): Promise<ZvTableRowActionsHarness> {
+    return await (await this._data()).getRowActions(rowIndex);
   }
 
   public async getListActions(): Promise<ZvTableActionsHarness> {

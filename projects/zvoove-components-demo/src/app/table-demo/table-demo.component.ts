@@ -165,8 +165,8 @@ export class TableDemoComponent {
             const start = filter.currentPage * filter.pageSize;
             const data = this.dsData.filter((x) => JSON.stringify(x).indexOf(filter.searchText) !== -1);
             data.sort((a, b) => {
-              const aProp = a[filter.sortColumn];
-              const bProp = b[filter.sortColumn];
+              const aProp = a[filter.sortColumn as keyof typeof a];
+              const bProp = b[filter.sortColumn as keyof typeof b];
               let result = aProp < bProp ? 1 : -1;
               if (filter.sortDirection === 'asc') {
                 result *= -1;

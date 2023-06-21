@@ -12,7 +12,7 @@ import type { FormGroup } from '@angular/forms';
   encapsulation: ViewEncapsulation.None,
 })
 export class ZvFormErrorsComponent implements OnChanges {
-  @Input() public form!: FormGroup;
+  @Input({ required: true }) public form!: FormGroup;
   @Input() public includeControls: boolean = null;
 
   public errors$!: Observable<IZvFormError[]>;

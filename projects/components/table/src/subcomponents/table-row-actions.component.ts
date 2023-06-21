@@ -1,15 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges,
-  TemplateRef,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { IZvTableAction } from '../models';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { isObservable, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, finalize, take, takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -25,7 +16,6 @@ export class ZvTableRowActionsComponent implements OnChanges, OnDestroy {
     data: any,
     actions: IZvTableAction<any>[]
   ) => Observable<IZvTableAction<any>[]> | IZvTableAction<any>[] | null;
-  @Input() public actionsTemplate: TemplateRef<any> | null = null;
   @Input() public moreMenuThreshold: number;
   @Input() public item: any;
 
@@ -59,7 +49,7 @@ export class ZvTableRowActionsComponent implements OnChanges, OnDestroy {
 
     const openMenuFnResult = this.openMenuFn(this.item, [...this.actions]);
 
-    if (openMenuFnResult instanceof Observable<IZvTableAction<any>[]>) {
+    if (isObservable(openMenuFnResult)) {
       this.loading = true;
       openMenuFnResult
         .pipe(

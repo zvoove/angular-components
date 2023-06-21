@@ -20,6 +20,7 @@ describe('ZvNumberInputComponent', () => {
 
   function triggerEvent(el: HTMLElement, type: string) {
     const e = document.createEvent('HTMLEvents');
+    // eslint-disable-next-line deprecation/deprecation
     e.initEvent(type, false, true);
     el.dispatchEvent(e);
   }
@@ -155,8 +156,8 @@ describe('ZvNumberInputComponent', () => {
   it('should select with up and down arrows', () => {
     fixture.detectChanges();
 
-    const upArrowEvent = { which: 38, preventDefault: () => {} };
-    const downArrowEvent = { which: 40, preventDefault: () => {} };
+    const upArrowEvent = { key: 'ArrowUp', preventDefault: () => {} };
+    const downArrowEvent = { key: 'ArrowDown', preventDefault: () => {} };
     spinner._onInputKeydown(upArrowEvent as KeyboardEvent);
     fixture.detectChanges();
 

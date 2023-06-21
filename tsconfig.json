@@ -23,7 +23,6 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
 

@@ -24,15 +24,13 @@ import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IZvTableIntlTexts, ZvExceptionMessageExtractor, ZvIntlService } from '@zvoove/components/core';
 import { ZvFlipContainerComponent } from '@zvoove/components/flip-container';
-import { combineLatest, Subject, Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
 import { ZvTableDataSource } from './data/table-data-source';
 import {
   ZvTableColumnDirective,
   ZvTableCustomHeaderDirective,
   ZvTableCustomSettingsDirective,
-  ZvTableListActionsDirective,
-  ZvTableRowActionsDirective,
   ZvTableRowDetailDirective,
   ZvTableTopButtonSectionDirective,
 } from './directives/table.directives';
@@ -55,8 +53,8 @@ import { IZvTableSetting, ZvTableSettingsService } from './services/table-settin
 })
 export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @Input() public caption: string;
-  @Input() public dataSource: ZvTableDataSource<any, any>;
-  @Input() public tableId: string;
+  @Input({ required: true }) public dataSource: ZvTableDataSource<any, any>;
+  @Input({ required: true }) public tableId: string;
   @Input() public intlOverride: Partial<IZvTableIntlTexts>;
   @Input()
   public set sortDefinitions(value: IZvTableSortDefinition[]) {
@@ -121,30 +119,6 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
 
   private _topButtonSection: TemplateRef<any> | null = null;
-
-  @ContentChild(ZvTableListActionsDirective, { read: TemplateRef })
-  public set listActions(value: TemplateRef<any> | null) {
-    this._listActions = value;
-    this.updateTableState();
-  }
-
-  public get listActions() {
-    return this._listActions;
-  }
-
-  private _listActions: TemplateRef<any> | null = null;
-
-  @ContentChild(ZvTableRowActionsDirective, { read: TemplateRef })
-  public set rowActions(value: TemplateRef<any> | null) {
-    this._rowActions = value;
-    this.updateTableState();
-  }
-
-  public get rowActions() {
-    return this._rowActions;
-  }
-
-  private _rowActions: TemplateRef<any> | null = null;
 
   @ContentChildren(ZvTableColumnDirective)
   public set columnDefsSetter(queryList: QueryList<ZvTableColumnDirective>) {
@@ -236,7 +210,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   }
 
   public get showListActions(): boolean {
-    return !!this.listActions || !!this.dataSource.listActions.length || this.settingsEnabled || this.refreshable;
+    return !!this.dataSource.listActions.length || this.settingsEnabled || this.refreshable;
   }
 
   public get showSorting(): boolean {
@@ -251,8 +225,6 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   private _tableSettings: Partial<IZvTableSetting> = {};
   private _urlSettings: Partial<IZvTableUpdateDataInfo> = {};
   private _intlChangesSub: Subscription;
-
-  private ngUnsubscribe$ = new Subject<void>();
 
   constructor(
     public intlService: ZvIntlService,
@@ -298,9 +270,6 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     if (this._intlChangesSub) {
       this._intlChangesSub.unsubscribe();
     }
-
-    this.ngUnsubscribe$.next();
-    this.ngUnsubscribe$.complete();
   }
 
   public onSearchChanged(value: string) {
@@ -391,12 +360,12 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     }
 
     // Selektierung der Rows aktivieren
-    if (this.listActions || this.dataSource.listActions.length) {
+    if (this.dataSource.listActions.length) {
       this.displayedColumns.splice(0, 0, 'select');
     }
 
     // Selektierungs- und Row-Aktionen aktivieren
-    if (this.showListActions || this.rowActions || this.dataSource.rowActions.length) {
+    if (this.showListActions || this.dataSource.rowActions.length) {
       this.displayedColumns.push('options');
     }
 

@@ -16,6 +16,7 @@ describe('workspace-project App', () => {
   afterEach(async () => {
     // Assert that there are no errors emitted from the browser
     const logs = await browser.manage().logs().get(logging.Type.BROWSER);
+    // eslint-disable-next-line jasmine/no-expect-in-setup-teardown
     expect(logs).not.toContain(
       jasmine.objectContaining({
         level: logging.Level.SEVERE,

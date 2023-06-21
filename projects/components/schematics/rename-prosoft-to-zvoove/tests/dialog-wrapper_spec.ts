@@ -189,7 +189,7 @@ describe('rename-prosoft-to-zvoove', () => {
     const tree = Tree.empty();
     tree.create('/app.component.html', htmlContent);
     tree.create('/multiple/sub/folders/test.component.html', htmlContent);
-    const resultTree = await runner.runSchematicAsync('ng-add', {}, tree).toPromise();
+    const resultTree = await runner.runSchematic('ng-add', {}, tree);
     expect(resultTree.files).toEqual(['/app.component.html', '/multiple/sub/folders/test.component.html']);
     validateHtmlFile(resultTree.get('/app.component.html'), true);
     validateHtmlFile(resultTree.get('/multiple/sub/folders/test.component.html'), true);
@@ -200,7 +200,7 @@ describe('rename-prosoft-to-zvoove', () => {
     const tree = Tree.empty();
     tree.create('/app.module.ts', tsContent);
     tree.create('/multiple/sub/folders/test.module.ts', tsContent);
-    const resultTree = await runner.runSchematicAsync('ng-add', {}, tree).toPromise();
+    const resultTree = await runner.runSchematic('ng-add', {}, tree);
     expect(resultTree.files).toEqual(['/app.module.ts', '/multiple/sub/folders/test.module.ts']);
     validateTsFile(resultTree.get('/app.module.ts'), true);
     validateTsFile(resultTree.get('/multiple/sub/folders/test.module.ts'), true);

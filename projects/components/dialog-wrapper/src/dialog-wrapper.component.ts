@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { IZvButton, IZvException } from '@zvoove/components/core';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
 
 @Component({
@@ -32,7 +32,7 @@ export class ZvDialogWrapperComponent implements OnDestroy {
   public get showProgress(): boolean {
     return this.progress != null && this.progress >= 0;
   }
-  @Input() public set dataSource(value: IZvDialogWrapperDataSource) {
+  @Input({ required: true }) public set dataSource(value: IZvDialogWrapperDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
       this._dataSourceSubscription.unsubscribe();
@@ -52,13 +52,9 @@ export class ZvDialogWrapperComponent implements OnDestroy {
   private _dataSource: IZvDialogWrapperDataSource;
 
   private _dataSourceSubscription = Subscription.EMPTY;
-  private _ngUnsubscribe$ = new Subject<void>();
   constructor(private cd: ChangeDetectorRef) {}
 
   public ngOnDestroy() {
-    this._ngUnsubscribe$.next();
-    this._ngUnsubscribe$.complete();
-
     this._dataSourceSubscription.unsubscribe();
     if (this._dataSource) {
       this._dataSource.disconnect();

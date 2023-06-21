@@ -3,12 +3,14 @@ import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatHeaderRowHarness, MatRowHarness, MatTableHarness } from '@angular/material/table/testing';
 import { ZvTableActionsHarness } from './table-actions.harness';
+import { ZvTableRowActionsHarness } from './table-row-actions.harness';
 
 export class ZvTableDataHarness extends ContentContainerComponentHarness {
   static hostSelector = 'zv-table-data';
 
   private _matTable = this.locatorFor(MatTableHarness);
   private _listActions = this.locatorFor(ZvTableActionsHarness);
+  private _rowActions = this.locatorForAll(ZvTableRowActionsHarness);
   private _listActionsButton = this.locatorForAll(MatMenuHarness);
   private _selectCheckboxes = this.locatorForAll(MatCheckboxHarness);
 
@@ -37,6 +39,11 @@ export class ZvTableDataHarness extends ContentContainerComponentHarness {
   /** Action menus are sorted the way they appear in the UI (Header, Row1, Row2, ...) */
   public async getListActions(): Promise<ZvTableActionsHarness> {
     return await this._listActions();
+  }
+
+  public async getRowActions(rowIndex: number): Promise<ZvTableRowActionsHarness> {
+    const actions = await this._rowActions();
+    return actions[rowIndex];
   }
 
   public async getSelectCheckboxes(): Promise<MatCheckboxHarness[]> {

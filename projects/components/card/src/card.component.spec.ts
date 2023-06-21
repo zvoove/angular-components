@@ -57,7 +57,6 @@ describe('ZvCardComponent', () => {
     });
     fixture = TestBed.createComponent(TestDataSourceComponent);
     component = fixture.componentInstance;
-    expect(component).toBeDefined();
 
     loader = TestbedHarnessEnvironment.loader(fixture);
     card = await loader.getHarness(ZvCardHarness);

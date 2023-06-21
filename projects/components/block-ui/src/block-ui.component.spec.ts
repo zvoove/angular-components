@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MatSpinner } from '@angular/material/progress-spinner';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvBlockUiComponent } from './block-ui.component';
@@ -43,11 +43,11 @@ describe('ZvBlockUiComponent', () => {
     const contentDebugEl = fixture.debugElement.query(By.css('#content'));
     expect(contentDebugEl).not.toBe(null);
     expect(contentDebugEl.nativeElement.textContent).toBe('test text');
-    expect(fixture.debugElement.query(By.directive(MatSpinner))).toBe(null);
+    expect(fixture.debugElement.query(By.directive(MatProgressSpinner))).toBe(null);
 
     component.blocked = true;
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.directive(MatSpinner))).not.toBe(null);
+    expect(fixture.debugElement.query(By.directive(MatProgressSpinner))).not.toBe(null);
     const containerEl = fixture.debugElement.query(By.css('.zv-block-ui__overlay-content'));
     expect(containerEl.nativeElement.children.length).toBe(1);
 

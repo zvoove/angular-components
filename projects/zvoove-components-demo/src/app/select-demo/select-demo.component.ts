@@ -107,7 +107,7 @@ export class SelectDemoComponent implements OnInit {
   public getDataSourceItems(logs: DemoLogs) {
     logs.loadCount = 0;
     switch (this.dataSourceItems) {
-      case 'default':
+      case 'default': {
         let items: any = this.items;
         if (this.itemsAsObservable) {
           items = of(items).pipe(
@@ -125,12 +125,13 @@ export class SelectDemoComponent implements OnInit {
           };
         }
         return items;
+      }
       case 'empty':
         return [];
       case 'loading':
         return NEVER;
       case 'error':
-        return throwError(new Error('loading failed'));
+        return throwError(() => new Error('loading failed'));
     }
   }
 

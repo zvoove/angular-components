@@ -1,3 +1,5 @@
+<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
 <table mat-table multiTemplateDataRows class="zv-table-data__table" [dataSource]="dataSource" [trackBy]="dataSource.trackBy">
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">
@@ -60,7 +62,6 @@
           (refreshData)="onRefreshDataClicked()"
           (showSettings)="onShowSettingsClicked()"
         >
-          <ng-template [ngTemplateOutlet]="listActions" [ngTemplateOutletContext]="{ $implicit: getSelectedRows() }"></ng-template>
         </zv-table-actions>
       </ng-container>
     </th>
@@ -69,7 +70,6 @@
         [actions]="dataSource.rowActions"
         [loadActionsFn]="dataSource.loadRowActionFn"
         [openMenuFn]="dataSource.openMenuRowActionFn"
-        [actionsTemplate]="rowActions"
         [item]="element"
         [moreMenuThreshold]="dataSource.moreMenuThreshold"
       >

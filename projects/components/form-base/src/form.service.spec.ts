@@ -87,7 +87,7 @@ describe('BaseZvFormService', () => {
       service = new TestZvFormService();
     });
 
-    it('should return errors in the right order', fakeAsync(() => {
+    it('should return errors in the right order (control)', fakeAsync(() => {
       const control = new FormControl('a', [Validators.minLength(2), Validators.pattern('test')]);
 
       let resultChecked = false;
@@ -103,7 +103,7 @@ describe('BaseZvFormService', () => {
       expect(resultChecked).toBeTruthy();
     }));
 
-    it('should set data property with right values', fakeAsync(() => {
+    it('should set data property with right values (control)', fakeAsync(() => {
       const control = new FormControl('', [Validators.required]);
 
       let resultChecked = false;
@@ -129,7 +129,7 @@ describe('BaseZvFormService', () => {
       service = new TestZvFormService();
     });
 
-    it('should return errors in the right order', fakeAsync(() =>
+    it('should return errors in the right order (group)', fakeAsync(() =>
       validateGetFormErrors(true, [
         'array.0.nested1:required',
         'array.0.nested2:minlength',
@@ -147,7 +147,7 @@ describe('BaseZvFormService', () => {
       validateGetFormErrors(null, ['array.0:pattern', 'array:maxlength', ':pattern']);
     }));
 
-    it('should set data property with right values', fakeAsync(() => {
+    it('should set data property with right values (group)', fakeAsync(() => {
       const form = new FormGroup({
         array: new FormArray(
           [

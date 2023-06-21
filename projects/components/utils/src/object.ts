@@ -1,7 +1,7 @@
 export function objectToKeyValueArray(errors: { [key: string]: any }): { key: string; value: any }[] {
   const errorList = [];
   for (const key in errors) {
-    if (!errors.hasOwnProperty(key)) {
+    if (!Object.prototype.hasOwnProperty.call(errors, key)) {
       continue;
     }
 

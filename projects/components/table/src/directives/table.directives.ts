@@ -35,26 +35,6 @@ export class ZvTableTopButtonSectionDirective {
   constructor(public el: ElementRef) {}
 }
 
-/**
- * @deprecated Please use actions from ZvTableDataSource
- */
-@Directive({
-  selector: '[zvTableListActions]',
-})
-export class ZvTableListActionsDirective {
-  constructor(public el: ElementRef) {}
-}
-
-/**
- * @deprecated Please use actions from ZvTableDataSource
- */
-@Directive({
-  selector: '[zvTableRowActions]',
-})
-export class ZvTableRowActionsDirective {
-  constructor(public el: ElementRef) {}
-}
-
 @Directive({
   selector: '[zvTableCustomHeader]',
 })

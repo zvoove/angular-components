@@ -31,6 +31,10 @@ export class ZvTableSortComponent {
     }
   }
 
+  public trackBy(_index: number, item: IZvTableSortDefinition) {
+    return item.prop;
+  }
+
   private emitChange() {
     this.sortChanged.emit({
       sortColumn: this.sortColumn,

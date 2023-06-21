@@ -10,25 +10,25 @@ describe('ZvTableRowDetailDirective', () => {
 
   it('should toggle isExpandable when toggle() is called with open = true', () => {
     expect(dir.isExpanded(item)).toBeFalsy();
-    expect(dir.toggle(item, true));
+    dir.toggle(item, true);
     expect(dir.isExpanded(item)).toBeTruthy();
-    expect(dir.toggle(item, true));
+    dir.toggle(item, true);
     expect(dir.isExpanded(item)).toBeTruthy();
   });
 
   it('should toggle isExpandable when toggle() is called with open = false', () => {
     expect(dir.isExpanded(item)).toBeFalsy();
-    expect(dir.toggle(item, false));
+    dir.toggle(item, false);
     expect(dir.isExpanded(item)).toBeFalsy();
-    expect(dir.toggle(item, false));
+    dir.toggle(item, false);
     expect(dir.isExpanded(item)).toBeFalsy();
   });
 
   it('should toggle isExpandable when toggle() is called with open = null|undefined', () => {
     expect(dir.isExpanded(item)).toBeFalsy();
-    expect(dir.toggle(item));
+    dir.toggle(item);
     expect(dir.isExpanded(item)).toBeTruthy();
-    expect(dir.toggle(item));
+    dir.toggle(item);
     expect(dir.isExpanded(item)).toBeFalsy();
   });
 
@@ -36,9 +36,9 @@ describe('ZvTableRowDetailDirective', () => {
     dir.expanded = true;
 
     expect(dir.isExpanded(item)).toBeTruthy();
-    expect(dir.toggle(item));
+    dir.toggle(item);
     expect(dir.isExpanded(item)).toBeFalsy();
-    expect(dir.toggle(item));
+    dir.toggle(item);
     expect(dir.isExpanded(item)).toBeTruthy();
   });
 });

@@ -659,7 +659,7 @@ describe('ZvSelectComponent', () => {
       mode: 'id',
       labelKey: 'label',
       idKey: 'value',
-      items: () => throwError('my error'),
+      items: () => throwError(() => 'my error'),
     });
     component.control.patchValue(2);
 

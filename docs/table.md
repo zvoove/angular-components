@@ -25,8 +25,6 @@ import { ZvTableModule } from '@zvoove/components/table';
 | `zvTableCustomHeader`         | Used for customizing the header part of the table.                                                   |
 | `zvTableCustomSettings`       | Used for customizing the tables settings part.                                                       |
 | `zvTableTopButtonSection`     | Use this if you want to add custom buttons to the tables top right part.                             |
-| ~~`zvTableListActions`~~      | (deprecated: see ZvTableDataSource.actions) Used for customizing the table list actions.             |
-| ~~`zvTableRowActions`~~       | (deprecated: see ZvTableDataSource.actions) Used for customizing the actions every row has to offer. |
 | `zvTableRowDetailTemplate`    | Used for customizing the tables row detail template.                                                 |
 | `zv-table-column`             | Used for declaring a column in the table.                                                            |
 | `zv-table-row-detail`         | Used for declaring a detail view for every table row.                                                |
@@ -255,20 +253,6 @@ Now you can use it in your components like this:
 
   <ng-container *ngIf="customTopButton">
     <div *zvTableTopButtonSection style="border: 1px solid black">custom button section</div>
-  </ng-container>
-
-  <!-- deprecated: see ZvTableDataSource.actions -->
-  <ng-container *ngIf="customListActions">
-    <ng-container *zvTableListActions="let selection">
-      <button type="button" mat-menu-item (click)="alertData(selection)">custom list actions</button>
-    </ng-container>
-  </ng-container>
-
-  <!-- deprecated: see ZvTableDataSource.actions -->
-  <ng-container *ngIf="customRowActions">
-    <ng-container *zvTableRowActions="let item">
-      <button type="button" mat-menu-item>item {{ item.id }} custom row actions</button>
-    </ng-container>
   </ng-container>
 
   <ng-container *ngIf="expandable">

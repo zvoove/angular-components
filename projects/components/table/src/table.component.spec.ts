@@ -114,14 +114,6 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
 
       <div *zvTableTopButtonSection>custom button section</div>
 
-      <ng-container *zvTableListActions="let selection">
-        <button type="button" mat-menu-item (click)="onCustomListActionClick(selection)">custom list actions</button>
-      </ng-container>
-
-      <ng-container *zvTableRowActions="let item">
-        <button type="button" mat-menu-item (click)="onCustomRowActionClick(item)">item {{ item.id }} custom row actions</button>
-      </ng-container>
-
       <zv-table-row-detail [expanded]="expanded" [showToggleColumn]="showToggleColumn">
         <ng-container *zvTableRowDetailTemplate="let item">item: {{ item.id }}</ng-container>
       </zv-table-row-detail>
@@ -152,8 +144,6 @@ export class TestComponent {
   @ViewChild(ZvTablePaginationComponent, { static: true }) paginator: ZvTablePaginationComponent;
 
   public onPage(_event: any) {}
-  public onCustomListActionClick(_slectedItems: any[]) {}
-  public onCustomRowActionClick(_item: any) {}
   public onListActionExecute(_selection: any[]) {}
 }
 
@@ -177,8 +167,8 @@ describe('ZvTableComponent', () => {
       spyOn(settingsService, 'getStream').and.callThrough();
       table.columnDefs = [createColDef({ property: 'prop1' }), createColDef({ property: 'prop2' })];
       table.rowDetail = <any>{ showToggleColumn: true };
-      table.listActions = <any>{};
-      table.rowActions = <any>{};
+      table.dataSource.listActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.list });
+      table.dataSource.rowActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.row });
 
       table.ngOnInit();
       table.ngAfterContentInit();
@@ -233,12 +223,12 @@ describe('ZvTableComponent', () => {
       tick(1);
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
-      table.listActions = null;
+      table.dataSource.listActions.length = 0;
       queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬3◬asdf◬Column1◬desc' }));
       tick(1);
       expect(table.displayedColumns).toEqual(['prop1', 'options']);
 
-      table.rowActions = null;
+      table.dataSource.rowActions.length = 0;
       table.showSettings = false;
       table.refreshable = false;
       queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬4◬asdf◬Column1◬desc' }));
@@ -298,7 +288,6 @@ describe('ZvTableComponent', () => {
       table.showSettings = true;
       settingsService.settingsEnabled = true;
 
-      table.listActions = null;
       table.refreshable = false;
       expect(table.showListActions).toBe(true);
 
@@ -308,9 +297,6 @@ describe('ZvTableComponent', () => {
       table.refreshable = true;
       expect(table.showListActions).toBe(true);
       table.refreshable = false;
-
-      table.listActions = <any>{};
-      expect(table.showListActions).toBe(true);
     }));
 
     it('should merge sort definitions and disable sorting on empty', fakeAsync(() => {
@@ -450,21 +436,13 @@ describe('ZvTableComponent', () => {
       table.topButtonSection = null;
       expect(cd.markForCheck).toHaveBeenCalledTimes(3);
 
-      table.listActions = null;
+      table.columnDefsSetter = new QueryList();
       expect((table as any).updateTableState).toHaveBeenCalledTimes(1);
       expect(cd.markForCheck).toHaveBeenCalledTimes(4);
 
-      table.rowActions = null;
+      table.rowDetail = null;
       expect((table as any).updateTableState).toHaveBeenCalledTimes(2);
       expect(cd.markForCheck).toHaveBeenCalledTimes(5);
-
-      table.columnDefsSetter = new QueryList();
-      expect((table as any).updateTableState).toHaveBeenCalledTimes(3);
-      expect(cd.markForCheck).toHaveBeenCalledTimes(6);
-
-      table.rowDetail = null;
-      expect((table as any).updateTableState).toHaveBeenCalledTimes(4);
-      expect(cd.markForCheck).toHaveBeenCalledTimes(7);
     }));
   });
 
@@ -528,6 +506,10 @@ describe('ZvTableComponent', () => {
               { id: 3, str: 'item 3' },
             ]),
           mode: 'client',
+          actions: [
+            { icon: 'add', label: 'custom list actions', scope: ZvTableActionScope.list, actionFn: () => {} },
+            { icon: 'add', label: 'custom row actions', scope: ZvTableActionScope.row, actionFn: () => {} },
+          ],
         })
       );
     });
@@ -752,10 +734,10 @@ describe('ZvTableComponent', () => {
       });
 
       it('should call customRowAction', async () => {
-        const listActionsMenu = await table.getRowActionsButton(1);
-        await listActionsMenu.open();
+        const actions = await table.getRowActions(0);
         spyOn(component, 'onListActionExecute');
-        await listActionsMenu.clickItem({ text: 'check custom action' });
+        const actionsButtons = await actions.getActionButtons();
+        await actionsButtons[0].click();
         expect(component.onListActionExecute).toHaveBeenCalledWith([{ id: 1, str: 'item 1' }]);
       });
     });

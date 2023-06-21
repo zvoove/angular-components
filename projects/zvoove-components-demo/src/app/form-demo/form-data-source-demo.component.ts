@@ -14,7 +14,7 @@ export interface ZvFormDataSourceOptions<TParams, TData> {
 }
 
 class DemoZvFormDataSource<TParams, TData> implements IZvFormDataSource {
-  public autocomplete: 'off' = 'off';
+  public autocomplete: 'on' | 'off' = 'off';
   public get form(): FormGroup {
     return this.options.form;
   }

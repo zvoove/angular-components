@@ -235,10 +235,10 @@ function updateHtmlFile(file: FileEntry, tree: Tree, _context: SchematicContext)
 
 function updateTsFile(file: FileEntry, tree: Tree, _context: SchematicContext) {
   let content = file.content.toString();
-  const containsComponent = content.match(/\@Component\(\{[\r\n\W\w]*/);
+  const containsComponent = content.match(/@Component\(\{[\r\n\W\w]*/);
   if (containsComponent) {
     let component = containsComponent[0];
-    content = content.replace(/\@Component\(\{[\r\n\W\w]*/, '');
+    content = content.replace(/@Component\(\{[\r\n\W\w]*/, '');
     if (component.indexOf('ps-block-ui') !== -1) {
       component = component.replace(/ps-block-ui/g, 'zv-block-ui');
     }

@@ -312,7 +312,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> {
   /**
    * Reloads the data
    */
-  public updateData(forceReload: boolean = true) {
+  public updateData(forceReload = true) {
     if (!this.tableReady) {
       return;
     }

@@ -108,7 +108,7 @@ export class ZvSelectComponent<T = unknown>
    *   - Stream that emits a data array each time the array changes
    *   - `DataSource` object that implements the connect/disconnect interface.
    */
-  @Input()
+  @Input({ required: true })
   get dataSource(): any {
     return this._dataSourceInstance;
   }

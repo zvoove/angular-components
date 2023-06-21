@@ -1,3 +1,5 @@
+<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
 <!--
   mat-menu-item has to be in the same template as the parent mat-menu otherwise the arrow and hover action for child mat-menus breaks
   https://github.com/angular/components/issues/16457
@@ -39,8 +41,6 @@
           </ng-container>
         </ng-container>
       </ng-container>
-      <!-- ng-content is deprecated here, as it doesn't work correctly, if it contains a mat-menu-item with a child met-menu -->
-      <ng-content></ng-content>
       <button *ngIf="refreshable" type="button" mat-menu-item (click)="refreshData.emit()">
         <mat-icon>refresh</mat-icon>
         {{ intl.refreshListLabel }}

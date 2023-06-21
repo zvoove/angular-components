@@ -28,7 +28,7 @@ export const dependencies = {
   encapsulation: ViewEncapsulation.None,
 })
 export class ZvFormComponent implements AfterViewInit, OnDestroy {
-  @Input() public set dataSource(value: IZvFormDataSource) {
+  @Input({ required: true }) public set dataSource(value: IZvFormDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
       this._dataSourceSub.unsubscribe();

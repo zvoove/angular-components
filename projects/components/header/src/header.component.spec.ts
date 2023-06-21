@@ -45,7 +45,6 @@ describe('ZvHeaderComponent', () => {
     });
     fixture = TestBed.createComponent(TestDataSourceComponent);
     component = fixture.componentInstance;
-    expect(component).toBeDefined();
 
     loader = TestbedHarnessEnvironment.loader(fixture);
     header = await loader.getHarness(ZvHeaderHarness);

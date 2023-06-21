@@ -351,7 +351,7 @@ describe('ZvTableDataSource', () => {
     let counter = 0;
     let throwErr = false;
     const dataProvider = {
-      loadData: () => (throwErr ? throwError(new Error('error')) : of([{ a: ++counter }])),
+      loadData: () => (throwErr ? throwError(() => new Error('error')) : of([{ a: ++counter }])),
     };
     const clientDataSource = new ZvTableDataSource<any>(() => dataProvider.loadData(), 'client');
     clientDataSource.tableReady = true;

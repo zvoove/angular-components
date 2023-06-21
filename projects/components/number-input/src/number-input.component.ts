@@ -273,6 +273,7 @@ export class ZvNumberInputComponent
 
   ngOnInit() {
     // Force setter to be called in case id was not specified.
+    // eslint-disable-next-line no-self-assign
     this.id = this.id;
 
     this._decimalSeparator = getLocaleNumberSymbol(this.localeId, NumberSymbol.Decimal);
@@ -463,13 +464,10 @@ export class ZvNumberInputComponent
   }
 
   _onInputKeydown(event: KeyboardEvent) {
-    // eslint-disable-next-line import/no-deprecated
-    if (event.which === 38) {
+    if (event.key === 'ArrowUp') {
       this._spin(event, 1);
       event.preventDefault();
-    }
-    // eslint-disable-next-line import/no-deprecated
-    else if (event.which === 40) {
+    } else if (event.key === 'ArrowDown') {
       this._spin(event, -1);
       event.preventDefault();
     }

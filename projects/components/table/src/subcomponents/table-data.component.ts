@@ -5,7 +5,6 @@ import {
   EventEmitter,
   Input,
   Output,
-  TemplateRef,
   ViewEncapsulation,
   SimpleChanges,
   OnChanges,
@@ -32,16 +31,6 @@ export class ZvTableDataComponent implements OnChanges {
   @Input() public refreshable: boolean;
   @Input() public settingsEnabled: boolean;
   @Input() public displayedColumns: string[];
-  /**
-   * @deprecated Please use the action definition in ZvTableDataSource
-   */
-  @Input() public rowActions: TemplateRef<any> | null = null;
-
-  /**
-   * @deprecated Please use the action definition in ZvTableDataSource
-   */
-  @Input() public listActions: TemplateRef<any> | null = null;
-
   @Output() public readonly showSettingsClicked = new EventEmitter<void>();
   @Output() public readonly refreshDataClicked = new EventEmitter<void>();
 

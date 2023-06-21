@@ -7,8 +7,6 @@ export {
   ZvTableColumnTemplateDirective,
   ZvTableCustomHeaderDirective,
   ZvTableCustomSettingsDirective,
-  ZvTableListActionsDirective,
-  ZvTableRowActionsDirective,
   ZvTableRowDetailDirective,
   ZvTableRowDetailTemplateDirective,
   ZvTableTopButtonSectionDirective,

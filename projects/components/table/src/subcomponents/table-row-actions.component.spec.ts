@@ -1,6 +1,6 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +23,6 @@ import { ZvTableRowActionsComponent } from './table-row-actions.component';
       [actions]="actions"
       [loadActionsFn]="loadActionsFn"
       [openMenuFn]="openMenuFn"
-      [actionsTemplate]="actionsTemplate"
       [item]="item"
       [moreMenuThreshold]="moreMenuThreshold"
     >
@@ -36,7 +35,6 @@ export class TestComponent {
   public actions: IZvTableAction<any>[] = [];
   public loadActionsFn: (data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]> = null;
   public openMenuFn: (data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]> | IZvTableAction<any>[] | null = null;
-  public actionsTemplate: TemplateRef<any> | null = null;
   public item: any = {};
   public moreMenuThreshold = 2;
 

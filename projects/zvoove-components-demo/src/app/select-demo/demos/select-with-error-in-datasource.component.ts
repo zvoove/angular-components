@@ -13,7 +13,7 @@ export class SelectWithErrorInDataSourceComponent {
     mode: 'id',
     labelKey: 'a',
     idKey: 'b',
-    items: () => throwError('Failed to load items'),
+    items: () => throwError(() => 'Failed to load items'),
   });
   public form = new FormGroup({
     select: new FormControl('idx'),

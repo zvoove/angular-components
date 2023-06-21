@@ -12,7 +12,7 @@ import { IZvViewDataSource } from './view-data-source';
   encapsulation: ViewEncapsulation.None,
 })
 export class ZvViewComponent implements OnDestroy {
-  @Input() public set dataSource(value: IZvViewDataSource) {
+  @Input({ required: true }) public set dataSource(value: IZvViewDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
       this._dataSourceSub.unsubscribe();
