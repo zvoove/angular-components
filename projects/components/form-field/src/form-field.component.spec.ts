@@ -416,31 +416,41 @@ describe('ZvFormFieldComponent', () => {
         declarations: [TestFormComponent],
         providers: [
           { provide: ZvFormService, useClass: TestZvFormService },
-          { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: 'dummy' } },
+          { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: 'foo' } },
         ],
       }).compileComponents();
+
+      const assertHintEquals = (text: string) => {
+        fixture.detectChanges();
+        expect(getShownHelpText(fixture)).toEqual(text);
+      };
 
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
       // not required & no hint -> no hint
-      expect(getShownHelpText(fixture)).toEqual(null);
+      assertHintEquals('');
 
-      // required & no hint -> required text in hint
+      // required & no hint & not disabled -> required text in hint
       component.required = true;
-      fixture.detectChanges();
-      expect(getShownHelpText(fixture)).toEqual('dummy');
+      assertHintEquals('foo');
 
-      // required & hint -> required text and the hint separated by ". "
-      component.hint = 'test';
-      fixture.detectChanges();
-      expect(getShownHelpText(fixture)).toEqual('dummy. test');
+      // required & no hint & disabled -> no hint
+      component.formControl.disable();
+      assertHintEquals('');
 
-      // not required & hint -> only the hint
+      component.hint = 'bar';
+      // required & hint & disabled -> hint
+      assertHintEquals('bar');
+
+      component.formControl.enable();
+      // required & hint & not disabled -> required text and the hint separated by ". "
+      assertHintEquals('foo. bar');
+
+      // not required & hint & not disabled -> only the hint
       component.required = false;
-      fixture.detectChanges();
-      expect(getShownHelpText(fixture)).toEqual('test');
+      assertHintEquals('bar');
     }));
 
     it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is not set', waitForAsync(() => {

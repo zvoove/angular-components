@@ -111,11 +111,12 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
     }
 
     const isRequired = this._control?.required;
-    const requiredText = this.defaults?.requiredText;
-    if (!isRequired) {
+    const isDisabled = this._control?.disabled;
+    if (!isRequired || isDisabled) {
       return this.hint;
     }
 
+    const requiredText = this.defaults?.requiredText;
     return [requiredText, this.hint].filter((s) => !!s).join('. ');
   }
 
