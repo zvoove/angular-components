@@ -14,6 +14,7 @@ zv-block-ui {
 .zv-block-ui__content {
   grid-column: 1;
   grid-row: 1;
+  min-width: 0; // fix for overflow: auto|scroll inside of block-ui
 }
 
 .zv-block-ui__overlay {
