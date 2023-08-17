@@ -16,6 +16,7 @@ import { IZvTableSetting, ZvTableSettingsService } from '../services/table-setti
       .zv-table-settings__form {
         display: flex;
         justify-content: space-between;
+        align-items: baseline;
       }
       .zv-table-settings__form > * {
         min-width: 20%;
@@ -23,6 +24,9 @@ import { IZvTableSetting, ZvTableSettingsService } from '../services/table-setti
       .zv-table-settings__form__display-columns {
         display: flex;
         flex-direction: column;
+      }
+      .zv-table-settings__actions {
+        justify-content: end;
       }
     `,
   ],
