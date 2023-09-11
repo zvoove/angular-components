@@ -179,7 +179,7 @@ export class ZvSelectPanelHeaderHarness extends ComponentHarness {
   static hostSelector = '.zv-select__search';
 
   private _loadingSpinner = this.locatorForOptional(MatProgressSpinnerHarness);
-  private _filter = this.locatorFor('.mat-select-search-inner > input.mat-select-search-input');
+  private _filter = this.locatorFor('.mat-select-search-inner > .mat-select-search-inner-row > input.mat-select-search-input');
 
   /**
    * Gets a `HarnessPredicate` that can be used to search for a `MatOptionsHarness` that meets
