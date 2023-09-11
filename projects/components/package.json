@@ -1,19 +1,19 @@
 {
   "name": "@zvoove/components",
   "description": "",
-  "version": "16.0.4",
+  "version": "16.0.5",
   "license": "MIT",
   "dependencies": {
-    "jsdom": "^20.0.0",
-    "tslib": "^2.3.1"
+    "jsdom": "^22.1.0",
+    "tslib": "^2.6.2"
   },
   "peerDependencies": {
-    "@angular/cdk": ">=16.1.0",
-    "@angular/common": ">=16.1.0",
-    "@angular/core": ">=16.1.0",
-    "@angular/forms": ">=16.1.0",
-    "@angular/material": ">=16.1.0",
-    "ngx-mat-select-search": ">=7.0.2"
+    "@angular/cdk": "^16.2.2",
+    "@angular/common": "^16.2.3",
+    "@angular/core": "^16.2.3",
+    "@angular/forms": "^16.2.3",
+    "@angular/material": "^16.2.2",
+    "ngx-mat-select-search": "^7.0.4"
   },
   "schematics": "./schematics/migrations.json",
   "ng-update": {
