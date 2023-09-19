@@ -1,0 +1,21 @@
+<div class="app-file-input__container">
+  <button data-cy="fileUploadButton" color="primary" mat-stroked-button [disabled]="readonly || disabled" (click)="input.click()">
+    <mat-icon>upload</mat-icon>
+    <span i18n="@@general.uploadFile">Datei hochladen</span>
+    <input
+      class="app-file-input__input"
+      type="file"
+      [attr.placeholder]="placeholder"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [required]="required"
+      [accept]="accept"
+      (change)="onFileSelected($event)"
+      #input
+    />
+  </button>
+  <span class="app-file-input__text">{{ value?.name ?? (placeholder || fileSelectText) }}</span>
+  <button *ngIf="!empty && !readonly && !disabled" color="primary" mat-icon-button class="app-file-input__remove" (click)="removeFile()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>

@@ -2,17 +2,19 @@ import { Injectable } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { Subject } from 'rxjs';
 
+// TODO: savebar and form are unused #64441
 export interface IZvSavebarIntlTexts {
   saveLabel: string;
   saveAndCloseLabel: string;
   cancelLabel: string;
 }
 
-// Can be removed with Typescript 3.5
+// TODO: Can be removed with Typescript 3.5 #64441
 type Pick<T, K extends keyof T> = { [P in K]: T[P] };
 type Exclude<T, U> = T extends U ? never : T;
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
+// TODO: try to move this to the table data source and remove the intl stuff here altogether #64442
 export interface IZvTableIntlTexts extends Omit<MatPaginatorIntl, 'changes'> {
   searchLabel: string;
   sortLabel: string;

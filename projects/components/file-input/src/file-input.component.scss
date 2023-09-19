@@ -1,0 +1,18 @@
+@use '@angular/material' as mat;
+
+.app-file-input__container {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  height: 24px;
+  @include mat.icon-button-density(-3);
+  @include mat.button-density(0);
+}
+
+.app-file-input__input {
+  display: none;
+}
+
+.app-file-input__remove {
+  margin-left: auto;
+}
