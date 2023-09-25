@@ -1,0 +1,15 @@
+---
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: "allow-ingress-to-components"
+spec:
+  selector: app.kubernetes.io/name == 'components'
+  ingress:
+    - action: Allow
+      protocol: TCP
+      destination:
+        ports:
+          - http-internal
+      source:
+        namespaceSelector: name == 'ingress-nginx'

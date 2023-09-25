@@ -1,30 +1,73 @@
 trigger: none
 
 pool:
-  name: zvoove Regensburg
+  vmImage: ubuntu-22.04
+
+variables:
+  - name: "Tenant Id"
+    value: "9ebf3ba3-dc20-407c-9369-b23945d5ed14"
 
 jobs:
   - job: Build
-    displayName: 'publish'
+    displayName: "publish npm package"
     workspace:
       clean: all
     steps:
       - task: Npm@1
         inputs:
-          command: 'ci'
-        displayName: 'Npm install dependancies'
+          command: "ci"
+        displayName: "Npm install dependancies"
 
       - task: Npm@1
         inputs:
           command: custom
-          customCommand: 'run build:components'
-        displayName: 'Npm build'
+          customCommand: "run build:components"
+        displayName: "Npm build"
 
       - task: Npm@1
         inputs:
-          command: 'publish'
-          workingDir: 'dist/components'
+          command: "publish"
+          workingDir: "dist/components"
           verbose: false
-          publishRegistry: 'useFeed'
-          publishFeed: 'ddd069d1-3bbd-4d00-abd2-18cca04c9464'
+          publishRegistry: "useFeed"
+          publishFeed: "ddd069d1-3bbd-4d00-abd2-18cca04c9464"
         displayName: Npm publish feed
+
+  - job: Docker
+    displayName: "Docker build + push"
+    dependsOn: Build
+    workspace:
+      clean: all
+    steps:
+      - powershell: docker build . -t acrzvoovesaasdev.azurecr.io/components:$((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version)
+        displayName: "Docker Build Image"
+
+      - powershell: |
+          docker login acrzvoovesaasdev.azurecr.io --username "$(ACR Client Id)" --password "$(ACR Client Secret)"
+          docker push acrzvoovesaasdev.azurecr.io/components:$((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version)
+        displayName: "Push docker image to saas dev acr"
+
+  - job: Helm
+    displayName: "Helm package + push"
+    dependsOn: Docker
+    workspace:
+      clean: all
+    steps:
+      - powershell: |
+          helm package ./k8s/chart/ --app-version $((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version) `
+            --version $((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version)
+        displayName: "Helm package"
+
+      - powershell: az login --service-principal -u "$(ACR Client Id)" -p "$(ACR Client Secret)" --tenant "$(Tenant Id)"
+        displayName: "AZ Login"
+
+      - powershell: |
+          $env:HELM_EXPERIMENTAL_OCI=1
+          az acr login -n "acrzvoovesaasdev" --expose-token --output tsv --query accessToken |
+            helm registry login "acrzvoovesaasdev.azurecr.io" --username "00000000-0000-0000-0000-000000000000" --password-stdin
+        displayName: "ACR Login"
+
+      - powershell: |
+          helm push "components-$((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version).tgz" "oci://acrzvoovesaasdev.azurecr.io/helm"
+          echo Pushed Chart Version $((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version)
+        displayName: "Push helm chart to acr"

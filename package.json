@@ -6,7 +6,7 @@
     "start": "ng serve zvoove-components-demo",
     "build": "ng build",
     "build:components": "npm run build:components-lib && npm run build:components-schematics",
-    "build:components-demo": "ng build zvoove-components-demo --configuration production --base-href https://prosoft-edv.github.io/components/",
+    "build:components-demo": "ng build zvoove-components-demo --configuration production",
     "build:components-lib": "ng build components --configuration production",
     "build:components-schematics": "tsc -p projects/components/tsconfig.schematics.json",
     "test": "ng test",

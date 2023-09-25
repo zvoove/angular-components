@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "components-ingress"
+  annotations:
+    kubernetes.io/ingress.class: "global-nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: 1G
+    # These two ssl-redirect annotations are technically not needed, but if
+    # the ingress is misconfigured (e.g. the tls section below is missing)
+    # ssl redirection will be disabled.
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  labels:
+{{ include "default-labels" . | indent 4 }}
+spec:
+  tls:
+    - hosts:
+        - "{{ .Values.subdomain }}.{{ .Values.domain }}"
+  rules:
+    - host: "{{ .Values.subdomain }}.{{ .Values.domain }}"
+      http:
+        paths:
+          - backend:
+              service:
+                name: "components"
+                port:
+                  name: http
+            path: /
+            pathType: Prefix

@@ -1,0 +1,8 @@
+---
+apiVersion: "v2"
+name: "components"
+description: "chart to deploy components"
+type: "application"
+
+# This field is ignored, version and AppVersion are determined by the content of version.ini
+version: "0.0.0"

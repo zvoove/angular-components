@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "components"
+  labels:
+{{ include "default-labels" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "components"
+  template:
+    metadata:
+      labels:
+{{ include "default-labels" . | indent 8 }}
+    spec:
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+        - name: components
+          image: "acrzvoovesaas{{ .Values.environment }}.azurecr.io/components:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "10Mi"
+              cpu: "1m"
+            limits:
+              memory: "20Mi"
+              cpu: "50m"
+          securityContext:
+            capabilities:
+              drop: ["ALL"]
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: "RuntimeDefault"
+          ports:
+            - name: http-internal
+              containerPort: 8080
