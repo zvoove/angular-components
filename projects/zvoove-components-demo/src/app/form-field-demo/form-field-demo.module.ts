@@ -4,6 +4,7 @@ import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModu
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -11,6 +12,16 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { RouterModule } from '@angular/router';
+import {
+  ZV_NATIVE_DATE_FORMATS,
+  ZV_NATIVE_TIME_FORMATS,
+  ZvNativeDateAdapter,
+  ZvNativeDateTimeAdapter,
+  ZvNativeTimeAdapter,
+  provideDateTimeAdapters,
+  provideDateTimeFormats,
+} from '@zvoove/components/core';
+import { ZvDateTimeInput } from '@zvoove/components/date-time-input';
 import { ZvFormBaseModule } from '@zvoove/components/form-base';
 import { ZvFormFieldModule } from '@zvoove/components/form-field';
 import { DefaultZvSelectService, ZvSelectModule } from '@zvoove/components/select';
@@ -47,8 +58,14 @@ export class CustomErrorStateMatcher implements ErrorStateMatcher {
     MatCheckboxModule,
     MatRadioModule,
     MatSliderModule,
+    MatDatepickerModule,
+    ZvDateTimeInput,
   ],
   declarations: [FormFieldDemoComponent, ReferenceColumnComponent],
-  providers: [{ provide: ErrorStateMatcher, useClass: InvalidErrorStateMatcher }],
+  providers: [
+    { provide: ErrorStateMatcher, useClass: InvalidErrorStateMatcher },
+    provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
+    provideDateTimeFormats(ZV_NATIVE_DATE_FORMATS, ZV_NATIVE_TIME_FORMATS),
+  ],
 })
 export class FormFieldDemoModule {}

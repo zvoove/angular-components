@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { ZV_FORM_FIELD_CONFIG } from '@zvoove/components/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -10,6 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ZvIntlService, ZvIntlServiceEn } from '@zvoove/components/core';
+import { ZV_FORM_FIELD_CONFIG } from '@zvoove/components/form-field';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -23,8 +24,13 @@ import { AppComponent } from './app.component';
     MatToolbarModule,
     MatListModule,
     MatIconModule,
+    MatButtonModule,
 
     RouterModule.forRoot([
+      {
+        path: 'date-time-input',
+        loadComponent: () => import('./date-time-input-demo/date-time-input-demo.component').then((m) => m.DateTimeInputDemoComponent),
+      },
       {
         path: 'flip-container',
         loadChildren: () => import('./flip-container-demo/flip-container-demo.module').then((m) => m.FlipContainerDemoModule),
@@ -88,7 +94,28 @@ import { AppComponent } from './app.component';
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: '* Required' } },
     { provide: ZvIntlService, useClass: ZvIntlServiceEn },
+    { provide: LOCALE_ID, useValue: getUsersLocale(['en', 'de'], 'en-GB') },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+function getUsersLocale(allowedPrefixes: string[], defaultValue: string): string {
+  if (typeof window === 'undefined' || typeof window.navigator === 'undefined') {
+    return defaultValue;
+  }
+  const naviagtor = window.navigator;
+  const languages = [
+    document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('LOCALE_ID='))
+      ?.split('=')[1],
+    ...naviagtor.languages,
+    naviagtor.language,
+    (naviagtor as any).browserLanguage,
+    (naviagtor as any).userLanguage,
+  ];
+  const allowedLanguages = languages.filter((lang) => lang && allowedPrefixes.some((prefix) => lang.startsWith(prefix)));
+  const lang = allowedLanguages.length ? allowedLanguages[0] : defaultValue;
+  return lang;
+}

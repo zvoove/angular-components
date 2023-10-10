@@ -1,13 +1,6 @@
 {
   "folders": [
     {
-        "path": "projects/components"
-    },
-    {
-        "name": "demo",
-        "path": "projects/zvoove-components-demo"
-    },
-    {
       "path": "./"
     }
   ],

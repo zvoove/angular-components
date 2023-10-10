@@ -1,0 +1,103 @@
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
+<app-component-page-wrapper [componentName]="'zv-date-time-input'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <mat-card>
+      <mat-card-content>
+        <div class="app-date-time-input-demo__settings">
+          <div class="app-date-time-input-demo__checkboxes">
+            <mat-checkbox [(ngModel)]="disabled" (change)="onDisabledChanged()">disabled</mat-checkbox>
+            <mat-checkbox [(ngModel)]="required">required</mat-checkbox>
+            <mat-checkbox [(ngModel)]="validatorRequired" (change)="onValidatorChange()">required validator</mat-checkbox>
+            <mat-checkbox [(ngModel)]="useErrorStateMatcher" (change)="onUseErrorStateMatcherChange()"
+              >errorStateMatcher (always invalid)</mat-checkbox
+            >
+          </div>
+          <zv-form-field>
+            <mat-label>id</mat-label>
+            <input matInput type="text" [(ngModel)]="id" />
+          </zv-form-field>
+          <button type="button" mat-stroked-button (click)="setValues(null)">set values null</button>
+          <button type="button" mat-stroked-button (click)="setValues(now())">set values now</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <app-form-control-demo-card [type]="'form'" [formGroup]="form" [control]="form.get('control')" [code]="getCodeSnippet('form')">
+      <zv-form-field>
+        <mat-label>Your date time</mat-label>
+        <zv-date-time-input
+          [id]="id"
+          [required]="required"
+          [errorStateMatcher]="errorStateMatcher"
+          formControlName="control"
+          [matDatepicker]="formDatepicker"
+        ></zv-date-time-input>
+        <mat-datepicker-toggle matSuffix [for]="formDatepicker"></mat-datepicker-toggle>
+        <mat-datepicker #formDatepicker></mat-datepicker>
+      </zv-form-field>
+    </app-form-control-demo-card>
+
+    <app-form-control-demo-card [type]="'model'" [value]="model" [code]="getCodeSnippet('ngmodel')">
+      <zv-form-field>
+        <mat-label>Your date time</mat-label>
+        <zv-date-time-input
+          [id]="id"
+          [required]="required"
+          [disabled]="disabled"
+          [errorStateMatcher]="errorStateMatcher"
+          [(ngModel)]="model"
+          [matDatepicker]="modelDatepicker"
+        ></zv-date-time-input>
+        <mat-datepicker-toggle matSuffix [for]="modelDatepicker"></mat-datepicker-toggle>
+        <mat-datepicker #modelDatepicker></mat-datepicker>
+      </zv-form-field>
+    </app-form-control-demo-card>
+
+    <app-form-control-demo-card [type]="'value'" [value]="value" [code]="getCodeSnippet('value')">
+      <zv-form-field>
+        <mat-label>Your date time</mat-label>
+        <zv-date-time-input
+          [id]="id"
+          [required]="required"
+          [disabled]="disabled"
+          [errorStateMatcher]="errorStateMatcher"
+          [(value)]="value"
+          [matDatepicker]="valueDatepicker"
+        ></zv-date-time-input>
+        <mat-datepicker-toggle matSuffix [for]="valueDatepicker"></mat-datepicker-toggle>
+        <mat-datepicker #valueDatepicker></mat-datepicker>
+      </zv-form-field>
+    </app-form-control-demo-card>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Imports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        Add the following to your imports:
+        <pre>
+imports: [
+  MatDatepickerModule,
+  ZvDateTimeInput,
+],
+        </pre>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Providers</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        Add the following to your providers:
+        <pre>
+providers: [
+  provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
+  provideDateTimeFormats(ZV_NATIVE_DATE_FORMATS, ZV_NATIVE_TIME_FORMATS),
+],
+        </pre>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>

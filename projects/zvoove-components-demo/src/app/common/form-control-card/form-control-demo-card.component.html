@@ -1,0 +1,48 @@
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{
+      type === 'form' ? 'Reactive forms' : type === 'model' ? '[(ngModel)] binding' : '[(value)] binding'
+    }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div>
+      <ng-content></ng-content>
+    </div>
+    <div class="app-file-input-demo__state">
+      <div>Value</div>
+      <div>
+        <pre>{{ formControl?.value ?? value }}</pre>
+      </div>
+      <div>Value Type</div>
+      <div>
+        <pre>{{ getType(formControl?.value ?? value) }}</pre>
+      </div>
+      <ng-container *ngIf="formControl">
+        <div>Touched</div>
+        <div>
+          <mat-icon *ngIf="!formControl.touched" [inline]="true">close</mat-icon>
+          <mat-icon *ngIf="formControl.touched" [inline]="true">check</mat-icon>
+          <a *ngIf="formControl.touched" href="javascript: void(0)" (click)="formControl.markAsUntouched(); $event.preventDefault()"
+            >(reset)</a
+          >
+        </div>
+        <div>Dirty</div>
+        <div>
+          <mat-icon *ngIf="!formControl.dirty" [inline]="true">close</mat-icon>
+          <mat-icon *ngIf="formControl.dirty" [inline]="true">check</mat-icon>
+          <a *ngIf="formControl.dirty" href="javascript: void(0)" (click)="formControl.markAsPristine(); $event.preventDefault()"
+            >(reset)</a
+          >
+        </div>
+        <div>Errors</div>
+        <div>
+          <pre>{{ formControl.errors | json }}</pre>
+        </div>
+      </ng-container>
+    </div>
+
+    Code:
+    <pre class="app-file-input-demo__code">{{ code }}</pre>
+  </mat-card-content>
+</mat-card>

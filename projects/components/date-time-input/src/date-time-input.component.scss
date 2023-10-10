@@ -1,0 +1,30 @@
+zv-date-time-input {
+  white-space: nowrap;
+  line-height: 22px; // without this the form-field is 2px to large
+}
+
+.zv-date-time__toggle {
+  display: inline-block;
+  margin: -1em 0 -1em 0;
+  transform: translateY(6px);
+}
+
+.zv-date-time__separator {
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  border-left: 1px solid grey;
+  margin-left: 6px;
+}
+
+.zv-date-time__date,
+.zv-date-time__time {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+.zv-date-time__time {
+  margin-left: 1em;
+}

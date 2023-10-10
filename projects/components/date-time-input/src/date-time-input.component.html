@@ -1,0 +1,28 @@
+<ng-container [formGroup]="_form">
+  <input
+    class="zv-date-time__date mat-mdc-input-element mat-mdc-form-field-input-control"
+    size="10"
+    [attr.placeholder]="shouldLabelFloat ? datePlaceholder : ''"
+    [required]="required"
+    formControlName="date"
+    [matDatepicker]="matDatepicker"
+    (focus)="_onFocus()"
+    (blur)="_onBlur()"
+    (keydown)="_onDateInputKeydown($event)"
+    #date
+  />
+  <div class="zv-date-time__separator" *ngIf="shouldLabelFloat"></div>
+  <input
+    class="zv-date-time__time mat-mdc-input-element mat-mdc-form-field-input-control"
+    zvTime
+    size="8"
+    [attr.placeholder]="shouldLabelFloat ? timePlaceholder : ''"
+    [required]="required"
+    formControlName="time"
+    pattern="[0-9][0-9]?:?[0-9][0-9]?"
+    (focus)="_onFocus()"
+    (blur)="_onBlur(true)"
+    (keydown)="_onTimeInputKeydown($event)"
+    #time
+  />
+</ng-container>
