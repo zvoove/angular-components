@@ -22,8 +22,7 @@ zv-table-header {
 
 .zv-table-header__actions {
   flex-basis: auto;
-  margin: 0.3em 8px 1em;
+  margin: 8px 8px 1em auto; /* auto (margin-left) ensures that the actions are always right, even if there is no other flex item */
   text-align: end;
-  align-self: flex-end;
-  margin-left: auto; /* This ensures that the actions are always right, even if there is no other flex item */
+  align-self: flex-start;
 }
