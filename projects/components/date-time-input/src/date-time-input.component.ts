@@ -132,7 +132,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   @Output() public readonly valueChange = new EventEmitter<TDateTime | null>();
 
   /** Placeholder to be shown if no value has been selected. (not supported for this component!) */
-  public readonly placeholder: string | null = null;
+  public readonly placeholder = '';
 
   /** Whether the input is focused. */
   get focused(): boolean {
