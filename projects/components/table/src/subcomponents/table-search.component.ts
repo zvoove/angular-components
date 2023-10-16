@@ -21,6 +21,7 @@ export class ZvTableSearchComponent implements OnInit, OnDestroy {
   private _searchValueChanged$ = new Subject<void>();
 
   public ngOnInit() {
+    this.currentSearchText = this.searchText;
     this._searchValueChanged$.pipe(debounceTime(this.debounceTime)).subscribe(() => {
       this.emitChange();
     });
@@ -28,12 +29,12 @@ export class ZvTableSearchComponent implements OnInit, OnDestroy {
 
   public onSearch(key: string, value: string) {
     if (key.startsWith('Esc')) {
-      this.currentSearchText = '';
+      this.searchText = '';
       this.emitChange();
       return;
     }
 
-    this.currentSearchText = value;
+    this.searchText = value;
     this._searchValueChanged$.next();
   }
 
@@ -43,7 +44,7 @@ export class ZvTableSearchComponent implements OnInit, OnDestroy {
 
   private emitChange() {
     if (this.currentSearchText !== this.searchText) {
-      this.searchText = this.currentSearchText;
+      this.currentSearchText = this.searchText;
       this.searchChanged.emit(this.currentSearchText);
     }
   }
