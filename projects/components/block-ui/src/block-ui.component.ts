@@ -43,6 +43,6 @@ export class ZvBlockUiComponent implements OnChanges, AfterViewInit {
     const nativeEl = this.contentNode.nativeElement;
     const minDimension = Math.min(nativeEl.offsetWidth, nativeEl.offsetHeight);
     const textSpace = this.spinnerText ? 20 : 0;
-    this.spinnerDiameter = Math.max(Math.min(minDimension - textSpace, 100), 10);
+    this.spinnerDiameter = Math.max(Math.min(minDimension - textSpace, 100), 20);
   }
 }
