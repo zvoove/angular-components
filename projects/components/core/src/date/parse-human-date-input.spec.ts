@@ -128,6 +128,25 @@ describe('parseHumanDateInput', () => {
     expect(sut2020Dmy('01 05 31')).toEqual(buildDate(1931, 5, 1));
   });
 
+  it(`should accept ',' separated date`, () => {
+    expect(sut2020Dmy('1,5,2')).toEqual(buildDate(2002, 5, 1));
+    expect(sut2020Dmy('01,05,20')).toEqual(buildDate(2020, 5, 1));
+    expect(sut2020Dmy('01,05,530')).toEqual(buildDate(530, 5, 1));
+    expect(sut2020Dmy('01,05,1870')).toEqual(buildDate(1870, 5, 1));
+
+    // month out of bounds
+    expect(sut2020Dmy('01,13,16')).toBe(INVALID_DATE);
+
+    // day out of bounds
+    expect(sut2020Dmy('32,05,16')).toBe(INVALID_DATE);
+
+    // up to 10 years in the future -> use this century
+    expect(sut2020Dmy('01,05,30')).toEqual(buildDate(2030, 5, 1));
+
+    // year more than 10 years in the future -> use last century
+    expect(sut2020Dmy('01,05,31')).toEqual(buildDate(1931, 5, 1));
+  });
+
   it('should interpret 6 digits as mmddyy if order is mdy', () => {
     expect(parseHumanDateInput(2020, ['m', 'd', 'y'], '112277')).toEqual(buildDate(1977, 11, 22));
   });

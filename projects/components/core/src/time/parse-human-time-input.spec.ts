@@ -41,6 +41,12 @@ describe('parseHumanTimeInput', () => {
       expect(parseHumanTimeInput('23')).toEqual([23, 0]);
       expect(parseHumanTimeInput('25')).toEqual(NaN);
     });
+    it('should parse 1 digit', () => {
+      expect(parseHumanTimeInput('0')).toEqual([0, 0]);
+      expect(parseHumanTimeInput('1')).toEqual([1, 0]);
+      expect(parseHumanTimeInput('2')).toEqual([2, 0]);
+      expect(parseHumanTimeInput('9')).toEqual([9, 0]);
+    });
   });
 
   describe('12 hours AM', () => {

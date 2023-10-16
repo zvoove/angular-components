@@ -13,7 +13,7 @@ export const detectDmyOrder = (locale: string) => {
   return dmyOrder;
 };
 
-const dateParserExact = /^(\d+)[./ ](\d+)[./ ](\d+)$/;
+const dateParserExact = /^(\d+)[./, ](\d+)[./, ](\d+)$/;
 const fuzzyRegexMap = {
   d: '(\\d{2})',
   m: '(\\d{2})',
