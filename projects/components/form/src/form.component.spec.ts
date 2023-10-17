@@ -6,11 +6,10 @@ import { MatIcon } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvBlockUiComponent } from '@zvoove/components/block-ui';
-import { ZvIntlService, ZvIntlServiceEn } from '@zvoove/components/core';
 import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormService } from '@zvoove/components/form-base';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription, of } from 'rxjs';
 import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
-import { dependencies, ZvFormComponent } from './form.component';
+import { ZvFormComponent, dependencies } from './form.component';
 import { ZvFormModule } from './form.module';
 
 @Injectable()
@@ -58,10 +57,7 @@ describe('ZvFormComponent', () => {
       TestBed.configureTestingModule({
         imports: [NoopAnimationsModule, CommonModule, ZvFormModule],
         declarations: [TestDataSourceComponent],
-        providers: [
-          { provide: ZvFormService, useClass: TestZvFormService },
-          { provide: ZvIntlService, useClass: ZvIntlServiceEn },
-        ],
+        providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
     }));
 
