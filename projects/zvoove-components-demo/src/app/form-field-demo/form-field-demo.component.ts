@@ -89,6 +89,7 @@ export class FormFieldDemoComponent {
     prefixText: new FormControl(null),
     slider: new FormControl(null),
     zvSelect: new FormControl(1),
+    zvDateTimeInput: new FormControl(null),
   });
 
   public showControls = true;

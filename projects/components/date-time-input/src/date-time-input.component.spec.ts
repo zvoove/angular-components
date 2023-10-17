@@ -43,6 +43,14 @@ describe('ZvDateTimeInput', () => {
       harness = await loader.getHarness(ZvDateTimeInputHarness);
     });
 
+    it('should have size 12 for the date input', async () => {
+      // because chrome doesn't fit all 10 characters of "DD/MM/YYYY" into size 10
+      const [dateInput] = await harness.getInputs();
+      const dateHost = await dateInput.host();
+
+      expect(await dateHost.getAttribute('size')).toEqual('12');
+    });
+
     it('should respect disabled input', async () => {
       const host = await harness.host();
       const [dateInput, timeInput] = await harness.getInputs();

@@ -309,7 +309,7 @@
       <div>
         <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-label *ngIf="customLabel">Custom Label</mat-label>
-          <zv-date-time-input formControlName="zvSelect" [matDatepicker]="datepickerRef" [required]="required"></zv-date-time-input>
+          <zv-date-time-input formControlName="zvDateTimeInput" [matDatepicker]="datepickerRef" [required]="required"></zv-date-time-input>
           <mat-datepicker-toggle matSuffix [for]="datepickerRef"></mat-datepicker-toggle>
           <mat-datepicker #datepickerRef></mat-datepicker>
         </zv-form-field>
