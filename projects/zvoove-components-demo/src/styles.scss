@@ -1,5 +1,7 @@
 //==========================================
 @use '@angular/material' as mat;
+@use '../../components/index' as comp;
+
 //= Font Import
 //==========================================
 // Ohne das ":light,regular,medium,thin,italic,mediumitalic,bold" ist die Schrift teils unscharf
@@ -59,16 +61,11 @@ $base-app-theme: mat.define-light-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($base-app-theme);
+@include comp.zvoove-components-theme($base-app-theme);
 
 html,
 body {
   margin: 0;
   height: 100%;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-  --zv-error: #f44336;
-  --zv-error-contrast: #ffffff;
-  --zv-primary: #673ab7;
-  --zv-primary-contrast: #ffffff;
-  --zv-accent: #ffd740;
-  --zv-accent-contrast: #ffffff;
 }

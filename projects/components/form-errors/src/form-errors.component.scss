@@ -2,8 +2,8 @@
   font-size: 12px;
 }
 .mat-mdc-chip.zv-form-errors__item .mat-mdc-chip-action::before {
-  background-color: var(--zv-error);
+  background-color: var(--zv-components-error);
 }
 .mat-mdc-chip.zv-form-errors__item .mat-mdc-chip-action .mat-mdc-chip-action-label {
-  color: var(--zv-error-contrast);
+  color: var(--zv-components-error-contrast);
 }

@@ -22,7 +22,7 @@ zv-form-field .mat-mdc-form-field {
 zv-form-field .mat-form-field-invalid .mdc-checkbox__background,
 zv-form-field .mat-form-field-invalid .mdc-radio__outer-circle,
 zv-form-field .mat-form-field-invalid .mdc-slider__thumb-knob {
-  border-color: var(--zv-error) !important;
+  border-color: var(--zv-components-error) !important;
 }
 /* Centers suffix icon */
 .mat-mdc-form-field-icon-suffix {
@@ -41,111 +41,4 @@ zv-form-field .mat-form-field-invalid .mat-mdc-form-field-error {
 .zv-form-field--subscript-resize .mat-mdc-form-field-hint-wrapper,
 .zv-form-field--subscript-resize .mat-mdc-form-field-error-wrapper {
   position: static;
-}
-
-/* hint/error bubble container */
-.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper {
-  padding-top: 1.58em !important;
-  overflow: visible;
-  z-index: 1;
-  margin-top: 0.25em;
-}
-
-/* hint/error bubble */
-.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper > div {
-  display: block;
-  position: absolute;
-  top: 0;
-  max-width: 100%;
-  box-sizing: border-box;
-  bottom: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  padding: 0 8px;
-  box-shadow: 1px 1px 3px #ccc;
-}
-
-/* hint bubble position */
-.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper > .mat-mdc-form-field-hint-wrapper {
-  left: auto;
-  right: 0;
-}
-/* error bubble position */
-.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper > div:not(.mat-mdc-form-field-hint-wrapper) {
-  left: 0;
-  right: auto;
-}
-
-/* hint/error bubble anchor */
-.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper:before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  width: 6px;
-  height: 6px;
-  border-right: none;
-  border-bottom: none;
-  border-bottom-right-radius: 999px;
-  transform: rotate(45deg) skew(-10deg, -10deg);
-  z-index: 100;
-  border-width: 1px 0 0 1px;
-  border-style: solid;
-}
-
-/* hint bubble anchor position */
-.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper:before {
-  left: auto;
-  right: 10px;
-}
-/* error bubble anchor position */
-.zv-form-field--error-bubble .mat-mdc-form-field-subscript-wrapper:before {
-  left: 10px;
-  right: auto;
-}
-
-/* hint bubble colors */
-.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper > div,
-.zv-form-field--bubble .mat-mdc-form-field-subscript-wrapper:before {
-  border-color: rgba(0, 0, 0, 0.2);
-  background-color: #fff;
-}
-
-/* error bubble colors */
-.zv-form-field--error-bubble .mat-mdc-form-field-subscript-wrapper > div,
-.zv-form-field--error-bubble .mat-mdc-form-field-subscript-wrapper:before {
-  border-color: #f99;
-  background-color: #fcc;
-}
-
-.zv-form-field--bubble .mat-mdc-form-field-error {
-  display: inline;
-  color: black;
-}
-
-.zv-form-field--bubble .mat-mdc-form-field-hint {
-  display: inline;
-  color: rgba(0, 0, 0, 0.54);
-}
-
-.zv-form-field--bubble:hover .mat-mdc-form-field-subscript-wrapper > div,
-.zv-form-field--bubble .mat-focused .mat-mdc-form-field-subscript-wrapper > div {
-  bottom: initial !important;
-  white-space: initial;
-}
-
-.zv-form-field--bubble:hover .mat-mdc-form-field-subscript-wrapper,
-.zv-form-field--bubble .mat-focused .mat-mdc-form-field-subscript-wrapper {
-  z-index: 10;
-}
-
-.zv-form-field--bubble:hover .mat-mdc-form-field-error,
-.zv-form-field--bubble .mat-focused .mat-error,
-.zv-form-field--bubble:hover .mat-mdc-form-field-hint,
-.zv-form-field--bubble .mat-focused .mat-hint {
-  display: block;
 }

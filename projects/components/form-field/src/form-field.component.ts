@@ -20,21 +20,19 @@ import {
 import { FormControl, NgControl } from '@angular/forms';
 import {
   FloatLabelType,
+  MAT_FORM_FIELD_DEFAULT_OPTIONS,
   MatFormField,
-  MatFormFieldAppearance,
   MatFormFieldControl,
   MatFormFieldDefaultOptions,
   MatLabel,
   MatPrefix,
   MatSuffix,
-  MAT_FORM_FIELD_DEFAULT_OPTIONS,
 } from '@angular/material/form-field';
-import { hasRequiredField, IZvFormError, ZvFormService } from '@zvoove/components/form-base';
-import { Observable, of, Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { IZvFormError, ZvFormService, hasRequiredField } from '@zvoove/components/form-base';
+import { Observable, Subscription, of } from 'rxjs';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
 
-export declare type ZvFormFieldSubscriptType = 'bubble' | 'resize' | 'single-line';
+export declare type ZvFormFieldSubscriptType = 'resize' | 'single-line';
 
 export interface ZvFormFieldConfig {
   subscriptType?: ZvFormFieldSubscriptType;
@@ -55,7 +53,6 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
   @Input() public createLabel = true;
   @Input() public hint: string = null;
   @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
-  @Input() public appearance: MatFormFieldAppearance = this.matDefaults?.appearance || 'outline';
   @Input() public subscriptType: ZvFormFieldSubscriptType = this.defaults ? this.defaults.subscriptType : 'resize';
   @Input() public hintToggle: boolean | null = null;
 
@@ -80,12 +77,6 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
   @ContentChildren(MatPrefix) public _prefixChildren: QueryList<MatPrefix>;
   @ContentChildren(MatSuffix) public _suffixChildren: QueryList<MatSuffix>;
 
-  @HostBinding('class.zv-form-field--bubble') public get showBubble() {
-    return this.subscriptType === 'bubble' && (!!this.hintText || this.hasError);
-  }
-  @HostBinding('class.zv-form-field--error-bubble') public get showErrorBubble() {
-    return this.subscriptType === 'bubble' && this.hasError;
-  }
   @HostBinding('class.zv-form-field--subscript-resize') public get autoResizeHintError() {
     return this.subscriptType === 'resize';
   }
@@ -141,8 +132,6 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
 
   /** The control type. Most of the time this is the same as the selector */
   private controlType: string;
-
-  private hasError = false;
 
   private labelTextSubscription: Subscription;
 
@@ -202,11 +191,7 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
         (<any>this.matFormFieldControl).required = hasRequiredField(this.formControl);
       }
 
-      this.errors$ = this.formsService.getControlErrors(this.formControl).pipe(
-        tap((errors) => {
-          this.hasError = !!errors.length;
-        })
-      );
+      this.errors$ = this.formsService.getControlErrors(this.formControl);
 
       this.updateLabel();
     }

@@ -2,7 +2,7 @@
   display: none !important;
 }
 .zv-select__error-message {
-  color: red;
+  color: var(--zv-components-error);
 }
 
 ngx-mat-select-search .mat-select-search-clear {

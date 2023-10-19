@@ -1,17 +1,8 @@
-.zv-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider,
-.zv-form-field-type-mat-slider .mat-form-field-appearance-fill mat-slider {
+.zv-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider {
   margin: -1em 0;
   width: 100%;
 }
-// Fill appearance modifications
-.zv-form-field-type-mat-radio-group .mat-form-field-appearance-fill .mat-mdc-form-field-infix {
-  padding: 0.42em 0;
-}
-.zv-form-field-type-mat-mdc-checkbox .mat-form-field-appearance-fill .mat-mdc-form-field-infix {
-  padding: 0.31em 0;
-}
 
-// Outline appearance modifications
 .zv-form-field-type-mat-radio-group .mat-form-field-appearance-outline .mat-mdc-form-field-infix,
 .zv-form-field-type-mat-mdc-checkbox .mat-form-field-appearance-outline .mat-mdc-form-field-infix {
   padding: 0.5em 0;

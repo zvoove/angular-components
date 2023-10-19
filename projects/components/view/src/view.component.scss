@@ -8,7 +8,7 @@
 }
 
 mat-card.zv-view__error-container {
-  color: var(--zv-error);
+  color: var(--zv-components-error);
 }
 
 mat-card.zv-view__error-container--center {
@@ -17,7 +17,7 @@ mat-card.zv-view__error-container--center {
 }
 
 mat-icon.zv-view__error-icon {
-  color: var(--zv-error);
+  color: var(--zv-components-error);
   font-size: 72px;
   height: 72px;
   width: 72px;

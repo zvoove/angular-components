@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { ZvFormFieldSubscriptType } from '@zvoove/components/form-field';
 import { of } from 'rxjs';
 
 @Component({
   selector: 'app-reference-column',
   template: `
-    <zv-form-field [appearance]="appearance" [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+    <zv-form-field [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
       <mat-label>Referenz Column</mat-label>
       <input matInput [(ngModel)]="value" type="text" [required]="required" />
     </zv-form-field>
@@ -18,7 +17,6 @@ export class ReferenceColumnComponent {
   @Input() public subscriptType: ZvFormFieldSubscriptType = 'single-line';
   @Input() public hintToggle = false;
   @Input() public hint = 'hint text';
-  @Input() public appearance: MatFormFieldAppearance = 'outline';
   @Input() public required = false;
   public value = '';
 }
@@ -34,7 +32,6 @@ export class FormFieldDemoComponent {
   public subscriptType: ZvFormFieldSubscriptType = 'single-line';
   public hintToggle = false;
   public hintText = 'hint text';
-  public appearance: MatFormFieldAppearance = 'outline';
   public asyncLabel$ = of('Custom Label');
   public ctrlCountNumbers = Array(7).fill(1);
   public value = '';

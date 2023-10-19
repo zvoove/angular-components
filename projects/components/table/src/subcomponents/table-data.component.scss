@@ -11,7 +11,7 @@
     text-align: right;
   }
   th.zv-table-data__options-column-header {
-    color: black;
+    color: var(--zv-components-font);
     text-align: right;
   }
 
@@ -32,5 +32,5 @@
 zv-table.zv-table--striped:not(.zv-table--row-detail) tbody tr:nth-child(even),
 zv-table.zv-table--striped.zv-table--row-detail tbody tr:nth-child(4n + 3),
 zv-table.zv-table--striped.zv-table--row-detail tbody tr:nth-child(4n + 4) {
-  background-color: #f4f4f4;
+  background-color: #f9fbff;
 }

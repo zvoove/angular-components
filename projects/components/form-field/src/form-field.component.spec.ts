@@ -259,7 +259,7 @@ describe('ZvFormFieldComponent', () => {
       expect(getShownHelpText(fixture)).toEqual('myhint');
     });
 
-    it('should set correct classes for subscriptType', fakeAsync(() => {
+    it('should set correct classes for subscriptType', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
@@ -270,39 +270,13 @@ describe('ZvFormFieldComponent', () => {
       detectChangesAndIgnoreChangeAfterChecked(fixture);
 
       let classes = getFormFieldClasses(fixture);
-      expect(classes.contains('zv-form-field--bubble')).toBeFalsy();
-      expect(classes.contains('zv-form-field--error-bubble')).toBeFalsy();
       expect(classes.contains('zv-form-field--subscript-resize')).toBeFalsy();
 
       component.subscriptType = 'resize';
       detectChangesAndIgnoreChangeAfterChecked(fixture);
       classes = getFormFieldClasses(fixture);
-      expect(classes.contains('zv-form-field--bubble')).toBeFalsy();
-      expect(classes.contains('zv-form-field--error-bubble')).toBeFalsy();
       expect(classes.contains('zv-form-field--subscript-resize')).toBeTruthy();
-
-      component.subscriptType = 'bubble';
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
-      classes = getFormFieldClasses(fixture);
-      expect(classes.contains('zv-form-field--bubble')).toBeTruthy();
-      expect(classes.contains('zv-form-field--error-bubble')).toBeFalsy();
-      expect(classes.contains('zv-form-field--subscript-resize')).toBeFalsy();
-
-      component.formControl.setErrors({ a: 'b' });
-      tick(1);
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
-      classes = getFormFieldClasses(fixture);
-      expect(classes.contains('zv-form-field--bubble')).toBeTruthy();
-      expect(classes.contains('zv-form-field--error-bubble')).toBeTruthy();
-      expect(classes.contains('zv-form-field--subscript-resize')).toBeFalsy();
-
-      component.subscriptType = 'resize';
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
-      classes = getFormFieldClasses(fixture);
-      expect(classes.contains('zv-form-field--bubble')).toBeFalsy();
-      expect(classes.contains('zv-form-field--error-bubble')).toBeFalsy();
-      expect(classes.contains('zv-form-field--subscript-resize')).toBeTruthy();
-    }));
+    });
   });
 
   describe('ngModel', () => {
@@ -384,7 +358,6 @@ describe('ZvFormFieldComponent', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      expect(component.formField.appearance).toEqual('outline');
       expect(component.formField.floatLabel).toEqual('auto');
     }));
 
@@ -396,7 +369,7 @@ describe('ZvFormFieldComponent', () => {
           { provide: ZvFormService, useClass: TestZvFormService },
           {
             provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-            useValue: { floatLabel: 'always', hideRequiredMarker: false, appearance: 'fill' },
+            useValue: { floatLabel: 'always', hideRequiredMarker: false },
           },
         ],
       }).compileComponents();
@@ -404,7 +377,6 @@ describe('ZvFormFieldComponent', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-      expect(component.formField.appearance).toEqual('fill');
       expect(component.formField.floatLabel).toEqual('always');
     }));
   });

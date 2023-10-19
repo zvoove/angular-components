@@ -16,7 +16,7 @@
   <ng-container matColumnDef="rowDetailExpander">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let row" style="width: 70px">
-      <button *ngIf="showRowDetails(row)" mat-icon-button color="primary" type="button" (click)="toggleRowDetail(row)">
+      <button *ngIf="showRowDetails(row)" mat-icon-button type="button" (click)="toggleRowDetail(row)">
         <mat-icon>{{ rowDetail.isExpanded(row) ? 'expand_more' : 'chevron_right' }}</mat-icon>
       </button>
     </td>

@@ -1,20 +1,6 @@
 <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 <div>
   <div>
-    <h2>Appearances</h2>
-    For more detail please visit
-    <a href="https://material.angular.io/components/form-field/overview#form-field-appearance-variants"
-      >https://material.angular.io/components/form-field/overview#form-field-appearance-variants</a
-    >
-    <zv-form-field style="margin: 0.5em" [appearance]="'fill'" [hint]="'hint text'">
-      <mat-label>Fill</mat-label>
-      <input matInput type="text" />
-    </zv-form-field>
-    <zv-form-field style="margin: 0.5em" [appearance]="'outline'" [hint]="'hint text'">
-      <mat-label>Outline</mat-label>
-      <input matInput type="text" />
-    </zv-form-field>
-
     <h2>No form binding and no hint</h2>
     <zv-form-field>
       <mat-label>Referenz Column</mat-label>
@@ -49,13 +35,6 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field style="margin: 0.5em">
-      <mat-label>appearance</mat-label>
-      <mat-select [(ngModel)]="appearance">
-        <mat-option [value]="'fill'">fill</mat-option>
-        <mat-option [value]="'outline'">outline</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field style="margin: 0.5em">
       <mat-label>hint text</mat-label>
       <input type="text" matInput [(ngModel)]="hintText" />
     </mat-form-field>
@@ -64,54 +43,24 @@
       <li>Checkbox can't dynamically switch from/to custom label, therefore both are shown separate below.</li>
       <li>The reference columns are to make sure all controls have the same height and line up correctly.</li>
       <li>
-        Use the following style to align the heights of checkboxes, radio groups and sliders for the selected appearance. <br />
+        Use the following style to align the heights of checkboxes, radio groups and sliders for outline appearance. <br />
         CSS rules may need adjustments if you do not use the default material typography.
-        <ng-container [ngSwitch]="appearance">
-          <pre *ngSwitchCase="'fill'">
+        <pre>
             {{
-              '
-.zv-form-field-type-mat-slider .mat-form-field-appearance-fill mat-slider {
-  margin: -0.435em 0;
-  width: 100%;
-}
-.zv-form-field-type-mat-radio-group .mat-form-field-appearance-fill .mat-form-field-infix {
-  padding: 0.42em 0;
-}
-.zv-form-field-type-mat-checkbox .mat-form-field-appearance-fill .mat-form-field-infix {
-  padding: 0.31em 0;
-}
-
-.zv-form-field-type-mat-slider .mat-form-field-infix {
-  padding: 0;
-}
-              '
-            }}
-          </pre>
-          <pre *ngSwitchCase="'outline'">
-            {{
-              '
-.zv-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider,
-.zv-form-field-type-mat-slider .mat-form-field-appearance-fill mat-slider {
+            '
+.zv-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider {
   margin: -1em 0;
   width: 100%;
 }
-// Fill appearance modifications
-.zv-form-field-type-mat-radio-group .mat-form-field-appearance-fill .mat-mdc-form-field-infix {
-  padding: 0.42em 0;
-}
-.zv-form-field-type-mat-mdc-checkbox .mat-form-field-appearance-fill .mat-mdc-form-field-infix {
-  padding: 0.31em 0;
-}
 
-// Outline appearance modifications
 .zv-form-field-type-mat-radio-group .mat-form-field-appearance-outline .mat-mdc-form-field-infix,
 .zv-form-field-type-mat-mdc-checkbox .mat-form-field-appearance-outline .mat-mdc-form-field-infix {
   padding: 0.5em 0;
 }
               '
-            }}
-          </pre>
-        </ng-container>
+          }}
+          </pre
+        >
       </li>
     </ul>
   </div>
@@ -129,7 +78,6 @@
     <div>
       <div *ngFor="let i of ctrlCountNumbers">
         <app-reference-column
-          [appearance]="appearance"
           [hint]="hintText"
           [hintToggle]="hintToggle"
           [subscriptType]="subscriptType"
@@ -140,7 +88,6 @@
     <div>
       <div>
         <app-reference-column
-          [appearance]="appearance"
           [hint]="hintText"
           [hintToggle]="hintToggle"
           [subscriptType]="subscriptType"
@@ -148,7 +95,7 @@
         ></app-reference-column>
       </div>
       <div>
-        <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-label *ngIf="customLabel">Custom Label</mat-label>
           <mat-select formControlName="select">
             <mat-option [value]="null"><i>keine Auswahl</i></mat-option>
@@ -158,15 +105,10 @@
         </zv-form-field>
       </div>
       <div>
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
       <div>
-        <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-label *ngIf="customLabel">Custom Label</mat-label>
           <mat-icon matPrefix class="app-form-example__icon">home</mat-icon>
           <input matInput formControlName="prefixText" type="text" />
@@ -174,42 +116,26 @@
         </zv-form-field>
       </div>
       <div>
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
       <div>
-        <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-label *ngIf="customLabel">Custom Label</mat-label>
           <mat-slider><input matSliderThumb formControlName="slider" /></mat-slider>
         </zv-form-field>
       </div>
       <div>
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
     </div>
     <div>
       <div *ngFor="let i of ctrlCountNumbers">
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
     </div>
     <div>
       <div>
         <app-reference-column
-          [appearance]="appearance"
           [hint]="hintText"
           [hintToggle]="hintToggle"
           [subscriptType]="subscriptType"
@@ -217,26 +143,20 @@
         ></app-reference-column>
       </div>
       <div>
-        <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-checkbox formControlName="checkbox"></mat-checkbox>
         </zv-form-field>
       </div>
       <div>
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
       <div>
-        <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-checkbox formControlName="checkbox">{{ asyncLabel$ | async }}</mat-checkbox>
         </zv-form-field>
       </div>
       <div>
         <app-reference-column
-          [appearance]="appearance"
           [hint]="hintText"
           [hintToggle]="hintToggle"
           [subscriptType]="subscriptType"
@@ -244,7 +164,7 @@
         ></app-reference-column>
       </div>
       <div>
-        <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-label *ngIf="customLabel">Custom Label</mat-label>
           <mat-radio-group formControlName="radio" style="display: flex; place-content: end space-between">
             <mat-radio-button [value]="true" style="padding-right: 8px">Ja</mat-radio-button>
@@ -261,35 +181,20 @@
         </zv-form-field>
       </div>
       <div>
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
     </div>
     <div>
       <div *ngFor="let i of ctrlCountNumbers">
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
     </div>
     <div>
       <div>
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
       <div>
-        <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-label *ngIf="customLabel">Custom Label</mat-label>
           <zv-select
             formControlName="zvSelect"
@@ -299,15 +204,10 @@
         </zv-form-field>
       </div>
       <div>
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
       <div>
-        <zv-form-field [appearance]="appearance" [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
           <mat-label *ngIf="customLabel">Custom Label</mat-label>
           <zv-date-time-input formControlName="zvDateTimeInput" [matDatepicker]="datepickerRef" [required]="required"></zv-date-time-input>
           <mat-datepicker-toggle matSuffix [for]="datepickerRef"></mat-datepicker-toggle>
@@ -315,12 +215,7 @@
         </zv-form-field>
       </div>
       <div>
-        <app-reference-column
-          [appearance]="appearance"
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-        ></app-reference-column>
+        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
       </div>
     </div>
   </div>

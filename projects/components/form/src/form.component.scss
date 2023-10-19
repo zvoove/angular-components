@@ -8,7 +8,7 @@
 }
 
 mat-card.zv-form__error-container {
-  color: var(--zv-error);
+  color: var(--zv-components-error);
 }
 
 mat-card.zv-form__error-container--center {
@@ -17,7 +17,7 @@ mat-card.zv-form__error-container--center {
 }
 
 mat-icon.zv-form__error-icon {
-  color: var(--zv-error);
+  color: var(--zv-components-error);
   font-size: 72px;
   height: 72px;
   width: 72px;
@@ -76,7 +76,7 @@ mat-card.zv-form__savebar--sticky {
 }
 
 .zv-form__savebar-border--accent {
-  background-color: var(--zv-accent);
+  background-color: var(--zv-components-font);
 }
 
 .zv-form__savebar-progress {

@@ -28,7 +28,6 @@ import { ZvFormFieldModule } from '@zvoove/components/form-field';
 | `createLabel: boolean` (default: `true`)                   | If `true` a label will be created automatically based on the information of the given FormControl.                                                                                             |
 | `floatLabel: FloatLabelType` (default: `'auto'`)           | Behaviour of the label. See [FloatLabelType](https://material.angular.io/components/form-field/api) for more information.                                                                      |
 | `hint: string`                                             | Automatically generates a `<mat-hint>` for this hintText. See [MatHintComponent](https://material.angular.io/components/form-field/overview#hint-labels) for more information.                 |
-| `appearance: MatFormFieldAppearance` (default: `'legacy'`) | Changes the appearance of the `<mat-form-field>`. See [MatFormFieldComponent](https://material.angular.io/components/form-field/overview#form-field-appearance-variants) for more information. |
 
 ---
 
@@ -62,7 +61,7 @@ Now you can use it in your components like this:
 
 ```html
 <form [formGroup]="form">
-  <zv-form-field [appearance]="'fill'" [hint]="'hint text'">
+  <zv-form-field [hint]="'hint text'">
     <mat-label>Fill</mat-label>
     <input matInput type="text" />
   </zv-form-field>

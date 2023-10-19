@@ -11,7 +11,7 @@ zv-table {
   }
 
   .zv-table__error-text {
-    color: red;
+    color: var(--zv-components-error);
   }
 
   .zv-table__shadow {
