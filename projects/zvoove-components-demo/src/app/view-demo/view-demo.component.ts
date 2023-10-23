@@ -3,6 +3,12 @@ import { IZvException } from '@zvoove/components/core';
 import { IZvViewDataSource } from '@zvoove/components/view';
 import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 import { delay, map, take } from 'rxjs/operators';
+import { NgFor, JsonPipe } from '@angular/common';
+import { ZvViewModule } from '../../../../components/view/src/view.module';
+import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
 
 export interface ZvViewDataSourceOptions<TParams, TData> {
   loadTrigger$: Observable<TParams>;
@@ -78,6 +84,8 @@ class DemoZvViewDataSource<TParams, TData> implements IZvViewDataSource {
   templateUrl: './view-demo.component.html',
   styleUrls: ['./view-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatCardModule, MatCheckboxModule, ReactiveFormsModule, FormsModule, MatButtonModule, ZvViewModule, NgFor, JsonPipe],
 })
 export class ViewDemoComponent {
   public loadError = false;

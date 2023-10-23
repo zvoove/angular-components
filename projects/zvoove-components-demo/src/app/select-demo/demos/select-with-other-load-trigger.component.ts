@@ -1,13 +1,19 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DefaultZvSelectDataSource, ZvSelectDataSource, ZvSelectLoadTrigger } from '@zvoove/components/select';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { JsonPipe } from '@angular/common';
+import { ZvSelectModule } from '../../../../../components/select/src/select.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
   selector: 'app-select-with-other-load-trigger',
   templateUrl: './select-with-other-load-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatRadioModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithOtherLoadTriggerComponent {
   public dataSource: ZvSelectDataSource;

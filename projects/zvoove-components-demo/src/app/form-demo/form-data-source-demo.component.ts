@@ -1,10 +1,17 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { IZvButton, IZvException } from '@zvoove/components/core';
 import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from '@zvoove/components/form';
 import { IZvSavebarMode } from '@zvoove/components/form';
 import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 import { delay, map, take, tap } from 'rxjs/operators';
+import { NgFor, JsonPipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ZvFormModule } from '../../../../components/form/src/form.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
 
 export interface ZvFormDataSourceOptions<TParams, TData> {
   form: FormGroup;
@@ -222,6 +229,19 @@ class DemoZvFormDataSource<TParams, TData> implements IZvFormDataSource {
   styleUrls: ['./form-data-source-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatInputModule,
+    MatButtonModule,
+    ZvFormModule,
+    MatFormFieldModule,
+    NgFor,
+    JsonPipe,
+  ],
 })
 export class FormDataSourceDemoComponent {
   public loadError = false;

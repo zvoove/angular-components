@@ -1,0 +1,144 @@
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
+<app-component-page-wrapper [componentName]="'zv-date-time-input'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <mat-card>
+      <mat-card-content>
+        <div class="app-date-time-input-demo__settings">
+          <div class="app-date-time-input-demo__settings__line">
+            <mat-checkbox [(ngModel)]="disabled" (change)="onDisabledChanged()">disabled</mat-checkbox>
+            <mat-checkbox [(ngModel)]="required">required</mat-checkbox>
+            <mat-checkbox [(ngModel)]="validatorRequired" (change)="onValidatorChange()">required validator</mat-checkbox>
+            <mat-checkbox [(ngModel)]="useErrorStateMatcher" (change)="onUseErrorStateMatcherChange()"
+              >errorStateMatcher (always invalid)</mat-checkbox
+            >
+          </div>
+          <zv-form-field>
+            <mat-label>id</mat-label>
+            <input matInput type="text" [(ngModel)]="id" />
+          </zv-form-field>
+          <div class="app-date-time-input-demo__settings__line">
+            <button type="button" mat-stroked-button (click)="setValues(null)">set values null</button>
+            <button type="button" mat-stroked-button (click)="setValues(now())">set values now</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <app-form-control-demo-card [type]="'form'" [formGroup]="form" [control]="form.get('control')" [codeFiles]="getCodeFiles('form')">
+      <zv-form-field>
+        <mat-label>Your date time</mat-label>
+        <zv-date-time-input
+          [id]="id"
+          [required]="required"
+          [errorStateMatcher]="errorStateMatcher"
+          formControlName="control"
+          [matDatepicker]="formDatepicker"
+        ></zv-date-time-input>
+        <mat-datepicker-toggle matSuffix [for]="formDatepicker"></mat-datepicker-toggle>
+        <mat-datepicker #formDatepicker></mat-datepicker>
+      </zv-form-field>
+    </app-form-control-demo-card>
+
+    <app-form-control-demo-card [type]="'model'" [value]="model" [codeFiles]="getCodeFiles('ngmodel')">
+      <zv-form-field>
+        <mat-label>Your date time</mat-label>
+        <zv-date-time-input
+          [id]="id"
+          [required]="required"
+          [disabled]="disabled"
+          [errorStateMatcher]="errorStateMatcher"
+          [(ngModel)]="model"
+          [matDatepicker]="modelDatepicker"
+        ></zv-date-time-input>
+        <mat-datepicker-toggle matSuffix [for]="modelDatepicker"></mat-datepicker-toggle>
+        <mat-datepicker #modelDatepicker></mat-datepicker>
+      </zv-form-field>
+    </app-form-control-demo-card>
+
+    <app-form-control-demo-card [type]="'value'" [value]="value" [codeFiles]="getCodeFiles('value')">
+      <zv-form-field>
+        <mat-label>Your date time</mat-label>
+        <zv-date-time-input
+          [id]="id"
+          [required]="required"
+          [disabled]="disabled"
+          [errorStateMatcher]="errorStateMatcher"
+          [(value)]="value"
+          [matDatepicker]="valueDatepicker"
+        ></zv-date-time-input>
+        <mat-datepicker-toggle matSuffix [for]="valueDatepicker"></mat-datepicker-toggle>
+        <mat-datepicker #valueDatepicker></mat-datepicker>
+      </zv-form-field>
+    </app-form-control-demo-card>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'api'">
+    <app-api-doc [name]="'zv-date-time-input'">
+      <app-api-doc-input
+        [name]="'matDatepicker'"
+        [type]="'MatDatepicker'"
+        [typeUrl]="'https://material.angular.io/components/datepicker/overview'"
+        [desc]="'The MatDatepicker instance used by the date part of the date-time-input.'"
+        [required]="true"
+      />
+      <app-api-doc-input
+        [name]="'disabled'"
+        [type]="'boolean'"
+        [desc]="'Disables the date-time-input. For formControl binding, please use the disable() method of the FormControl.'"
+      />
+      <app-api-doc-input
+        [name]="'errorStateMatcher'"
+        [type]="'ErrorStateMatcher'"
+        [typeUrl]="'https://material.angular.io/components/core/api#ErrorStateMatcher'"
+        [desc]="'Can be used to override the default ErrorStateMatcher.'"
+      />
+      <app-api-doc-input [name]="'id'" [type]="'string'" [desc]="'The html id attribute to assign to the date-time-input.'" />
+      <app-api-doc-input [name]="'required'" [type]="'boolean'" [desc]="'Makes the date-time-input required.'" />
+      <app-api-doc-input [name]="'value'" [type]="'Date | null'" [desc]="'Sets the value of the date-time-input.'" />
+      <app-api-doc-output
+        [name]="'valueChange'"
+        [type]="'Date | null'"
+        [desc]="'Emits the current value, whenever it changes.'"
+        [twoWay]="true"
+      />
+    </app-api-doc>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>@angular/material datepicker</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          The date-time-input uses the
+          <a href="https://material.angular.io/components/datepicker/overview" rel="noopener noreferrer">@angular/material datepicker</a>
+          for the date part. So @angular/material needs to be installed.
+        </p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Providers</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          The date-time-input needs adapters and formatting options to know how to work with dates. These can be provided at an application
+          level, like the AppModule for example.
+        </p>
+        <p>Adapters and formatting options for javascript native dates are provided by this library and ca be used like this:</p>
+        <app-code [code]="providersCode" />
+        <p>If your app works with other date libraries, then you can implement these yourself.</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Imports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Add the following to your imports, where you want to use the zv-date-time-input:</p>
+        <app-code [code]="importsCode" />
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>

@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Observable, of } from 'rxjs';
 import { bufferCount, startWith } from 'rxjs/operators';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+import { ZvSelectModule } from '../../../../../components/select/src/select.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
@@ -15,6 +19,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './select-with-error-state-matcher.component.html',
   styleUrls: ['./select-with-error-state-matcher.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatButtonModule, ReactiveFormsModule, MatFormFieldModule, ZvSelectModule, AsyncPipe, JsonPipe],
 })
 export class SelectWithErrorStateMatcherComponent {
   public items$: Observable<any[]> = of(

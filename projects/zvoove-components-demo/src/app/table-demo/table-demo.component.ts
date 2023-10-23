@@ -9,6 +9,15 @@ import {
 } from '@zvoove/components/table';
 import { Observable, of, timer } from 'rxjs';
 import { first, map } from 'rxjs/operators';
+import { ZvTableModule } from '../../../../components/table/src/table.module';
+import { NgIf, JsonPipe, DatePipe } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
 
 interface ISampleData {
   id: number;
@@ -75,6 +84,21 @@ function generateSampleData(rowCount: number): ISampleData[] {
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    NgIf,
+    ZvTableModule,
+    JsonPipe,
+    DatePipe,
+  ],
 })
 export class TableDemoComponent {
   public show = true;
@@ -210,7 +234,7 @@ export class TableDemoComponent {
               isSvgIcon: true,
               icon: 'angular',
               scope: ZvTableActionScope.row,
-              routerLink: (items) => ({ path: ['/', 'table', items[0].id] } as IZvTableActionRouterLink),
+              routerLink: (items) => ({ path: ['/', 'table', items[0].id] }) as IZvTableActionRouterLink,
             },
           ],
         },

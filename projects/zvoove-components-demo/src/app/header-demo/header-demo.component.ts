@@ -1,4 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatTabsModule } from '@angular/material/tabs';
+import { NgFor, DatePipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { ZvHeaderModule } from '../../../../components/header/src/header.module';
 
 @Component({
   selector: 'app-header-demo',
@@ -29,6 +35,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ZvHeaderModule, MatCardModule, MatButtonModule, MatIconModule, NgFor, MatTabsModule, DatePipe],
 })
 export class HeaderDemoComponent {
   public demoTableData = [

@@ -5,7 +5,7 @@ export class AppPage {
     return browser.get(browser.baseUrl) as Promise<any>;
   }
 
-  getTitleText() {
-    return element(by.css('app-root h1')).getText() as Promise<string>;
+  getToolbarTitleText() {
+    return element(by.css('app-root mat-toolbar')).getText() as Promise<string>;
   }
 }

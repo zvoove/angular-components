@@ -3,6 +3,8 @@ import { ChangeDetectionStrategy, Component, ContentChild, Input } from '@angula
 import { AbstractControl, NgModel } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { AppCodeFilesComponent, CodeFiles } from '../code-files/code-files.component';
+import { AppCodeComponent } from '../code/code.component';
 
 @Component({
   selector: 'app-form-control-demo-card',
@@ -11,14 +13,14 @@ import { MatIconModule } from '@angular/material/icon';
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
-  imports: [NgIf, MatCardModule, MatIconModule, JsonPipe],
+  imports: [NgIf, MatCardModule, MatIconModule, JsonPipe, AppCodeComponent, AppCodeFilesComponent],
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class FormControlDemoCard {
   @Input({ required: true }) type: 'form' | 'model' | 'value';
   @Input() control?: AbstractControl;
   @Input() value?: unknown;
-  @Input({ required: true }) code: string;
+  @Input({ required: true }) codeFiles: CodeFiles[];
 
   @ContentChild(NgModel, { read: NgModel }) ngModel: NgModel;
 

@@ -1,12 +1,34 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ZvFileInputComponent } from '@zvoove/components/file-input';
+import { ZvFormService } from '@zvoove/components/form-base';
+import { ZvFormFieldModule } from '@zvoove/components/form-field';
+import { DemoZvFormsService } from '../common/demo-zv-form-service';
 
 @Component({
   selector: 'app-file-input-demo',
   templateUrl: './file-input-demo.component.html',
   styleUrls: ['./file-input-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    FormsModule,
+    ZvFormFieldModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    ZvFileInputComponent,
+  ],
+  providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })
 export class FileInputDemoComponent {
   public value: File | null = null;

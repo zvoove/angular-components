@@ -1,0 +1,38 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ name }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <table class="app-api-doc__table app-api-doc__table--striped">
+      <thead>
+        <tr>
+          <th>Input</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let input of inputs; trackBy: trackByInput">
+          <td>[{{ input.name }}]<i *ngIf="input.required"> - required</i></td>
+          <td>
+            <ng-container *ngIf="!input.typeUrl; else typeWithUrl">{{ input.type }}</ng-container>
+            <ng-template #typeWithUrl>
+              <a [href]="input.typeUrl" rel="noopener noreferrer">{{ input.type }}</a>
+            </ng-template>
+          </td>
+          <td>{{ input.desc }}</td>
+        </tr>
+        <tr *ngFor="let output of outputs; trackBy: trackByOutput">
+          <td>({{ output.name }})</td>
+          <td>
+            <ng-container *ngIf="!output.typeUrl; else typeWithUrl">{{ output.type }}</ng-container>
+            <ng-template #typeWithUrl>
+              <a [href]="output.typeUrl" rel="noopener noreferrer">{{ output.type }}</a>
+            </ng-template>
+          </td>
+          <td>{{ output.desc }} <span *ngIf="output.twoWay">Can be used for two-way binding.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-card-content>
+</mat-card>

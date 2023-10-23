@@ -1,8 +1,32 @@
+import { JsonPipe, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { DefaultZvSelectDataSource, ZvSelectLoadTrigger, ZvSelectSortBy } from '@zvoove/components/select';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import {
+  DefaultZvSelectDataSource,
+  DefaultZvSelectService,
+  ZvSelectLoadTrigger,
+  ZvSelectModule,
+  ZvSelectService,
+  ZvSelectSortBy,
+} from '@zvoove/components/select';
 import { NEVER, of, throwError } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
+import { SelectWithCustomSelectServiceComponent } from './demos/select-with-custom-select-service.component';
+import { SelectWithCustomTemplateComponent } from './demos/select-with-custom-template.component';
+import { SelectWithEndlessLoadingDataSourceComponent } from './demos/select-with-endless-loading-datasource.component';
+import { SelectWithErrorInDataSourceComponent } from './demos/select-with-error-in-datasource.component';
+import { SelectWithErrorStateMatcherComponent } from './demos/select-with-error-state-matcher.component';
+import { SelectWithEventsOnlyComponent } from './demos/select-with-events-only.component';
+import { SelectWithMultiselectComponent } from './demos/select-with-multiselect.component';
+import { SelectWithNgModelComponent } from './demos/select-with-ng-model.component';
+import { SelectWithOtherLoadTriggerComponent } from './demos/select-with-other-load-trigger.component';
+import { SelectWithSelectedItemNotInDataSourceComponent } from './demos/select-with-selected-item-not-in-datasource.component';
 
 declare type DemoDataSourceItems = 'default' | 'error' | 'loading' | 'empty';
 
@@ -16,6 +40,31 @@ interface DemoLogs {
   styleUrls: ['./select-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    NgIf,
+    ZvSelectModule,
+    SelectWithMultiselectComponent,
+    SelectWithEventsOnlyComponent,
+    SelectWithNgModelComponent,
+    SelectWithSelectedItemNotInDataSourceComponent,
+    SelectWithEndlessLoadingDataSourceComponent,
+    SelectWithErrorInDataSourceComponent,
+    SelectWithOtherLoadTriggerComponent,
+    SelectWithCustomSelectServiceComponent,
+    SelectWithCustomTemplateComponent,
+    SelectWithErrorStateMatcherComponent,
+    JsonPipe,
+  ],
+  providers: [{ provide: ZvSelectService, useClass: DefaultZvSelectService }],
 })
 export class SelectDemoComponent implements OnInit {
   public visible = true;

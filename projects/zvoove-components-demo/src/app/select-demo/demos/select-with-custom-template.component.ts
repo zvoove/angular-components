@@ -1,4 +1,8 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ZvSelectModule } from '../../../../../components/select/src/select.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-select-with-custom-template',
@@ -6,6 +10,8 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
   styleUrls: ['./select-with-custom-template.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [MatFormFieldModule, ZvSelectModule, ReactiveFormsModule, FormsModule, JsonPipe],
 })
 export class SelectWithCustomTemplateComponent {
   public items = [

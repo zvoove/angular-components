@@ -1,18 +1,21 @@
 import { ChangeDetectionStrategy, Component, Inject, LOCALE_ID, TrackByFunction } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatDividerModule } from '@angular/material/divider';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatButtonModule } from '@angular/material/button';
+import { NgFor } from '@angular/common';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styles: [
-    `
-      .app-root__locale-active {
-        browder: 1px solid red;
-      }
-    `,
-  ],
+  styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatToolbarModule, NgFor, MatButtonModule, MatSidenavModule, MatListModule, RouterLink, MatDividerModule, RouterOutlet],
 })
 export class AppComponent {
   supportedLocales = ['de', 'en-US', 'en-GB'];

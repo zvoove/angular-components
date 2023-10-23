@@ -1,0 +1,17 @@
+@use '@angular/material' as mat;
+
+app-code-files {
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  @include mat.tabs-density(-3);
+}
+
+.app-code-files__tab-header {
+  justify-content: flex-start;
+}
+
+.app-code-files__code {
+  border: none;
+}

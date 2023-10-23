@@ -18,9 +18,8 @@ import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatSelect } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ZvFormBaseModule } from '@zvoove/components/form-base';
+import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormBaseModule } from '@zvoove/components/form-base';
 import { ZvFormFieldModule } from '@zvoove/components/form-field';
-import { DemoZvFormsService } from 'projects/zvoove-components-demo/src/app/common/demo-zv-form-service';
 import { Observable, of, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
 import { DefaultZvSelectDataSource } from './defaults/default-select-data-source';
 import { DefaultZvSelectService, ZvSelectData } from './defaults/default-select-service';
@@ -30,6 +29,21 @@ import { ZvSelectComponent } from './select.component';
 import { ZvSelectModule } from './select.module';
 import { ZvSelectService } from './select.service';
 import { ZvSelectHarness } from './testing/select.harness';
+
+@Injectable()
+export class TestZvFormsService extends BaseZvFormService {
+  public getLabel(formControl: any): Observable<string> {
+    return formControl.zvLabel ? of(formControl.zvLabel) : null;
+  }
+  protected mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]> {
+    return of(
+      errorData.map((data) => ({
+        errorText: `${data.controlPath} - ${data.errorKey} - ${JSON.stringify(data.errorValue)}`,
+        data: data,
+      }))
+    );
+  }
+}
 
 function createFakeMatSelect(): MatSelect {
   const matSelect = <any>{
@@ -296,7 +310,7 @@ describe('ZvSelectComponent', () => {
       loader,
     } = await initTest(
       TestWithFormFieldComponent,
-      [ZvFormFieldModule, ZvFormBaseModule.forRoot(DemoZvFormsService)],
+      [ZvFormFieldModule, ZvFormBaseModule.forRoot(TestZvFormsService)],
       [TestWithFormFieldComponent]
     );
 

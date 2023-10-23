@@ -1,4 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { ZvCardModule } from '../../../../components/card/src/card.module';
 
 @Component({
   selector: 'app-card-demo',
@@ -24,5 +27,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ZvCardModule, MatButtonModule, MatIconModule],
 })
 export class CardDemoComponent {}

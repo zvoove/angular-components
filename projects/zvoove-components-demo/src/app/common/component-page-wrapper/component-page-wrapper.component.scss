@@ -1,5 +1,5 @@
 .app-component-page-wrapper__tab-content {
   display: grid;
   gap: 1em;
-  margin-top: 1em;
+  margin: 1em 0.25em; // margin left/right/bottom is neccessary to not cut off shadows of cards
 }

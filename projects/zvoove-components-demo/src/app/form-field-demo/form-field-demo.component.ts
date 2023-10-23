@@ -1,7 +1,32 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { ZvFormFieldSubscriptType } from '@zvoove/components/form-field';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ErrorStateMatcher, MatOptionModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import {
+  ZV_NATIVE_DATE_FORMATS,
+  ZV_NATIVE_TIME_FORMATS,
+  ZvNativeDateAdapter,
+  ZvNativeDateTimeAdapter,
+  ZvNativeTimeAdapter,
+  provideDateTimeAdapters,
+  provideDateTimeFormats,
+} from '@zvoove/components/core';
+import { ZvDateTimeInput } from '@zvoove/components/date-time-input';
+import { ZvFormService } from '@zvoove/components/form-base';
+import { ZvFormFieldModule, ZvFormFieldSubscriptType } from '@zvoove/components/form-field';
+import { DefaultZvSelectService, ZvSelectModule, ZvSelectService } from '@zvoove/components/select';
 import { of } from 'rxjs';
+import { DemoZvFormsService } from '../common/demo-zv-form-service';
+import { InvalidErrorStateMatcher } from '../common/invalid-error-state-matcher';
 
 @Component({
   selector: 'app-reference-column',
@@ -12,6 +37,8 @@ import { of } from 'rxjs';
     </zv-form-field>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ZvFormFieldModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, FormsModule],
 })
 export class ReferenceColumnComponent {
   @Input() public subscriptType: ZvFormFieldSubscriptType = 'single-line';
@@ -27,6 +54,35 @@ export class ReferenceColumnComponent {
   styleUrls: ['./form-field-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    ZvFormFieldModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatOptionModule,
+    NgIf,
+    NgFor,
+    ReferenceColumnComponent,
+    MatIconModule,
+    MatSliderModule,
+    MatRadioModule,
+    MatButtonModule,
+    ZvSelectModule,
+    ZvDateTimeInput,
+    MatDatepickerModule,
+    AsyncPipe,
+  ],
+  providers: [
+    { provide: ErrorStateMatcher, useClass: InvalidErrorStateMatcher },
+    provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
+    provideDateTimeFormats(ZV_NATIVE_DATE_FORMATS, ZV_NATIVE_TIME_FORMATS),
+    { provide: ZvFormService, useClass: DemoZvFormsService },
+    { provide: ZvSelectService, useClass: DefaultZvSelectService },
+  ],
 })
 export class FormFieldDemoComponent {
   public subscriptType: ZvFormFieldSubscriptType = 'single-line';

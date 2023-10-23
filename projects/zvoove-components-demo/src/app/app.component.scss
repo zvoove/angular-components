@@ -1,0 +1,24 @@
+@use '@angular/material' as mat;
+
+.app-root__locale-box {
+  margin-left: auto;
+}
+
+.app-root__locale-active {
+  background-color: #ccc4;
+}
+
+.app-root__sidenav-container {
+  height: calc(100% - 50px);
+  @include mat.list-density(-3);
+
+  [mat-subheader] {
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+}
+
+.app-root__sidenav-content {
+  padding: 1em;
+  box-sizing: border-box;
+}

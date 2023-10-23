@@ -9,7 +9,7 @@
     <div>
       <ng-content></ng-content>
     </div>
-    <div class="app-file-input-demo__state">
+    <div class="app-form-control-demo-card__state">
       <div>Value</div>
       <div>
         <pre>{{ formControl?.value ?? value }}</pre>
@@ -20,7 +20,7 @@
       </div>
       <ng-container *ngIf="formControl">
         <div>Touched</div>
-        <div>
+        <div class="app-form-control-demo-card__height-1em">
           <mat-icon *ngIf="!formControl.touched" [inline]="true">close</mat-icon>
           <mat-icon *ngIf="formControl.touched" [inline]="true">check</mat-icon>
           <a *ngIf="formControl.touched" href="javascript: void(0)" (click)="formControl.markAsUntouched(); $event.preventDefault()"
@@ -28,7 +28,7 @@
           >
         </div>
         <div>Dirty</div>
-        <div>
+        <div class="app-form-control-demo-card__height-1em">
           <mat-icon *ngIf="!formControl.dirty" [inline]="true">close</mat-icon>
           <mat-icon *ngIf="formControl.dirty" [inline]="true">check</mat-icon>
           <a *ngIf="formControl.dirty" href="javascript: void(0)" (click)="formControl.markAsPristine(); $event.preventDefault()"
@@ -43,6 +43,6 @@
     </div>
 
     Code:
-    <pre class="app-file-input-demo__code">{{ code }}</pre>
+    <app-code-files [files]="codeFiles" />
   </mat-card-content>
 </mat-card>

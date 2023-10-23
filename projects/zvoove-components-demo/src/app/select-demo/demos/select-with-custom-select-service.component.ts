@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, Injectable } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DefaultZvSelectService, ZvSelectData, ZvSelectDataSource, ZvSelectLoadTrigger, ZvSelectService } from '@zvoove/components/select';
 import { Observable, of } from 'rxjs';
+import { JsonPipe } from '@angular/common';
+import { ZvSelectModule } from '../../../../../components/select/src/select.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Injectable()
 export class CustomZvSelectService extends DefaultZvSelectService {
@@ -22,6 +25,8 @@ export class CustomZvSelectService extends DefaultZvSelectService {
   templateUrl: './select-with-custom-select-service.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: ZvSelectService, useClass: CustomZvSelectService }],
+  standalone: true,
+  imports: [ReactiveFormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithCustomSelectServiceComponent {
   public items$: Observable<ILookup[]> = of(

@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { IZvButton, IZvException } from '@zvoove/components/core';
 import { IZvDialogWrapperDataSource } from '@zvoove/components/dialog-wrapper';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
+import { ZvDialogWrapperModule } from '../../../../components/dialog-wrapper/src/dialog-wrapper.module';
 
 interface IDemoDialogWrapperDataSourceOptions {
   dialogTitle: string;
@@ -63,6 +65,8 @@ export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
   selector: 'app-dialog-wrapper-demo',
   template: `<button mat-raised-button color="accent" (click)="openDialog()">Open Dialog</button>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatButtonModule, MatDialogModule],
 })
 export class DialogWrapperDemoComponent {
   constructor(public dialog: MatDialog) {}
@@ -75,6 +79,8 @@ export class DialogWrapperDemoComponent {
   selector: 'app-dialog-wrapper-demo',
   templateUrl: './dialog-wrapper-demo.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ZvDialogWrapperModule, MatButtonModule],
 })
 export class DialogWrapperDemoDialog {
   public actionFunctionCalled = 0;
