@@ -25,6 +25,11 @@
   }
 }
 
+.zv-block-ui__clickthrough:not(.zv-table__shadow) .zv-table-data__table {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
 .zv-table-data__detail-row--collapsed > .zv-table-data__detail-cell {
   border-bottom-width: 0;
 }
