@@ -16,7 +16,7 @@
       (searchChanged)="onSearchChanged($event)"
     ></zv-table-header>
 
-    <zv-block-ui [class.zv-table__shadow]="layout === 'card'" [blocked]="showLoading" [clickthrough]="true">
+    <zv-block-ui [blocked]="showLoading" [clickthrough]="true">
       <zv-table-data
         [intl]="intl"
         [dataSource]="dataSource"

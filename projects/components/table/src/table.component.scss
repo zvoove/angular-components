@@ -13,10 +13,6 @@ zv-table {
   .zv-table__error-text {
     color: var(--zv-components-error);
   }
-
-  .zv-table__shadow {
-    box-shadow: 0 -1px 6px -2px rgba(0, 0, 0, 0.2);
-  }
 }
 
 .zv-table--card {

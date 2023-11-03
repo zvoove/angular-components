@@ -5,6 +5,9 @@ zv-table-header {
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
+  background-color: white;
+  border-radius: 4px 4px 0 0;
+  min-height: 5px;
 }
 
 .zv-table-header__caption {
