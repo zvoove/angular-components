@@ -145,7 +145,7 @@ export class ZvFileInputComponent
    *
    * @docs-private
    */
-  @Input() placeholder: string | null = null;
+  @Input() placeholder: string = '';
 
   /**
    * Implemented as part of MatFormFieldControl.
