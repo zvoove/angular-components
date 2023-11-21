@@ -75,7 +75,7 @@ export class ZvFileInputComponent
   extends zvFileInputMixinBase
   implements ControlValueAccessor, MatFormFieldControl<File>, OnChanges, OnDestroy, OnInit, DoCheck, CanUpdateErrorState
 {
-  fileSelectText = $localize`:@@download.chooseFile:Please choose a file.`;
+  fileSelectText = $localize`:@@zvc.chooseFile:Please choose a file.`;
 
   @Input() accept: string[] = [];
 
