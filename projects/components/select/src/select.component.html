@@ -13,8 +13,32 @@
     (selectionChange)="onSelectionChange($event)"
     (openedChange)="onOpenedChange($event)"
   >
-    <mat-select-trigger *ngIf="triggerTemplate && !empty">
-      <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: customTriggerData }"></ng-container>
+    <mat-select-trigger *ngIf="!multiple && triggerTemplate && !empty">
+      <ng-container
+        *ngIf="triggerTemplate"
+        [ngTemplateOutlet]="triggerTemplate"
+        [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }"
+      >
+      </ng-container>
+    </mat-select-trigger>
+
+    <mat-select-trigger *ngIf="multiple && !empty" class="zv-select__multiple-trigger">
+      <div class="zv-select__multiple-trigger__label">
+        <ng-container *ngIf="!triggerTemplate">{{ $selectedItemsTriggerLabel() }}</ng-container>
+        <ng-container
+          *ngIf="triggerTemplate"
+          [ngTemplateOutlet]="triggerTemplate"
+          [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }"
+        >
+        </ng-container>
+      </div>
+      <div
+        *ngIf="$customTriggerDataArray().length > 1 && selectedLabel"
+        class="zv-select__multiple-trigger__selected-label"
+        i18n="@@select.xSelectedLabel"
+      >
+        ({{ $customTriggerDataArray().length }} selected)
+      </div>
     </mat-select-trigger>
 
     <mat-option class="zv-select__search">

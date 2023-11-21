@@ -40,6 +40,10 @@
           <pre>{{ formControl.errors | json }}</pre>
         </div>
       </ng-container>
+      <ng-container *ngFor="let data of additionalData | keyvalue; trackBy: addDataTrackBy">
+        <div>{{ data.key }}</div>
+        <div>{{ data.value }}</div>
+      </ng-container>
     </div>
 
     Code:

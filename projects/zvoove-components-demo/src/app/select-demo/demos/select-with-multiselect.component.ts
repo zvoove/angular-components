@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { JsonPipe } from '@angular/common';
-import { ZvSelectModule } from '../../../../../components/select/src/select.module';
+import { ZvSelectModule } from '@zvoove/components/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 

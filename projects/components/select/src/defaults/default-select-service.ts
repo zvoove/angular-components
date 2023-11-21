@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { isZvSelectDataSource, ZvSelectDataSource } from '../select-data-source';
-import { ZvSelectService } from '../select.service';
-import { DefaultZvSelectDataSource, ZvSelectDataSourceOptions, isZvSelectOptionsData } from './default-select-data-source';
-import { Observable, isObservable } from 'rxjs';
-import { getSelectUnknownDataSourceError } from '../errors';
+import { isObservable, Observable } from 'rxjs';
+import { isZvSelectDataSource, ZvSelectDataSource } from '../data/select-data-source';
+import { getSelectUnknownDataSourceError } from '../helpers/errors';
+import { ZvSelectService } from '../services/select.service';
+import { DefaultZvSelectDataSource, isZvSelectOptionsData, ZvSelectDataSourceOptions } from './default-select-data-source';
 
 export declare type ZvSelectData<T = any> = T[] | Observable<T[]> | ZvSelectDataSource | ZvSelectDataSourceOptions<T>;
 

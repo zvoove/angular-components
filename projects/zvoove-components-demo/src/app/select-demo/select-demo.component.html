@@ -1,160 +1,272 @@
-<div class="app-select-demo__settings">
-  <mat-card>
-    <mat-card-content class="app-select-demo__settings-box">
-      <strong>zv-select</strong>
-      <span>[dataSource] = new DefaultZvSelectDataSource(...)</span>
-      <mat-checkbox [(ngModel)]="multiple" (change)="recreate()">[multiple]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="clearable">[clearable]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="disabled" (change)="disabledChanged()">[disabled]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="required">[required]</mat-checkbox>
-      <span>[errorStateMatcher]</span>
-      <mat-checkbox [(ngModel)]="panelClass">[panelClass] (color: green)</mat-checkbox>
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
+<app-component-page-wrapper [componentName]="'zv-select'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <div class="app-select-demo__settings">
+      <mat-card>
+        <mat-card-content class="app-select-demo__settings-box">
+          <strong>zv-select</strong>
+          <span>[dataSource] = new DefaultZvSelectDataSource(...)</span>
+          <mat-checkbox [(ngModel)]="multiple" (change)="recreate()">[multiple]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="clearable">[clearable]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="disabled" (change)="disabledChanged()">[disabled]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="required">[required]</mat-checkbox>
+          <span>[errorStateMatcher]</span>
+          <mat-checkbox [(ngModel)]="panelClass">[panelClass] (color: green)</mat-checkbox>
+          <mat-checkbox [(ngModel)]="selectedLabel">[selectedLabel]</mat-checkbox>
 
-      <div>(openedChange) $event = boolean</div>
-      <div>(selectionChange) $event = MatSelectChange</div>
+          <div>(openedChange) $event = boolean</div>
+          <div>(selectionChange) $event = MatSelectChange</div>
 
-      <mat-checkbox [(ngModel)]="customTriggerTpl">*zvSelectTriggerTemplate="let item"</mat-checkbox>
-      <mat-checkbox [(ngModel)]="customOptionTpl">*zvSelectOptionTemplate="let item"</mat-checkbox>
-    </mat-card-content>
-  </mat-card>
+          <mat-checkbox [(ngModel)]="customTriggerTpl">*zvSelectTriggerTemplate="let item"</mat-checkbox>
+          <mat-checkbox [(ngModel)]="customOptionTpl">*zvSelectOptionTemplate="let item"</mat-checkbox>
+        </mat-card-content>
+      </mat-card>
 
-  <mat-card>
-    <mat-card-content class="app-select-demo__settings-box">
-      <strong>DefaultZvSelectDataSource</strong>
-      <mat-form-field>
-        <mat-label>items</mat-label>
-        <mat-select [(ngModel)]="dataSourceItems" (selectionChange)="resetDataSource()">
-          <mat-option [value]="'default'">500 items</mat-option>
-          <mat-option [value]="'error'">error while loading</mat-option>
-          <mat-option [value]="'loading'">endless loading</mat-option>
-          <mat-option [value]="'empty'">empty result</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-card>
+        <mat-card-content class="app-select-demo__settings-box">
+          <strong>DefaultZvSelectDataSource</strong>
+          <mat-form-field>
+            <mat-label>items</mat-label>
+            <mat-select [(ngModel)]="dataSourceItems" (selectionChange)="resetDataSource()">
+              <mat-option [value]="'default'">500 items</mat-option>
+              <mat-option [value]="'error'">error while loading</mat-option>
+              <mat-option [value]="'loading'">endless loading</mat-option>
+              <mat-option [value]="'empty'">empty result</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <strong>items array</strong>
-      <mat-checkbox [(ngModel)]="itemsAsObservable" (change)="resetDataSource()">wrapped in observable</mat-checkbox>
-      <mat-checkbox [(ngModel)]="itemsAsFunction" (change)="resetDataSource()">result of load function</mat-checkbox>
+          <strong>items array</strong>
+          <mat-checkbox [(ngModel)]="itemsAsObservable" (change)="resetDataSource()">wrapped in observable</mat-checkbox>
+          <mat-checkbox [(ngModel)]="itemsAsFunction" (change)="resetDataSource()">result of load function</mat-checkbox>
 
-      <mat-form-field>
-        <mat-label>mode</mat-label>
-        <mat-select [(ngModel)]="dataSourceMode" (selectionChange)="resetDataSource()">
-          <mat-option [value]="'id'">id</mat-option>
-          <mat-option [value]="'entity'">entity</mat-option>
-        </mat-select>
-      </mat-form-field>
+          <mat-form-field>
+            <mat-label>mode</mat-label>
+            <mat-select [(ngModel)]="dataSourceMode" (selectionChange)="resetDataSource()">
+              <mat-option [value]="'id'">id</mat-option>
+              <mat-option [value]="'entity'">entity</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>idKey</mat-label>
-        <mat-select [(ngModel)]="dataSourceIdKey" (selectionChange)="resetDataSource()">
-          <mat-option [value]="'id'">id property</mat-option>
-          <mat-option [value]="'strId'">strId property</mat-option>
-        </mat-select>
-      </mat-form-field>
+          <mat-form-field>
+            <mat-label>idKey</mat-label>
+            <mat-select [(ngModel)]="dataSourceIdKey" (selectionChange)="resetDataSource()">
+              <mat-option [value]="'id'">id property</mat-option>
+              <mat-option [value]="'strId'">strId property</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>labelKey</mat-label>
-        <mat-select [(ngModel)]="dataSourceLabelKey" (selectionChange)="resetDataSource()">
-          <mat-option [value]="'labelA'">labelA property</mat-option>
-          <mat-option [value]="'labelB'">labelB property</mat-option>
-        </mat-select>
-      </mat-form-field>
+          <mat-form-field>
+            <mat-label>labelKey</mat-label>
+            <mat-select [(ngModel)]="dataSourceLabelKey" (selectionChange)="resetDataSource()">
+              <mat-option [value]="'labelA'">labelA property</mat-option>
+              <mat-option [value]="'labelB'">labelB property</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>searchDebounce</mat-label>
-        <input matInput type="number" [(ngModel)]="dataSourceSearchDebounce" (change)="resetDataSource()" />
-      </mat-form-field>
+          <mat-form-field>
+            <mat-label>searchDebounce</mat-label>
+            <input matInput type="number" [(ngModel)]="dataSourceSearchDebounce" (change)="resetDataSource()" />
+          </mat-form-field>
 
-      <strong>loadTrigger</strong>
-      <mat-checkbox [(ngModel)]="loadTriggerInitial" (change)="resetDataSource()">Initial</mat-checkbox>
-      <mat-checkbox [(ngModel)]="loadTriggerFirstPanelOpen" (change)="resetDataSource()">FirstPanelOpen</mat-checkbox>
-      <mat-checkbox [(ngModel)]="loadTriggerEveryPanelOpen" (change)="resetDataSource()">EveryPanelOpen</mat-checkbox>
+          <strong>loadTrigger</strong>
+          <mat-checkbox [(ngModel)]="loadTriggerInitial" (change)="resetDataSource()">Initial</mat-checkbox>
+          <mat-checkbox [(ngModel)]="loadTriggerFirstPanelOpen" (change)="resetDataSource()">FirstPanelOpen</mat-checkbox>
+          <mat-checkbox [(ngModel)]="loadTriggerEveryPanelOpen" (change)="resetDataSource()">EveryPanelOpen</mat-checkbox>
 
-      <strong>sortBy</strong>
-      <mat-checkbox [(ngModel)]="sortBySelected" (change)="resetDataSource()">Selected</mat-checkbox>
-      <mat-checkbox [(ngModel)]="sortByComparer" (change)="resetDataSource()">Comparer</mat-checkbox>
+          <strong>sortBy</strong>
+          <mat-checkbox [(ngModel)]="sortBySelected" (change)="resetDataSource()">Selected</mat-checkbox>
+          <mat-checkbox [(ngModel)]="sortByComparer" (change)="resetDataSource()">Comparer</mat-checkbox>
 
-      <strong>sortCompare</strong>
-      <mat-checkbox [(ngModel)]="reverseSort" (change)="resetDataSource()">custom (reverse by id)</mat-checkbox>
-    </mat-card-content>
-  </mat-card>
-</div>
-
-<mat-card *ngIf="visible" style="margin-bottom: 1em">
-  <mat-card-content>
-    <mat-form-field style="width: 100%">
-      <mat-label>ngModel</mat-label>
-      <zv-select
-        [(ngModel)]="ngModel"
-        [dataSource]="ngModelDataSource"
-        [multiple]="multiple"
-        [clearable]="clearable"
-        [disabled]="disabled"
-        [required]="required"
-        [panelClass]="{ 'app-select-demo__panel': panelClass }"
-      >
-        <ng-container *ngIf="customTriggerTpl">
-          <ng-container *zvSelectTriggerTemplate="let item">
-            {{ item | json }}
-          </ng-container>
-        </ng-container>
-        <ng-container *ngIf="customOptionTpl">
-          <ng-container *zvSelectOptionTemplate="let item">
-            {{ item | json }}
-          </ng-container>
-        </ng-container>
-      </zv-select>
-    </mat-form-field>
-    <div [formGroup]="form">
-      <mat-form-field style="width: 100%">
-        <mat-label>FormControl</mat-label>
-        <zv-select
-          formControlName="ctrl"
-          [dataSource]="formDataSource"
-          [multiple]="multiple"
-          [clearable]="clearable"
-          [disabled]="disabled"
-          [required]="required"
-          [panelClass]="{ 'app-select-demo__panel': panelClass }"
-        >
-          <ng-container *ngIf="customTriggerTpl">
-            <ng-container *zvSelectTriggerTemplate="let item">
-              {{ item | json }}
-            </ng-container>
-          </ng-container>
-          <ng-container *ngIf="customOptionTpl">
-            <ng-container *zvSelectOptionTemplate="let item">
-              {{ item | json }}
-            </ng-container>
-          </ng-container>
-        </zv-select>
-      </mat-form-field>
+          <strong>sortCompare</strong>
+          <mat-checkbox [(ngModel)]="reverseSort" (change)="resetDataSource()">custom (reverse by id)</mat-checkbox>
+        </mat-card-content>
+      </mat-card>
     </div>
-  </mat-card-content>
-</mat-card>
 
-<mat-card style="margin-bottom: 1em">
-  <mat-card-content>
-    <strong>ngModel logs</strong>
-    <div>value: {{ ngModel | json }}</div>
-    <div>load count: {{ ngModelLogs.loadCount }}</div>
-  </mat-card-content>
-</mat-card>
+    <ng-container *ngIf="visible">
+      <app-form-control-demo-card
+        [type]="'form'"
+        [formGroup]="form"
+        [control]="form.get('control')"
+        [codeFiles]="getCodeFiles('form')"
+        [additionalData]="formLogs"
+      >
+        <zv-form-field>
+          <mat-label>Your select</mat-label>
+          <zv-select
+            formControlName="ctrl"
+            [dataSource]="formDataSource"
+            [multiple]="multiple"
+            [clearable]="clearable"
+            [disabled]="disabled"
+            [required]="required"
+            [selectedLabel]="selectedLabel"
+            [panelClass]="{ 'app-select-demo__panel': panelClass }"
+          >
+            <ng-container *ngIf="customTriggerTpl">
+              <ng-container *zvSelectTriggerTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="customOptionTpl">
+              <ng-container *zvSelectOptionTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            </ng-container>
+          </zv-select>
+        </zv-form-field>
+      </app-form-control-demo-card>
 
-<mat-card style="margin-bottom: 1em">
-  <mat-card-content>
-    <strong>FormControl logs</strong>
-    <div>value: {{ form.value.ctrl | json }}</div>
-    <div>load count: {{ formLogs.loadCount }}</div>
-  </mat-card-content>
-</mat-card>
+      <app-form-control-demo-card [type]="'model'" [value]="ngModel" [codeFiles]="getCodeFiles('ngmodel')" [additionalData]="ngModelLogs">
+        <zv-form-field>
+          <mat-label>Your select</mat-label>
+          <zv-select
+            [(ngModel)]="ngModel"
+            [dataSource]="ngModelDataSource"
+            [multiple]="multiple"
+            [clearable]="clearable"
+            [disabled]="disabled"
+            [required]="required"
+            [selectedLabel]="selectedLabel"
+            [panelClass]="{ 'app-select-demo__panel': panelClass }"
+          >
+            <ng-container *ngIf="customTriggerTpl">
+              <ng-container *zvSelectTriggerTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="customOptionTpl">
+              <ng-container *zvSelectOptionTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            </ng-container>
+          </zv-select>
+        </zv-form-field>
+      </app-form-control-demo-card>
 
-<app-select-with-multiselect></app-select-with-multiselect>
-<app-select-with-events-only></app-select-with-events-only>
-<app-select-with-ng-model></app-select-with-ng-model>
-<app-select-with-selected-item-not-in-datasource></app-select-with-selected-item-not-in-datasource>
-<app-select-with-endless-loading-datasource></app-select-with-endless-loading-datasource>
-<app-select-with-error-in-datasource></app-select-with-error-in-datasource>
-<app-select-with-other-load-trigger></app-select-with-other-load-trigger>
-<app-select-with-custom-select-service></app-select-with-custom-select-service>
-<app-select-with-custom-template></app-select-with-custom-template>
-<app-select-with-error-state-matcher></app-select-with-error-state-matcher>
+      <app-form-control-demo-card [type]="'value'" [value]="value" [codeFiles]="getCodeFiles('value')" [additionalData]="valueLogs">
+        <zv-form-field>
+          <mat-label>Your select</mat-label>
+          <zv-select
+            [(value)]="value"
+            [dataSource]="valueDataSource"
+            [multiple]="multiple"
+            [clearable]="clearable"
+            [disabled]="disabled"
+            [required]="required"
+            [selectedLabel]="selectedLabel"
+            [panelClass]="{ 'app-select-demo__panel': panelClass }"
+          >
+            <ng-container *ngIf="customTriggerTpl">
+              <ng-container *zvSelectTriggerTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="customOptionTpl">
+              <ng-container *zvSelectOptionTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            </ng-container>
+          </zv-select>
+        </zv-form-field>
+      </app-form-control-demo-card>
+    </ng-container>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'api'">
+    <app-api-doc [name]="'zv-select'">
+      <app-api-doc-input [name]="'dataSource'" [type]="'ZvSelectDataSource'" [desc]="''" [required]="true" />
+      <app-api-doc-input [name]="'multiple'" [type]="'boolean'" [desc]="'When true, multiple items are selectable at once.'" />
+      <app-api-doc-input
+        [name]="'showToggleAll'"
+        [type]="'boolean'"
+        [desc]="'When true, a button to toggle the selection state of all items at once it visible (only when multiple is true).'"
+      />
+      <app-api-doc-input [name]="'clearable'" [type]="'boolean'" [desc]="'When true, you can clear your selection.'" />
+      <app-api-doc-input
+        [name]="'panelClass'"
+        [type]="'string | string[] | { [key: string]: any }'"
+        [desc]="'CSS classes to apply to the selects panel.'"
+      />
+      <app-api-doc-input [name]="'placeholder'" [type]="'string'" [desc]="'Placeholder text.'" />
+      <app-api-doc-input
+        [name]="'selectedLabel'"
+        [type]="'boolean'"
+        [desc]="'When true (default), an indicator for the amount of selected items is shown, when you select more than one item.'"
+      />
+      <app-api-doc-input
+        [name]="'disabled'"
+        [type]="'boolean'"
+        [desc]="'Disables the select. For formControl binding, please use the disable() method of the FormControl.'"
+      />
+      <app-api-doc-input
+        [name]="'errorStateMatcher'"
+        [type]="'ErrorStateMatcher'"
+        [typeUrl]="'https://material.angular.io/components/core/api#ErrorStateMatcher'"
+        [desc]="'Can be used to override the default ErrorStateMatcher.'"
+      />
+      <app-api-doc-input [name]="'required'" [type]="'boolean'" [desc]="'Makes the select required.'" />
+      <app-api-doc-input [name]="'value'" [type]="'T | null'" [desc]="'Sets the value of the select.'" />
+      <app-api-doc-output
+        [name]="'valueChange'"
+        [type]="'T | null'"
+        [desc]="'Emits the current value, whenever it changes.'"
+        [twoWay]="true"
+      />
+      <app-api-doc-output
+        [name]="'openedChange'"
+        [type]="'boolean'"
+        [desc]="'Event emitted when the select panel has been toggled.'"
+        [twoWay]="false"
+      />
+      <app-api-doc-output
+        [name]="'selectionChange'"
+        [type]="'MatSelectChange'"
+        [typeUrl]="'https://v16.material.angular.io/components/select/api#MatSelectChange'"
+        [desc]="'Event emitted when the selected value has been changed by the user.'"
+        [twoWay]="false"
+      />
+    </app-api-doc>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Imports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Add the following to your imports, where you want to use the zv-select:</p>
+        <app-code [code]="importsCode" />
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>ZvSelectService (optional + not recommended anymore)</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          You can provide a ZvSelectService, which can transform the dataSource given to the select before usage. This can for example be
+          used to set the dataSource input to a string like 'entity:country' or whatever you like and then have special transfromation code
+          in you service, that knows how to construct a valid dataSource out of this string.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'other'" [label]="'Examples'">
+    <mat-card>
+      <mat-card-content>
+        <app-select-with-multiselect></app-select-with-multiselect>
+        <app-select-with-events-only></app-select-with-events-only>
+        <app-select-with-ng-model></app-select-with-ng-model>
+        <app-select-with-selected-item-not-in-datasource></app-select-with-selected-item-not-in-datasource>
+        <app-select-with-endless-loading-datasource></app-select-with-endless-loading-datasource>
+        <app-select-with-error-in-datasource></app-select-with-error-in-datasource>
+        <app-select-with-other-load-trigger></app-select-with-other-load-trigger>
+        <app-select-with-custom-select-service></app-select-with-custom-select-service>
+        <app-select-with-custom-template></app-select-with-custom-template>
+        <app-select-with-error-state-matcher></app-select-with-error-state-matcher>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>

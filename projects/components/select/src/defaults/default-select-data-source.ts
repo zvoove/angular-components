@@ -13,8 +13,8 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
+import { ZvSelectDataSource } from '../data/select-data-source';
 import { ZvSelectItem } from '../models';
-import { ZvSelectDataSource } from '../select-data-source';
 
 export declare type MaybeObservable<T> = T | Observable<T>;
 

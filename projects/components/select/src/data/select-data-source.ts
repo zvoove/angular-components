@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { ZvSelectItem } from './models';
+import { ZvSelectItem } from '../models';
 
 export const DEFAULT_COMPARER = (a: any, b: any) => a === b;
 

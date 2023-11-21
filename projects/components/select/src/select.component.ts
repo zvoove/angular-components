@@ -16,19 +16,21 @@ import {
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
+  computed,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { ErrorStateMatcher, MatOption, mixinDisabled, mixinErrorState } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { getSelectUnknownDataSourceError } from './errors';
-import { ZvSelectItem } from './models';
-import { DEFAULT_COMPARER, ZvSelectDataSource, isZvSelectDataSource } from './select-data-source';
-import { ZvSelectOptionTemplateDirective } from './select-option-template.directive';
-import { ZvSelectTriggerTemplateDirective } from './select-trigger-template.directive';
-import { ZvSelectService } from './select.service';
+import { takeUntil, tap } from 'rxjs/operators';
+import { DEFAULT_COMPARER, ZvSelectDataSource, isZvSelectDataSource } from './data/select-data-source';
+import { ZvSelectOptionTemplateDirective } from './directives/select-option-template.directive';
+import { ZvSelectTriggerTemplateDirective } from './directives/select-trigger-template.directive';
+import { getSelectUnknownDataSourceError } from './helpers/errors';
+import { ZvSelectItem, ZvSelectTriggerData } from './models';
+import { ZvSelectService } from './services/select.service';
 
 const enum ValueChangeSource {
   matSelect = 1,
@@ -82,8 +84,12 @@ export class ZvSelectComponent<T = unknown>
   @ContentChild(ZvSelectOptionTemplateDirective, { read: TemplateRef })
   public optionTemplate: TemplateRef<any> | null = null;
 
-  @ContentChild(ZvSelectTriggerTemplateDirective, { read: TemplateRef })
-  public triggerTemplate: TemplateRef<any> | null = null;
+  @ContentChild(ZvSelectTriggerTemplateDirective)
+  public customTrigger: ZvSelectTriggerTemplateDirective | null = null;
+
+  public get triggerTemplate(): TemplateRef<any> | null {
+    return this.customTrigger?.templateRef;
+  }
 
   @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
     this._matSelect = select;
@@ -130,19 +136,14 @@ export class ZvSelectComponent<T = unknown>
 
   /** If true, then there will be a empty option available to deselect any values (only single select mode) */
   @Input() public clearable = true;
-
   /** If true, then there will be a toggle all checkbox available (only multiple select mode) */
   @Input() public showToggleAll = true;
-
   @Input() public multiple = false;
-
   @Input() public override errorStateMatcher: ErrorStateMatcher = null;
-
   @Input() public panelClass: string | string[] | Set<string> | { [key: string]: any } = null;
-
   @Input() public placeholder: string = null;
-
   @Input() public required = false;
+  @Input() public selectedLabel = true;
 
   /**
    * Event that emits whenever the raw value of the select changes. This is here primarily
@@ -215,49 +216,41 @@ export class ZvSelectComponent<T = unknown>
     return '';
   }
 
-  /** The value displayed in the trigger. */
-  get customTriggerData(): { value: string; viewValue: string } | { value: string; viewValue: string }[] {
-    if (this.empty) {
-      return null;
-    }
-
-    const selectedOptions = this._matSelect._selectionModel.selected.map(toTriggerDataObj);
-    if (this.multiple) {
-      if (this._matSelect._isRtl()) {
-        selectedOptions.reverse();
-      }
-
-      return selectedOptions;
-    }
-
-    return selectedOptions[0];
-
-    function toTriggerDataObj(option: MatOption): { value: string; viewValue: string } {
+  $currentSelection = signal([] as MatOption<any>[]);
+  $customTriggerDataArray = computed(() => {
+    const selectedOptions = this.$currentSelection().map((option: MatOption): ZvSelectTriggerData => {
       return {
         value: option.value,
         viewValue: option.viewValue,
       };
+    });
+    return this._matSelect._isRtl() ? selectedOptions.reverse() : selectedOptions;
+  });
+  /** The value displayed in the trigger. */
+  $customTriggerData = computed(() => {
+    if (this.multiple) {
+      return this.$customTriggerDataArray();
     }
-  }
+    return this.$customTriggerDataArray()[0];
+  });
+  $selectedItemsTriggerLabel = computed(() => {
+    if (this.empty) return '';
+    return this.$customTriggerDataArray()
+      .map((x) => x.viewValue)
+      .join(', ');
+  });
 
   /** Subject that emits when the component has been destroyed. */
   private _ngUnsubscribe$ = new Subject<void>();
-
   /** Subscription that listens for the data provided by the data source. */
   private _renderChangeSubscription = Subscription.EMPTY;
-
   /** The data source. */
   private _dataSourceInstance: ZvSelectDataSource<T>;
-
   /** The value the [dataSource] input was called with. */
   private _dataSourceInput: any;
-
   private _matSelect!: MatSelect;
-
   private _onModelTouched: any;
-
   private _focused = false;
-
   private _onInitCalled = false;
 
   /** View -> model callback called when value changes */
@@ -266,8 +259,8 @@ export class ZvSelectComponent<T = unknown>
   constructor(
     elementRef: ElementRef,
     defaultErrorStateMatcher: ErrorStateMatcher,
-    private selectService: ZvSelectService,
     private cd: ChangeDetectorRef,
+    @Optional() private selectService: ZvSelectService,
     @Optional() parentForm: NgForm,
     @Optional() parentFormGroup: FormGroupDirective,
     @Optional() @Self() public override ngControl: NgControl
@@ -297,7 +290,21 @@ export class ZvSelectComponent<T = unknown>
       .pipe(takeUntil(this._ngUnsubscribe$))
       .subscribe((searchText) => this.dataSource.searchTextChanged(searchText));
 
-    this._matSelect.stateChanges.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(this.stateChanges);
+    let selectionSignalInitialized = false;
+    this._matSelect.stateChanges
+      .pipe(
+        tap(() => {
+          if (!selectionSignalInitialized && this._matSelect._selectionModel) {
+            this.$currentSelection.set(this._matSelect._selectionModel.selected);
+            this._matSelect._selectionModel.changed.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(() => {
+              this.$currentSelection.set(this._matSelect._selectionModel.selected);
+            });
+            selectionSignalInitialized = true;
+          }
+        }),
+        takeUntil(this._ngUnsubscribe$)
+      )
+      .subscribe(this.stateChanges);
   }
 
   public ngOnDestroy() {
@@ -393,7 +400,7 @@ export class ZvSelectComponent<T = unknown>
     this._dataSourceInstance?.disconnect();
     this._renderChangeSubscription.unsubscribe();
 
-    this._dataSourceInstance = this.selectService.createDataSource(dataSource, this.ngControl?.control);
+    this._dataSourceInstance = this.selectService?.createDataSource(dataSource, this.ngControl?.control) ?? dataSource;
     if (!isZvSelectDataSource(this._dataSourceInstance)) {
       throw getSelectUnknownDataSourceError();
     }

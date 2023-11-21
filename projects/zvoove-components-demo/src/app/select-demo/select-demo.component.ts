@@ -7,6 +7,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { ZvFormService } from '@zvoove/components/form-base';
 import {
   DefaultZvSelectDataSource,
   DefaultZvSelectService,
@@ -17,6 +18,9 @@ import {
 } from '@zvoove/components/select';
 import { NEVER, of, throwError } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
+import { CodeFiles } from '../common/code-files/code-files.component';
+import { DemoZvFormsService } from '../common/demo-zv-form-service';
+import { allSharedImports } from '../common/shared-imports';
 import { SelectWithCustomSelectServiceComponent } from './demos/select-with-custom-select-service.component';
 import { SelectWithCustomTemplateComponent } from './demos/select-with-custom-template.component';
 import { SelectWithEndlessLoadingDataSourceComponent } from './demos/select-with-endless-loading-datasource.component';
@@ -30,7 +34,7 @@ import { SelectWithSelectedItemNotInDataSourceComponent } from './demos/select-w
 
 declare type DemoDataSourceItems = 'default' | 'error' | 'loading' | 'empty';
 
-interface DemoLogs {
+interface DemoLogs extends Record<string, string | number> {
   loadCount: number;
 }
 
@@ -42,6 +46,7 @@ interface DemoLogs {
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [
+    allSharedImports,
     MatCardModule,
     MatCheckboxModule,
     ReactiveFormsModule,
@@ -64,11 +69,16 @@ interface DemoLogs {
     SelectWithErrorStateMatcherComponent,
     JsonPipe,
   ],
-  providers: [{ provide: ZvSelectService, useClass: DefaultZvSelectService }],
+  providers: [
+    { provide: ZvSelectService, useClass: DefaultZvSelectService },
+    { provide: ZvFormService, useClass: DemoZvFormsService },
+    // { provide: ErrorStateMatcher, useClass: InvalidErrorStateMatcher },
+  ],
 })
 export class SelectDemoComponent implements OnInit {
   public visible = true;
   public ngModel: any = null;
+  public value: any = null;
   public form = new FormGroup({
     ctrl: new FormControl(null),
   });
@@ -87,11 +97,13 @@ export class SelectDemoComponent implements OnInit {
   };
   public ngModelDataSource: DefaultZvSelectDataSource;
   public formDataSource: DefaultZvSelectDataSource;
+  public valueDataSource: DefaultZvSelectDataSource;
   public multiple = false;
   public clearable = true;
   public disabled = false;
   public required = false;
   public panelClass = false;
+  public selectedLabel = true;
 
   public customTriggerTpl = false;
   public customOptionTpl = false;
@@ -115,6 +127,7 @@ export class SelectDemoComponent implements OnInit {
 
   public ngModelLogs: DemoLogs = { loadCount: 0 };
   public formLogs: DemoLogs = { loadCount: 0 };
+  public valueLogs: DemoLogs = { loadCount: 0 };
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -162,6 +175,7 @@ export class SelectDemoComponent implements OnInit {
           items = of(items).pipe(
             tap(() => {
               ++logs.loadCount;
+              this.cd.markForCheck();
             }),
             delay(1000)
           );
@@ -187,6 +201,7 @@ export class SelectDemoComponent implements OnInit {
   public resetDataSource() {
     this.ngModelDataSource = this.createDataSource(this.ngModelLogs);
     this.formDataSource = this.createDataSource(this.formLogs);
+    this.valueDataSource = this.createDataSource(this.valueLogs);
   }
 
   public patchUnknownItem() {
@@ -211,4 +226,122 @@ export class SelectDemoComponent implements OnInit {
       this.cd.markForCheck();
     }, 0);
   }
+
+  public getCodeFiles(type: 'value' | 'ngmodel' | 'form'): CodeFiles[] {
+    return [
+      {
+        filename: 'app.component.html',
+        code: this.getHtmlCodeSnippet(type),
+      },
+      {
+        filename: 'app.component.ts',
+        code: this.getTsCodeSnippet(type),
+      },
+    ];
+  }
+
+  public getHtmlCodeSnippet(type: 'value' | 'ngmodel' | 'form'): string {
+    const attributes = [];
+    if (type === 'value') {
+      attributes.push('[(value)]="value"');
+    } else if (type === 'ngmodel') {
+      attributes.push('[(ngModel)]="value"');
+    } else {
+      attributes.push('formControlName="control"');
+    }
+    attributes.push(`[dataSource]="ds"`);
+    if (this.multiple) {
+      attributes.push(`[multiple]="${this.multiple}"`);
+    }
+    if (!this.clearable) {
+      attributes.push(`[clearable]="${this.clearable}"`);
+    }
+    if (!this.selectedLabel) {
+      attributes.push(`[selectedLabel]="${this.selectedLabel}"`);
+    }
+    if (this.panelClass) {
+      attributes.push(`[panelClass]="{ 'app-select-demo__panel': true }"`);
+    }
+
+    if (this.required) {
+      attributes.push(`[required]="${this.required}"`);
+    }
+    if (this.disabled && type != 'form') {
+      attributes.push(`[disabled]="${this.disabled}"`);
+    }
+    const templates = [];
+    if (this.customTriggerTpl) {
+      templates.push(`
+    <ng-container *zvSelectTriggerTemplate="let item">
+      {{ item | json }}
+    </ng-container>
+  `);
+    }
+    if (this.customOptionTpl) {
+      templates.push(`
+    <ng-container *zvSelectOptionTemplate="let item">
+      {{ item | json }}
+    </ng-container>
+  `);
+    }
+    return `
+<zv-form-field>
+  <mat-label>Your select</mat-label>
+  <zv-select ${attributes.join(' ')}>${templates.join(' ')}</zv-select>
+</zv-form-field>
+    `;
+  }
+
+  public getTsCodeSnippet(type: 'value' | 'ngmodel' | 'form'): string {
+    let code = `
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ZvSelectModule, DefaultZvSelectDataSource } from '@zvoove/components/select';
+__IMPORTS__
+
+@Component({
+  selector: 'app-component',
+  templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ZvSelectModule,
+  ],
+})
+export class AppComponent {
+  ds = new DefaultZvSelectDataSource({
+    // ...
+  });
+  __VALUE__
+}
+`;
+
+    if (type === 'value' || type === 'ngmodel') {
+      code = code.replace('__VALUE__', 'value: any | null = null;');
+      code = code.replace('__IMPORTS__', '');
+    } else {
+      code = code.replace(
+        '__VALUE__',
+        `control = new FormControl<Date | null>(null${this.required ? ', {validators: [Validators.required]}' : ''});${
+          this.disabled
+            ? `
+  constructor(){
+    this.control.disable();
+  }`
+            : ''
+        }`
+      );
+      code = code.replace('__IMPORTS__', `import { FormControl } from '@angular/forms';`);
+    }
+
+    return code;
+  }
+
+  importsCode = `
+import { ZvSelectModule } from '@zvoove/components/select';
+
+// ...
+imports: [
+  ZvSelectModule,
+],
+  `;
 }

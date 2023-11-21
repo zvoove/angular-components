@@ -1,5 +1,5 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { of, Subject, throwError, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { delay, switchMap, tap } from 'rxjs/operators';
 
 import { ZvSelectItem } from '../models';

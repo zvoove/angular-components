@@ -10,3 +10,17 @@ ngx-mat-select-search .mat-select-search-clear {
   width: 2.5em;
   height: 2.5em;
 }
+
+.zv-select__multiple-trigger {
+  display: flex;
+  gap: 0.5em;
+}
+.zv-select__multiple-trigger__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zv-select__multiple-trigger__selected-label {
+  opacity: 0.75;
+  font-size: 0.75em;
+  padding-right: 0.5em;
+}

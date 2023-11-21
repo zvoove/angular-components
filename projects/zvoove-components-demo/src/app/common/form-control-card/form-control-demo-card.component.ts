@@ -1,5 +1,5 @@
-import { JsonPipe, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ContentChild, Input } from '@angular/core';
+import { JsonPipe, KeyValuePipe, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ContentChild, Input, TrackByFunction } from '@angular/core';
 import { AbstractControl, NgModel } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +13,7 @@ import { AppCodeComponent } from '../code/code.component';
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
-  imports: [NgIf, MatCardModule, MatIconModule, JsonPipe, AppCodeComponent, AppCodeFilesComponent],
+  imports: [NgIf, NgFor, KeyValuePipe, MatCardModule, MatIconModule, JsonPipe, AppCodeComponent, AppCodeFilesComponent],
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class FormControlDemoCard {
@@ -21,12 +21,15 @@ export class FormControlDemoCard {
   @Input() control?: AbstractControl;
   @Input() value?: unknown;
   @Input({ required: true }) codeFiles: CodeFiles[];
+  @Input() additionalData: Record<string, string | number>;
 
   @ContentChild(NgModel, { read: NgModel }) ngModel: NgModel;
 
   get formControl() {
     return this.control ?? this.ngModel?.control;
   }
+
+  addDataTrackBy: TrackByFunction<Record<string, string | number>> = (_, item) => item.key;
 
   getType(value: unknown) {
     if (value === null) {

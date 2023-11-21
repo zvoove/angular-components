@@ -1,4 +1,4 @@
-import { TemplateRef, Directive } from '@angular/core';
+import { Directive, TemplateRef } from '@angular/core';
 
 @Directive({ selector: '[zvSelectOptionTemplate]' })
 export class ZvSelectOptionTemplateDirective {

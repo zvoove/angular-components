@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ContentChildren, Input, QueryList, TrackByFunction, ViewEncapsulation } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
+import { injectDestroy } from '@zvoove/components/utils';
+import { takeUntil } from 'rxjs';
 import { AppApiDocInputComponent } from '../api-doc-input/api-doc-input.component';
 import { AppApiDocOutputComponent } from '../api-doc-output/api-doc-output.component';
 
@@ -15,16 +16,18 @@ import { AppApiDocOutputComponent } from '../api-doc-output/api-doc-output.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppApiDocComponent {
+  ngDestroy$ = injectDestroy();
+
   @Input({ required: true }) name: string;
   @ContentChildren(AppApiDocInputComponent) set inputsList(items: QueryList<AppApiDocInputComponent>) {
     this.inputs = items.toArray();
-    items.changes.pipe(takeUntilDestroyed()).subscribe(() => {
+    items.changes.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.inputs = items.toArray();
     });
   }
   @ContentChildren(AppApiDocOutputComponent) set outputsList(items: QueryList<AppApiDocOutputComponent>) {
     this.outputs = items.toArray();
-    items.changes.pipe(takeUntilDestroyed()).subscribe(() => {
+    items.changes.pipe(takeUntil(this.ngDestroy$)).subscribe(() => {
       this.outputs = items.toArray();
     });
   }

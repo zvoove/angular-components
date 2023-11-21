@@ -1,7 +1,7 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, OnDestroy, QueryList, Type, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import {
   AbstractControl,
   FormControl,
@@ -20,14 +20,13 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormBaseModule } from '@zvoove/components/form-base';
 import { ZvFormFieldModule } from '@zvoove/components/form-field';
-import { Observable, of, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
-import { DefaultZvSelectDataSource } from './defaults/default-select-data-source';
-import { DefaultZvSelectService, ZvSelectData } from './defaults/default-select-service';
+import { DefaultZvSelectDataSource, DefaultZvSelectService, ZvSelectData } from '@zvoove/components/select';
+import { Observable, ReplaySubject, Subject, Subscription, of, throwError } from 'rxjs';
+import { ZvSelectDataSource } from './data/select-data-source';
 import { ZvSelectItem } from './models';
-import { ZvSelectDataSource } from './select-data-source';
 import { ZvSelectComponent } from './select.component';
 import { ZvSelectModule } from './select.module';
-import { ZvSelectService } from './select.service';
+import { ZvSelectService } from './services/select.service';
 import { ZvSelectHarness } from './testing/select.harness';
 
 @Injectable()
@@ -73,30 +72,26 @@ function createFakeMatSelect(): MatSelect {
 }
 
 function createFakeSelectService(): ZvSelectService {
-  const service = <ZvSelectService>{
+  return {
     createDataSource: (ds: any) => ds,
   };
-
-  return service;
 }
 
 function createFakeDataSource(items: ZvSelectItem[] = []): ZvSelectDataSource {
-  const dataSource = <ZvSelectDataSource>{
+  return <ZvSelectDataSource>{
     connect: () => of<ZvSelectItem[]>(items),
     disconnect: () => {},
     selectedValuesChanged: (_: any | any[]) => {},
     panelOpenChanged: (_: boolean) => {},
     searchTextChanged: (_: string) => {},
   };
-
-  return dataSource;
 }
 
-function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service: ZvSelectService }) {
+function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: ZvSelectService }) {
   const matSelect = createFakeMatSelect();
-  const dataSource = options?.dataSource ?? createFakeDataSource();
-  const service = options?.service ?? createFakeSelectService();
-  const component = new ZvSelectComponent({ nativeElement: {} }, null, service, <any>{ markForCheck: () => {} }, null, null, <any>{
+  const dataSource = options && 'dataSource' in options ? options.dataSource : createFakeDataSource();
+  const service = options && 'service' in options ? options.service : createFakeSelectService();
+  const component = new ZvSelectComponent({ nativeElement: {} }, null, <any>{ markForCheck: () => {} }, service, null, null, <any>{
     control: null,
   });
   component.setMatSelect = matSelect;
@@ -153,7 +148,21 @@ const ITEMS = {
 
 @Component({
   selector: 'zv-test-multiple-component',
-  template: ` <zv-select [(ngModel)]="value" [dataSource]="dataSource" [multiple]="true" [showToggleAll]="showToggleAll"></zv-select> `,
+  template: `
+    <zv-select
+      [(ngModel)]="value"
+      [dataSource]="dataSource"
+      [multiple]="true"
+      [showToggleAll]="showToggleAll"
+      [selectedLabel]="selectedLabel"
+    >
+      <ng-container *ngIf="customTemplate">
+        <ng-container *zvSelectTriggerTemplate="let items"
+          >custom:<span *ngFor="let item of items">{{ item.value }}:</span></ng-container
+        >
+      </ng-container>
+    </zv-select>
+  `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
 })
@@ -161,6 +170,8 @@ export class TestMultipleComponent {
   showToggleAll = true;
   dataSource: any = [ITEMS.red, ITEMS.green, ITEMS.blue];
   value: any = null;
+  selectedLabel = true;
+  customTemplate = false;
 
   @ViewChild(ZvSelectComponent, { static: true }) select: ZvSelectComponent;
 
@@ -381,6 +392,19 @@ describe('ZvSelectComponent', () => {
     expect(component.dataSource).toBe(ds);
   });
 
+  it("should switch dataSource to provided dataSource, if service doesn't exist", async () => {
+    const { component, service } = createZvSelect({ service: null });
+    expect(service).toBeNull();
+    component.ngOnInit();
+
+    const items = [{ value: 1, label: 'i1', hidden: false }];
+    const ds = createFakeDataSource(items);
+    component.dataSource = ds;
+
+    expect(component.items).toEqual(items);
+    expect(component.dataSource).toBe(ds);
+  });
+
   it('should work with ngModel', async () => {
     const { component, zvSelect: zvSelect } = await initTest(TestMultipleComponent);
     await zvSelect.clickOptions({ text: ITEMS.green.label });
@@ -578,6 +602,46 @@ describe('ZvSelectComponent', () => {
     expect(await (await zvSelect.getOptions({ text: 'disabled' }))[0].isDisabled()).toBeTruthy();
     expect(await (await zvSelect.getOptions({ text: 'active' }))[0].isDisabled()).toBeFalsy();
     expect(await (await zvSelect.getOptions({ text: 'default' }))[0].isDisabled()).toBeFalsy();
+  });
+
+  it('should show (x selected) depending on [selectLabel] value with and without custom template', async () => {
+    const { component, zvSelect: zvSelect, fixture } = await initTest(TestMultipleComponent);
+    component.dataSource = new DefaultZvSelectDataSource({
+      mode: 'id',
+      labelKey: 'label',
+      idKey: 'value',
+      items: [
+        { label: 'item1', value: 1 },
+        { label: 'item2', value: 2 },
+        { label: 'item3', value: 3 },
+        { label: 'item4', value: 4 },
+      ],
+    });
+
+    await zvSelect.open();
+    const options = await zvSelect.getOptions();
+    for (const option of options) {
+      await option.click();
+    }
+    await zvSelect.close();
+
+    expect(await zvSelect.getValueText()).toEqual('item1, item2, item3, item4 (4 selected)');
+
+    component.selectedLabel = false;
+    fixture.detectChanges();
+
+    expect(await zvSelect.getValueText()).toEqual('item1, item2, item3, item4');
+
+    component.selectedLabel = true;
+    component.customTemplate = true;
+    fixture.detectChanges();
+
+    expect(await zvSelect.getValueText()).toEqual('custom:1:2:3:4: (4 selected)');
+
+    component.selectedLabel = false;
+    fixture.detectChanges();
+
+    expect(await zvSelect.getValueText()).toEqual('custom:1:2:3:4:');
   });
 
   it('should take DataSource compareWith function', async () => {

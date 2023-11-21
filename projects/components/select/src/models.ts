@@ -5,3 +5,8 @@ export interface ZvSelectItem<T = any> {
   hidden?: boolean;
   disabled?: boolean;
 }
+
+export interface ZvSelectTriggerData {
+  value: string;
+  viewValue: string;
+}

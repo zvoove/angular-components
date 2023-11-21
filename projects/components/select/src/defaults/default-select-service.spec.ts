@@ -1,7 +1,7 @@
 import { fakeAsync } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
+import { ZvSelectDataSource } from '../data/select-data-source';
 import { ZvSelectItem } from '../models';
-import { ZvSelectDataSource } from '../select-data-source';
 import { ZvSelectLoadTrigger } from './default-select-data-source';
 import { DefaultZvSelectService } from './default-select-service';
 
