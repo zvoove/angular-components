@@ -1,6 +1,6 @@
 # Checklist
 
-Please confirm that your PR fulfils these prerequisites by checking the checkboxes below:
+Please confirm that your PR fulfils these prerequisites and is in line with [our Definition of Done](https://zvoove.atlassian.net/l/cp/uSB1WvR8) by checking the checkboxes below:
 
 ## Author
 
