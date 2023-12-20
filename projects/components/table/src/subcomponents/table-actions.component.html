@@ -15,7 +15,12 @@
             [disabled]="action.isDisabledFn && action.isDisabledFn(items)"
             (click)="action.actionFn(items)"
           >
-            <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
+            <ng-container
+              *ngIf="showIcon"
+              ngProjectAs="mat-icon"
+              [ngTemplateOutlet]="actionIcon"
+              [ngTemplateOutletContext]="{ $implicit: action }"
+            ></ng-container>
             {{ action.label }}
           </button>
           <a
@@ -24,17 +29,27 @@
             [routerLink]="action.routerLink(items).path"
             [queryParams]="action.routerLink(items).queryParams"
           >
-            <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
+            <ng-container
+              *ngIf="showIcon"
+              ngProjectAs="mat-icon"
+              [ngTemplateOutlet]="actionIcon"
+              [ngTemplateOutletContext]="{ $implicit: action }"
+            ></ng-container>
             {{ action.label }}
           </a>
           <ng-container *ngSwitchCase="'menu'">
             <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu">
-              <ng-template *ngIf="showIcon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-template>
+              <ng-container
+                *ngIf="showIcon"
+                ngProjectAs="mat-icon"
+                [ngTemplateOutlet]="actionIcon"
+                [ngTemplateOutletContext]="{ $implicit: action }"
+              ></ng-container>
               {{ action.label }}
             </button>
             <zv-table-actions
               #innerPanel
-              [actions]="action.children | zvTableActionsToRender : items"
+              [actions]="action.children | zvTableActionsToRender: items"
               [items]="items"
               [root]="false"
             ></zv-table-actions>
