@@ -1,5 +1,5 @@
 <div class="app-file-input__container">
-  <button data-cy="fileUploadButton" mat-stroked-button [disabled]="readonly || disabled" (click)="input.click()">
+  <button type="button" data-cy="fileUploadButton" mat-stroked-button [disabled]="readonly || disabled" (click)="input.click()">
     <mat-icon>upload</mat-icon>
     <span i18n="@@zvc.uploadFile">Upload file</span>
     <input
@@ -15,7 +15,7 @@
     />
   </button>
   <span class="app-file-input__text">{{ value?.name ?? (placeholder || fileSelectText) }}</span>
-  <button *ngIf="!empty && !readonly && !disabled" mat-icon-button class="app-file-input__remove" (click)="removeFile()">
+  <button *ngIf="!empty && !readonly && !disabled" type="button" mat-icon-button class="app-file-input__remove" (click)="removeFile()">
     <mat-icon>close</mat-icon>
   </button>
 </div>
