@@ -1,9 +1,8 @@
-import { Platform } from '@angular/cdk/platform';
 import { getLocaleFirstDayOfWeek } from '@angular/common';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { NativeDateAdapter } from '@angular/material/core';
-import { detectDmyOrder, parseHumanDateInput } from './parse-human-date-input';
 import { ZvDateAdapter } from './date-adapter';
+import { detectDmyOrder, parseHumanDateInput } from './parse-human-date-input';
 
 const currentYear = new Date().getFullYear();
 
@@ -11,8 +10,8 @@ const currentYear = new Date().getFullYear();
 export class ZvNativeDateAdapter extends NativeDateAdapter implements ZvDateAdapter<Date> {
   private _dmyOrder = detectDmyOrder(this.locale);
 
-  constructor(@Inject(LOCALE_ID) _locale: string, platform: Platform) {
-    super(_locale, platform);
+  constructor(@Inject(LOCALE_ID) _locale: string) {
+    super(_locale);
   }
 
   public override getFirstDayOfWeek(): number {

@@ -1,23 +1,25 @@
+import { DatePipe, JsonPipe, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
 import {
   IZvTableAction,
   IZvTableActionRouterLink,
   ZvTableActionScope,
   ZvTableComponent,
   ZvTableDataSource,
+  ZvTableSettingsService,
 } from '@zvoove/components/table';
 import { Observable, of, timer } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { ZvTableModule } from '../../../../components/table/src/table.module';
-import { NgIf, JsonPipe, DatePipe } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatCardModule } from '@angular/material/card';
+import { DemoTableSettingsService } from './demo-table-settings.service';
 
 interface ISampleData {
   id: number;
@@ -99,6 +101,7 @@ function generateSampleData(rowCount: number): ISampleData[] {
     JsonPipe,
     DatePipe,
   ],
+  providers: [{ provide: ZvTableSettingsService, useClass: DemoTableSettingsService }],
 })
 export class TableDemoComponent {
   public show = true;

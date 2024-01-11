@@ -5,6 +5,8 @@ import { ZvFormFieldModule } from '../../../../components/form-field/src/form-fi
 import { ZvFlipContainerModule } from '../../../../components/flip-container/src/flip-container.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ZvFormService } from '@zvoove/components/form-base';
+import { DemoZvFormsService } from '../common/demo-zv-form-service';
 
 @Component({
   selector: 'app-flip-container-demo',
@@ -32,6 +34,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatFormFieldModule,
     MatInputModule,
   ],
+  providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })
 export class FlipContainerDemoComponent {
   public counter = 0;

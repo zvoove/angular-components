@@ -15,19 +15,17 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/zvoove-components-demo",
             "index": "projects/zvoove-components-demo/src/index.html",
-            "main": "projects/zvoove-components-demo/src/main.ts",
-            "polyfills": "projects/zvoove-components-demo/src/polyfills.ts",
+            "browser": "projects/zvoove-components-demo/src/main.ts",
+            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts"],
             "tsConfig": "projects/zvoove-components-demo/tsconfig.app.json",
             "assets": ["projects/zvoove-components-demo/src/favicon.ico", "projects/zvoove-components-demo/src/assets"],
             "styles": ["projects/zvoove-components-demo/src/styles.scss"],
             "scripts": [],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
             "namedChunks": true
@@ -45,8 +43,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -65,19 +61,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "zvoove-components-demo:build",
-            "port": 4500
+            "port": 4500,
+            "buildTarget": "zvoove-components-demo:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "zvoove-components-demo:build:production"
+              "buildTarget": "zvoove-components-demo:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "zvoove-components-demo:build"
+            "buildTarget": "zvoove-components-demo:build"
           }
         },
         "test": {
