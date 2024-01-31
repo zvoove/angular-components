@@ -5,7 +5,7 @@ import { FormGroup } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ZvBlockUiComponent } from '@zvoove/components/block-ui';
+import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormService } from '@zvoove/components/form-base';
 import { Observable, Subject, Subscription, of } from 'rxjs';
 import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
@@ -191,13 +191,13 @@ describe('ZvFormComponent', () => {
 
       const blockUi = getBlockUi(fixture);
 
-      expect(blockUi.componentInstance.blocked).toBe(false);
+      expect(blockUi.componentInstance.blocked()).toBe(false);
 
       dataSource.contentBlocked = true;
       dataSource.cdTrigger$.next();
       fixture.detectChanges();
 
-      expect(blockUi.componentInstance.blocked).toBe(true);
+      expect(blockUi.componentInstance.blocked()).toBe(true);
     });
 
     it('should hide content when contentVisible is false', async () => {
@@ -329,7 +329,7 @@ function getClasses(node: DebugElement): string[] {
   return (node.nativeElement.className as string).split(' ');
 }
 function getBlockUi(fixture: ComponentFixture<any>): DebugElement {
-  return fixture.debugElement.query(By.directive(ZvBlockUiComponent));
+  return fixture.debugElement.query(By.directive(ZvBlockUi));
 }
 function getErrorContainer(fixture: ComponentFixture<any>): DebugElement {
   return fixture.debugElement.query(By.css('.zv-form__error-container'));

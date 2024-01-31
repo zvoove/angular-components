@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ZvBlockUiComponent } from './block-ui.component';
+import { ZvBlockUi } from './block-ui.component';
 
 @NgModule({
-  declarations: [ZvBlockUiComponent],
-  imports: [CommonModule, MatProgressSpinnerModule],
-  exports: [ZvBlockUiComponent],
+  declarations: [],
+  imports: [CommonModule, MatProgressSpinnerModule, ZvBlockUi],
+  exports: [ZvBlockUi],
 })
+
+/** @deprecated block-ui component is standalone now */
 export class ZvBlockUiModule {}

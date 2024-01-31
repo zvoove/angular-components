@@ -3,13 +3,13 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { ZvBlockUiModule } from '@zvoove/components/block-ui';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { ZvErrorMessagePipeModule } from '@zvoove/components/core';
 import { ZvDialogWrapperComponent } from './dialog-wrapper.component';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, MatProgressBarModule, ZvErrorMessagePipeModule, ZvBlockUiModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, MatProgressBarModule, ZvErrorMessagePipeModule, ZvBlockUi],
   exports: [ZvDialogWrapperComponent],
   declarations: [ZvDialogWrapperComponent],
 })

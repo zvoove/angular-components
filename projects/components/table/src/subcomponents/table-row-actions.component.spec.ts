@@ -8,7 +8,7 @@ import { MatIconHarness } from '@angular/material/icon/testing';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ZvBlockUiModule } from '@zvoove/components/block-ui';
+import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { Observable } from 'rxjs';
 import { IZvTableAction, ZvTableActionScope } from '../models';
 import { ZvTableActionsToRenderPipe } from '../pipes/table-actions-to-render.pipe';
@@ -46,7 +46,7 @@ export class TestComponent {
 describe('ZvTableSearchComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, ZvBlockUiModule, MatTooltipModule],
+      imports: [NoopAnimationsModule, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, ZvBlockUi, MatTooltipModule],
       declarations: [TestComponent, ZvTableRowActionsComponent, ZvTableActionsComponent, ZvTableActionsToRenderPipe, ZvTableActionTypePipe],
     }).compileComponents();
   }));

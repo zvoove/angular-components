@@ -15,6 +15,7 @@ zv-block-ui {
   grid-column: 1;
   grid-row: 1;
   min-width: 0; // fix for overflow: auto|scroll inside of block-ui
+  align-self: baseline; // to not make it grow with the spinner, which would screw up the calculation of the spinner size
 }
 
 .zv-block-ui__overlay {

@@ -13,9 +13,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { ZvBlockUiModule } from '@zvoove/components/block-ui';
+import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { ZvFlipContainerModule } from '@zvoove/components/flip-container';
 
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
   ZvTableColumnDirective,
   ZvTableColumnHeaderTemplateDirective,
@@ -38,7 +39,6 @@ import { ZvTableSearchComponent } from './subcomponents/table-search.component';
 import { ZvTableSettingsComponent } from './subcomponents/table-settings.component';
 import { ZvTableSortComponent } from './subcomponents/table-sort.component';
 import { ZvTableComponent } from './table.component';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -79,7 +79,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatCardModule,
     MatTooltipModule,
     ZvFlipContainerModule,
-    ZvBlockUiModule,
+    ZvBlockUi,
     MatProgressBarModule,
   ],
   exports: [

@@ -1,46 +1,107 @@
-<mat-checkbox [(ngModel)]="blocked">blocked</mat-checkbox>
-<mat-form-field style="display: block">
-  <mat-label>Text for the block ui</mat-label>
-  <input type="text" matInput [(ngModel)]="spinnerText" />
-</mat-form-field>
+<app-component-page-wrapper [componentName]="'zv-block-ui'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <mat-card>
+      <mat-card-content>
+        <mat-checkbox [(ngModel)]="blocked">blocked</mat-checkbox>
+        <mat-form-field style="display: block">
+          <mat-label>Text for the block ui</mat-label>
+          <input type="text" matInput [(ngModel)]="spinnerText" />
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
 
-<div style="height: 1em"></div>
-<zv-block-ui [blocked]="blocked" [clickthrough]="true">
-  <div>this block-ui is clickthrough</div>
-  <button type="button" mat-raised-button color="primary">clickable</button>
-</zv-block-ui>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Usage</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-code [code]="usageCode"> </app-code>
+      </mat-card-content>
+    </mat-card>
 
-<div style="height: 1em"></div>
-<zv-block-ui [blocked]="blocked">
-  <div>this block-ui is NOT clickthrough</div>
-  <button type="button" mat-raised-button color="primary">NOT clickable while blocked</button>
-</zv-block-ui>
+    <h2>Examples</h2>
 
-<div style="height: 1em"></div>
-<div style="height: 50px; overflow: auto">
-  <zv-block-ui [blocked]="blocked">
-    <div style="height: 50px">this box with overflow auto will be blocked without flickering</div>
-  </zv-block-ui>
+    <div style="height: 1em"></div>
+    <zv-block-ui [blocked]="blocked" [clickthrough]="true">
+      <div>this block-ui is clickthrough</div>
+      <button type="button" mat-raised-button color="primary">clickable</button>
+    </zv-block-ui>
+
+    <div style="height: 1em"></div>
+    <zv-block-ui [blocked]="blocked">
+      <div>this block-ui is NOT clickthrough</div>
+      <button type="button" mat-raised-button color="primary">NOT clickable while blocked</button>
+    </zv-block-ui>
+
+    <div style="height: 1em"></div>
+    <div style="height: 50px; overflow: auto">
+      <zv-block-ui [blocked]="blocked">
+        <div style="height: 50px">this box with overflow auto will be blocked without flickering</div>
+      </zv-block-ui>
+    </div>
+
+    <div style="height: 1em"></div>
+    <div style="height: 50px; overflow: auto">
+      <zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
+        <div style="height: 50px">this box with overflow auto will be blocked without flickering</div>
+      </zv-block-ui>
+    </div>
+
+    <div style="height: 1em"></div>
+    <zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
+      <mat-card><mat-card-content>this will be blocked</mat-card-content></mat-card>
+    </zv-block-ui>
+
+    <div style="height: 1em"></div>
+    <zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
+      <mat-card style="height: 30vh"><mat-card-content>this will also be blocked</mat-card-content></mat-card>
+    </zv-block-ui>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'api'">
+    <app-api-doc [name]="'zv-block-ui'">
+      <app-api-doc-input
+        [name]="'blocked'"
+        [type]="'boolean'"
+        [desc]="'Enabled the blocking behaviour of the block ui.'"
+        [required]="true"
+      />
+      <app-api-doc-input [name]="'spinnerText'" [type]="'string'" [desc]="'Optional text to be shown beside the loading spinner.'" />
+      <app-api-doc-input [name]="'clickthrough'" [type]="'boolean'" [desc]="'When true, you can click through the blocking overlay.'" />
+    </app-api-doc>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>&#64;angular/material spinner</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          The block ui uses the
+          <a href="https://material.angular.io/components/progress-spinner/overview" rel="noopener noreferrer"
+            >&#64;angular/material spinner</a
+          >
+          on the blocking overlay. So &#64;angular/material needs to be installed.
+        </p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Imports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Add the following to your imports, where you want to use the zv-date-time-input:</p>
+        <app-code [code]="importsCode" />
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>
+
+<div>
+  Example with sticky spinner. (Outside of the tabs, because the mat-tab css breaks position: sticky inside of it. See
+  <a href="https://github.com/angular/components/issues/28500">this bug</a>)
 </div>
-
-<div style="height: 1em"></div>
-<div style="height: 50px; overflow: auto">
-  <zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
-    <div style="height: 50px">this box with overflow auto will be blocked without flickering</div>
-  </zv-block-ui>
-</div>
-
-<div style="height: 1em"></div>
-<zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
-  <mat-card><mat-card-content>this will be blocked</mat-card-content></mat-card>
-</zv-block-ui>
-
-<div style="height: 1em"></div>
-<zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
-  <mat-card style="height: 30vh"><mat-card-content>this will also be blocked</mat-card-content></mat-card>
-</zv-block-ui>
-
-<div style="height: 1em"></div>
 <zv-block-ui [blocked]="blocked" [spinnerText]="spinnerText">
   <mat-card style="height: 300vh"><mat-card-content>this will also be blocked to show position sticky</mat-card-content></mat-card>
 </zv-block-ui>

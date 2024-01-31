@@ -1,11 +1,12 @@
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ZvBlockUiComponent } from './block-ui.component';
-import { ZvBlockUiModule } from './block-ui.module';
+import { ZvBlockUi } from './block-ui.component';
+import { ZvBlockUiHarness } from './testing/block-ui.harness';
 
 @Component({
   selector: 'zv-test-component',
@@ -21,39 +22,64 @@ export class TestComponent {
   public blocked = false;
   public spinnerText: string = null;
 
-  @ViewChild(ZvBlockUiComponent, { static: true }) blockui: ZvBlockUiComponent;
+  @ViewChild(ZvBlockUi, { static: true }) blockui: ZvBlockUi;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
 
-describe('ZvBlockUiComponent', () => {
-  beforeEach(waitForAsync(() => {
+describe('ZvBlockUi', () => {
+  let fixture: ComponentFixture<TestComponent>;
+  let component: TestComponent;
+  let loader: HarnessLoader;
+  let blockui: ZvBlockUiHarness;
+
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, ZvBlockUiModule],
+      imports: [NoopAnimationsModule, CommonModule, ZvBlockUi],
       declarations: [TestComponent],
     }).compileComponents();
-  }));
 
-  it('should work', waitForAsync(() => {
-    const fixture = TestBed.createComponent(TestComponent);
-    const component = fixture.componentInstance;
+    fixture = TestBed.createComponent(TestComponent);
+    component = fixture.componentInstance;
+    loader = TestbedHarnessEnvironment.loader(fixture);
+    blockui = await loader.getHarness(ZvBlockUiHarness);
+  });
+
+  it('should create', () => {
     expect(component).toBeDefined();
-    fixture.detectChanges();
+  });
 
+  it('should show ng-content', waitForAsync(() => {
     const contentDebugEl = fixture.debugElement.query(By.css('#content'));
     expect(contentDebugEl).not.toBe(null);
     expect(contentDebugEl.nativeElement.textContent).toBe('test text');
-    expect(fixture.debugElement.query(By.directive(MatProgressSpinner))).toBe(null);
-
-    component.blocked = true;
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.directive(MatProgressSpinner))).not.toBe(null);
-    const containerEl = fixture.debugElement.query(By.css('.zv-block-ui__overlay-content'));
-    expect(containerEl.nativeElement.children.length).toBe(1);
-
-    component.spinnerText = 'spinner text';
-    fixture.detectChanges();
-    expect(containerEl.nativeElement.children.length).toBe(2);
-    expect(containerEl.nativeElement.children[1].textContent).toBe('spinner text');
   }));
+
+  it('should not display spinner when not blocked', async () => {
+    component.blocked = false;
+
+    expect(await blockui.isBlocked()).toBeFalse();
+    expect(await blockui.getSpinnerText()).toBe(null);
+    expect(await blockui.getSpinnerDiameter()).toBe(0);
+    expect(await blockui.isClickthrough()).toBe(false);
+  });
+
+  it('should display spinner when blocked', async () => {
+    component.blocked = true;
+
+    expect(await blockui.isBlocked()).toBeTrue();
+    expect(await blockui.getSpinnerText()).toBe(null);
+    expect(await blockui.getSpinnerDiameter()).toBe(20);
+    expect(await blockui.isClickthrough()).toBe(false);
+  });
+
+  it('should display spinner text when provided', async () => {
+    component.blocked = true;
+    component.spinnerText = 'spinner text';
+
+    expect(await blockui.isBlocked()).toBeTrue();
+    expect(await blockui.getSpinnerText()).toBe('spinner text');
+    expect(await blockui.getSpinnerDiameter()).toBe(20);
+    expect(await blockui.isClickthrough()).toBe(false);
+  });
 });
