@@ -5,8 +5,10 @@ import {
   Component,
   Input,
   OnDestroy,
+  PLATFORM_ID,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { IZvButton, IZvException } from '@zvoove/components/core';
@@ -16,8 +18,9 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
 
 import type { ElementRef } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 export const dependencies = {
-  intersectionObserver: IntersectionObserver,
+  intersectionObserver: null as typeof IntersectionObserver | null,
 };
 
 @Component({
@@ -100,6 +103,7 @@ export class ZvFormComponent implements AfterViewInit, OnDestroy {
   private _errorCardObserver: IntersectionObserver;
   private _viewReady = false;
   private _errrorInView$ = new BehaviorSubject<boolean>(false);
+  private isServer = isPlatformServer(inject(PLATFORM_ID));
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -141,6 +145,9 @@ export class ZvFormComponent implements AfterViewInit, OnDestroy {
   }
 
   private updateErrorCardObserver() {
+    if (this.isServer) {
+      return;
+    }
     if (!this._errorCardObserver && this._dataSource && this._viewReady) {
       const options = {
         root: null as any, // relative to document viewport
@@ -148,7 +155,8 @@ export class ZvFormComponent implements AfterViewInit, OnDestroy {
         threshold: 0, // visible amount of item shown in relation to root
       } as IntersectionObserverInit;
 
-      this._errorCardObserver = new dependencies.intersectionObserver((changes, _) => {
+      const intersectionObserverCtor = dependencies.intersectionObserver ?? IntersectionObserver;
+      this._errorCardObserver = new intersectionObserverCtor((changes, _) => {
         const isErrorCardInView = changes[0].intersectionRatio > 0;
         this._errrorInView$.next(isErrorCardInView);
         this.cd.markForCheck();

@@ -1,5 +1,15 @@
-import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ContentChildren, Input, OnDestroy, QueryList, TrackByFunction } from '@angular/core';
+import { NgFor, NgIf, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ContentChildren,
+  Input,
+  OnDestroy,
+  PLATFORM_ID,
+  QueryList,
+  TrackByFunction,
+  inject,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Subscription, startWith } from 'rxjs';
@@ -32,7 +42,8 @@ export class AppComponentPageWrapper implements OnDestroy {
   setupContent: ComponentPageContentDirective;
   otherContents: ComponentPageContentDirective[] = [];
 
-  selectedIndex = +window.location.hash.substring(1);
+  platform = inject(PLATFORM_ID);
+  selectedIndex = isPlatformBrowser(this.platform) ? +window.location.hash.substring(1) : 0;
 
   onSelectedIndexChange(index: number) {
     this.selectedIndex = index;

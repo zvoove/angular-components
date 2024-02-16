@@ -1,4 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
+import { Injectable, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { IZvTableSetting, ZvTableSettingsService } from '@zvoove/components/table';
 import { EMPTY, Observable, ReplaySubject } from 'rxjs';
 
@@ -7,6 +8,7 @@ export class DemoTableSettingsService extends ZvTableSettingsService implements 
   private settingsUpdater = new ReplaySubject<IZvTableSetting>(1);
   private localStoragePrefix = 'table-settings';
   public settings$ = this.settingsUpdater.asObservable();
+  private isServer = isPlatformServer(inject(PLATFORM_ID));
 
   constructor() {
     super();
@@ -31,6 +33,9 @@ export class DemoTableSettingsService extends ZvTableSettingsService implements 
   }
 
   private readFromLocalStorage(tableId: string): IZvTableSetting | null {
+    if (this.isServer) {
+      return null;
+    }
     const settingsString = localStorage.getItem(`${this.localStoragePrefix}:${tableId}`);
 
     if (settingsString) {
@@ -40,7 +45,9 @@ export class DemoTableSettingsService extends ZvTableSettingsService implements 
   }
 
   private writeToLocalStorage(tableId: string, settings: IZvTableSetting): void {
-    localStorage.setItem(`${this.localStoragePrefix}:${tableId}`, JSON.stringify(settings));
+    if (!this.isServer) {
+      localStorage?.setItem(`${this.localStoragePrefix}:${tableId}`, JSON.stringify(settings));
+    }
   }
 
   public ngOnDestroy() {

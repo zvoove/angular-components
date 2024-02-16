@@ -13,9 +13,11 @@ import {
   OnChanges,
   OnDestroy,
   Optional,
+  PLATFORM_ID,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 import {
@@ -31,6 +33,7 @@ import {
 import { IZvFormError, ZvFormService, hasRequiredField } from '@zvoove/components/form-base';
 import { Observable, Subscription, of } from 'rxjs';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
+import { isPlatformServer } from '@angular/common';
 
 export declare type ZvFormFieldSubscriptType = 'resize' | 'single-line';
 
@@ -137,6 +140,8 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
 
   private initialized = false;
 
+  private isServer = isPlatformServer(inject(PLATFORM_ID));
+
   constructor(
     private _elementRef: ElementRef,
     private formsService: ZvFormService,
@@ -214,6 +219,9 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
   }
 
   private updateLabel() {
+    if (this.isServer) {
+      return;
+    }
     this.calculatedLabel = null;
     if (!this.createLabel || this._labelChild || !this.formControl) {
       return;

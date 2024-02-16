@@ -20,7 +20,7 @@
             "outputPath": "dist/zvoove-components-demo",
             "index": "projects/zvoove-components-demo/src/index.html",
             "browser": "projects/zvoove-components-demo/src/main.ts",
-            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts"],
+            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts", "zone.js"],
             "tsConfig": "projects/zvoove-components-demo/tsconfig.app.json",
             "assets": ["projects/zvoove-components-demo/src/favicon.ico", "projects/zvoove-components-demo/src/assets"],
             "styles": ["projects/zvoove-components-demo/src/styles.scss"],
@@ -28,7 +28,12 @@
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "server": "projects/zvoove-components-demo/src/main.server.ts",
+            "prerender": true,
+            "ssr": {
+              "entry": "projects/zvoove-components-demo/server.ts"
+            }
           },
           "configurations": {
             "production": {

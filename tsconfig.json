@@ -35,6 +35,7 @@
     "module": "es2022",
     "lib": ["es2022", "dom"],
     "useDefineForClassFields": false,
+    "allowSyntheticDefaultImports": true,
 
     "paths": {
       "@zvoove/components/*": ["projects/components/*"]
