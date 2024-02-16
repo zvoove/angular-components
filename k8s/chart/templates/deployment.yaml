@@ -25,12 +25,13 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              memory: "10Mi"
+              memory: "150Mi"
               cpu: "1m"
             limits:
-              memory: "20Mi"
+              memory: "200Mi"
               cpu: "50m"
           securityContext:
+            runAsUser: 1000
             capabilities:
               drop: ["ALL"]
             allowPrivilegeEscalation: false
