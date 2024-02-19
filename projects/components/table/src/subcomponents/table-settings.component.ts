@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { Observable, Subscription } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 
@@ -33,7 +32,6 @@ import { IZvTableSetting, ZvTableSettingsService } from '../services/table-setti
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZvTableSettingsComponent implements OnInit {
-  @Input() public intl: IZvTableIntlTexts;
   @Input() public tableId: string;
   @Input() public columnDefinitions: ZvTableColumnDirective[] = [];
   @Input() public sortDefinitions: IZvTableSortDefinition[] = [];

@@ -1,5 +1,5 @@
 <mat-form-field>
-  <mat-label>{{ intl.searchLabel }}</mat-label>
+  <mat-label i18n="@@zvc.Search">Search</mat-label>
   <input #i type="text" matInput [value]="searchText" autocomplete="off" (keyup)="onSearch($event.key, i.value)" />
   <button
     *ngIf="searchText || currentSearchText"

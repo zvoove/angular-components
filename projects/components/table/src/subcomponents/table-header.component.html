@@ -8,7 +8,6 @@
   [sortColumn]="sortColumn"
   [sortDirection]="sortDirection"
   [sortDefinitions]="sortDefinitions"
-  [intl]="intl"
   (sortChanged)="sortChanged.emit($event)"
 ></zv-table-sort>
 <zv-table-search
@@ -16,7 +15,6 @@
   class="zv-table-header__search"
   [searchText]="searchText"
   [debounceTime]="300"
-  [intl]="intl"
   (searchChanged)="searchChanged.emit($event)"
 ></zv-table-search>
 <div *ngIf="topButtonSection" class="zv-table-header__actions">

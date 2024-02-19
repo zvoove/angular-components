@@ -9,7 +9,6 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, ParamMap, Params, RouterLink, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { IZvTableIntlTexts, ZvIntlService, ZvIntlServiceEn } from '@zvoove/components/core';
 import { filterAsync } from '@zvoove/components/utils/src/array';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -23,6 +22,7 @@ import { ZvTablePaginationComponent } from './subcomponents/table-pagination.com
 import { ZvTableComponent } from './table.component';
 import { ZvTableModule } from './table.module';
 import { ZvTableHarness } from './testing/table.harness';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Injectable()
 class TestSettingsService extends ZvTableSettingsService {
@@ -77,7 +77,6 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
       [caption]="caption"
       [dataSource]="dataSource"
       [tableId]="tableId"
-      [intlOverride]="intlOverride"
       [refreshable]="refreshable"
       [filterable]="filterable"
       [showSettings]="showSettings"
@@ -126,7 +125,6 @@ export class TestComponent {
   public caption = 'title';
   public dataSource: ZvTableDataSource<any>;
   public tableId = 'tableId';
-  public intlOverride: Partial<IZvTableIntlTexts>;
   public refreshable = true;
   public filterable = true;
   public showSettings = true;
@@ -149,13 +147,12 @@ export class TestComponent {
 
 describe('ZvTableComponent', () => {
   describe('isolated', () => {
-    const intlService = new ZvIntlServiceEn();
     const cd = <ChangeDetectorRef>{ markForCheck: () => {} };
 
     let settingsService: TestSettingsService;
     function createTableInstance(): ZvTableComponent {
       settingsService = new TestSettingsService();
-      const table = new ZvTableComponent(intlService, settingsService, null, cd, route, router, 'de');
+      const table = new ZvTableComponent(settingsService, null, cd, route, router, 'de');
       table.tableId = 'tableid';
       table.dataSource = new ZvTableDataSource<any>(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
       return table;
@@ -493,7 +490,7 @@ describe('ZvTableComponent', () => {
         declarations: [TestComponent],
         providers: [
           { provide: ZvTableSettingsService, useClass: TestSettingsService },
-          { provide: ZvIntlService, useClass: ZvIntlServiceEn },
+          { provide: MatPaginatorIntl, useClass: MatPaginatorIntl },
         ],
       });
 
@@ -512,25 +509,6 @@ describe('ZvTableComponent', () => {
           ],
         })
       );
-    });
-
-    it('should resolve intl correctly', async () => {
-      const intlService = TestBed.inject(ZvIntlService);
-      const defaultTableIntl = intlService.get('table');
-      fixture.detectChanges();
-      expect(component.table.intl).toEqual(defaultTableIntl);
-
-      component.intlOverride = {
-        getRangeLabel: () => 'bar',
-      };
-
-      expect(await table.getRangeLabel()).toEqual('bar');
-
-      (<any>intlService).tableIntl.itemsPerPageLabel = 'foo';
-      intlService.intlChanged$.next();
-
-      expect(await table.getRangeLabel()).toEqual('bar');
-      expect(await table.getItemsPerPageLabel()).toEqual('foo');
     });
 
     describe('should bind the right properties and events to the ui', () => {
@@ -685,7 +663,7 @@ describe('ZvTableComponent', () => {
         expect(listActions.length).toEqual(3);
 
         spyOn(component.table.dataSource, 'updateData');
-        await listActionsMenu.clickItem({ text: 'refresh Refresh list' });
+        await listActionsMenu.clickItem({ text: 'refreshRefresh list' });
         expect(component.table.dataSource.updateData).toHaveBeenCalled();
       });
 
@@ -697,7 +675,7 @@ describe('ZvTableComponent', () => {
         const listActions = await listActionsMenu.getItems();
         expect(listActions.length).toEqual(2);
         expect(await listActions[0].getText()).toEqual('check custom action');
-        expect(await listActions[1].getText()).toEqual('settings List settings');
+        expect(await listActions[1].getText()).toEqual('settingsList settings');
       });
 
       it('should flip to settings', async () => {
@@ -707,7 +685,7 @@ describe('ZvTableComponent', () => {
         expect(listActions.length).toEqual(3);
 
         expect(await table.getSettingsHarness()).toBeNull();
-        await listActionsMenu.clickItem({ text: 'settings List settings' });
+        await listActionsMenu.clickItem({ text: 'settingsList settings' });
         expect(await table.getSettingsHarness()).toBeDefined();
       });
 
@@ -719,7 +697,7 @@ describe('ZvTableComponent', () => {
         const listActions = await listActionsMenu.getItems();
         expect(listActions.length).toEqual(2);
         expect(await listActions[0].getText()).toEqual('check custom action');
-        expect(await listActions[1].getText()).toEqual('refresh Refresh list');
+        expect(await listActions[1].getText()).toEqual('refreshRefresh list');
       });
 
       it('should call customListAction', async () => {

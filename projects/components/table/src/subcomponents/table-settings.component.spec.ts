@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { ZvTableColumnDirective } from '../directives/table.directives';
@@ -26,7 +25,6 @@ import { ZvTableSortComponent } from './table-sort.component';
       [columnDefinitions]="columnDefinitions"
       [sortDefinitions]="sortDefinitions"
       [pageSizeOptions]="pageSizeOptions"
-      [intl]="intl"
       (settingsSaved)="onSettingsSaved($event)"
       (settingsAborted)="onSettingsAborted($event)"
     ></zv-table-settings>
@@ -35,9 +33,6 @@ import { ZvTableSortComponent } from './table-sort.component';
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TestComponent {
-  public intl: Partial<IZvTableIntlTexts> = {
-    sortLabel: 'sort label',
-  };
   public tableId: string;
   public columnDefinitions: ZvTableColumnDirective[] = [];
   public sortDefinitions: IZvTableSortDefinition[] = [];

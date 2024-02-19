@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
-import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { IZvTableSortDefinition } from '../models';
 
 @Component({
@@ -11,7 +10,6 @@ import { IZvTableSortDefinition } from '../models';
   encapsulation: ViewEncapsulation.None,
 })
 export class ZvTableSortComponent {
-  @Input() public intl: IZvTableIntlTexts;
   @Input() public sortColumn: string;
   @Input() public sortDirection: 'asc' | 'desc';
   @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
@@ -29,10 +27,6 @@ export class ZvTableSortComponent {
       this.sortDirection = dir;
       this.emitChange();
     }
-  }
-
-  public trackBy(_index: number, item: IZvTableSortDefinition) {
-    return item.prop;
   }
 
   private emitChange() {

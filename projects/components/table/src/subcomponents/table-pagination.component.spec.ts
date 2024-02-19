@@ -1,30 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatPaginator, MatPaginatorIntl, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { IZvTableIntlTexts } from '../..';
 import { ZvTablePaginationComponent } from './table-pagination.component';
-
-const testIntl: IZvTableIntlTexts = {
-  firstPageLabel: 'a',
-  lastPageLabel: 'b',
-  previousPageLabel: 'c',
-  nextPageLabel: 'd',
-  itemsPerPageLabel: 'e',
-  getRangeLabel: () => 'fnc',
-  searchLabel: 'f',
-  sortLabel: 'g',
-  refreshListLabel: 'h',
-  settingsLabel: 'i',
-  noEntriesLabel: 'j',
-  saveLabel: 'k',
-  cancelLabel: 'l',
-  displayedColumnsLabel: 'm',
-};
 
 @Component({
   template: `
@@ -33,7 +15,6 @@ const testIntl: IZvTableIntlTexts = {
       [dataLength]="dataLength"
       [pageIndex]="pageIndex"
       [pageSizeOptions]="pageSizeOptions"
-      [intl]="intl"
       [pageDebounce]="pageDebounce"
       (page)="onPage($event)"
     ></zv-table-pagination>
@@ -45,7 +26,6 @@ class PaginationTestComponent {
   public pageSize = 5;
   public dataLength = 15;
   public pageIndex = 0;
-  public intl = testIntl;
   public pageDebounce: number;
 
   @ViewChild(ZvTablePaginationComponent)
@@ -60,18 +40,6 @@ describe('ZvTablePaginationComponent', () => {
     const cd = { markForCheck: () => {} } as ChangeDetectorRef;
     beforeEach(() => {
       component = new ZvTablePaginationComponent(cd);
-    });
-
-    it('should set Intl correctly', () => {
-      component.intl = testIntl;
-      component.paginator = new MatPaginator(new MatPaginatorIntl(), cd);
-
-      expect(component.paginator._intl.firstPageLabel).toEqual('a');
-      expect(component.paginator._intl.lastPageLabel).toEqual('b');
-      expect(component.paginator._intl.previousPageLabel).toEqual('c');
-      expect(component.paginator._intl.nextPageLabel).toEqual('d');
-      expect(component.paginator._intl.itemsPerPageLabel).toEqual('e');
-      expect(component.paginator._intl.getRangeLabel(0, 0, 0)).toEqual('fnc');
     });
 
     it('should debounce pageEvent, if pageDebounce-Property is set', fakeAsync(() => {
@@ -136,15 +104,6 @@ describe('ZvTablePaginationComponent', () => {
       fixture.detectChanges();
       fixture.detectChanges();
       expect(component.pagination.pages.length).toEqual(3);
-    });
-
-    it('should update Intl correctly', () => {
-      const updateIntlSpy = spyOn<any>(component.pagination, 'updatePaginatorIntl').and.callThrough();
-      component.intl = { ...testIntl, firstPageLabel: 'changed' };
-      fixture.detectChanges();
-
-      expect(updateIntlSpy).toHaveBeenCalled();
-      expect(component.pagination.intl.firstPageLabel).toEqual('changed');
     });
   });
 });

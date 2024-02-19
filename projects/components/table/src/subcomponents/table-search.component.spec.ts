@@ -12,12 +12,7 @@ import { ZvTableSearchComponent } from './table-search.component';
 @Component({
   selector: 'zv-test-component',
   template: `
-    <zv-table-search
-      [searchText]="searchText"
-      [debounceTime]="debounceTime"
-      [intl]="tableIntl"
-      (searchChanged)="onSearchChanged($event)"
-    ></zv-table-search>
+    <zv-table-search [searchText]="searchText" [debounceTime]="debounceTime" (searchChanged)="onSearchChanged($event)"></zv-table-search>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -25,9 +20,6 @@ import { ZvTableSearchComponent } from './table-search.component';
 export class TestComponent {
   public searchText = 'search text';
   public debounceTime = 100;
-  public tableIntl = {
-    searchLabel: 'Search',
-  };
 
   @ViewChild(ZvTableSearchComponent, { static: true }) tableSearch: ZvTableSearchComponent;
 

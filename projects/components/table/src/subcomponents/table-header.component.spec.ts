@@ -19,7 +19,6 @@ import { ZvTableSortComponent } from './table-sort.component';
       [showSorting]="showSorting"
       [filterable]="filterable"
       [topButtonSection]="topButtonSection"
-      [intl]="tableIntl"
     ></zv-table-header>
     <ng-template #tpl></ng-template>
   `,
@@ -30,7 +29,6 @@ export class TestComponent {
   public caption = 'caption';
   public showSorting = true;
   public filterable = true;
-  public tableIntl = {};
   public topButtonSection: TemplateRef<any> | null = null;
 
   @ViewChild(ZvTableHeaderComponent, { static: true }) cmp: ZvTableHeaderComponent;

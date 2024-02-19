@@ -8,7 +8,6 @@ import {
   ViewEncapsulation,
   HostBinding,
 } from '@angular/core';
-import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { IZvTableSortDefinition } from '../models';
 
 @Component({
@@ -19,7 +18,6 @@ import { IZvTableSortDefinition } from '../models';
   encapsulation: ViewEncapsulation.None,
 })
 export class ZvTableHeaderComponent {
-  @Input() public intl: IZvTableIntlTexts;
   @Input() public caption: string;
   @Input() public topButtonSection: TemplateRef<any> | null;
   @Input() public customHeader: TemplateRef<any> | null;

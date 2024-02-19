@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -11,7 +10,6 @@ import { debounceTime } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None,
 })
 export class ZvTableSearchComponent implements OnInit, OnDestroy {
-  @Input() public intl: IZvTableIntlTexts;
   @Input() public searchText: string;
   @Input() public debounceTime: number;
   @Output() public readonly searchChanged = new EventEmitter<string>();

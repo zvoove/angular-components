@@ -19,6 +19,7 @@ import {
 import { Observable, of, timer } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { ZvTableModule } from '../../../../components/table/src/table.module';
+import { allSharedImports } from '../common/shared-imports';
 import { DemoTableSettingsService } from './demo-table-settings.service';
 
 interface ISampleData {
@@ -88,6 +89,7 @@ function generateSampleData(rowCount: number): ISampleData[] {
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    allSharedImports,
     MatCardModule,
     MatCheckboxModule,
     ReactiveFormsModule,

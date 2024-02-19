@@ -58,11 +58,11 @@
       </ng-container>
       <button *ngIf="refreshable" type="button" mat-menu-item (click)="refreshData.emit()">
         <mat-icon>refresh</mat-icon>
-        {{ intl.refreshListLabel }}
+        <ng-container i18n="@@zvc.refreshList">Refresh list</ng-container>
       </button>
       <button *ngIf="settingsEnabled" type="button" mat-menu-item (click)="showSettings.emit()">
         <mat-icon>settings</mat-icon>
-        {{ intl.settingsLabel }}
+        <ng-container i18n="@@zvc.listSettings">List settings</ng-container>
       </button>
     </ng-template>
   </zv-block-ui>

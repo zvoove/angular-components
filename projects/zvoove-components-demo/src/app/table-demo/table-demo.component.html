@@ -1,197 +1,252 @@
-<div class="app-table-demo__settings">
-  <mat-card>
-    <mat-card-content class="app-table-demo__settings-box">
-      <strong>zv-table</strong>
-      <mat-checkbox [(ngModel)]="refreshable">[refreshable]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="filterable">[filterable]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="showSettings">[showSettings]</mat-checkbox>
-      <mat-form-field>
-        <mat-label>[layout]</mat-label>
-        <mat-select [(ngModel)]="layout">
-          <mat-option [value]="'card'">table as MatCard</mat-option>
-          <mat-option [value]="'border'">table with border</mat-option>
-          <mat-option [value]="'flat'">table without enclosure</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-checkbox [(ngModel)]="striped">[striped]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="sortDefinitions"
-        >[sortDefinitions]="[&#x7B; displayName: 'custom: `$&#x7B;boolean&#x7D;$&#x7B;string&#x7D;`', prop: 'hiddenSortable'
-        &#x7D;]"</mat-checkbox
+<app-component-page-wrapper [componentName]="'zv-table'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <div class="app-table-demo__settings">
+      <mat-card>
+        <mat-card-content class="app-table-demo__settings-box">
+          <strong>zv-table</strong>
+          <mat-checkbox [(ngModel)]="refreshable">[refreshable]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="filterable">[filterable]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="showSettings">[showSettings]</mat-checkbox>
+          <mat-form-field>
+            <mat-label>[layout]</mat-label>
+            <mat-select [(ngModel)]="layout">
+              <mat-option [value]="'card'">table as MatCard</mat-option>
+              <mat-option [value]="'border'">table with border</mat-option>
+              <mat-option [value]="'flat'">table without enclosure</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-checkbox [(ngModel)]="striped">[striped]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="sortDefinitions"
+            >[sortDefinitions]="[&#x7B; displayName: 'custom: `$&#x7B;boolean&#x7D;$&#x7B;string&#x7D;`', prop: 'hiddenSortable'
+            &#x7D;]"</mat-checkbox
+          >
+          <mat-form-field>
+            <mat-label>[caption]</mat-label>
+            <input matInput type="string" [(ngModel)]="caption" />
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput type="number" [(ngModel)]="pageDebounce" />
+            <mat-label>Page debounce in ms</mat-label>
+          </mat-form-field>
+          <div>[dataSource] = new ZvTableDataSource(...)</div>
+          <div>(page) $event = &#x7B; pageIndex: number; previousPageIndex?: number; pageSize: number; length: number; &#x7D;</div>
+
+          <mat-checkbox [(ngModel)]="disableAllSortable" (change)="rebuildTable()"
+            >set all zv-table-column [sortable]="false" and zv-table [sortDefinitions]="null"</mat-checkbox
+          >
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-content class="app-table-demo__settings-box">
+          <strong>ZvTableDataSource</strong>
+          <mat-checkbox [(ngModel)]="dsThrowError" (change)="reloadTable()">throw error</mat-checkbox>
+          <mat-form-field>
+            <input matInput type="number" [(ngModel)]="dsLoadDelay" (change)="reloadTable()" />
+            <mat-label>loading delay in ms</mat-label>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput type="number" [(ngModel)]="dsDataCount" (change)="rebuildSampleData()" />
+            <mat-label>item count</mat-label>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select [(ngModel)]="dataSourceType" (selectionChange)="rebuildDataSource()">
+              <mat-option [value]="'server'">server</mat-option>
+              <mat-option [value]="'client'">client</mat-option>
+            </mat-select>
+            <mat-label>DataSourceType</mat-label>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-content class="app-table-demo__settings-box">
+          <strong>zv-table-column (all inputs are only initially settable) (demo for date column)</strong>
+          <mat-checkbox [(ngModel)]="columnMandatory">[mandatory]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="columnSortable" (change)="rebuildTable()">[sortable]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="columnHeaderStyles" (change)="rebuildTable()"
+            >[headerStyles]="&#x7B; 'color': 'green' &#x7D;"</mat-checkbox
+          >
+          <mat-checkbox [(ngModel)]="columnColumnStyles" (change)="rebuildTable()"
+            >[columnStyles]="&#x7B; 'color': 'green' &#x7D;"</mat-checkbox
+          >
+          <mat-form-field>
+            <mat-label>[header]</mat-label>
+            <input matInput type="string" [(ngModel)]="columnHeader" (change)="rebuildTable()" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>[width]</mat-label>
+            <input matInput type="string" [(ngModel)]="columnWidth" (change)="rebuildTable()" />
+          </mat-form-field>
+          <mat-checkbox [(ngModel)]="columnHeaderTemplate" (change)="rebuildTable()">*zvTableColumnHeaderTemplate</mat-checkbox>
+          <mat-checkbox [(ngModel)]="columnColumnTemplate" (change)="rebuildTable()"
+            >*zvTableColumnTemplate="let item; let expanded = expanded"</mat-checkbox
+          >
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-content class="app-table-demo__settings-box">
+          <strong>zv-table-row-detail (only initially defineable)</strong>
+          <mat-checkbox [(ngModel)]="expandable" (change)="rebuildTable()">use</mat-checkbox>
+          <mat-checkbox [(ngModel)]="expanded" (change)="rebuildTable()">[expanded]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="showToggleColumn" (change)="rebuildTable()">[showToggleColumn]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="showCustomToggleColumn" (change)="rebuildTable()">Use custom toggle column</mat-checkbox>
+          <span>*zvTableRowDetailTemplate="let item"</span>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-content class="app-table-demo__settings-box">
+          <strong>template directives (only initially defineable)</strong>
+          <mat-checkbox [(ngModel)]="customHeader">*zvTableCustomHeader</mat-checkbox>
+          <mat-checkbox [(ngModel)]="customSettings">*zvTableCustomSettings</mat-checkbox>
+          <mat-checkbox [(ngModel)]="customTopButton">*zvTableTopButtonSection</mat-checkbox>
+          <mat-checkbox [(ngModel)]="customListActions">*zvTableListActions="let selection"</mat-checkbox>
+          <mat-checkbox [(ngModel)]="customRowActions">*zvTableRowActions="let item"</mat-checkbox>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <zv-table
+      #table
+      *ngIf="show"
+      tableId="example"
+      [dataSource]="dataSource"
+      [caption]="caption"
+      [sortDefinitions]="
+        sortDefinitions && !disableAllSortable ? [{ displayName: 'custom: `${boolean}${string}`', prop: 'hiddenSortable' }] : null
+      "
+      [refreshable]="refreshable"
+      [filterable]="filterable"
+      [showSettings]="showSettings"
+      [layout]="layout"
+      [striped]="striped"
+      [pageDebounce]="pageDebounce"
+      (page)="onPage($event)"
+    >
+      <zv-table-column [header]="'id'" property="id" [sortable]="!disableAllSortable"></zv-table-column>
+      <zv-table-column [header]="'number'" property="num" [sortable]="!disableAllSortable"></zv-table-column>
+      <zv-table-column [header]="'boolean'" property="bool" [sortable]="!disableAllSortable"></zv-table-column>
+      <zv-table-column
+        [header]="columnHeader"
+        property="date"
+        [mandatory]="columnMandatory"
+        [sortable]="columnSortable && !disableAllSortable"
+        [headerStyles]="columnHeaderStyles ? { color: 'green' } : null"
+        [columnStyles]="columnColumnStyles ? { color: 'green' } : null"
+        [width]="columnWidth"
       >
-      <mat-form-field>
-        <mat-label>[caption]</mat-label>
-        <input matInput type="string" [(ngModel)]="caption" />
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput type="number" [(ngModel)]="pageDebounce" />
-        <mat-label>Page debounce in ms</mat-label>
-      </mat-form-field>
-      <div>[dataSource] = new ZvTableDataSource(...)</div>
-      <div>(page) $event = &#x7B; pageIndex: number; previousPageIndex?: number; pageSize: number; length: number; &#x7D;</div>
-
-      <mat-checkbox [(ngModel)]="disableAllSortable" (change)="rebuildTable()"
-        >set all zv-table-column [sortable]="false" and zv-table [sortDefinitions]="null"</mat-checkbox
+        <ng-container *ngIf="columnHeaderTemplate">
+          <ng-container *zvTableColumnHeaderTemplate>
+            <i style="color: blue">date</i>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="columnColumnTemplate">
+          <ng-container *zvTableColumnTemplate="let item">
+            {{ item.date | date: 'yyyy-MM-dd HH:mm:ss' }}
+          </ng-container>
+        </ng-container>
+      </zv-table-column>
+      <zv-table-column [header]="'string'" property="str" [sortable]="!disableAllSortable"></zv-table-column>
+      <zv-table-column
+        [header]="'Custom row detail toggle'"
+        property="__custom"
+        [sortable]="false"
+        *ngIf="showCustomToggleColumn && expandable"
       >
-    </mat-card-content>
-  </mat-card>
+        <ng-container *zvTableColumnTemplate="let item; let expanded = expanded">
+          <button (click)="table.toggleRowDetail(item)">Custom row detail expand button</button>
+        </ng-container>
+      </zv-table-column>
+      <zv-table-column [header]="'virtual column'" property="__virtual" [sortable]="false">
+        <ng-container *zvTableColumnTemplate="let item; let expanded = expanded"> expanded: {{ expanded }} </ng-container>
+      </zv-table-column>
 
-  <mat-card>
-    <mat-card-content class="app-table-demo__settings-box">
-      <strong>ZvTableDataSource</strong>
-      <mat-checkbox [(ngModel)]="dsThrowError" (change)="reloadTable()">throw error</mat-checkbox>
-      <mat-form-field>
-        <input matInput type="number" [(ngModel)]="dsLoadDelay" (change)="reloadTable()" />
-        <mat-label>loading delay in ms</mat-label>
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput type="number" [(ngModel)]="dsDataCount" (change)="rebuildSampleData()" />
-        <mat-label>item count</mat-label>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-select [(ngModel)]="dataSourceType" (selectionChange)="rebuildDataSource()">
-          <mat-option [value]="'server'">server</mat-option>
-          <mat-option [value]="'client'">client</mat-option>
-        </mat-select>
-        <mat-label>DataSourceType</mat-label>
-      </mat-form-field>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-content class="app-table-demo__settings-box">
-      <strong>zv-table-column (all inputs are only initially settable) (demo for date column)</strong>
-      <mat-checkbox [(ngModel)]="columnMandatory">[mandatory]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="columnSortable" (change)="rebuildTable()">[sortable]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="columnHeaderStyles" (change)="rebuildTable()"
-        >[headerStyles]="&#x7B; 'color': 'green' &#x7D;"</mat-checkbox
-      >
-      <mat-checkbox [(ngModel)]="columnColumnStyles" (change)="rebuildTable()"
-        >[columnStyles]="&#x7B; 'color': 'green' &#x7D;"</mat-checkbox
-      >
-      <mat-form-field>
-        <mat-label>[header]</mat-label>
-        <input matInput type="string" [(ngModel)]="columnHeader" (change)="rebuildTable()" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>[width]</mat-label>
-        <input matInput type="string" [(ngModel)]="columnWidth" (change)="rebuildTable()" />
-      </mat-form-field>
-      <mat-checkbox [(ngModel)]="columnHeaderTemplate" (change)="rebuildTable()">*zvTableColumnHeaderTemplate</mat-checkbox>
-      <mat-checkbox [(ngModel)]="columnColumnTemplate" (change)="rebuildTable()"
-        >*zvTableColumnTemplate="let item; let expanded = expanded"</mat-checkbox
-      >
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-content class="app-table-demo__settings-box">
-      <strong>zv-table-row-detail (only initially defineable)</strong>
-      <mat-checkbox [(ngModel)]="expandable" (change)="rebuildTable()">use</mat-checkbox>
-      <mat-checkbox [(ngModel)]="expanded" (change)="rebuildTable()">[expanded]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="showToggleColumn" (change)="rebuildTable()">[showToggleColumn]</mat-checkbox>
-      <mat-checkbox [(ngModel)]="showCustomToggleColumn" (change)="rebuildTable()">Use custom toggle column</mat-checkbox>
-      <span>*zvTableRowDetailTemplate="let item"</span>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card>
-    <mat-card-content class="app-table-demo__settings-box">
-      <strong>template directives (only initially defineable)</strong>
-      <mat-checkbox [(ngModel)]="customHeader">*zvTableCustomHeader</mat-checkbox>
-      <mat-checkbox [(ngModel)]="customSettings">*zvTableCustomSettings</mat-checkbox>
-      <mat-checkbox [(ngModel)]="customTopButton">*zvTableTopButtonSection</mat-checkbox>
-      <mat-checkbox [(ngModel)]="customListActions">*zvTableListActions="let selection"</mat-checkbox>
-      <mat-checkbox [(ngModel)]="customRowActions">*zvTableRowActions="let item"</mat-checkbox>
-    </mat-card-content>
-  </mat-card>
-</div>
-
-<zv-table
-  #table
-  *ngIf="show"
-  tableId="example"
-  [dataSource]="dataSource"
-  [caption]="caption"
-  [sortDefinitions]="
-    sortDefinitions && !disableAllSortable ? [{ displayName: 'custom: `${boolean}${string}`', prop: 'hiddenSortable' }] : null
-  "
-  [refreshable]="refreshable"
-  [filterable]="filterable"
-  [showSettings]="showSettings"
-  [layout]="layout"
-  [striped]="striped"
-  [pageDebounce]="pageDebounce"
-  (page)="onPage($event)"
->
-  <zv-table-column [header]="'id'" property="id" [sortable]="!disableAllSortable"></zv-table-column>
-  <zv-table-column [header]="'number'" property="num" [sortable]="!disableAllSortable"></zv-table-column>
-  <zv-table-column [header]="'boolean'" property="bool" [sortable]="!disableAllSortable"></zv-table-column>
-  <zv-table-column
-    [header]="columnHeader"
-    property="date"
-    [mandatory]="columnMandatory"
-    [sortable]="columnSortable && !disableAllSortable"
-    [headerStyles]="columnHeaderStyles ? { color: 'green' } : null"
-    [columnStyles]="columnColumnStyles ? { color: 'green' } : null"
-    [width]="columnWidth"
-  >
-    <ng-container *ngIf="columnHeaderTemplate">
-      <ng-container *zvTableColumnHeaderTemplate>
-        <i style="color: blue">date</i>
+      <ng-container *ngIf="customHeader">
+        <div *zvTableCustomHeader style="border: 1px solid black; width: 100%">custom header</div>
       </ng-container>
-    </ng-container>
-    <ng-container *ngIf="columnColumnTemplate">
-      <ng-container *zvTableColumnTemplate="let item">
-        {{ item.date | date : 'yyyy-MM-dd HH:mm:ss' }}
+
+      <ng-container *ngIf="customSettings">
+        <div *zvTableCustomSettings style="border: 1px solid black; width: 100%">custom settings</div>
       </ng-container>
-    </ng-container>
-  </zv-table-column>
-  <zv-table-column [header]="'string'" property="str" [sortable]="!disableAllSortable"></zv-table-column>
-  <zv-table-column
-    [header]="'Custom row detail toggle'"
-    property="__custom"
-    [sortable]="false"
-    *ngIf="showCustomToggleColumn && expandable"
-  >
-    <ng-container *zvTableColumnTemplate="let item; let expanded = expanded">
-      <button (click)="table.toggleRowDetail(item)">Custom row detail expand button</button>
-    </ng-container>
-  </zv-table-column>
-  <zv-table-column [header]="'virtual column'" property="__virtual" [sortable]="false">
-    <ng-container *zvTableColumnTemplate="let item; let expanded = expanded"> expanded: {{ expanded }} </ng-container>
-  </zv-table-column>
 
-  <ng-container *ngIf="customHeader">
-    <div *zvTableCustomHeader style="border: 1px solid black; width: 100%">custom header</div>
-  </ng-container>
+      <ng-container *ngIf="customTopButton">
+        <div *zvTableTopButtonSection style="border: 1px solid black">custom button section</div>
+      </ng-container>
 
-  <ng-container *ngIf="customSettings">
-    <div *zvTableCustomSettings style="border: 1px solid black; width: 100%">custom settings</div>
-  </ng-container>
+      <ng-container *ngIf="customListActions">
+        <ng-container *zvTableListActions="let selection">
+          <button type="button" mat-menu-item (click)="alertData(selection)">custom list actions</button>
+        </ng-container>
+      </ng-container>
 
-  <ng-container *ngIf="customTopButton">
-    <div *zvTableTopButtonSection style="border: 1px solid black">custom button section</div>
-  </ng-container>
+      <ng-container *ngIf="customRowActions">
+        <ng-container *zvTableRowActions="let item">
+          <button type="button" mat-menu-item>item {{ item.id }} custom row actions</button>
+        </ng-container>
+      </ng-container>
 
-  <ng-container *ngIf="customListActions">
-    <ng-container *zvTableListActions="let selection">
-      <button type="button" mat-menu-item (click)="alertData(selection)">custom list actions</button>
-    </ng-container>
-  </ng-container>
+      <ng-container *ngIf="expandable">
+        <zv-table-row-detail [expanded]="expanded" [showToggleColumn]="showToggleColumn">
+          <ng-container *zvTableRowDetailTemplate="let item"> item: {{ item.id }} expanded: {{ expanded }} </ng-container>
+        </zv-table-row-detail>
+      </ng-container>
+    </zv-table>
 
-  <ng-container *ngIf="customRowActions">
-    <ng-container *zvTableRowActions="let item">
-      <button type="button" mat-menu-item>item {{ item.id }} custom row actions</button>
-    </ng-container>
-  </ng-container>
+    <mat-card style="margin: 1em 0">
+      <mat-card-content>Last page event: {{ pageEvent | json }} </mat-card-content>
+    </mat-card>
+  </ng-template>
 
-  <ng-container *ngIf="expandable">
-    <zv-table-row-detail [expanded]="expanded" [showToggleColumn]="showToggleColumn">
-      <ng-container *zvTableRowDetailTemplate="let item"> item: {{ item.id }} expanded: {{ expanded }} </ng-container>
-    </zv-table-row-detail>
-  </ng-container>
-</zv-table>
+  <ng-template appComponentPageContent [type]="'api'">
+    <app-api-doc [name]="'zv-table'">
+      <app-api-doc-input
+        [name]="'tableId'"
+        [type]="'string'"
+        [desc]="'Unique id for the table. Used for example in the query parameter.'"
+        [required]="true"
+      />
+      <app-api-doc-input
+        [name]="'dataSource'"
+        [type]="'ZvTableDataSource'"
+        [desc]="'Data source which provides the data for the table.'"
+        [required]="true"
+      />
+      <app-api-doc-input [name]="'caption'" [type]="'string'" [desc]="'Headline of the table.'" />
+      <app-api-doc-input
+        [name]="'sortDefinitions'"
+        [type]="'IZvTableSortDefinition[]'"
+        [desc]="'Additional sorting definitions for the table.'"
+      />
+      <app-api-doc-input [name]="'refreshable'" [type]="'boolean'" [desc]="'When true, a refrsh button is avilable.'" />
+      <app-api-doc-input [name]="'filterable'" [type]="'boolean'" [desc]="'When true, a search field avilable.'" />
+      <app-api-doc-input [name]="'showSettings'" [type]="'boolean'" [desc]="'When true, a settings panel is available.'" />
+      <app-api-doc-input [name]="'pageDebounce'" [type]="'number'" [desc]="'Number of ms to debounce the page event.'" />
+      <app-api-doc-input [name]="'layout'" [type]="'\'card\' | \'border\' | \'flat\''" [desc]="'Layout of the table.'" />
+      <app-api-doc-input [name]="'striped'" [type]="'boolean'" [desc]="'When true, the rows are striped.'" />
+      <app-api-doc-input
+        [name]="'stateManager'"
+        [type]="'ZvTableStateManager'"
+        [desc]="'Can be used to customize the state handling. Default uses the query params to save the state.'"
+      />
 
-<mat-card style="margin: 1em 0">
-  <mat-card-content>Last page event: {{ pageEvent | json }} </mat-card-content>
-</mat-card>
+      <app-api-doc-output [name]="'page'" [type]="'PageEvent'" [desc]="'Emits page changes.'" />
+    </app-api-doc>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>&#64;angular/material paginator</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          The table uses
+          <a href="https://material.angular.io/components/paginator/overview" rel="noopener noreferrer">&#64;angular/material paginator</a>
+          for pagination. So &#64;angular/material needs to be installed and for localization MatPaginatorIntl needs to be provided.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>

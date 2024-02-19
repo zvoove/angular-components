@@ -19,7 +19,6 @@ import { ZvTableSortComponent } from './table-sort.component';
       [sortColumn]="sortColumn"
       [sortDirection]="sortDirection"
       [sortDefinitions]="sortDefinitions"
-      [intl]="tableIntl"
       (sortChanged)="onSortChanged($event)"
     ></zv-table-sort>
   `,
@@ -33,9 +32,6 @@ export class TestComponent {
     { prop: 'prop', displayName: 'Sort Prop' },
     { prop: 'prop2', displayName: 'Sort Prop' },
   ];
-  public tableIntl = {
-    sortLabel: 'sort',
-  };
 
   @ViewChild(ZvTableSortComponent, { static: true }) tableSort: ZvTableSortComponent;
 

@@ -8,13 +8,11 @@ import {
   OnDestroy,
   Output,
   SimpleChanges,
-  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
-import { IZvTableIntlTexts } from '@zvoove/components/core';
-import { of, Subject, timer } from 'rxjs';
+import { Subject, of, timer } from 'rxjs';
 import { debounce, takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -31,20 +29,10 @@ export class ZvTablePaginationComponent implements OnChanges, OnDestroy {
   @Input() public dataLength: number;
   @Input() public pageIndex: number;
   @Input() public pageSizeOptions: number[];
-  @Input() public intl: IZvTableIntlTexts;
   @Input() public pageDebounce: number;
 
   @Output() public readonly page = new EventEmitter<PageEvent>();
 
-  @ViewChild(MatPaginator) public set paginator(value: MatPaginator | null) {
-    this._paginator = value;
-    this.updatePaginatorIntl();
-  }
-  public get paginator(): MatPaginator | null {
-    return this._paginator;
-  }
-
-  private _paginator: MatPaginator | null = null;
   private _onPage$ = new Subject<PageEvent>();
   private ngUnsubscribe$ = new Subject<void>();
 
@@ -63,10 +51,6 @@ export class ZvTablePaginationComponent implements OnChanges, OnDestroy {
       this.pages = Array.from({ length: pageCount }, (_, k) => k + 1);
 
       this.cd.markForCheck();
-    }
-
-    if (changes.intl) {
-      this.updatePaginatorIntl();
     }
   }
 
@@ -89,17 +73,5 @@ export class ZvTablePaginationComponent implements OnChanges, OnDestroy {
     this.ngUnsubscribe$.complete();
 
     this._onPage$.complete();
-  }
-
-  private updatePaginatorIntl() {
-    if (this.paginator && this.intl) {
-      this.paginator._intl.firstPageLabel = this.intl.firstPageLabel;
-      this.paginator._intl.lastPageLabel = this.intl.lastPageLabel;
-      this.paginator._intl.previousPageLabel = this.intl.previousPageLabel;
-      this.paginator._intl.nextPageLabel = this.intl.nextPageLabel;
-      this.paginator._intl.itemsPerPageLabel = this.intl.itemsPerPageLabel;
-      this.paginator._intl.getRangeLabel = this.intl.getRangeLabel;
-      this.paginator._intl.changes.next();
-    }
   }
 }

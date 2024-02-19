@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
-import { IZvTableIntlTexts } from '@zvoove/components/core';
 
 import { IZvTableAction } from '../models';
 
@@ -17,7 +16,6 @@ export class ZvTableActionsComponent implements OnChanges {
   @Input() public refreshable: boolean;
   @Input() public loading: boolean;
   @Input() public settingsEnabled: boolean;
-  @Input() public intl: IZvTableIntlTexts;
 
   @Output() public readonly refreshData = new EventEmitter<void>();
   @Output() public readonly showSettings = new EventEmitter<void>();

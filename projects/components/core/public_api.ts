@@ -2,7 +2,6 @@ export { IZvButton } from './src/button';
 export { ZvErrorMessagePipe, ZvErrorMessagePipeModule } from './src/error-message.pipe';
 export { IZvException } from './src/exception';
 export { ZvExceptionMessageExtractor } from './src/exception-message-extractor.service';
-export { IZvTableIntlTexts, ZvIntlKeys, ZvIntlService, ZvIntlServiceEn } from './src/intl';
 
 export { ZvNativeDateAdapter } from './src/date/native-date-adapter';
 export { ZV_NATIVE_DATE_FORMATS } from './src/date/native-date-formats';

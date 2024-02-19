@@ -1,5 +1,4 @@
 // reexport
-export { IZvTableIntlTexts } from '@zvoove/components/core';
 export { IZvTableFilterResult, ZvTableDataSource, ZvTableMode } from './src/data/table-data-source';
 export {
   ZvTableColumnDirective,

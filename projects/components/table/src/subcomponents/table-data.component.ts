@@ -9,7 +9,6 @@ import {
   SimpleChanges,
   OnChanges,
 } from '@angular/core';
-import { IZvTableIntlTexts } from '@zvoove/components/core';
 import { ZvTableDataSource } from '../data/table-data-source';
 import { ZvTableColumnDirective, ZvTableRowDetailDirective } from '../directives/table.directives';
 import { Subscription } from 'rxjs';
@@ -24,7 +23,6 @@ import { Subscription } from 'rxjs';
 export class ZvTableDataComponent implements OnChanges {
   @Input() public dataSource: ZvTableDataSource<{ [key: string]: any }>;
   @Input() public tableId: string;
-  @Input() public intl: IZvTableIntlTexts;
   @Input() public rowDetail: ZvTableRowDetailDirective | null;
   @Input() public columnDefs: ZvTableColumnDirective[];
   @Input() public showListActions: boolean;

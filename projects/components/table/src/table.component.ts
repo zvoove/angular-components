@@ -1,3 +1,4 @@
+import type { QueryList } from '@angular/core';
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
@@ -19,13 +20,12 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import type { QueryList } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IZvTableIntlTexts, ZvExceptionMessageExtractor, ZvIntlService } from '@zvoove/components/core';
+import { ZvExceptionMessageExtractor } from '@zvoove/components/core';
 import { ZvFlipContainerComponent } from '@zvoove/components/flip-container';
-import { combineLatest, Subscription } from 'rxjs';
-import { debounceTime, startWith } from 'rxjs/operators';
+import { Subscription, combineLatest } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { ZvTableDataSource } from './data/table-data-source';
 import {
   ZvTableColumnDirective,
@@ -55,7 +55,6 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   @Input() public caption: string;
   @Input({ required: true }) public dataSource: ZvTableDataSource<any, any>;
   @Input({ required: true }) public tableId: string;
-  @Input() public intlOverride: Partial<IZvTableIntlTexts>;
   @Input()
   public set sortDefinitions(value: IZvTableSortDefinition[]) {
     this._sortDefinitions = value ? [...value] : [];
@@ -217,17 +216,13 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     return !!this._mergedSortDefinitions.length;
   }
 
-  public intl: IZvTableIntlTexts;
-
   private subscriptions: Subscription[] = [];
   private _sortDefinitions: IZvTableSortDefinition[] = [];
   private _mergedSortDefinitions: IZvTableSortDefinition[] = [];
   private _tableSettings: Partial<IZvTableSetting> = {};
   private _urlSettings: Partial<IZvTableUpdateDataInfo> = {};
-  private _intlChangesSub: Subscription;
 
   constructor(
-    public intlService: ZvIntlService,
     public settingsService: ZvTableSettingsService,
     private exceptionMessageExtractor: ZvExceptionMessageExtractor,
     private cd: ChangeDetectorRef,
@@ -237,19 +232,11 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   ) {}
 
   public ngOnInit() {
-    this._intlChangesSub = this.intlService.intlChanged$.pipe(startWith(null as any)).subscribe(() => {
-      this.updateIntl();
-      this.cd.markForCheck();
-    });
-
     this.dataSource.locale = this._locale;
     this.pageSizeOptions = this.settingsService.pageSizeOptions;
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.intlOverride) {
-      this.updateIntl();
-    }
     if (changes.dataSource && !changes.dataSource.firstChange) {
       this.dataSource.tableReady = changes.dataSource.previousValue.tableReady;
     }
@@ -265,10 +252,6 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
   public ngOnDestroy(): void {
     if (this.subscriptions) {
       this.subscriptions.forEach((s) => s.unsubscribe());
-    }
-
-    if (this._intlChangesSub) {
-      this._intlChangesSub.unsubscribe();
     }
   }
 
@@ -381,10 +364,5 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
       .concat(this._sortDefinitions)
       .filter((value, index, self) => self.indexOf(value) === index)
       .sort((a, b) => a.displayName.toLocaleLowerCase().localeCompare(b.displayName.toLocaleLowerCase()));
-  }
-
-  private updateIntl() {
-    const intl = this.intlService.get('table');
-    this.intl = this.intlService.merge(intl, this.intlOverride);
   }
 }
