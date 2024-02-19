@@ -1,18 +1,7 @@
-import { NgFor, NgIf, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ContentChildren,
-  Input,
-  OnDestroy,
-  PLATFORM_ID,
-  QueryList,
-  TrackByFunction,
-  inject,
-} from '@angular/core';
+import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, contentChildren, inject, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Subscription, startWith } from 'rxjs';
 import { ComponentPageContentDirective } from './component-page-content.directive';
 
 @Component({
@@ -21,26 +10,16 @@ import { ComponentPageContentDirective } from './component-page-content.directiv
   styleUrls: ['./component-page-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, NgFor, MatCardModule, MatTabsModule, ComponentPageContentDirective, NgTemplateOutlet],
+  imports: [MatCardModule, MatTabsModule, ComponentPageContentDirective, NgTemplateOutlet],
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
-export class AppComponentPageWrapper implements OnDestroy {
-  @Input({ required: true }) componentName: string;
-  @ContentChildren(ComponentPageContentDirective) set pagesQueryList(list: QueryList<ComponentPageContentDirective>) {
-    this._pagesQueryListSub.unsubscribe();
-    this._pagesQueryListSub = list.changes.pipe(startWith(list)).subscribe((newList) => {
-      const contents: ComponentPageContentDirective[] = newList.toArray();
-      this.demoContent = contents.find((c) => c.type === 'demo');
-      this.apiContent = contents.find((c) => c.type === 'api');
-      this.setupContent = contents.find((c) => c.type === 'setup');
-      this.otherContents = contents.filter((c) => c.type === 'other');
-    });
-  }
-  _pagesQueryListSub = Subscription.EMPTY;
-  demoContent: ComponentPageContentDirective;
-  apiContent: ComponentPageContentDirective;
-  setupContent: ComponentPageContentDirective;
-  otherContents: ComponentPageContentDirective[] = [];
+export class AppComponentPageWrapper {
+  componentName = input.required<string>();
+  pagesQueryList = contentChildren(ComponentPageContentDirective);
+  demoContent = computed(() => this.pagesQueryList().find((c) => c.type() === 'demo'));
+  apiContent = computed(() => this.pagesQueryList().find((c) => c.type() === 'api'));
+  setupContent = computed(() => this.pagesQueryList().find((c) => c.type() === 'setup'));
+  otherContents = computed(() => this.pagesQueryList().filter((c) => c.type() === 'other'));
 
   platform = inject(PLATFORM_ID);
   selectedIndex = isPlatformBrowser(this.platform) ? +window.location.hash.substring(1) : 0;
@@ -48,13 +27,5 @@ export class AppComponentPageWrapper implements OnDestroy {
   onSelectedIndexChange(index: number) {
     this.selectedIndex = index;
     window.location.hash = index + '';
-  }
-
-  trackContent: TrackByFunction<ComponentPageContentDirective> = (_idx: number, item: ComponentPageContentDirective) => {
-    return item;
-  };
-
-  ngOnDestroy() {
-    this._pagesQueryListSub.unsubscribe();
   }
 }

@@ -1,23 +1,32 @@
-<h1>{{ componentName }}</h1>
-<mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="onSelectedIndexChange($event)">
-  <mat-tab label="Demo" *ngIf="demoContent">
-    <div class="app-component-page-wrapper__tab-content">
-      <ng-container [ngTemplateOutlet]="demoContent.templateRef"></ng-container>
-    </div>
-  </mat-tab>
-  <mat-tab label="API" *ngIf="apiContent">
-    <div class="app-component-page-wrapper__tab-content">
-      <ng-container [ngTemplateOutlet]="apiContent.templateRef"></ng-container>
-    </div>
-  </mat-tab>
-  <mat-tab label="Setup" *ngIf="setupContent">
-    <div class="app-component-page-wrapper__tab-content">
-      <ng-container [ngTemplateOutlet]="setupContent.templateRef"></ng-container>
-    </div>
-  </mat-tab>
-  <mat-tab *ngFor="let content of otherContents; trackBy: trackContent" [label]="content.label">
-    <div class="app-component-page-wrapper__tab-content">
-      <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
-    </div>
-  </mat-tab>
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
+<h1>{{ componentName() }}</h1>
+<mat-tab-group ngSkipHydration [selectedIndex]="selectedIndex" (selectedIndexChange)="onSelectedIndexChange($event)">
+  @if (demoContent) {
+    <mat-tab label="Demo">
+      <div class="app-component-page-wrapper__tab-content">
+        <ng-container [ngTemplateOutlet]="demoContent().templateRef"></ng-container>
+      </div>
+    </mat-tab>
+  }
+  @if (apiContent) {
+    <mat-tab label="API">
+      <div class="app-component-page-wrapper__tab-content">
+        <ng-container [ngTemplateOutlet]="apiContent().templateRef"></ng-container>
+      </div>
+    </mat-tab>
+  }
+  @if (setupContent) {
+    <mat-tab label="Setup">
+      <div class="app-component-page-wrapper__tab-content">
+        <ng-container [ngTemplateOutlet]="setupContent().templateRef"></ng-container>
+      </div>
+    </mat-tab>
+  }
+  @for (content of otherContents(); track content) {
+    <mat-tab [label]="content.label()">
+      <div class="app-component-page-wrapper__tab-content">
+        <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
+      </div>
+    </mat-tab>
+  }
 </mat-tab-group>

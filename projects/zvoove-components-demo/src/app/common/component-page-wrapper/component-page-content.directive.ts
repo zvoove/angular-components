@@ -1,11 +1,11 @@
-import { Directive, Input, TemplateRef } from '@angular/core';
+import { Directive, TemplateRef, input } from '@angular/core';
 
 @Directive({
   selector: '[appComponentPageContent]',
   standalone: true,
 })
 export class ComponentPageContentDirective {
-  @Input({ required: true }) type: 'demo' | 'api' | 'setup' | 'other';
-  @Input() label: string;
+  type = input.required<'demo' | 'api' | 'setup' | 'other'>();
+  label = input('');
   constructor(public templateRef: TemplateRef<unknown>) {}
 }
