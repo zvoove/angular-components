@@ -5,10 +5,10 @@
   (@detailExpand.done)="rowDetailToggleEnd()"
 >
   <!--
-        zv-iframe autoheight funktioniert nur, wenn das iframe beim Initialisieren sichtbar ist.
-        Deshalb sorgen wir hier mit ngIf dafür, das es erst beim Aufklappen initialisiert wird.
-      -->
-  <ng-container *ngIf="visible">
+  zv-iframe autoheight funktioniert nur, wenn das iframe beim Initialisieren sichtbar ist.
+  Deshalb sorgen wir hier mit ngIf dafür, das es erst beim Aufklappen initialisiert wird.
+  -->
+  @if (visible) {
     <ng-template [ngTemplateOutlet]="rowDetail.template" [ngTemplateOutletContext]="{ $implicit: element }"> </ng-template>
-  </ng-container>
+  }
 </div>

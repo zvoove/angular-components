@@ -1,55 +1,57 @@
 <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 <!-- eslint-disable @angular-eslint/template/no-call-expression -->
-<ng-container *ngIf="actions | zvTableActionsToRender : item as visibleActions">
-  <ng-container *ngIf="visibleActions.length >= moreMenuThreshold || openMenuFn; else inlineActionsTemplate">
+@if (actions | zvTableActionsToRender: item; as visibleActions) {
+  @if (visibleActions.length >= moreMenuThreshold || openMenuFn) {
     <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu" (click)="onMenuButtonClicked()">
       <mat-icon>more_vert</mat-icon>
     </button>
     <zv-table-actions #rowActionsComponent [actions]="visibleActions" [items]="itemAsArray" [loading]="loading"> </zv-table-actions>
-  </ng-container>
-  <ng-template #inlineActionsTemplate>
-    <ng-container *ngFor="let action of visibleActions">
-      <ng-container [ngSwitch]="action | zvTableActionType">
-        <button
-          type="button"
-          *ngSwitchCase="'button'"
-          mat-icon-button
-          [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
-          (click)="action.actionFn(itemAsArray)"
-          [matTooltip]="action.label"
-        >
-          <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
-        </button>
-        <a
-          *ngSwitchCase="'link'"
-          mat-menu-item
-          [routerLink]="action.routerLink([item]).path"
-          [queryParams]="action.routerLink([item]).queryParams"
-        >
-          <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
-          {{ action.label }}
-        </a>
-        <ng-container *ngSwitchCase="'menu'">
+  } @else {
+    @for (action of visibleActions; track action) {
+      @switch (action | zvTableActionType) {
+        @case ('button') {
           <button
             type="button"
-            *ngIf="action.children?.length"
             mat-icon-button
-            (click)="onMenuButtonClicked()"
             [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
-            [matMenuTriggerFor]="iconActions.menu"
+            (click)="action.actionFn(itemAsArray)"
             [matTooltip]="action.label"
           >
             <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
           </button>
+        }
+        @case ('link') {
+          <a mat-menu-item [routerLink]="action.routerLink([item]).path" [queryParams]="action.routerLink([item]).queryParams">
+            <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
+            {{ action.label }}
+          </a>
+        }
+        @case ('menu') {
+          @if (action.children?.length) {
+            <button
+              type="button"
+              mat-icon-button
+              (click)="onMenuButtonClicked()"
+              [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray)"
+              [matMenuTriggerFor]="iconActions.menu"
+              [matTooltip]="action.label"
+            >
+              <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
+            </button>
+          }
           <zv-table-actions #iconActions [actions]="action.children" [items]="itemAsArray" [root]="false"></zv-table-actions>
-        </ng-container>
-      </ng-container>
-    </ng-container>
-  </ng-template>
-</ng-container>
+        }
+      }
+    }
+  }
+}
 
 <ng-template let-action #actionIcon>
-  <!-- Setting either [innerHTML] or [svgIcon] seems not to work correctly. -->
-  <mat-icon *ngIf="!action.isSvgIcon" [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
-  <mat-icon *ngIf="action.isSvgIcon === true" [style.color]="action.iconColor" [svgIcon]="action.icon"></mat-icon>
+  <!-- Setting [innerHTML] and [svgIcon] at the same time, but one of them empty/null seems not to work correctly. -->
+  @if (!action.isSvgIcon) {
+    <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
+  }
+  @if (action.isSvgIcon === true) {
+    <mat-icon [style.color]="action.iconColor" [svgIcon]="action.icon"></mat-icon>
+  }
 </ng-template>

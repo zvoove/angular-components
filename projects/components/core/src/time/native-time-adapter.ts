@@ -13,7 +13,6 @@ export class ZvNativeTimeAdapter extends ZvTimeAdapter<Time> {
   public is24HourFormat(): boolean {
     if (this._is24HourFormat === null) {
       this._is24HourFormat = new Date(79200000).toLocaleTimeString(this.locale).indexOf('11') === -1;
-      console.log('is24HourFormat', new Date(79200000).toLocaleTimeString(this.locale), this._is24HourFormat);
     }
     return this._is24HourFormat;
   }

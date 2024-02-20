@@ -1,44 +1,48 @@
 <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 <!-- eslint-disable @angular-eslint/template/no-call-expression -->
-<mat-card *ngIf="settings$ | async as settings">
-  <mat-card-header>
-    <mat-card-title i18n="@@zvc.listSettings">List settings</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="zv-table-settings__form">
-      <div class="zv-table-settings__form__display-columns">
-        <strong i18n="@@zvc.DisplayedColumns">Displayed Columns</strong>
-        <ng-container *ngFor="let columnDef of columnDefinitions">
-          <mat-checkbox
-            [disabled]="settings.sortColumn === columnDef.property || columnDef.mandatory"
-            *ngIf="columnDef.header && columnDef.property"
-            [checked]="columnVisible(settings, columnDef)"
-            (change)="onColumnVisibilityChange($event, settings, columnDef)"
-          >
-            {{ columnDef.header }}
-          </mat-checkbox>
-        </ng-container>
+@if (settings$ | async; as settings) {
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title i18n="@@zvc.listSettings">List settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="zv-table-settings__form">
+        <div class="zv-table-settings__form__display-columns">
+          <strong i18n="@@zvc.DisplayedColumns">Displayed Columns</strong>
+          @for (columnDef of columnDefinitions; track columnDef.property) {
+            @if (columnDef.header) {
+              <mat-checkbox
+                [disabled]="settings.sortColumn === columnDef.property || columnDef.mandatory"
+                [checked]="columnVisible(settings, columnDef)"
+                (change)="onColumnVisibilityChange($event, settings, columnDef)"
+              >
+                {{ columnDef.header }}
+              </mat-checkbox>
+            }
+          }
+        </div>
+        @if (sortDefinitions.length) {
+          <zv-table-sort
+            [sortColumn]="settings.sortColumn"
+            [sortDirection]="settings.sortDirection"
+            [sortDefinitions]="sortDefinitions"
+            (sortChanged)="onSortChanged($event, settings)"
+          ></zv-table-sort>
+        }
+        <mat-form-field>
+          <mat-label i18n="@@zvc.itemsPerPage">Items per page</mat-label>
+          <mat-select [(value)]="settings.pageSize">
+            @for (pageSizeOption of pageSizeOptions; track pageSizeOption) {
+              <mat-option [value]="pageSizeOption">{{ pageSizeOption }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
       </div>
-
-      <zv-table-sort
-        *ngIf="sortDefinitions.length"
-        [sortColumn]="settings.sortColumn"
-        [sortDirection]="settings.sortDirection"
-        [sortDefinitions]="sortDefinitions"
-        (sortChanged)="onSortChanged($event, settings)"
-      ></zv-table-sort>
-
-      <mat-form-field>
-        <mat-label i18n="@@zvc.itemsPerPage">Items per page</mat-label>
-        <mat-select [(value)]="settings.pageSize">
-          <mat-option *ngFor="let pageSizeOption of pageSizeOptions" [value]="pageSizeOption">{{ pageSizeOption }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <ng-container [ngTemplateOutlet]="customSettings" [ngTemplateOutletContext]="{ $implicit: settings }"></ng-container>
-  </mat-card-content>
-  <mat-card-actions class="zv-table-settings__actions">
-    <button mat-raised-button color="primary" (click)="onSaveClick(settings)" i18n="@@zvc.Save">Save</button>
-    <button style="margin-left: 1em" mat-stroked-button (click)="onCancelClick()" i18n="@@zvc.Cancel">Cancel</button>
-  </mat-card-actions>
-</mat-card>
+      <ng-container [ngTemplateOutlet]="customSettings" [ngTemplateOutletContext]="{ $implicit: settings }"></ng-container>
+    </mat-card-content>
+    <mat-card-actions class="zv-table-settings__actions">
+      <button mat-raised-button color="primary" (click)="onSaveClick(settings)" i18n="@@zvc.Save">Save</button>
+      <button style="margin-left: 1em" mat-stroked-button (click)="onCancelClick()" i18n="@@zvc.Cancel">Cancel</button>
+    </mat-card-actions>
+  </mat-card>
+}

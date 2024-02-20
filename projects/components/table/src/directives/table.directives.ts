@@ -16,7 +16,7 @@ export class ZvTableColumnHeaderTemplateDirective {
 })
 export class ZvTableColumnDirective {
   @Input() public header = '';
-  @Input() public property = '';
+  @Input({ required: true }) public property = '';
   @Input() public sortable = true;
   @Input() public mandatory = false;
   @Input() public width = 'auto';

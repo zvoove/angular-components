@@ -1,50 +1,47 @@
 <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 <!-- eslint-disable @angular-eslint/template/no-call-expression -->
 <!--
-  mat-menu-item has to be in the same template as the parent mat-menu otherwise the arrow and hover action for child mat-menus breaks
-  https://github.com/angular/components/issues/16457
+mat-menu-item has to be in the same template as the parent mat-menu otherwise the arrow and hover action for child mat-menus breaks
+https://github.com/angular/components/issues/16457
 -->
 <mat-menu #menu>
   <zv-block-ui [blocked]="loading">
     <ng-template matMenuContent>
-      <ng-container *ngFor="let action of actions">
-        <ng-container [ngSwitch]="action | zvTableActionType">
-          <button
-            *ngSwitchCase="'button'"
-            mat-menu-item
-            [disabled]="action.isDisabledFn && action.isDisabledFn(items)"
-            (click)="action.actionFn(items)"
-          >
-            <ng-container
-              *ngIf="showIcon"
-              ngProjectAs="mat-icon"
-              [ngTemplateOutlet]="actionIcon"
-              [ngTemplateOutletContext]="{ $implicit: action }"
-            ></ng-container>
-            {{ action.label }}
-          </button>
-          <a
-            *ngSwitchCase="'link'"
-            mat-menu-item
-            [routerLink]="action.routerLink(items).path"
-            [queryParams]="action.routerLink(items).queryParams"
-          >
-            <ng-container
-              *ngIf="showIcon"
-              ngProjectAs="mat-icon"
-              [ngTemplateOutlet]="actionIcon"
-              [ngTemplateOutletContext]="{ $implicit: action }"
-            ></ng-container>
-            {{ action.label }}
-          </a>
-          <ng-container *ngSwitchCase="'menu'">
+      @for (action of actions; track action) {
+        @switch (action | zvTableActionType) {
+          @case ('button') {
+            <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items)" (click)="action.actionFn(items)">
+              @if (showIcon) {
+                <ng-container
+                  ngProjectAs="mat-icon"
+                  [ngTemplateOutlet]="actionIcon"
+                  [ngTemplateOutletContext]="{ $implicit: action }"
+                ></ng-container>
+              }
+              {{ action.label }}
+            </button>
+          }
+          @case ('link') {
+            <a mat-menu-item [routerLink]="action.routerLink(items).path" [queryParams]="action.routerLink(items).queryParams">
+              @if (showIcon) {
+                <ng-container
+                  ngProjectAs="mat-icon"
+                  [ngTemplateOutlet]="actionIcon"
+                  [ngTemplateOutletContext]="{ $implicit: action }"
+                ></ng-container>
+              }
+              {{ action.label }}
+            </a>
+          }
+          @case ('menu') {
             <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu">
-              <ng-container
-                *ngIf="showIcon"
-                ngProjectAs="mat-icon"
-                [ngTemplateOutlet]="actionIcon"
-                [ngTemplateOutletContext]="{ $implicit: action }"
-              ></ng-container>
+              @if (showIcon) {
+                <ng-container
+                  ngProjectAs="mat-icon"
+                  [ngTemplateOutlet]="actionIcon"
+                  [ngTemplateOutletContext]="{ $implicit: action }"
+                ></ng-container>
+              }
               {{ action.label }}
             </button>
             <zv-table-actions
@@ -53,22 +50,30 @@
               [items]="items"
               [root]="false"
             ></zv-table-actions>
-          </ng-container>
-        </ng-container>
-      </ng-container>
-      <button *ngIf="refreshable" type="button" mat-menu-item (click)="refreshData.emit()">
-        <mat-icon>refresh</mat-icon>
-        <ng-container i18n="@@zvc.refreshList">Refresh list</ng-container>
-      </button>
-      <button *ngIf="settingsEnabled" type="button" mat-menu-item (click)="showSettings.emit()">
-        <mat-icon>settings</mat-icon>
-        <ng-container i18n="@@zvc.listSettings">List settings</ng-container>
-      </button>
+          }
+        }
+      }
+      @if (refreshable) {
+        <button type="button" mat-menu-item (click)="refreshData.emit()">
+          <mat-icon>refresh</mat-icon>
+          <ng-container i18n="@@zvc.refreshList">Refresh list</ng-container>
+        </button>
+      }
+      @if (settingsEnabled) {
+        <button type="button" mat-menu-item (click)="showSettings.emit()">
+          <mat-icon>settings</mat-icon>
+          <ng-container i18n="@@zvc.listSettings">List settings</ng-container>
+        </button>
+      }
     </ng-template>
   </zv-block-ui>
 </mat-menu>
 <ng-template let-action #actionIcon>
   <!-- Setting either [innerHTML] or [svgIcon] seems not to work correctly. -->
-  <mat-icon *ngIf="!action.isSvgIcon" [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
-  <mat-icon *ngIf="action.isSvgIcon === true" [style.color]="action.iconColor" [svgIcon]="action.icon"></mat-icon>
+  @if (!action.isSvgIcon) {
+    <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
+  }
+  @if (action.isSvgIcon === true) {
+    <mat-icon [style.color]="action.iconColor" [svgIcon]="action.icon"></mat-icon>
+  }
 </ng-template>

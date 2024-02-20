@@ -9,9 +9,13 @@
 >
 </mat-paginator>
 <div class="mat-paginator-page-size">
-  <mat-form-field *ngIf="pages.length > 2" class="mat-mdc-paginator-page-size-select mat-mdc-paginator">
-    <mat-select class="zv-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
-      <mat-option *ngFor="let page of pages" [value]="page" class="zv-table-pagination__page-select-option"> {{ page }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  @if (pages.length > 2) {
+    <mat-form-field class="mat-mdc-paginator-page-size-select mat-mdc-paginator">
+      <mat-select class="zv-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
+        @for (page of pages; track page) {
+          <mat-option [value]="page" class="zv-table-pagination__page-select-option"> {{ page }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
 </div>

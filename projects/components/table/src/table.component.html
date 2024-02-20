@@ -29,8 +29,12 @@
         (refreshDataClicked)="onRefreshDataClicked()"
       ></zv-table-data>
 
-      <div class="zv-table__no-entries-text" *ngIf="showNoEntriesText" i18n="@@zvc.noEntries">No entries</div>
-      <div class="zv-table__error-text" *ngIf="showError">{{ errorMessage }}</div>
+      @if (showNoEntriesText) {
+        <div class="zv-table__no-entries-text" i18n="@@zvc.noEntries">No entries</div>
+      }
+      @if (showError) {
+        <div class="zv-table__error-text">{{ errorMessage }}</div>
+      }
       <zv-table-pagination
         [pageSize]="pageSize"
         [dataLength]="dataLength"
@@ -42,16 +46,17 @@
     </zv-block-ui>
   </div>
   <div *zvFlipContainerBack>
-    <zv-table-settings
-      *ngIf="settingsEnabled"
-      [tableId]="tableId"
-      [columnDefinitions]="columnDefs"
-      [sortDefinitions]="sortDefinitions"
-      [pageSizeOptions]="pageSizeOptions"
-      (settingsAborted)="flipContainer.showFront()"
-      (settingsSaved)="onSettingsSaved()"
-      [customSettings]="customSettings"
-    >
-    </zv-table-settings>
+    @if (settingsEnabled) {
+      <zv-table-settings
+        [tableId]="tableId"
+        [columnDefinitions]="columnDefs"
+        [sortDefinitions]="sortDefinitions"
+        [pageSizeOptions]="pageSizeOptions"
+        (settingsAborted)="flipContainer.showFront()"
+        (settingsSaved)="onSettingsSaved()"
+        [customSettings]="customSettings"
+      >
+      </zv-table-settings>
+    }
   </div>
 </zv-flip-container>

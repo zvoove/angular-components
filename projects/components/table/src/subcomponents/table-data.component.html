@@ -16,39 +16,42 @@
   <ng-container matColumnDef="rowDetailExpander">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let row" style="width: 70px">
-      <button *ngIf="showRowDetails(row)" mat-icon-button type="button" (click)="toggleRowDetail(row)">
-        <mat-icon>{{ rowDetail.isExpanded(row) ? 'expand_more' : 'chevron_right' }}</mat-icon>
-      </button>
+      @if (showRowDetails(row)) {
+        <button mat-icon-button type="button" (click)="toggleRowDetail(row)">
+          <mat-icon>{{ rowDetail.isExpanded(row) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+        </button>
+      }
     </td>
   </ng-container>
 
   <!-- Dynamic Columns -->
-  <ng-container *ngFor="let columnDef of columnDefs">
+  @for (columnDef of columnDefs; track columnDef.property) {
     <ng-container [matColumnDef]="columnDef.property">
       <th mat-header-cell *matHeaderCellDef [ngStyle]="columnDef.headerStyles" [style.width]="columnDef.width">
-        <ng-container *ngIf="!columnDef.headerTemplate; else customHeaderTemplate">
+        @if (!columnDef.headerTemplate) {
           {{ columnDef.header }}
-        </ng-container>
-        <ng-template #customHeaderTemplate [ngTemplateOutlet]="columnDef.headerTemplate"></ng-template>
+        } @else {
+          <ng-template [ngTemplateOutlet]="columnDef.headerTemplate"></ng-template>
+        }
       </th>
       <td mat-cell *matCellDef="let element" [ngStyle]="columnDef.columnStyles">
-        <ng-container *ngIf="!columnDef.columnTemplate; else customRowTemplate">
+        @if (!columnDef.columnTemplate) {
           {{ element[columnDef.property] }}
-        </ng-container>
-        <ng-template
-          #customRowTemplate
-          [ngTemplateOutlet]="columnDef.columnTemplate"
-          [ngTemplateOutletContext]="{ $implicit: element, expanded: rowDetail?.isExpanded(element) || false }"
-        >
-        </ng-template>
+        } @else {
+          <ng-template
+            [ngTemplateOutlet]="columnDef.columnTemplate"
+            [ngTemplateOutletContext]="{ $implicit: element, expanded: rowDetail?.isExpanded(element) || false }"
+          >
+          </ng-template>
+        }
       </td>
     </ng-container>
-  </ng-container>
+  }
 
   <!--Option Column-->
   <ng-container matColumnDef="options">
     <th class="zv-table-data__options-column-header" mat-header-cell *matHeaderCellDef>
-      <ng-container *ngIf="showListActions">
+      @if (showListActions) {
         <button mat-icon-button type="button" [matMenuTriggerFor]="listActionsComponent.menu">
           <mat-icon>more_vert</mat-icon>
         </button>
@@ -62,7 +65,7 @@
           (showSettings)="onShowSettingsClicked()"
         >
         </zv-table-actions>
-      </ng-container>
+      }
     </th>
     <td class="zv-table-data__options-column" mat-cell *matCellDef="let element">
       <zv-table-row-actions
@@ -77,15 +80,17 @@
   </ng-container>
 
   <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-  <ng-container *ngIf="rowDetail" matColumnDef="__rowDetail">
-    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length" class="zv-table-data__detail-cell">
-      <zv-table-row-detail [show]="rowDetail.isExpanded(element)" [element]="element" [rowDetail]="rowDetail"></zv-table-row-detail>
-    </td>
-  </ng-container>
+  @if (rowDetail) {
+    <ng-container matColumnDef="__rowDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length" class="zv-table-data__detail-cell">
+        <zv-table-row-detail [show]="rowDetail.isExpanded(element)" [element]="element" [rowDetail]="rowDetail"></zv-table-row-detail>
+      </td>
+    </ng-container>
+  }
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row class="zv-table-data__row" *matRowDef="let row; columns: displayedColumns"></tr>
-  <ng-container *ngIf="rowDetail">
+  @if (rowDetail) {
     <tr
       mat-row
       *matRowDef="let row; columns: ['__rowDetail']"
@@ -93,5 +98,5 @@
       [class.zv-table-data__detail-row--collapsed]="!rowDetail.isExpanded(row)"
       [class.zv-table-data__detail-row--expanded]="rowDetail.isExpanded(row)"
     ></tr>
-  </ng-container>
+  }
 </table>

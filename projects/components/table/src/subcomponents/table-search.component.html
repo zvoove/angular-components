@@ -1,13 +1,9 @@
 <mat-form-field>
   <mat-label i18n="@@zvc.Search">Search</mat-label>
   <input #i type="text" matInput [value]="searchText" autocomplete="off" (keyup)="onSearch($event.key, i.value)" />
-  <button
-    *ngIf="searchText || currentSearchText"
-    mat-icon-button
-    matSuffix
-    class="zv-table-search__button"
-    (click)="onSearch('Escape', null)"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
+  @if (searchText || currentSearchText) {
+    <button mat-icon-button matSuffix class="zv-table-search__button" (click)="onSearch('Escape', null)">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
 </mat-form-field>
