@@ -1,20 +1,22 @@
-import { ContentChild, Directive, ElementRef, Input, TemplateRef } from '@angular/core';
-
-@Directive({ selector: '[zvTableColumnTemplate]' })
-export class ZvTableColumnTemplateDirective {
-  constructor(public templateRef: TemplateRef<any>) {}
-}
-
-@Directive({ selector: '[zvTableColumnHeaderTemplate]' })
-export class ZvTableColumnHeaderTemplateDirective {
-  constructor(public templateRef: TemplateRef<any>) {}
-}
+import { ContentChild, Directive, Input, TemplateRef } from '@angular/core';
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'zv-table-column',
+  selector: '[zvTableColumnTemplate]',
+  standalone: true,
 })
-export class ZvTableColumnDirective {
+export class ZvTableColumnTemplate {}
+
+@Directive({
+  selector: '[zvTableColumnHeaderTemplate]',
+  standalone: true,
+})
+export class ZvTableColumnHeaderTemplate {}
+
+@Directive({
+  selector: 'zv-table-column',
+  standalone: true,
+})
+export class ZvTableColumn {
   @Input() public header = '';
   @Input({ required: true }) public property = '';
   @Input() public sortable = true;
@@ -22,48 +24,46 @@ export class ZvTableColumnDirective {
   @Input() public width = 'auto';
   @Input() public headerStyles: { [key: string]: string } = {};
   @Input() public columnStyles: { [key: string]: string } = {};
-  @ContentChild(ZvTableColumnTemplateDirective, { read: TemplateRef })
+  @ContentChild(ZvTableColumnTemplate, { read: TemplateRef })
   public columnTemplate: TemplateRef<any> | null = null;
-  @ContentChild(ZvTableColumnHeaderTemplateDirective, { read: TemplateRef })
+  @ContentChild(ZvTableColumnHeaderTemplate, { read: TemplateRef })
   public headerTemplate: TemplateRef<any> | null = null;
 }
 
 @Directive({
   selector: '[zvTableTopButtonSection]',
+  standalone: true,
 })
-export class ZvTableTopButtonSectionDirective {
-  constructor(public el: ElementRef) {}
-}
+export class ZvTableTopButtonSectionTemplate {}
 
 @Directive({
   selector: '[zvTableCustomHeader]',
+  standalone: true,
 })
-export class ZvTableCustomHeaderDirective {
-  constructor(public el: ElementRef) {}
-}
+export class ZvTableCustomHeaderTemplate {}
 
 @Directive({
   selector: '[zvTableCustomSettings]',
+  standalone: true,
 })
-export class ZvTableCustomSettingsDirective {
-  constructor(public el: ElementRef) {}
-}
-
-@Directive({ selector: '[zvTableRowDetailTemplate]' })
-export class ZvTableRowDetailTemplateDirective {
-  constructor(public templateRef: TemplateRef<any>) {}
-}
+export class ZvTableCustomSettingsTemplate {}
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: 'zv-table-row-detail',
+  selector: '[zvTableRowDetailTemplate]',
+  standalone: true,
 })
-export class ZvTableRowDetailDirective {
+export class ZvTableRowDetailTemplate {}
+
+@Directive({
+  selector: 'zv-table-row-detail',
+  standalone: true,
+})
+export class ZvTableRowDetail {
   /** Gibt an, ob die Row Details initial expanded sein sollen */
   @Input() public expanded = false;
   @Input() public showToggleColumn: boolean | ((row: any) => boolean) = true;
 
-  @ContentChild(ZvTableRowDetailTemplateDirective, { read: TemplateRef })
+  @ContentChild(ZvTableRowDetailTemplate, { read: TemplateRef })
   public template: TemplateRef<any> | null = null;
 
   private expandedItems = new WeakSet();

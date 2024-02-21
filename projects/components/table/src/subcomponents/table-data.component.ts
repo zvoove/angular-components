@@ -10,8 +10,28 @@ import {
   OnChanges,
 } from '@angular/core';
 import { ZvTableDataSource } from '../data/table-data-source';
-import { ZvTableColumnDirective, ZvTableRowDetailDirective } from '../directives/table.directives';
+import { ZvTableColumn, ZvTableRowDetail } from '../directives/table.directives';
 import { Subscription } from 'rxjs';
+import { TableRowDetailComponent } from './table-row-detail.component';
+import { ZvTableRowActionsComponent } from './table-row-actions.component';
+import { ZvTableActionsComponent } from './table-actions.component';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { NgStyle, NgTemplateOutlet } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 
 @Component({
   selector: 'zv-table-data',
@@ -19,12 +39,35 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./table-data.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCheckbox,
+    MatCellDef,
+    MatCell,
+    MatIconButton,
+    MatIcon,
+    NgStyle,
+    NgTemplateOutlet,
+    MatMenuTrigger,
+    ZvTableActionsComponent,
+    ZvTableRowActionsComponent,
+    TableRowDetailComponent,
+    ZvTableRowDetail,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+  ],
 })
 export class ZvTableDataComponent implements OnChanges {
   @Input() public dataSource: ZvTableDataSource<{ [key: string]: any }>;
   @Input() public tableId: string;
-  @Input() public rowDetail: ZvTableRowDetailDirective | null;
-  @Input() public columnDefs: ZvTableColumnDirective[];
+  @Input() public rowDetail: ZvTableRowDetail | null;
+  @Input() public columnDefs: ZvTableColumn[];
   @Input() public showListActions: boolean;
   @Input() public refreshable: boolean;
   @Input() public settingsEnabled: boolean;

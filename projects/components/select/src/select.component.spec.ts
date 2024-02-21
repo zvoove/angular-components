@@ -156,6 +156,7 @@ const ITEMS = {
       [showToggleAll]="showToggleAll"
       [selectedLabel]="selectedLabel"
     >
+      <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
       <ng-container *ngIf="customTemplate">
         <ng-container *zvSelectTriggerTemplate="let items"
           >custom:<span *ngFor="let item of items">{{ item.value }}:</span></ng-container

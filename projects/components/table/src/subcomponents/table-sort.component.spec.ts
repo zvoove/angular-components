@@ -1,11 +1,7 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MatButtonModule, MatMiniFabButton } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
+import { MatMiniFabButton } from '@angular/material/button';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,6 +20,8 @@ import { ZvTableSortComponent } from './table-sort.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvTableSortComponent],
 })
 export class TestComponent {
   public sortColumn = 'prop';
@@ -41,8 +39,7 @@ export class TestComponent {
 describe('ZvTableSortComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatSelectModule, MatButtonModule, MatIconModule],
-      declarations: [TestComponent, ZvTableSortComponent],
+      imports: [NoopAnimationsModule, TestComponent],
     }).compileComponents();
   }));
 

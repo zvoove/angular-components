@@ -1,11 +1,18 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckbox } from '@angular/material/checkbox';
 import { Observable, Subscription } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 
-import { ZvTableColumnDirective } from '../directives/table.directives';
+import { ZvTableColumn } from '../directives/table.directives';
 import { IZvTableSortDefinition } from '../models';
 import { IZvTableSetting, ZvTableSettingsService } from '../services/table-settings.service';
+import { MatButton } from '@angular/material/button';
+import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { ZvTableSortComponent } from './table-sort.component';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
 
 @Component({
   selector: 'zv-table-settings',
@@ -30,10 +37,27 @@ import { IZvTableSetting, ZvTableSettingsService } from '../services/table-setti
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatCard,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardContent,
+    MatCheckbox,
+    ZvTableSortComponent,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    NgTemplateOutlet,
+    MatCardActions,
+    MatButton,
+    AsyncPipe,
+  ],
 })
 export class ZvTableSettingsComponent implements OnInit {
   @Input() public tableId: string;
-  @Input() public columnDefinitions: ZvTableColumnDirective[] = [];
+  @Input() public columnDefinitions: ZvTableColumn[] = [];
   @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
   @Input() public pageSizeOptions: number[];
   @Input() public customSettings: TemplateRef<any> | null = null;
@@ -61,7 +85,7 @@ export class ZvTableSettingsComponent implements OnInit {
     );
   }
 
-  public columnVisible(settings: IZvTableSetting, columnDef: ZvTableColumnDirective) {
+  public columnVisible(settings: IZvTableSetting, columnDef: ZvTableColumn) {
     return !settings.columnBlacklist.some((x) => x === columnDef.property);
   }
 
@@ -73,7 +97,7 @@ export class ZvTableSettingsComponent implements OnInit {
     settings.sortDirection = event.sortDirection;
   }
 
-  public onColumnVisibilityChange(event: MatCheckboxChange, settings: IZvTableSetting, columnDef: ZvTableColumnDirective) {
+  public onColumnVisibilityChange(event: MatCheckboxChange, settings: IZvTableSetting, columnDef: ZvTableColumn) {
     if (event.checked) {
       settings.columnBlacklist = settings.columnBlacklist.filter((x) => x !== columnDef.property);
     } else if (!settings.columnBlacklist.find((x) => x === columnDef.property)) {

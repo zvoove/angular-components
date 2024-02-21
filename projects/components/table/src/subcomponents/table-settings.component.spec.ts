@@ -1,21 +1,16 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { MatButton, MatButtonModule } from '@angular/material/button';
-import { MatCardActions, MatCardModule } from '@angular/material/card';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { MatButton } from '@angular/material/button';
+import { MatCardActions } from '@angular/material/card';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { ZvTableColumnDirective } from '../directives/table.directives';
+import { ZvTableColumn } from '../directives/table.directives';
 import { IZvTableSortDefinition } from '../models';
 import { IZvTableSetting, ZvTableSettingsService } from '../services/table-settings.service';
 import { ZvTableSettingsComponent } from './table-settings.component';
-import { ZvTableSortComponent } from './table-sort.component';
 
 @Component({
   selector: 'zv-test-component',
@@ -25,16 +20,18 @@ import { ZvTableSortComponent } from './table-sort.component';
       [columnDefinitions]="columnDefinitions"
       [sortDefinitions]="sortDefinitions"
       [pageSizeOptions]="pageSizeOptions"
-      (settingsSaved)="onSettingsSaved($event)"
-      (settingsAborted)="onSettingsAborted($event)"
+      (settingsSaved)="onSettingsSaved()"
+      (settingsAborted)="onSettingsAborted()"
     ></zv-table-settings>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvTableSettingsComponent],
 })
 export class TestComponent {
   public tableId: string;
-  public columnDefinitions: ZvTableColumnDirective[] = [];
+  public columnDefinitions: ZvTableColumn[] = [];
   public sortDefinitions: IZvTableSortDefinition[] = [];
   public pageSizeOptions: number[] = [1, 3, 7];
 
@@ -48,17 +45,7 @@ describe('ZvTableSettingsComponent', () => {
   describe('integration', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [
-          NoopAnimationsModule,
-          CommonModule,
-          MatCardModule,
-          MatFormFieldModule,
-          MatSelectModule,
-          MatCheckboxModule,
-          MatButtonModule,
-          MatIconModule,
-        ],
-        declarations: [TestComponent, ZvTableSettingsComponent, ZvTableSortComponent],
+        imports: [NoopAnimationsModule, TestComponent],
       }).compileComponents();
     }));
 
@@ -177,7 +164,7 @@ describe('ZvTableSettingsComponent', () => {
           columnBlacklist: blacklist,
         } as Partial<IZvTableSetting> as any;
       }
-      function createColumnDef(propName: string): ZvTableColumnDirective {
+      function createColumnDef(propName: string): ZvTableColumn {
         return {
           property: propName,
         } as Partial<IZvTableSetting> as any;
@@ -229,7 +216,7 @@ describe('ZvTableSettingsComponent', () => {
       const settings: IZvTableSetting = {
         columnBlacklist: [],
       } as any;
-      const columnDef: ZvTableColumnDirective = {
+      const columnDef: ZvTableColumn = {
         property: '',
       } as any;
       const event = new MatCheckboxChange();

@@ -1,97 +1,24 @@
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
-import { ZvBlockUi } from '@zvoove/components/block-ui';
-import { ZvFlipContainerModule } from '@zvoove/components/flip-container';
-
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
-  ZvTableColumnDirective,
-  ZvTableColumnHeaderTemplateDirective,
-  ZvTableColumnTemplateDirective,
-  ZvTableCustomHeaderDirective,
-  ZvTableCustomSettingsDirective,
-  ZvTableRowDetailDirective,
-  ZvTableRowDetailTemplateDirective,
-  ZvTableTopButtonSectionDirective,
+  ZvTableColumn,
+  ZvTableColumnHeaderTemplate,
+  ZvTableColumnTemplate,
+  ZvTableCustomHeaderTemplate,
+  ZvTableCustomSettingsTemplate,
+  ZvTableRowDetail,
+  ZvTableRowDetailTemplate,
+  ZvTableTopButtonSectionTemplate,
 } from './directives/table.directives';
-import { ZvTableActionsToRenderPipe } from './pipes/table-actions-to-render.pipe';
-import { ZvTableActionTypePipe } from './pipes/table-actions-type.pipe';
-import { ZvTableActionsComponent } from './subcomponents/table-actions.component';
-import { ZvTableDataComponent } from './subcomponents/table-data.component';
-import { ZvTableHeaderComponent } from './subcomponents/table-header.component';
-import { ZvTablePaginationComponent } from './subcomponents/table-pagination.component';
-import { ZvTableRowActionsComponent } from './subcomponents/table-row-actions.component';
-import { TableRowDetailComponent } from './subcomponents/table-row-detail.component';
-import { ZvTableSearchComponent } from './subcomponents/table-search.component';
-import { ZvTableSettingsComponent } from './subcomponents/table-settings.component';
-import { ZvTableSortComponent } from './subcomponents/table-sort.component';
-import { ZvTableComponent } from './table.component';
+import { ZvTable } from './table.component';
 
-@NgModule({
-  declarations: [
-    ZvTableComponent,
-    ZvTableDataComponent,
-    ZvTableSettingsComponent,
-    ZvTableHeaderComponent,
-    ZvTableSortComponent,
-    ZvTableSearchComponent,
-    TableRowDetailComponent,
-    ZvTablePaginationComponent,
-    ZvTableActionsComponent,
-    ZvTableRowActionsComponent,
-    ZvTableColumnDirective,
-    ZvTableColumnTemplateDirective,
-    ZvTableColumnHeaderTemplateDirective,
-    ZvTableTopButtonSectionDirective,
-    ZvTableCustomHeaderDirective,
-    ZvTableRowDetailDirective,
-    ZvTableRowDetailTemplateDirective,
-    ZvTableCustomSettingsDirective,
-    ZvTableActionsToRenderPipe,
-    ZvTableActionTypePipe,
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    MatSortModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatSelectModule,
-    MatInputModule,
-    MatCardModule,
-    MatTooltipModule,
-    ZvFlipContainerModule,
-    ZvBlockUi,
-    MatProgressBarModule,
-  ],
-  exports: [
-    ZvTableComponent,
-    ZvTableColumnDirective,
-    ZvTableColumnTemplateDirective,
-    ZvTableColumnHeaderTemplateDirective,
-    ZvTableTopButtonSectionDirective,
-    ZvTableCustomHeaderDirective,
-    ZvTableRowDetailDirective,
-    ZvTableRowDetailTemplateDirective,
-    ZvTableCustomSettingsDirective,
-  ],
-})
-export class ZvTableModule {}
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const ZvTableModule = [
+  ZvTable,
+  ZvTableColumn,
+  ZvTableColumnTemplate,
+  ZvTableColumnHeaderTemplate,
+  ZvTableTopButtonSectionTemplate,
+  ZvTableCustomHeaderTemplate,
+  ZvTableRowDetail,
+  ZvTableRowDetailTemplate,
+  ZvTableCustomSettingsTemplate,
+];

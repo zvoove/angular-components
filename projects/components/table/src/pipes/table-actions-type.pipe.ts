@@ -7,6 +7,7 @@ import { IZvTableAction } from '../models';
 @Pipe({
   name: 'zvTableActionType',
   pure: true,
+  standalone: true,
 })
 export class ZvTableActionTypePipe implements PipeTransform {
   public transform<T>(action: IZvTableAction<T>): string {

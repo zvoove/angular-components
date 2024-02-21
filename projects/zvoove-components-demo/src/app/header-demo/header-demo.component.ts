@@ -1,10 +1,10 @@
+import { DatePipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
-import { NgFor, DatePipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { ZvHeaderModule } from '../../../../components/header/src/header.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ZvHeaderModule } from '@zvoove/components/header';
 
 @Component({
   selector: 'app-header-demo',

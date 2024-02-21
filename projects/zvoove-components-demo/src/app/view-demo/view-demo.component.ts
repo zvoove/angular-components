@@ -1,14 +1,13 @@
+import { JsonPipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { IZvException } from '@zvoove/components/core';
-import { IZvViewDataSource } from '@zvoove/components/view';
-import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
-import { delay, map, take } from 'rxjs/operators';
-import { NgFor, JsonPipe } from '@angular/common';
-import { ZvViewModule } from '../../../../components/view/src/view.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { IZvException } from '@zvoove/components/core';
+import { IZvViewDataSource, ZvViewModule } from '@zvoove/components/view';
+import { BehaviorSubject, Observable, Subject, Subscription, of } from 'rxjs';
+import { delay, map, take } from 'rxjs/operators';
 
 export interface ZvViewDataSourceOptions<TParams, TData> {
   loadTrigger$: Observable<TParams>;

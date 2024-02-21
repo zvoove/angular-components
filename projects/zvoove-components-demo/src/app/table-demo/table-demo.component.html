@@ -102,8 +102,6 @@
           <mat-checkbox [(ngModel)]="customHeader">*zvTableCustomHeader</mat-checkbox>
           <mat-checkbox [(ngModel)]="customSettings">*zvTableCustomSettings</mat-checkbox>
           <mat-checkbox [(ngModel)]="customTopButton">*zvTableTopButtonSection</mat-checkbox>
-          <mat-checkbox [(ngModel)]="customListActions">*zvTableListActions="let selection"</mat-checkbox>
-          <mat-checkbox [(ngModel)]="customRowActions">*zvTableRowActions="let item"</mat-checkbox>
         </mat-card-content>
       </mat-card>
     </div>
@@ -173,18 +171,6 @@
 
       <ng-container *ngIf="customTopButton">
         <div *zvTableTopButtonSection style="border: 1px solid black">custom button section</div>
-      </ng-container>
-
-      <ng-container *ngIf="customListActions">
-        <ng-container *zvTableListActions="let selection">
-          <button type="button" mat-menu-item (click)="alertData(selection)">custom list actions</button>
-        </ng-container>
-      </ng-container>
-
-      <ng-container *ngIf="customRowActions">
-        <ng-container *zvTableRowActions="let item">
-          <button type="button" mat-menu-item>item {{ item.id }} custom row actions</button>
-        </ng-container>
       </ng-container>
 
       <ng-container *ngIf="expandable">

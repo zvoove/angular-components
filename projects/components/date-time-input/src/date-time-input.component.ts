@@ -89,7 +89,6 @@ const _zvDateTimeInputBase = mixinDisabled(
   },
   providers: [{ provide: MatFormFieldControl, useExisting: ZvDateTimeInput }],
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class ZvDateTimeInput<TDateTime, TDate, TTime>
   extends _zvDateTimeInputBase
   implements ControlValueAccessor, MatFormFieldControl<TDateTime>, CanUpdateErrorState, OnChanges, OnInit, DoCheck

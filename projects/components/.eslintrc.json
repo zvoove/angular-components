@@ -9,12 +9,7 @@
         "createDefaultProgram": true
       },
       "rules": {
-        "@angular-eslint/component-class-suffix": [
-          "error",
-          {
-            "suffixes": ["Component", "Dialog", "Page"]
-          }
-        ],
+        "@angular-eslint/component-class-suffix": "off",
         "@angular-eslint/component-selector": [
           "error",
           {
@@ -23,14 +18,7 @@
             "style": "kebab-case"
           }
         ],
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "zv",
-            "style": "camelCase"
-          }
-        ],
+        "@angular-eslint/directive-class-suffix": "off",
         "@typescript-eslint/consistent-type-assertions": "off",
         "@typescript-eslint/explicit-member-accessibility": [
           "off",

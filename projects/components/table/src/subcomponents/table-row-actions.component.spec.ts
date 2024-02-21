@@ -1,19 +1,10 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatIconHarness } from '@angular/material/icon/testing';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { Observable } from 'rxjs';
 import { IZvTableAction, ZvTableActionScope } from '../models';
-import { ZvTableActionsToRenderPipe } from '../pipes/table-actions-to-render.pipe';
-import { ZvTableActionTypePipe } from '../pipes/table-actions-type.pipe';
-import { ZvTableActionsComponent } from './table-actions.component';
 import { ZvTableRowActionsComponent } from './table-row-actions.component';
 
 @Component({
@@ -30,6 +21,8 @@ import { ZvTableRowActionsComponent } from './table-row-actions.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvTableRowActionsComponent],
 })
 export class TestComponent {
   public actions: IZvTableAction<any>[] = [];
@@ -46,8 +39,7 @@ export class TestComponent {
 describe('ZvTableSearchComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, MatButtonModule, MatIconModule, MatMenuModule, ZvBlockUi, MatTooltipModule],
-      declarations: [TestComponent, ZvTableRowActionsComponent, ZvTableActionsComponent, ZvTableActionsToRenderPipe, ZvTableActionTypePipe],
+      imports: [NoopAnimationsModule, TestComponent],
     }).compileComponents();
   }));
 

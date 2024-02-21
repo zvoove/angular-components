@@ -12,7 +12,6 @@ import { ComponentPageContentDirective } from './component-page-content.directiv
   standalone: true,
   imports: [MatCardModule, MatTabsModule, ComponentPageContentDirective, NgTemplateOutlet],
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class AppComponentPageWrapper {
   componentName = input.required<string>();
   pagesQueryList = contentChildren(ComponentPageContentDirective);

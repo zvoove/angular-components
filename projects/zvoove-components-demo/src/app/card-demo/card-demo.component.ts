@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { ZvCardModule } from '../../../../components/card/src/card.module';
+import { ZvCardModule } from '@zvoove/components/card';
 
 @Component({
   selector: 'app-card-demo',

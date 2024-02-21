@@ -11,14 +11,14 @@ import { MatSelectModule } from '@angular/material/select';
 import {
   IZvTableAction,
   IZvTableActionRouterLink,
+  ZvTable,
   ZvTableActionScope,
-  ZvTableComponent,
   ZvTableDataSource,
+  ZvTableModule,
   ZvTableSettingsService,
 } from '@zvoove/components/table';
 import { Observable, of, timer } from 'rxjs';
 import { first, map } from 'rxjs/operators';
-import { ZvTableModule } from '../../../../components/table/src/table.module';
 import { allSharedImports } from '../common/shared-imports';
 import { DemoTableSettingsService } from './demo-table-settings.service';
 
@@ -107,7 +107,7 @@ function generateSampleData(rowCount: number): ISampleData[] {
 })
 export class TableDemoComponent {
   public show = true;
-  @ViewChild(ZvTableComponent) public table: ZvTableComponent;
+  @ViewChild(ZvTable) public table: ZvTable;
 
   public pageEvent: PageEvent;
 
@@ -139,8 +139,6 @@ export class TableDemoComponent {
   public customHeader = false;
   public customSettings = false;
   public customTopButton = false;
-  public customListActions = false;
-  public customRowActions = false;
   public expandable = false;
   public expanded = false;
   public showToggleColumn = true;

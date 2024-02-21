@@ -17,12 +17,7 @@
         "plugin:jasmine/recommended"
       ],
       "rules": {
-        "@angular-eslint/component-class-suffix": [
-          "error",
-          {
-            "suffixes": ["Component", "Dialog", "Page"]
-          }
-        ],
+        "@angular-eslint/component-class-suffix": "off",
         "@angular-eslint/component-selector": [
           "error",
           {
@@ -33,14 +28,7 @@
         ],
         "@angular-eslint/contextual-decorator": "error",
         "@angular-eslint/contextual-lifecycle": "error",
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
-          }
-        ],
+        "@angular-eslint/directive-class-suffix": "off",
         "@angular-eslint/no-conflicting-lifecycle": "error",
         "@angular-eslint/no-input-prefix": [
           "error",

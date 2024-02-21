@@ -1,15 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvTableHeaderComponent } from './table-header.component';
-import { ZvTableSearchComponent } from './table-search.component';
-import { ZvTableSortComponent } from './table-sort.component';
 
 @Component({
   selector: 'zv-test-component',
@@ -24,6 +16,8 @@ import { ZvTableSortComponent } from './table-sort.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvTableHeaderComponent],
 })
 export class TestComponent {
   public caption = 'caption';
@@ -40,8 +34,7 @@ export class TestComponent {
 describe('ZvTableHeaderComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
-      declarations: [TestComponent, ZvTableHeaderComponent, ZvTableSearchComponent, ZvTableSortComponent],
+      imports: [NoopAnimationsModule, TestComponent],
     }).compileComponents();
   }));
 

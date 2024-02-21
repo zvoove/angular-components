@@ -1,10 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
-import { MatButtonModule, MatIconButton } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInput, MatInputModule } from '@angular/material/input';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { MatIconButton } from '@angular/material/button';
+import { MatInput } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvTableSearchComponent } from './table-search.component';
@@ -16,6 +13,8 @@ import { ZvTableSearchComponent } from './table-search.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvTableSearchComponent],
 })
 export class TestComponent {
   public searchText = 'search text';
@@ -29,8 +28,7 @@ export class TestComponent {
 describe('ZvTableSearchComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
-      declarations: [TestComponent, ZvTableSearchComponent],
+      imports: [NoopAnimationsModule, TestComponent],
     }).compileComponents();
   }));
 

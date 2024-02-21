@@ -1,7 +1,8 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
 
-import { ZvTableRowDetailDirective } from '../directives/table.directives';
+import { ZvTableRowDetail } from '../directives/table.directives';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'zv-table-row-detail',
@@ -16,9 +17,11 @@ import { ZvTableRowDetailDirective } from '../directives/table.directives';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [NgTemplateOutlet],
 })
 export class TableRowDetailComponent {
-  @Input() public rowDetail: ZvTableRowDetailDirective;
+  @Input() public rowDetail: ZvTableRowDetail;
   @Input() public element: any;
   @Input() public show: boolean;
 

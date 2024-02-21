@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { ZvSelectModule } from '../../../../../components/select/src/select.module';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ZvSelectModule } from '@zvoove/components/select/src/select.module';
 
 @Component({
   selector: 'app-select-with-ng-model',

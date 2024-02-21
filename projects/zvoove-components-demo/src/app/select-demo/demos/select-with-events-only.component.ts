@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
 import { JsonPipe } from '@angular/common';
-import { ZvSelectModule } from '../../../../../components/select/src/select.module';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectChange } from '@angular/material/select';
+import { ZvSelectModule } from '@zvoove/components/select/src/select.module';
 
 @Component({
   selector: 'app-select-with-events-only',

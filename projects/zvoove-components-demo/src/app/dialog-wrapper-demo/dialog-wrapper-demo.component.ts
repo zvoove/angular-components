@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { IZvButton, IZvException } from '@zvoove/components/core';
-import { IZvDialogWrapperDataSource } from '@zvoove/components/dialog-wrapper';
+import { IZvDialogWrapperDataSource, ZvDialogWrapperModule } from '@zvoove/components/dialog-wrapper';
 import { Observable, Subject, of } from 'rxjs';
-import { ZvDialogWrapperModule } from '../../../../components/dialog-wrapper/src/dialog-wrapper.module';
 
 interface IDemoDialogWrapperDataSourceOptions {
   dialogTitle: string;

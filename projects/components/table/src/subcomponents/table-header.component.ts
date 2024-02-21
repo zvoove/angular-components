@@ -9,6 +9,9 @@ import {
   HostBinding,
 } from '@angular/core';
 import { IZvTableSortDefinition } from '../models';
+import { ZvTableSearchComponent } from './table-search.component';
+import { ZvTableSortComponent } from './table-sort.component';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'zv-table-header',
@@ -16,6 +19,8 @@ import { IZvTableSortDefinition } from '../models';
   styleUrls: ['./table-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [NgTemplateOutlet, ZvTableSortComponent, ZvTableSearchComponent],
 })
 export class ZvTableHeaderComponent {
   @Input() public caption: string;

@@ -2,11 +2,33 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges
 import { IZvTableAction } from '../models';
 import { isObservable, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, finalize, take, takeUntil } from 'rxjs/operators';
+import { ZvTableActionTypePipe } from '../pipes/table-actions-type.pipe';
+import { ZvTableActionsToRenderPipe } from '../pipes/table-actions-to-render.pipe';
+import { RouterLink } from '@angular/router';
+import { NgTemplateOutlet } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ZvTableActionsComponent } from './table-actions.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuTrigger, MatMenuItem } from '@angular/material/menu';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'zv-table-row-actions',
   templateUrl: './table-row-actions.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatIconButton,
+    MatMenuTrigger,
+    MatIcon,
+    ZvTableActionsComponent,
+    MatTooltip,
+    NgTemplateOutlet,
+    MatMenuItem,
+    RouterLink,
+    ZvTableActionsToRenderPipe,
+    ZvTableActionTypePipe,
+  ],
 })
 export class ZvTableRowActionsComponent implements OnChanges, OnDestroy {
   @Input() public root = true;

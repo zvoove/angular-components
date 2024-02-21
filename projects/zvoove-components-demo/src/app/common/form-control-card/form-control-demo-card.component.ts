@@ -15,7 +15,6 @@ import { AppCodeComponent } from '../code/code.component';
   standalone: true,
   imports: [NgIf, NgFor, KeyValuePipe, MatCardModule, MatIconModule, JsonPipe, AppCodeComponent, AppCodeFilesComponent],
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class FormControlDemoCard {
   @Input({ required: true }) type: 'form' | 'model' | 'value';
   @Input() control?: AbstractControl;

@@ -10,10 +10,13 @@ import {
   SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
-import { MatSelectChange } from '@angular/material/select';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
+import { MatSelectChange, MatSelect } from '@angular/material/select';
 import { Subject, of, timer } from 'rxjs';
 import { debounce, takeUntil } from 'rxjs/operators';
+import { MatOption } from '@angular/material/core';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
   selector: 'zv-table-pagination',
@@ -21,6 +24,8 @@ import { debounce, takeUntil } from 'rxjs/operators';
   styleUrls: ['./table-pagination.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [MatPaginator, MatFormField, MatSelect, ReactiveFormsModule, FormsModule, MatOption],
 })
 export class ZvTablePaginationComponent implements OnChanges, OnDestroy {
   public pages: number[] = [];

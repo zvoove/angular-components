@@ -74,7 +74,6 @@ export const ZV_TIME_VALIDATORS: any = {
   },
   exportAs: 'matTimeInput',
 })
-// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, OnChanges, OnDestroy, Validator {
   /** Whether the component has been initialized. */
   private _isInitialized: boolean;

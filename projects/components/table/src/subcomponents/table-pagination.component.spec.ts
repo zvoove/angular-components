@@ -21,6 +21,8 @@ import { ZvTablePaginationComponent } from './table-pagination.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvTablePaginationComponent],
 })
 class PaginationTestComponent {
   public pageSize = 5;
@@ -62,8 +64,15 @@ describe('ZvTablePaginationComponent', () => {
     let debugElement: DebugElement;
     beforeEach(() => {
       TestBed.configureTestingModule({
-        declarations: [PaginationTestComponent, ZvTablePaginationComponent],
-        imports: [BrowserAnimationsModule, FormsModule, MatPaginatorModule, MatSelectModule, MatCardModule],
+        imports: [
+          BrowserAnimationsModule,
+          FormsModule,
+          MatPaginatorModule,
+          MatSelectModule,
+          MatCardModule,
+          PaginationTestComponent,
+          ZvTablePaginationComponent,
+        ],
       });
 
       fixture = TestBed.createComponent(PaginationTestComponent);

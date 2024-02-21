@@ -1,10 +1,10 @@
-import { ZvTableRowDetailDirective } from './table.directives';
+import { ZvTableRowDetail } from './table.directives';
 
 describe('ZvTableRowDetailDirective', () => {
-  let dir: ZvTableRowDetailDirective;
+  let dir: ZvTableRowDetail;
   let item: any;
   beforeEach(() => {
-    dir = new ZvTableRowDetailDirective();
+    dir = new ZvTableRowDetail();
     item = {};
   });
 

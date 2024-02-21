@@ -1,10 +1,10 @@
+import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Injectable } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DefaultZvSelectService, ZvSelectData, ZvSelectDataSource, ZvSelectLoadTrigger, ZvSelectService } from '@zvoove/components/select';
-import { Observable, of } from 'rxjs';
-import { JsonPipe } from '@angular/common';
-import { ZvSelectModule } from '../../../../../components/select/src/select.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { DefaultZvSelectService, ZvSelectData, ZvSelectDataSource, ZvSelectLoadTrigger, ZvSelectService } from '@zvoove/components/select';
+import { ZvSelectModule } from '@zvoove/components/select/src/select.module';
+import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class CustomZvSelectService extends DefaultZvSelectService {

@@ -1,17 +1,15 @@
+import { JsonPipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { IZvButton, IZvException } from '@zvoove/components/core';
-import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from '@zvoove/components/form';
-import { IZvSavebarMode } from '@zvoove/components/form';
-import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
-import { delay, map, take, tap } from 'rxjs/operators';
-import { NgFor, JsonPipe } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { ZvFormModule } from '../../../../components/form/src/form.module';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { IZvButton, IZvException } from '@zvoove/components/core';
+import { IZvFormDataSource, IZvFormDataSourceConnectOptions, IZvSavebarMode, ZvFormModule } from '@zvoove/components/form';
+import { BehaviorSubject, Observable, Subject, Subscription, of } from 'rxjs';
+import { delay, map, take, tap } from 'rxjs/operators';
 
 export interface ZvFormDataSourceOptions<TParams, TData> {
   form: FormGroup;

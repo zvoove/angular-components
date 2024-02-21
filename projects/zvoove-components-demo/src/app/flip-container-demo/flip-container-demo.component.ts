@@ -1,11 +1,11 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { ZvFormFieldModule } from '../../../../components/form-field/src/form-field.module';
-import { ZvFlipContainerModule } from '../../../../components/flip-container/src/flip-container.module';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ZvFlipContainerModule } from '@zvoove/components/flip-container';
 import { ZvFormService } from '@zvoove/components/form-base';
+import { ZvFormFieldModule } from '@zvoove/components/form-field';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
 
 @Component({

@@ -22,21 +22,26 @@ import {
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { ZvExceptionMessageExtractor } from '@zvoove/components/core';
-import { ZvFlipContainerComponent } from '@zvoove/components/flip-container';
+import { ZvFlipContainerComponent, ZvFlipContainerModule } from '@zvoove/components/flip-container';
 import { Subscription, combineLatest } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ZvTableDataSource } from './data/table-data-source';
 import {
-  ZvTableColumnDirective,
-  ZvTableCustomHeaderDirective,
-  ZvTableCustomSettingsDirective,
-  ZvTableRowDetailDirective,
-  ZvTableTopButtonSectionDirective,
+  ZvTableColumn,
+  ZvTableCustomHeaderTemplate,
+  ZvTableCustomSettingsTemplate,
+  ZvTableRowDetail,
+  ZvTableTopButtonSectionTemplate,
 } from './directives/table.directives';
 import { ZvTableStateManager, ZvTableUrlStateManager } from './helper/state-manager';
 import { IZvTableSortDefinition, IZvTableUpdateDataInfo } from './models';
 import { IZvTableSetting, ZvTableSettingsService } from './services/table-settings.service';
+import { ZvTableDataComponent } from './subcomponents/table-data.component';
+import { ZvTableHeaderComponent } from './subcomponents/table-header.component';
+import { ZvTablePaginationComponent } from './subcomponents/table-pagination.component';
+import { ZvTableSettingsComponent } from './subcomponents/table-settings.component';
 
 @Component({
   selector: 'zv-table',
@@ -50,8 +55,17 @@ import { IZvTableSetting, ZvTableSettingsService } from './services/table-settin
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    ZvFlipContainerModule,
+    ZvTableHeaderComponent,
+    ZvBlockUi,
+    ZvTableDataComponent,
+    ZvTablePaginationComponent,
+    ZvTableSettingsComponent,
+  ],
 })
-export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, OnDestroy {
+export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @Input() public caption: string;
   @Input({ required: true }) public dataSource: ZvTableDataSource<any, any>;
   @Input({ required: true }) public tableId: string;
@@ -83,7 +97,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   @ViewChild(ZvFlipContainerComponent, { static: true }) public flipContainer: ZvFlipContainerComponent | null = null;
 
-  @ContentChild(ZvTableCustomHeaderDirective, { read: TemplateRef })
+  @ContentChild(ZvTableCustomHeaderTemplate, { read: TemplateRef })
   public set customHeader(value: TemplateRef<any> | null) {
     this._customHeader = value;
     this.cd.markForCheck();
@@ -95,7 +109,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   private _customHeader: TemplateRef<any> | null = null;
 
-  @ContentChild(ZvTableCustomSettingsDirective, { read: TemplateRef })
+  @ContentChild(ZvTableCustomSettingsTemplate, { read: TemplateRef })
   public set customSettings(value: TemplateRef<any> | null) {
     this._customSettings = value;
     this.cd.markForCheck();
@@ -107,7 +121,7 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   private _customSettings: TemplateRef<any> | null = null;
 
-  @ContentChild(ZvTableTopButtonSectionDirective, { read: TemplateRef })
+  @ContentChild(ZvTableTopButtonSectionTemplate, { read: TemplateRef })
   public set topButtonSection(value: TemplateRef<any> | null) {
     this._topButtonSection = value;
     this.cd.markForCheck();
@@ -119,16 +133,16 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
 
   private _topButtonSection: TemplateRef<any> | null = null;
 
-  @ContentChildren(ZvTableColumnDirective)
-  public set columnDefsSetter(queryList: QueryList<ZvTableColumnDirective>) {
+  @ContentChildren(ZvTableColumn)
+  public set columnDefsSetter(queryList: QueryList<ZvTableColumn>) {
     this.columnDefs = [...queryList.toArray()];
     this.mergeSortDefinitions();
     this.updateTableState();
   }
 
   @HostBinding('class.zv-table--row-detail')
-  @ContentChild(ZvTableRowDetailDirective)
-  public set rowDetail(value: ZvTableRowDetailDirective | null) {
+  @ContentChild(ZvTableRowDetail)
+  public set rowDetail(value: ZvTableRowDetail | null) {
     this._rowDetail = value;
     this.updateTableState();
   }
@@ -137,10 +151,10 @@ export class ZvTableComponent implements OnInit, OnChanges, AfterContentInit, On
     return this._rowDetail;
   }
 
-  private _rowDetail: ZvTableRowDetailDirective | null = null;
+  private _rowDetail: ZvTableRowDetail | null = null;
 
   public pageSizeOptions: number[];
-  public columnDefs: ZvTableColumnDirective[] = [];
+  public columnDefs: ZvTableColumn[] = [];
 
   public displayedColumns: string[] = [];
 

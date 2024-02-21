@@ -2,27 +2,27 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, QueryList, ViewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { IconType, MatIconHarness, MatIconTestingModule } from '@angular/material/icon/testing';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, convertToParamMap, ParamMap, Params, RouterLink, Routes } from '@angular/router';
+import { ActivatedRoute, ParamMap, Params, RouterLink, Routes, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { filterAsync } from '@zvoove/components/utils/src/array';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { ZvTableDataSource } from './data/table-data-source';
-import { ZvTableColumnDirective } from './directives/table.directives';
+import { ZvTableColumn } from './directives/table.directives';
 import { ZvTableMemoryStateManager } from './helper/state-manager';
 import { IZvTableSortDefinition, ZvTableActionScope } from './models';
 import { IZvTableSetting, ZvTableSettingsService } from './services/table-settings.service';
 import { ZvTablePaginationComponent } from './subcomponents/table-pagination.component';
-import { ZvTableComponent } from './table.component';
+import { ZvTable } from './table.component';
 import { ZvTableModule } from './table.module';
 import { ZvTableHarness } from './testing/table.harness';
-import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Injectable()
 class TestSettingsService extends ZvTableSettingsService {
@@ -62,7 +62,7 @@ const route: ActivatedRoute = <any>{
 };
 
 function createColDef(data: { property?: string; header?: string; sortable?: boolean }) {
-  const colDef = new ZvTableColumnDirective();
+  const colDef = new ZvTableColumn();
   colDef.sortable = data.sortable || false;
   colDef.property = data.property || null;
   colDef.header = data.header || null;
@@ -120,6 +120,8 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [CommonModule, MatIconTestingModule, ZvTableModule],
 })
 export class TestComponent {
   public caption = 'title';
@@ -128,7 +130,7 @@ export class TestComponent {
   public refreshable = true;
   public filterable = true;
   public showSettings = true;
-  public layout = 'card';
+  public layout: 'card' | 'border' | 'flat' = 'card';
   public striped = true;
   public sortDefinitions: IZvTableSortDefinition[] = [{ prop: '__virtual', displayName: 'Virtual Column' }];
 
@@ -138,7 +140,7 @@ export class TestComponent {
   public expanded = false;
   public showToggleColumn = true;
 
-  @ViewChild(ZvTableComponent, { static: true }) table: ZvTableComponent;
+  @ViewChild(ZvTable, { static: true }) table: ZvTable;
   @ViewChild(ZvTablePaginationComponent, { static: true }) paginator: ZvTablePaginationComponent;
 
   public onPage(_event: any) {}
@@ -150,9 +152,9 @@ describe('ZvTableComponent', () => {
     const cd = <ChangeDetectorRef>{ markForCheck: () => {} };
 
     let settingsService: TestSettingsService;
-    function createTableInstance(): ZvTableComponent {
+    function createTableInstance(): ZvTable {
       settingsService = new TestSettingsService();
-      const table = new ZvTableComponent(settingsService, null, cd, route, router, 'de');
+      const table = new ZvTable(settingsService, null, cd, route, router, 'de');
       table.tableId = 'tableid';
       table.dataSource = new ZvTableDataSource<any>(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
       return table;
@@ -299,15 +301,15 @@ describe('ZvTableComponent', () => {
     it('should merge sort definitions and disable sorting on empty', fakeAsync(() => {
       const table = createTableInstance();
       const customSortDef = { prop: 'custom', displayName: 'Custom' };
-      const notSortableColDef = new ZvTableColumnDirective();
+      const notSortableColDef = new ZvTableColumn();
       notSortableColDef.sortable = false;
       notSortableColDef.property = 'no_sort';
       notSortableColDef.header = 'NoSort';
-      const sortableColDef = new ZvTableColumnDirective();
+      const sortableColDef = new ZvTableColumn();
       sortableColDef.sortable = true;
       sortableColDef.property = 'sort';
       sortableColDef.header = 'Sort';
-      const colDefs = new QueryList<ZvTableColumnDirective>();
+      const colDefs = new QueryList<ZvTableColumn>();
 
       colDefs.reset([notSortableColDef]);
       table.columnDefsSetter = colDefs;
@@ -421,7 +423,7 @@ describe('ZvTableComponent', () => {
 
     it('should update view when view/content children change', fakeAsync(() => {
       spyOn(cd, 'markForCheck');
-      const table = createTableInstance() as ZvTableComponent;
+      const table = createTableInstance() as ZvTable;
       spyOn(table as any, 'updateTableState').and.callThrough();
 
       table.customHeader = null;
@@ -486,8 +488,14 @@ describe('ZvTableComponent', () => {
       ];
 
       await TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, ZvTableModule, RouterTestingModule.withRoutes(routes), MatIconTestingModule],
-        declarations: [TestComponent],
+        imports: [
+          NoopAnimationsModule,
+          CommonModule,
+          ZvTableModule,
+          RouterTestingModule.withRoutes(routes),
+          MatIconTestingModule,
+          TestComponent,
+        ],
         providers: [
           { provide: ZvTableSettingsService, useClass: TestSettingsService },
           { provide: MatPaginatorIntl, useClass: MatPaginatorIntl },

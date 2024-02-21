@@ -27,7 +27,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   standalone: true,
   imports: [NgIf, MatProgressSpinner],
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class ZvBlockUi {
   public blocked = input.required<boolean>();
   public spinnerText = input('');
