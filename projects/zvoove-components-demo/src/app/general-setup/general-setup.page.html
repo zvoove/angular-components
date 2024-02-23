@@ -1,0 +1,35 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>i18n</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>This library uses official angular i18n.</p>
+    <b>zv-file-input</b>
+    <ul>
+      <li>zvc.uploadFile</li>
+      <li>zvc.chooseFile</li>
+    </ul>
+
+    <b>zv-select</b>
+    <ul>
+      <li>zvc.xSelectedLabel</li>
+    </ul>
+
+    <b>zv-table</b>
+    <ul>
+      <li>zvc.cancel</li>
+      <li>zvc.displayedColumns</li>
+      <li>zvc.itemsPerPage</li>
+      <li>zvc.listSettings</li>
+      <li>zvc.noEntries</li>
+      <li>zvc.refreshList</li>
+      <li>zvc.save</li>
+      <li>zvc.search</li>
+      <li>zvc.sorting</li>
+    </ul>
+    <p>Additionally the table uses MatPaginatorIntl</p>
+
+    <b>If you don't use the official i18n, you can mock it like this:</b>
+    <app-code [code]="localizeMockCode" />
+  </mat-card-content>
+</mat-card>

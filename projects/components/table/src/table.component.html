@@ -5,7 +5,7 @@
       [topButtonSection]="topButtonSection"
       [selectedRows]="dataSource.selectionModel.selected"
       [customHeader]="customHeader"
-      [showSorting]="showSorting"
+      [showSorting]="showDropdownSorting"
       [sortColumn]="sortColumn"
       [sortDirection]="sortDirection"
       [sortDefinitions]="sortDefinitions"
@@ -25,8 +25,12 @@
         [settingsEnabled]="settingsEnabled"
         [showListActions]="showListActions"
         [displayedColumns]="displayedColumns"
+        [showSorting]="!showDropdownSorting"
+        [sortColumn]="dataSource.sortColumn"
+        [sortDirection]="dataSource.sortDirection"
         (showSettingsClicked)="flipContainer.showBack()"
         (refreshDataClicked)="onRefreshDataClicked()"
+        (sortChanged)="onSortChanged($event)"
       ></zv-table-data>
 
       @if (showNoEntriesText) {

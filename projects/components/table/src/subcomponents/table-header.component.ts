@@ -1,17 +1,17 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  HostBinding,
   Input,
   Output,
   TemplateRef,
   ViewEncapsulation,
-  HostBinding,
 } from '@angular/core';
-import { IZvTableSortDefinition } from '../models';
+import { IZvTableSort, IZvTableSortDefinition } from '../models';
 import { ZvTableSearchComponent } from './table-search.component';
 import { ZvTableSortComponent } from './table-sort.component';
-import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'zv-table-header',
@@ -34,7 +34,7 @@ export class ZvTableHeaderComponent {
   @Input() public filterable: boolean;
   @Input() public searchText: string;
 
-  @Output() public readonly sortChanged = new EventEmitter<{ sortColumn: string; sortDirection: 'asc' | 'desc' }>();
+  @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
   @Output() public readonly searchChanged = new EventEmitter<string>();
 
   @HostBinding('style.padding-top') public get paddingTop() {

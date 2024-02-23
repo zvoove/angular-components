@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
-import { MatCheckboxChange, MatCheckbox } from '@angular/material/checkbox';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { Observable, Subscription } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 
-import { ZvTableColumn } from '../directives/table.directives';
-import { IZvTableSortDefinition } from '../models';
-import { IZvTableSetting, ZvTableSettingsService } from '../services/table-settings.service';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { MatButton } from '@angular/material/button';
-import { NgTemplateOutlet, AsyncPipe } from '@angular/common';
+import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { MatOption } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { ZvTableColumn } from '../directives/table.directives';
+import { IZvTableSort, IZvTableSortDefinition } from '../models';
+import { IZvTableSetting, ZvTableSettingsService } from '../services/table-settings.service';
 import { ZvTableSortComponent } from './table-sort.component';
-import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
 
 @Component({
   selector: 'zv-table-settings',
@@ -89,7 +89,7 @@ export class ZvTableSettingsComponent implements OnInit {
     return !settings.columnBlacklist.some((x) => x === columnDef.property);
   }
 
-  public onSortChanged(event: { sortColumn: string; sortDirection: 'asc' | 'desc' }, settings: IZvTableSetting) {
+  public onSortChanged(event: IZvTableSort, settings: IZvTableSetting) {
     if (settings.sortColumn !== event.sortColumn) {
       settings.sortColumn = event.sortColumn;
       settings.columnBlacklist = settings.columnBlacklist.filter((x) => x !== event.sortColumn);

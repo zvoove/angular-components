@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
-import { MatSelectChange, MatSelect } from '@angular/material/select';
-import { IZvTableSortDefinition } from '../models';
-import { MatIcon } from '@angular/material/icon';
 import { MatMiniFabButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { IZvTableSort, IZvTableSortDefinition } from '../models';
 
 @Component({
   selector: 'zv-table-sort',
@@ -19,7 +19,7 @@ export class ZvTableSortComponent {
   @Input() public sortColumn: string;
   @Input() public sortDirection: 'asc' | 'desc';
   @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
-  @Output() public readonly sortChanged = new EventEmitter<{ sortColumn: string; sortDirection: 'asc' | 'desc' }>();
+  @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
 
   public onSortColumnChange(event: MatSelectChange) {
     if (this.sortColumn !== event.value) {

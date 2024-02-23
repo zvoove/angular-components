@@ -85,6 +85,14 @@ export const appConfig: ApplicationConfig = {
         loadComponent: () => import('./header-demo/header-demo.component').then((m) => m.HeaderDemoComponent),
       },
       {
+        path: 'upgrade-notes',
+        loadComponent: () => import('./upgrade-notes/upgrade-notes.page').then((m) => m.UpgrateNotesPage),
+      },
+      {
+        path: 'general-setup',
+        loadComponent: () => import('./general-setup/general-setup.page').then((m) => m.GeneralSetupPage),
+      },
+      {
         path: '**',
         pathMatch: 'full',
         loadComponent: () => import('./start-page/start-page.component').then((m) => m.StartPageComponent),

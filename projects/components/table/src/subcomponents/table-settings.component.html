@@ -8,7 +8,7 @@
     <mat-card-content>
       <div class="zv-table-settings__form">
         <div class="zv-table-settings__form__display-columns">
-          <strong i18n="@@zvc.DisplayedColumns">Displayed Columns</strong>
+          <strong i18n="@@zvc.displayedColumns">Displayed Columns</strong>
           @for (columnDef of columnDefinitions; track columnDef.property) {
             @if (columnDef.header) {
               <mat-checkbox
@@ -41,8 +41,8 @@
       <ng-container [ngTemplateOutlet]="customSettings" [ngTemplateOutletContext]="{ $implicit: settings }"></ng-container>
     </mat-card-content>
     <mat-card-actions class="zv-table-settings__actions">
-      <button mat-raised-button color="primary" (click)="onSaveClick(settings)" i18n="@@zvc.Save">Save</button>
-      <button style="margin-left: 1em" mat-stroked-button (click)="onCancelClick()" i18n="@@zvc.Cancel">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSaveClick(settings)" i18n="@@zvc.save">Save</button>
+      <button style="margin-left: 1em" mat-stroked-button (click)="onCancelClick()" i18n="@@zvc.cancel">Cancel</button>
     </mat-card-actions>
   </mat-card>
 }

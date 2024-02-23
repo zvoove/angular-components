@@ -3,6 +3,11 @@ export interface IZvTableSortDefinition {
   displayName: string;
 }
 
+export interface IZvTableSort {
+  sortColumn: string;
+  sortDirection: 'asc' | 'desc';
+}
+
 export interface IZvTableUpdateDataInfo {
   currentPage: number | null;
   pageSize: number | null;

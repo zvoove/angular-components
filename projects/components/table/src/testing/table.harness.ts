@@ -21,7 +21,7 @@ export class ZvTableHarness extends ContentContainerComponentHarness {
   private _header = this.locatorFor(ZvTableHeaderHarness);
   private _data = this.locatorFor(ZvTableDataHarness);
   private _search = this.locatorFor(ZvTableSearchHarness);
-  private _sort = this.locatorFor(ZvTableSortHarness);
+  private _sort = this.locatorForOptional(ZvTableSortHarness);
   private _settings = this.locatorForOptional(ZvTableSettingsHarness);
 
   static with(): HarnessPredicate<ZvTableHarness> {
@@ -85,12 +85,12 @@ export class ZvTableHarness extends ContentContainerComponentHarness {
     return await (await this._search()).getSearchInput();
   }
 
-  public async getSortSelect(): Promise<MatSelectHarness> {
-    return await (await this._sort()).getSortSelect();
+  public async getSortSelect(): Promise<MatSelectHarness | null> {
+    return await (await this._sort())?.getSortSelect();
   }
 
-  public async getSortDirectionButtons(): Promise<MatButtonHarness[]> {
-    return await (await this._sort()).getSortDirectionButtons();
+  public async getSortDirectionButtons(): Promise<MatButtonHarness[] | null> {
+    return await (await this._sort())?.getSortDirectionButtons();
   }
 
   public async getListActionsButton(): Promise<MatMenuHarness> {

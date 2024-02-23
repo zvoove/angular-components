@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { ZvTableColumn } from '../directives/table.directives';
-import { IZvTableSortDefinition } from '../models';
+import { IZvTableSort, IZvTableSortDefinition } from '../models';
 import { IZvTableSetting, ZvTableSettingsService } from '../services/table-settings.service';
 import { ZvTableSettingsComponent } from './table-settings.component';
 
@@ -184,7 +184,7 @@ describe('ZvTableSettingsComponent', () => {
           sortDirection: sortDirection,
         } as Partial<IZvTableSetting> as any;
       }
-      function createColumnDef(sortColumn: string, sortDirection: 'asc' | 'desc') {
+      function createColumnDef(sortColumn: string, sortDirection: 'asc' | 'desc'): IZvTableSort {
         return { sortColumn: sortColumn, sortDirection: sortDirection };
       }
 

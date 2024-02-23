@@ -36,7 +36,7 @@ import {
   ZvTableTopButtonSectionTemplate,
 } from './directives/table.directives';
 import { ZvTableStateManager, ZvTableUrlStateManager } from './helper/state-manager';
-import { IZvTableSortDefinition, IZvTableUpdateDataInfo } from './models';
+import { IZvTableSort, IZvTableSortDefinition, IZvTableUpdateDataInfo } from './models';
 import { IZvTableSetting, ZvTableSettingsService } from './services/table-settings.service';
 import { ZvTableDataComponent } from './subcomponents/table-data.component';
 import { ZvTableHeaderComponent } from './subcomponents/table-header.component';
@@ -83,6 +83,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @Input() public filterable = true;
   @Input() public showSettings = true;
   @Input() public pageDebounce: number;
+  @Input() public preferSortDropdown = true;
 
   @Input()
   public layout: 'card' | 'border' | 'flat' = 'card';
@@ -93,6 +94,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
 
   @Input() stateManager: ZvTableStateManager = new ZvTableUrlStateManager(this.router, this.route);
 
+  /** @deprecated use the datasource to detect paginations */
   @Output() public readonly page = new EventEmitter<PageEvent>();
 
   @ViewChild(ZvFlipContainerComponent, { static: true }) public flipContainer: ZvFlipContainerComponent | null = null;
@@ -226,8 +228,12 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
     return !!this.dataSource.listActions.length || this.settingsEnabled || this.refreshable;
   }
 
-  public get showSorting(): boolean {
-    return !!this._mergedSortDefinitions.length;
+  public get useSortDropdown(): boolean | null {
+    return this.preferSortDropdown || this._sortDefinitions.length !== 0;
+  }
+
+  public get showDropdownSorting(): boolean {
+    return this.useSortDropdown && !!this._mergedSortDefinitions.length;
   }
 
   private subscriptions: Subscription[] = [];
@@ -270,21 +276,24 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   }
 
   public onSearchChanged(value: string) {
-    this.filterText = value;
-    this.requestUpdate();
+    this.requestUpdate({
+      searchText: value,
+    });
   }
 
-  public onSortChanged(event: { sortColumn: string; sortDirection: 'asc' | 'desc' }) {
-    this.sortColumn = event.sortColumn;
-    this.sortDirection = event.sortDirection;
-    this.requestUpdate();
+  public onSortChanged(event: IZvTableSort) {
+    this.requestUpdate({
+      sortColumn: event.sortColumn,
+      sortDirection: event.sortDirection,
+    });
   }
 
   public onPage(event: PageEvent) {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
     this.page.emit(event);
-    this.requestUpdate();
+    this.requestUpdate({
+      currentPage: event.pageIndex,
+      pageSize: event.pageSize,
+    });
   }
 
   public onRefreshDataClicked() {
@@ -304,8 +313,11 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
     this.rowDetail.toggle(item, open);
   }
 
-  private requestUpdate() {
-    const updateInfo = this.dataSource.getUpdateDataInfo();
+  private requestUpdate(data: Partial<IZvTableUpdateDataInfo>) {
+    const updateInfo = {
+      ...this.dataSource.getUpdateDataInfo(),
+      ...data,
+    };
     this.stateManager.requestUpdate(this.tableId, updateInfo);
   }
 

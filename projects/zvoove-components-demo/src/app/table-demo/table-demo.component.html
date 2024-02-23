@@ -7,6 +7,7 @@
           <mat-checkbox [(ngModel)]="refreshable">[refreshable]</mat-checkbox>
           <mat-checkbox [(ngModel)]="filterable">[filterable]</mat-checkbox>
           <mat-checkbox [(ngModel)]="showSettings">[showSettings]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="preferSortDropdown">[preferSortDropdown]</mat-checkbox>
           <mat-form-field>
             <mat-label>[layout]</mat-label>
             <mat-select [(ngModel)]="layout">
@@ -115,6 +116,7 @@
       [sortDefinitions]="
         sortDefinitions && !disableAllSortable ? [{ displayName: 'custom: `${boolean}${string}`', prop: 'hiddenSortable' }] : null
       "
+      [preferSortDropdown]="preferSortDropdown"
       [refreshable]="refreshable"
       [filterable]="filterable"
       [showSettings]="showSettings"
@@ -204,6 +206,11 @@
         [name]="'sortDefinitions'"
         [type]="'IZvTableSortDefinition[]'"
         [desc]="'Additional sorting definitions for the table.'"
+      />
+      <app-api-doc-input
+        [name]="'preferSortDropdown'"
+        [type]="'boolean'"
+        [desc]="'When true, the sorting dropdown is used, even though all columns could also be sorted via the header.'"
       />
       <app-api-doc-input [name]="'refreshable'" [type]="'boolean'" [desc]="'When true, a refrsh button is avilable.'" />
       <app-api-doc-input [name]="'filterable'" [type]="'boolean'" [desc]="'When true, a search field avilable.'" />

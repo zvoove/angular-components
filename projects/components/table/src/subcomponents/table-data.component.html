@@ -1,6 +1,18 @@
 <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 <!-- eslint-disable @angular-eslint/template/no-call-expression -->
-<table mat-table multiTemplateDataRows class="zv-table-data__table" [dataSource]="dataSource" [trackBy]="dataSource.trackBy">
+<table
+  mat-table
+  matSort
+  multiTemplateDataRows
+  class="zv-table-data__table"
+  [dataSource]="dataSource"
+  [trackBy]="dataSource.trackBy"
+  [matSortActive]="sortColumn"
+  [matSortDirection]="sortDirection"
+  [matSortDisableClear]="true"
+  [matSortDisabled]="!showSorting"
+  (matSortChange)="onSortChanged($event)"
+>
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">
     <th mat-header-cell *matHeaderCellDef>
@@ -27,7 +39,14 @@
   <!-- Dynamic Columns -->
   @for (columnDef of columnDefs; track columnDef.property) {
     <ng-container [matColumnDef]="columnDef.property">
-      <th mat-header-cell *matHeaderCellDef [ngStyle]="columnDef.headerStyles" [style.width]="columnDef.width">
+      <th
+        mat-header-cell
+        [mat-sort-header]="columnDef.property"
+        [disabled]="!columnDef.sortable"
+        *matHeaderCellDef
+        [ngStyle]="columnDef.headerStyles"
+        [style.width]="columnDef.width"
+      >
         @if (!columnDef.headerTemplate) {
           {{ columnDef.header }}
         } @else {

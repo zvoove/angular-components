@@ -1,0 +1,52 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>17.6.0</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <ul>
+      <li>Table: Header sorting can be enabled by setting [preferSortDropdown]="false" and not providing any [sortDefinitions].</li>
+      <li>
+        Table: Fixes casing of some i18n keys. <b>BREAKING CHANGE</b> please see
+        <a [routerLink]="['/', 'general-setup']">general setup</a> for up to date list of keys.
+      </li>
+      <li>Table: (page) output is deprecated now, use the datasource to detect paginations</li>
+    </ul>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>17.5.0</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <ul>
+      <li>Table is now converted to standalone.</li>
+      <li>
+        ZvTableModule is now a array of all public table components instead of a real module. If you just used it for importing, then it
+        should be backwards compatible.
+      </li>
+    </ul>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>17.4.0</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <ul>
+      <li>'property' input of zv-table-column is now required</li>
+    </ul>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>17.3.0</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <ul>
+      <li>Table moved to i18n. See <a [routerLink]="['/', 'general-setup']">general setup</a> for available i18n tags.</li>
+    </ul>
+  </mat-card-content>
+</mat-card>

@@ -5,7 +5,7 @@ import { MatMiniFabButton } from '@angular/material/button';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { IZvTableSortDefinition } from '../models';
+import { IZvTableSort, IZvTableSortDefinition } from '../models';
 import { ZvTableSortComponent } from './table-sort.component';
 
 @Component({
@@ -25,7 +25,7 @@ import { ZvTableSortComponent } from './table-sort.component';
 })
 export class TestComponent {
   public sortColumn = 'prop';
-  public sortDirection = 'asc';
+  public sortDirection: 'asc' | 'desc' = 'asc';
   public sortDefinitions: IZvTableSortDefinition[] = [
     { prop: 'prop', displayName: 'Sort Prop' },
     { prop: 'prop2', displayName: 'Sort Prop' },
@@ -33,7 +33,7 @@ export class TestComponent {
 
   @ViewChild(ZvTableSortComponent, { static: true }) tableSort: ZvTableSortComponent;
 
-  public onSortChanged(_event: any) {}
+  public onSortChanged(_event: IZvTableSort) {}
 }
 
 describe('ZvTableSortComponent', () => {

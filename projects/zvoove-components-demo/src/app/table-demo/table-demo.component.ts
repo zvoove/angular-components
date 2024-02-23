@@ -118,6 +118,7 @@ export class TableDemoComponent {
   public layout: 'card' | 'border' | 'flat' = 'card';
   public striped = true;
   public sortDefinitions = true;
+  public preferSortDropdown = true;
   public pageDebounce = 0;
   public dataSourceType: 'server' | 'client' = 'server';
 
@@ -183,14 +184,15 @@ export class TableDemoComponent {
         timer(this.dsLoadDelay).pipe(
           first(),
           map(() => {
+            let data = [...this.dsData];
             if (this.dsThrowError) {
               throw new Error('Error while loading the data.');
             }
             if (this.dataSourceType === 'client') {
-              return this.dsData;
+              return data;
             }
             const start = filter.currentPage * filter.pageSize;
-            const data = this.dsData.filter((x) => JSON.stringify(x).indexOf(filter.searchText) !== -1);
+            data = data.filter((x) => JSON.stringify(x).indexOf(filter.searchText) !== -1);
             data.sort((a, b) => {
               const aProp = a[filter.sortColumn as keyof typeof a];
               const bProp = b[filter.sortColumn as keyof typeof b];

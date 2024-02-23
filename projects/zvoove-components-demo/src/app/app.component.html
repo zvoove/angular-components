@@ -37,9 +37,17 @@
       <a mat-list-item [routerLink]="['header']">Header</a>
       <a mat-list-item [routerLink]="['table']">Table</a>
       <a mat-list-item [routerLink]="['view']">View</a>
+
+      <div mat-subheader>General</div>
+      <a mat-list-item [routerLink]="['general-setup']">Setup</a>
+      <a mat-list-item [routerLink]="['upgrade-notes']">Upgrade Notes</a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content class="app-root__sidenav-content">
+  <!--
+    margin-left will be overwritten by the component to the corrent one, after angular is instantiated.
+    But if we don't set it here now, then SSR will render margin-left: 0; and it will flicker on the first load
+  -->
+  <mat-sidenav-content class="app-root__sidenav-content" style="margin-left: 153px">
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

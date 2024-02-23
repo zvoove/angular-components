@@ -5,6 +5,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, Quer
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { IconType, MatIconHarness, MatIconTestingModule } from '@angular/material/icon/testing';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
+import { MatSortHarness } from '@angular/material/sort/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, ParamMap, Params, RouterLink, Routes, convertToParamMap } from '@angular/router';
@@ -44,7 +45,9 @@ class TestSettingsService extends ZvTableSettingsService {
 }
 
 const router: any = {
-  navigate: (_route: any, _options: any) => {},
+  navigate: (_route: any, options: any) => {
+    queryParams$.next(convertToParamMap(options.queryParams));
+  },
 };
 
 const queryParams$ = new BehaviorSubject<ParamMap>(convertToParamMap({ other: 'value' }));
@@ -84,6 +87,7 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
       [striped]="striped"
       [sortDefinitions]="sortDefinitions"
       [stateManager]="stateManager"
+      [preferSortDropdown]="preferSortDropdown"
       (page)="onPage($event)"
     >
       <zv-table-column [header]="'id'" property="id" [sortable]="true"></zv-table-column>
@@ -133,6 +137,7 @@ export class TestComponent {
   public layout: 'card' | 'border' | 'flat' = 'card';
   public striped = true;
   public sortDefinitions: IZvTableSortDefinition[] = [{ prop: '__virtual', displayName: 'Virtual Column' }];
+  public preferSortDropdown = true;
 
   /** Karma doesn't recognize url changes from code. */
   public stateManager = new ZvTableMemoryStateManager();
@@ -152,13 +157,22 @@ describe('ZvTableComponent', () => {
     const cd = <ChangeDetectorRef>{ markForCheck: () => {} };
 
     let settingsService: TestSettingsService;
-    function createTableInstance(): ZvTable {
+    function createTableInstance(hooks = false): ZvTable {
       settingsService = new TestSettingsService();
       const table = new ZvTable(settingsService, null, cd, route, router, 'de');
       table.tableId = 'tableid';
       table.dataSource = new ZvTableDataSource<any>(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
+      if (hooks) {
+        table.ngOnChanges({});
+        table.ngOnInit();
+        table.ngAfterContentInit();
+      }
       return table;
     }
+
+    beforeEach(() => {
+      queryParams$.next(convertToParamMap({ other: 'value' }));
+    });
 
     it('should update table state from the settings service and the query params', fakeAsync(() => {
       const table = createTableInstance();
@@ -298,8 +312,9 @@ describe('ZvTableComponent', () => {
       table.refreshable = false;
     }));
 
-    it('should merge sort definitions and disable sorting on empty', fakeAsync(() => {
+    it('should merge sort definitions and only show sort dropdown when there are custom definitions when preferSortDropdown input is false', fakeAsync(() => {
       const table = createTableInstance();
+      table.preferSortDropdown = false;
       const customSortDef = { prop: 'custom', displayName: 'Custom' };
       const notSortableColDef = new ZvTableColumn();
       notSortableColDef.sortable = false;
@@ -311,28 +326,86 @@ describe('ZvTableComponent', () => {
       sortableColDef.header = 'Sort';
       const colDefs = new QueryList<ZvTableColumn>();
 
+      // nothing to sort
       colDefs.reset([notSortableColDef]);
       table.columnDefsSetter = colDefs;
       table.sortDefinitions = [];
-      expect(table.showSorting).toBe(false);
+      expect(table.useSortDropdown).toBe(false);
+      expect(table.showDropdownSorting).toBe(false);
       expect(table.sortDefinitions).toEqual([]);
 
+      // only things sortable in the header
       colDefs.reset([notSortableColDef, sortableColDef]);
       table.columnDefsSetter = colDefs;
-      expect(table.showSorting).toBe(true);
+      expect(table.useSortDropdown).toBe(false);
+      expect(table.showDropdownSorting).toBe(false);
       expect(table.sortDefinitions).toEqual([{ prop: 'sort', displayName: 'Sort' }]);
 
+      // sortable column defs and custom sorting rules
       table.sortDefinitions = [{ prop: 'custom', displayName: 'Custom' }];
-      expect(table.showSorting).toBe(true);
+      expect(table.useSortDropdown).toBe(true);
+      expect(table.showDropdownSorting).toBe(true);
       expect(table.sortDefinitions).toEqual([customSortDef, { prop: 'sort', displayName: 'Sort' }]);
 
+      // no column defs, but custom sorting rules
       colDefs.reset([]);
       table.columnDefsSetter = colDefs;
-      expect(table.showSorting).toBe(true);
+      expect(table.useSortDropdown).toBe(true);
+      expect(table.showDropdownSorting).toBe(true);
       expect(table.sortDefinitions).toEqual([customSortDef]);
 
+      // no column defs, no custom sorting rules
       table.sortDefinitions = null;
-      expect(table.showSorting).toBe(false);
+      expect(table.useSortDropdown).toBe(false);
+      expect(table.showDropdownSorting).toBe(false);
+      expect(table.sortDefinitions).toEqual([]);
+    }));
+
+    it('should always show sort dropdown when preferSortDropdown input is true and there are things to sort', fakeAsync(() => {
+      const table = createTableInstance();
+      table.preferSortDropdown = true;
+      const customSortDef = { prop: 'custom', displayName: 'Custom' };
+      const notSortableColDef = new ZvTableColumn();
+      notSortableColDef.sortable = false;
+      notSortableColDef.property = 'no_sort';
+      notSortableColDef.header = 'NoSort';
+      const sortableColDef = new ZvTableColumn();
+      sortableColDef.sortable = true;
+      sortableColDef.property = 'sort';
+      sortableColDef.header = 'Sort';
+      const colDefs = new QueryList<ZvTableColumn>();
+
+      // nothing to sort
+      colDefs.reset([notSortableColDef]);
+      table.columnDefsSetter = colDefs;
+      table.sortDefinitions = [];
+      expect(table.useSortDropdown).toBe(true);
+      expect(table.showDropdownSorting).toBe(false);
+
+      // only things sortable in the header
+      colDefs.reset([notSortableColDef, sortableColDef]);
+      table.columnDefsSetter = colDefs;
+      expect(table.useSortDropdown).toBe(true);
+      expect(table.showDropdownSorting).toBe(true);
+      expect(table.sortDefinitions).toEqual([{ prop: 'sort', displayName: 'Sort' }]);
+
+      // sortable column defs and custom sorting rules
+      table.sortDefinitions = [{ prop: 'custom', displayName: 'Custom' }];
+      expect(table.useSortDropdown).toBe(true);
+      expect(table.showDropdownSorting).toBe(true);
+      expect(table.sortDefinitions).toEqual([customSortDef, { prop: 'sort', displayName: 'Sort' }]);
+
+      // no column defs, but custom sorting rules
+      colDefs.reset([]);
+      table.columnDefsSetter = colDefs;
+      expect(table.useSortDropdown).toBe(true);
+      expect(table.showDropdownSorting).toBe(true);
+      expect(table.sortDefinitions).toEqual([customSortDef]);
+
+      // no column defs, no custom sorting rules
+      table.sortDefinitions = null;
+      expect(table.useSortDropdown).toBe(true);
+      expect(table.showDropdownSorting).toBe(false);
       expect(table.sortDefinitions).toEqual([]);
     }));
 
@@ -375,31 +448,34 @@ describe('ZvTableComponent', () => {
     }));
 
     it('should update state when sort changes', fakeAsync(() => {
-      const table = createTableInstance();
-      spyOn(<any>table, 'requestUpdate');
+      const table = createTableInstance(true);
+      spyOn(<any>table, 'requestUpdate').and.callThrough();
       table.onSortChanged({ sortColumn: 'col', sortDirection: 'desc' });
+      expect((<any>table).requestUpdate).toHaveBeenCalledTimes(1);
+      tick(1);
       expect(table.sortColumn).toEqual('col');
       expect(table.sortDirection).toEqual('desc');
-      expect((<any>table).requestUpdate).toHaveBeenCalledTimes(1);
     }));
 
     it('should update state when filter changes', fakeAsync(() => {
-      const table = createTableInstance();
-      spyOn(<any>table, 'requestUpdate');
+      const table = createTableInstance(true);
+      spyOn(<any>table, 'requestUpdate').and.callThrough();
       table.onSearchChanged('test');
-      expect(table.filterText).toEqual('test');
       expect((<any>table).requestUpdate).toHaveBeenCalledTimes(1);
+      tick(1);
+      expect(table.filterText).toEqual('test');
     }));
 
     it('should update state when page changes and emit output', fakeAsync(() => {
-      const table = createTableInstance();
+      const table = createTableInstance(true);
       spyOn(table.page, 'emit');
-      spyOn(<any>table, 'requestUpdate');
+      spyOn(<any>table, 'requestUpdate').and.callThrough();
       table.onPage({ pageIndex: 5, pageSize: 3, length: 20, previousPageIndex: 4 });
-      expect(table.pageIndex).toEqual(5);
-      expect(table.pageSize).toEqual(3);
       expect((<any>table).requestUpdate).toHaveBeenCalledTimes(1);
       expect(table.page.emit).toHaveBeenCalledTimes(1);
+      tick(1);
+      expect(table.pageIndex).toEqual(5);
+      expect(table.pageSize).toEqual(3);
     }));
 
     it('should delete own query params and flip to front when settings are saved', fakeAsync(() => {
@@ -640,7 +716,10 @@ describe('ZvTableComponent', () => {
         expect(component.table.onSearchChanged).toHaveBeenCalledWith('asdf');
       });
 
-      it('should sort', async () => {
+      it('should sort via dropdown', async () => {
+        const sort = await loader.getHarness(MatSortHarness);
+        expect(await sort.getActiveHeader()).toBeFalsy();
+
         const sortSelect = await table.getSortSelect();
         expect(await sortSelect.getValueText()).toEqual('');
 
@@ -662,6 +741,50 @@ describe('ZvTableComponent', () => {
           sortColumn: 'id',
           sortDirection: 'desc',
         });
+        expect(await sort.getActiveHeader()).toBeFalsy();
+      });
+
+      it('should sort via header', async () => {
+        component.preferSortDropdown = false;
+        component.sortDefinitions = [];
+        fixture.detectChanges();
+
+        const sort = await loader.getHarness(MatSortHarness);
+        expect(await sort.getActiveHeader()).toBeFalsy();
+
+        expect(await table.getSortSelect()).toBeFalsy();
+
+        const idSortHeader = (await sort.getSortHeaders({ label: 'id' }))[0];
+
+        spyOn(component.table, 'onSortChanged');
+        await idSortHeader.click();
+        let activeHeader = await sort.getActiveHeader();
+        expect(await activeHeader.getLabel()).toEqual('id');
+        expect(await activeHeader.getSortDirection()).toEqual('asc');
+        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+          sortColumn: 'id',
+          sortDirection: 'asc',
+        });
+
+        await idSortHeader.click();
+        activeHeader = await sort.getActiveHeader();
+        expect(await activeHeader.getLabel()).toEqual('id');
+        expect(await activeHeader.getSortDirection()).toEqual('desc');
+        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+          sortColumn: 'id',
+          sortDirection: 'desc',
+        });
+
+        await idSortHeader.click();
+        activeHeader = await sort.getActiveHeader();
+        expect(await activeHeader.getLabel()).toEqual('id');
+        expect(await activeHeader.getSortDirection()).toEqual('asc');
+        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+          sortColumn: 'id',
+          sortDirection: 'asc',
+        });
+
+        expect(await table.getSortSelect()).toBeFalsy();
       });
 
       it('should refresh', async () => {

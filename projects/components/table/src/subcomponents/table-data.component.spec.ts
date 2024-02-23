@@ -19,6 +19,22 @@ describe('ZvTableDataComponent', () => {
     expect(component.refreshDataClicked.emit).toHaveBeenCalled();
   });
 
+  it('onSortChanged should emit sortChanged', () => {
+    const component = new ZvTableDataComponent(null);
+
+    spyOn(component.sortChanged, 'emit');
+    component.onSortChanged({ active: 'test', direction: 'asc' });
+    expect(component.sortChanged.emit).toHaveBeenCalledWith({ sortColumn: 'test', sortDirection: 'asc' });
+
+    component.onSortChanged({ active: 'test2', direction: null });
+    expect(component.sortChanged.emit).toHaveBeenCalledWith({ sortColumn: 'test2', sortDirection: 'asc' });
+
+    component.onSortChanged({ active: 'test3', direction: 'desc' });
+    expect(component.sortChanged.emit).toHaveBeenCalledWith({ sortColumn: 'test3', sortDirection: 'desc' });
+
+    expect(component.sortChanged.emit).toHaveBeenCalledTimes(3);
+  });
+
   it('isMasterToggleChecked should only return true when there are visible rows and they are all selected', () => {
     const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();

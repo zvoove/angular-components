@@ -1,37 +1,39 @@
+import { NgStyle, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
-  Output,
-  ViewEncapsulation,
-  SimpleChanges,
   OnChanges,
+  Output,
+  SimpleChanges,
+  ViewEncapsulation,
 } from '@angular/core';
-import { ZvTableDataSource } from '../data/table-data-source';
-import { ZvTableColumn, ZvTableRowDetail } from '../directives/table.directives';
-import { Subscription } from 'rxjs';
-import { TableRowDetailComponent } from './table-row-detail.component';
-import { ZvTableRowActionsComponent } from './table-row-actions.component';
-import { ZvTableActionsComponent } from './table-actions.component';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { NgStyle, NgTemplateOutlet } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
 import {
-  MatTable,
-  MatColumnDef,
-  MatHeaderCellDef,
-  MatHeaderCell,
-  MatCellDef,
   MatCell,
-  MatHeaderRowDef,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
   MatHeaderRow,
-  MatRowDef,
+  MatHeaderRowDef,
   MatRow,
+  MatRowDef,
+  MatTable,
 } from '@angular/material/table';
+import { Subscription } from 'rxjs';
+import { ZvTableDataSource } from '../data/table-data-source';
+import { ZvTableColumn, ZvTableRowDetail } from '../directives/table.directives';
+import { IZvTableSort } from '../models';
+import { ZvTableActionsComponent } from './table-actions.component';
+import { ZvTableRowActionsComponent } from './table-row-actions.component';
+import { TableRowDetailComponent } from './table-row-detail.component';
 
 @Component({
   selector: 'zv-table-data',
@@ -61,6 +63,8 @@ import {
     MatHeaderRow,
     MatRowDef,
     MatRow,
+    MatSort,
+    MatSortHeader,
   ],
 })
 export class ZvTableDataComponent implements OnChanges {
@@ -72,8 +76,12 @@ export class ZvTableDataComponent implements OnChanges {
   @Input() public refreshable: boolean;
   @Input() public settingsEnabled: boolean;
   @Input() public displayedColumns: string[];
+  @Input() public showSorting: boolean;
+  @Input() public sortColumn: string;
+  @Input() public sortDirection: 'asc' | 'desc';
   @Output() public readonly showSettingsClicked = new EventEmitter<void>();
   @Output() public readonly refreshDataClicked = new EventEmitter<void>();
+  @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
 
   private _dataSourceChangesSub = Subscription.EMPTY;
 
@@ -94,6 +102,10 @@ export class ZvTableDataComponent implements OnChanges {
 
   public onRefreshDataClicked() {
     this.refreshDataClicked.emit();
+  }
+
+  public onSortChanged(sort: Sort) {
+    this.sortChanged.emit({ sortColumn: sort.active, sortDirection: sort.direction || 'asc' });
   }
 
   public toggleRowDetail(item: { [key: string]: any }) {
