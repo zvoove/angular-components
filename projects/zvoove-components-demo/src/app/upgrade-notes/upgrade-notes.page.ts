@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { allSharedImports } from '../common/shared-imports';
+import { Change } from './change.component';
+import { Version } from './version.component';
 
 @Component({
   selector: 'app-upgrade-notes',
@@ -14,6 +16,6 @@ import { allSharedImports } from '../common/shared-imports';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [allSharedImports, RouterLink],
+  imports: [allSharedImports, RouterLink, Version, Change],
 })
 export class UpgrateNotesPage {}

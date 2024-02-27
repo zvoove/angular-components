@@ -11,6 +11,7 @@ export interface IZvTableSetting {
 @Injectable({ providedIn: 'root' })
 export class ZvTableSettingsService {
   public settingsEnabled = false;
+  public preferSortDropdown = false;
   public pageSizeOptions = [5, 10, 25, 50];
   public getStream(_tableId: string, _onlySaved: boolean): Observable<IZvTableSetting> {
     return of({

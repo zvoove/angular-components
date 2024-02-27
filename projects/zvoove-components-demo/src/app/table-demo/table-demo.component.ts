@@ -21,6 +21,7 @@ import { Observable, of, timer } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { allSharedImports } from '../common/shared-imports';
 import { DemoTableSettingsService } from './demo-table-settings.service';
+import { TableApiDocComponent } from './table-api-doc.component';
 
 interface ISampleData {
   id: number;
@@ -102,6 +103,7 @@ function generateSampleData(rowCount: number): ISampleData[] {
     ZvTableModule,
     JsonPipe,
     DatePipe,
+    TableApiDocComponent,
   ],
   providers: [{ provide: ZvTableSettingsService, useClass: DemoTableSettingsService }],
 })
@@ -117,8 +119,8 @@ export class TableDemoComponent {
   public showSettings = true;
   public layout: 'card' | 'border' | 'flat' = 'card';
   public striped = true;
-  public sortDefinitions = true;
-  public preferSortDropdown = true;
+  public sortDefinitions = false;
+  public preferSortDropdown = false;
   public pageDebounce = 0;
   public dataSourceType: 'server' | 'client' = 'server';
 

@@ -1,0 +1,106 @@
+<app-api-doc [name]="'zv-table'">
+  <app-api-doc-input
+    [name]="'tableId'"
+    [type]="'string'"
+    [desc]="'Unique id for the table. Used for example in the query parameter.'"
+    [required]="true"
+  />
+  <app-api-doc-input
+    [name]="'dataSource'"
+    [type]="'ZvTableDataSource'"
+    [desc]="'Data source which provides the data for the table.'"
+    [required]="true"
+  />
+  <app-api-doc-input [name]="'caption'" [type]="'string'" [desc]="'Headline of the table.'" />
+  <app-api-doc-input
+    [name]="'sortDefinitions'"
+    [type]="'IZvTableSortDefinition[]'"
+    [desc]="'Additional sorting definitions for the table.'"
+  />
+  <app-api-doc-input
+    [name]="'preferSortDropdown'"
+    [type]="'boolean'"
+    [desc]="'When true, the sorting dropdown is used, even though all columns could also be sorted via the header.'"
+  />
+  <app-api-doc-input [name]="'refreshable'" [type]="'boolean'" [desc]="'When true, a refrsh button is avilable.'" />
+  <app-api-doc-input [name]="'filterable'" [type]="'boolean'" [desc]="'When true, a search field avilable.'" />
+  <app-api-doc-input [name]="'showSettings'" [type]="'boolean'" [desc]="'When true, a settings panel is available.'" />
+  <app-api-doc-input [name]="'pageDebounce'" [type]="'number'" [desc]="'Number of ms to debounce the page event.'" />
+  <app-api-doc-input [name]="'layout'" [type]="'\'card\' | \'border\' | \'flat\''" [desc]="'Layout of the table.'" />
+  <app-api-doc-input [name]="'striped'" [type]="'boolean'" [desc]="'When true, the rows are striped.'" />
+  <app-api-doc-input
+    [name]="'stateManager'"
+    [type]="'ZvTableStateManager'"
+    [desc]="'Can be used to customize the state handling. Default uses the query params to save the state.'"
+  />
+
+  <app-api-doc-output [name]="'page'" [type]="'PageEvent'" [desc]="'Emits page changes.'" />
+</app-api-doc>
+
+<app-api-doc [name]="'zv-table-column'">
+  <app-api-doc-input
+    [name]="'property'"
+    [type]="'string'"
+    [desc]="
+      'The item property this column belongs to. Can be something non existent, but then some things like sorting wont work and you need to specify a custom template then.'
+    "
+    [required]="true"
+  />
+  <app-api-doc-input [name]="'header'" [type]="'string'" [desc]="'Column header text.'" />
+  <app-api-doc-input [name]="'sortable'" [type]="'boolean'" [desc]="'When true, the column is sortable.'" />
+  <app-api-doc-input [name]="'mandatory'" [type]="'boolean'" [desc]="'When true, the column can\'t be hidden from view in the settings.'" />
+  <app-api-doc-input [name]="'width'" [type]="'string'" [desc]="'The column width (default auto).'" />
+  <app-api-doc-input [name]="'headerStyles'" [type]="'{ [key: string]: string }'" [desc]="'Column header styles.'" />
+  <app-api-doc-input [name]="'columnStyles'" [type]="'{ [key: string]: string }'" [desc]="'Column styles.'" />
+</app-api-doc>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>*zvTableColumnTemplate="let item"</mat-card-title>
+  </mat-card-header>
+  <mat-card-content> Can be used to define a custom column template. Needs to be inside a zv-table-column. </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>*zvTableColumnHeaderTemplate</mat-card-title>
+  </mat-card-header>
+  <mat-card-content> Can be used to define a custom column header template. Needs to be inside a zv-table-column. </mat-card-content>
+</mat-card>
+
+<app-api-doc [name]="'zv-table-row-detail'">
+  <app-api-doc-input [name]="'expanded'" [type]="'boolean'" [desc]="'Defines whether the details are expanded or not.'" />
+  <app-api-doc-input
+    [name]="'showToggleColumn'"
+    [type]="'boolean | ((row: any) => boolean)'"
+    [desc]="'When true, the default column toggle button is shown.'"
+  />
+</app-api-doc>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>*zvTableRowDetailTemplate="let item"</mat-card-title>
+  </mat-card-header>
+  <mat-card-content> Neccessary to define a row detail template. Needs to be inside a zv-table-row-detail. </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>*zvTableTopButtonSection</mat-card-title>
+  </mat-card-header>
+  <mat-card-content> Can be used to add buttons to the header of the table. Needs to be inside a zv-table. </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>*zvTableCustomHeader</mat-card-title>
+  </mat-card-header>
+  <mat-card-content> Can be used to add custom stuff to the table header. Needs to be inside a zv-table. </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>*zvTableCustomSettings</mat-card-title>
+  </mat-card-header>
+  <mat-card-content> Can be used to add custom stuff to the table settings. Needs to be inside a zv-table. </mat-card-content>
+</mat-card>

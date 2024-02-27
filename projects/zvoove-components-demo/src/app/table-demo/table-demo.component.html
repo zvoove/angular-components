@@ -188,44 +188,7 @@
   </ng-template>
 
   <ng-template appComponentPageContent [type]="'api'">
-    <app-api-doc [name]="'zv-table'">
-      <app-api-doc-input
-        [name]="'tableId'"
-        [type]="'string'"
-        [desc]="'Unique id for the table. Used for example in the query parameter.'"
-        [required]="true"
-      />
-      <app-api-doc-input
-        [name]="'dataSource'"
-        [type]="'ZvTableDataSource'"
-        [desc]="'Data source which provides the data for the table.'"
-        [required]="true"
-      />
-      <app-api-doc-input [name]="'caption'" [type]="'string'" [desc]="'Headline of the table.'" />
-      <app-api-doc-input
-        [name]="'sortDefinitions'"
-        [type]="'IZvTableSortDefinition[]'"
-        [desc]="'Additional sorting definitions for the table.'"
-      />
-      <app-api-doc-input
-        [name]="'preferSortDropdown'"
-        [type]="'boolean'"
-        [desc]="'When true, the sorting dropdown is used, even though all columns could also be sorted via the header.'"
-      />
-      <app-api-doc-input [name]="'refreshable'" [type]="'boolean'" [desc]="'When true, a refrsh button is avilable.'" />
-      <app-api-doc-input [name]="'filterable'" [type]="'boolean'" [desc]="'When true, a search field avilable.'" />
-      <app-api-doc-input [name]="'showSettings'" [type]="'boolean'" [desc]="'When true, a settings panel is available.'" />
-      <app-api-doc-input [name]="'pageDebounce'" [type]="'number'" [desc]="'Number of ms to debounce the page event.'" />
-      <app-api-doc-input [name]="'layout'" [type]="'\'card\' | \'border\' | \'flat\''" [desc]="'Layout of the table.'" />
-      <app-api-doc-input [name]="'striped'" [type]="'boolean'" [desc]="'When true, the rows are striped.'" />
-      <app-api-doc-input
-        [name]="'stateManager'"
-        [type]="'ZvTableStateManager'"
-        [desc]="'Can be used to customize the state handling. Default uses the query params to save the state.'"
-      />
-
-      <app-api-doc-output [name]="'page'" [type]="'PageEvent'" [desc]="'Emits page changes.'" />
-    </app-api-doc>
+    <app-table-api-doc />
   </ng-template>
 
   <ng-template appComponentPageContent [type]="'setup'">

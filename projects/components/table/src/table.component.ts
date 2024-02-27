@@ -83,7 +83,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @Input() public filterable = true;
   @Input() public showSettings = true;
   @Input() public pageDebounce: number;
-  @Input() public preferSortDropdown = true;
+  @Input() public preferSortDropdown = this.settingsService.preferSortDropdown;
 
   @Input()
   public layout: 'card' | 'border' | 'flat' = 'card';
