@@ -1,18 +1,18 @@
-<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
+<!-- eslint-disable @angular-eslint/template/no-call-expression -->
 <mat-paginator
-  [pageIndex]="pageIndex"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="pageSizeOptions"
-  [length]="dataLength"
+  [pageIndex]="pageIndex()"
+  [pageSize]="pageSize()"
+  [pageSizeOptions]="pageSizeOptions()"
+  [length]="dataLength()"
   [showFirstLastButtons]="true"
   (page)="onPage($event)"
 >
 </mat-paginator>
 <div class="mat-paginator-page-size">
-  @if (pages.length > 2) {
+  @if (pages().length > 2) {
     <mat-form-field class="mat-mdc-paginator-page-size-select mat-mdc-paginator">
-      <mat-select class="zv-table-pagination__page-select" [ngModel]="pageIndex + 1" (selectionChange)="goToPage($event)">
-        @for (page of pages; track page) {
+      <mat-select class="zv-table-pagination__page-select" [value]="pageIndex() + 1" (selectionChange)="goToPage($event)">
+        @for (page of pages(); track page) {
           <mat-option [value]="page" class="zv-table-pagination__page-select-option"> {{ page }}</mat-option>
         }
       </mat-select>
