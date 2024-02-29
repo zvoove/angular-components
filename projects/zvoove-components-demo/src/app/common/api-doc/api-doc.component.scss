@@ -7,6 +7,14 @@
     border-bottom: 1px solid #cacaca;
   }
 
+  tbody:not(:last-of-type)::after {
+    content: '';
+    display: block;
+    height: 1.5em;
+    width: 100%;
+    background: white;
+  }
+
   th,
   td {
     text-align: left;

@@ -1,4 +1,3 @@
-<!-- eslint-disable @angular-eslint/template/no-call-expression -->
 <app-component-page-wrapper [componentName]="'zv-select'">
   <ng-template appComponentPageContent [type]="'demo'">
     <div class="app-select-demo__settings">
@@ -206,25 +205,19 @@
         [desc]="'Can be used to override the default ErrorStateMatcher.'"
       />
       <app-api-doc-input [name]="'required'" [type]="'boolean'" [desc]="'Makes the select required.'" />
-      <app-api-doc-input [name]="'value'" [type]="'T | null'" [desc]="'Sets the value of the select.'" />
+      <app-api-doc-input [name]="'value'" [type]="'T | null'" [desc]="'Sets the value of the select.'" [twoWay]="true" />
       <app-api-doc-output
         [name]="'valueChange'"
         [type]="'T | null'"
         [desc]="'Emits the current value, whenever it changes.'"
         [twoWay]="true"
       />
-      <app-api-doc-output
-        [name]="'openedChange'"
-        [type]="'boolean'"
-        [desc]="'Event emitted when the select panel has been toggled.'"
-        [twoWay]="false"
-      />
+      <app-api-doc-output [name]="'openedChange'" [type]="'boolean'" [desc]="'Event emitted when the select panel has been toggled.'" />
       <app-api-doc-output
         [name]="'selectionChange'"
         [type]="'MatSelectChange'"
         [typeUrl]="'https://v17.material.angular.io/components/select/api#MatSelectChange'"
         [desc]="'Event emitted when the selected value has been changed by the user.'"
-        [twoWay]="false"
       />
     </app-api-doc>
   </ng-template>

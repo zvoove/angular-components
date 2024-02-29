@@ -1,11 +1,10 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { HighlightModule } from 'ngx-highlightjs';
 
 @Component({
   selector: 'app-code',
   standalone: true,
-  imports: [CommonModule, HighlightModule],
+  imports: [HighlightModule],
   templateUrl: './code.component.html',
   styleUrls: ['./code.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

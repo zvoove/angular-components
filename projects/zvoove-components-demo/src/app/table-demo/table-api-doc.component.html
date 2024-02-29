@@ -35,6 +35,12 @@
   />
 
   <app-api-doc-output [name]="'page'" [type]="'PageEvent'" [desc]="'Emits page changes.'" />
+
+  <app-api-doc-method
+    [signature]="'toggleRowDetail(item: any, open?: boolean)'"
+    [returnType]="'void'"
+    [desc]="'Toggles the row details open state or sets it to the state you specify.'"
+  />
 </app-api-doc>
 
 <app-api-doc [name]="'zv-table-column'">
@@ -75,6 +81,16 @@
     [type]="'boolean | ((row: any) => boolean)'"
     [desc]="'When true, the default column toggle button is shown.'"
   />
+  <app-api-doc-method
+    [signature]="'toggle(item: any, open?: boolean)'"
+    [returnType]="'void'"
+    [desc]="'Toggles the row details open state or sets it to the state you specify.'"
+  />
+  <app-api-doc-method
+    [signature]="'isExpanded(item: any)'"
+    [returnType]="'boolean'"
+    [desc]="'Returns the row details expansion state for the provided item.'"
+  />
 </app-api-doc>
 
 <mat-card>
@@ -104,3 +120,32 @@
   </mat-card-header>
   <mat-card-content> Can be used to add custom stuff to the table settings. Needs to be inside a zv-table. </mat-card-content>
 </mat-card>
+
+<app-api-doc [name]="'ZvTableSettingsService'">
+  <app-api-doc-property
+    [name]="'settingsEnabled'"
+    [type]="'boolean'"
+    [desc]="
+      'Defines whether the settings view of the table is enabled. To activate this you also need to implement your own ZvTableSettingsService which implements the save and getStream methods.'
+    "
+  />
+  <app-api-doc-property
+    [name]="'preferSortDropdown'"
+    [type]="'boolean'"
+    [desc]="'Defines whether the sort dropdown should be used by default.'"
+  />
+  <app-api-doc-property [name]="'pageSizeOptions'" [type]="'number[]'" [desc]="'Defines the default page size options.'" />
+
+  <app-api-doc-method
+    [signature]="'getStream(tableId: string, onlySaved: boolean)'"
+    [returnType]="'Observable<IZvTableSetting>'"
+    [desc]="
+      'Returns the settings for this table. If onlySaved is true, then only the saved settings should be returned, otherwise it can also be default settings.'
+    "
+  />
+  <app-api-doc-method
+    [signature]="'save(tableId: string, settings: IZvTableSetting)'"
+    [returnType]="'Observable<void>'"
+    [desc]="'Saves the settings for a table.'"
+  />
+</app-api-doc>

@@ -69,6 +69,7 @@ export class ZvTableRowDetail {
   private expandedItems = new WeakSet();
   private seenItems = new WeakSet();
 
+  /** @public This is a public api */
   public toggle(item: any, open?: boolean) {
     if (this.expandedItems.has(item)) {
       if (open === true) {
@@ -85,6 +86,7 @@ export class ZvTableRowDetail {
     }
   }
 
+  /** @public This is a public api */
   public isExpanded(item: any) {
     // Beim ersten Aufruf für ein Item expanden, wenn expanded === true
     if (this.expanded && !this.seenItems.has(item)) {

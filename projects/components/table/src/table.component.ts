@@ -305,6 +305,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
     this.flipContainer.showFront();
   }
 
+  /** @public This is a public api */
   public toggleRowDetail(item: any, open?: boolean) {
     if (!this.rowDetail) {
       return;

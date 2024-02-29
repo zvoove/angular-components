@@ -4,9 +4,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { ZvFormFieldModule } from '@zvoove/components/form-field';
-import { AppApiDocInputComponent } from './api-doc-input/api-doc-input.component';
-import { AppApiDocOutputComponent } from './api-doc-output/api-doc-output.component';
-import { AppApiDocComponent } from './api-doc/api-doc.component';
+import { AppApiDocInput } from './api-doc/api-doc-input.component';
+import { AppApiDocMethod } from './api-doc/api-doc-method.component';
+import { AppApiDocOutput } from './api-doc/api-doc-output.component';
+import { AppApiDocProperty } from './api-doc/api-doc-property.component';
+import { AppApiDoc } from './api-doc/api-doc.component';
 import { AppCodeFilesComponent } from './code-files/code-files.component';
 import { AppCodeComponent } from './code/code.component';
 import { ComponentPageContentDirective } from './component-page-wrapper/component-page-content.directive';
@@ -23,6 +25,6 @@ export const formControlComponentPageImports = [...formsImports, ...componentPag
 
 export const code = [AppCodeComponent, AppCodeFilesComponent];
 
-export const apiDoc = [AppApiDocComponent, AppApiDocInputComponent, AppApiDocOutputComponent];
+export const apiDoc = [AppApiDoc, AppApiDocInput, AppApiDocOutput, AppApiDocProperty, AppApiDocMethod];
 
 export const allSharedImports = [...materialImports, ...formControlComponentPageImports, ...code, ...apiDoc];

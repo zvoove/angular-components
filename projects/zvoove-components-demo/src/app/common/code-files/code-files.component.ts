@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, TrackByFunction, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AppCodeComponent } from '../code/code.component';
 
@@ -11,7 +10,7 @@ export interface CodeFiles {
 @Component({
   selector: 'app-code-files',
   standalone: true,
-  imports: [CommonModule, AppCodeComponent, MatTabsModule],
+  imports: [AppCodeComponent, MatTabsModule],
   templateUrl: './code-files.component.html',
   styleUrls: ['./code-files.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +18,4 @@ export interface CodeFiles {
 })
 export class AppCodeFilesComponent {
   @Input({ required: true }) files: CodeFiles[];
-
-  trackByIdx: TrackByFunction<CodeFiles> = (idx) => idx;
 }

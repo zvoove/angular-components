@@ -1,5 +1,7 @@
 <mat-tab-group dynamicHeight>
-  <mat-tab *ngFor="let file of files; trackBy: trackByIdx" [label]="file.filename" [labelClass]="'app-code-files__tab-header'">
-    <app-code class="app-code-files__code" [code]="file.code"></app-code>
-  </mat-tab>
+  @for (file of files; track $index) {
+    <mat-tab [label]="file.filename" [labelClass]="'app-code-files__tab-header'">
+      <app-code class="app-code-files__code" [code]="file.code"></app-code>
+    </mat-tab>
+  }
 </mat-tab-group>
