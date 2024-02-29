@@ -1,3 +1,4 @@
+import { NgModule } from '@angular/core';
 import {
   ZvTableColumn,
   ZvTableColumnHeaderTemplate,
@@ -10,8 +11,7 @@ import {
 } from './directives/table.directives';
 import { ZvTable } from './table.component';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const ZvTableModule = [
+export const zvTableImports = [
   ZvTable,
   ZvTableColumn,
   ZvTableColumnTemplate,
@@ -22,3 +22,9 @@ export const ZvTableModule = [
   ZvTableRowDetailTemplate,
   ZvTableCustomSettingsTemplate,
 ];
+
+@NgModule({
+  imports: zvTableImports,
+  exports: zvTableImports,
+})
+export class ZvTableModule {}

@@ -21,4 +21,4 @@ export {
 } from './src/models';
 export { IZvTableSetting, ZvTableSettingsService } from './src/services/table-settings.service';
 export { ZvTable } from './src/table.component';
-export { ZvTableModule } from './src/table.module';
+export { ZvTableModule, zvTableImports } from './src/table.module';
