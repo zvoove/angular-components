@@ -33,13 +33,31 @@ export function isZvSelectOptionsData(value: any): value is ZvSelectDataSourceOp
   return typeof value === 'object' && 'idKey' in value && 'labelKey' in value && 'items' in value && 'mode' in value;
 }
 
+/**
+ * At which point(s) to load the select data. Defaults to {@link ZvSelectLoadTrigger.initial}.
+ */
 export const enum ZvSelectLoadTrigger {
+  /**
+   * Load values of select only once, on initial rendering of zv-select.
+   */
   // eslint-disable-next-line no-bitwise
   initial = 1 << 0,
+
+  /**
+   * Load values of select only once, when the user first clicks on it.
+   */
   // eslint-disable-next-line no-bitwise
   firstPanelOpen = 1 << 1,
+
+  /**
+   * Load values of select every time when the user first clicks on it.
+   */
   // eslint-disable-next-line no-bitwise
   everyPanelOpen = 1 << 2,
+
+  /**
+   * Load values on all of the above conditions.
+   */
   all = initial + firstPanelOpen + everyPanelOpen,
 }
 
