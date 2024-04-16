@@ -4,7 +4,6 @@ import {
   Component,
   ContentChild,
   DoCheck,
-  ElementRef,
   EventEmitter,
   HostBinding,
   Input,
@@ -16,11 +15,12 @@ import {
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
+  booleanAttribute,
   computed,
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
-import { ErrorStateMatcher, MatOption, mixinDisabled, mixinErrorState } from '@angular/material/core';
+import { ErrorStateMatcher, MatOption, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
@@ -39,30 +39,12 @@ const enum ValueChangeSource {
   writeValue = 4,
 }
 
-// Boilerplate for applying mixins to MatSelect.
-/** @docs-private */
-class ZvSelectBase {
-  readonly stateChanges = new Subject<void>();
-
-  constructor(
-    public _elementRef: ElementRef,
-    public _defaultErrorStateMatcher: ErrorStateMatcher,
-    public _parentForm: NgForm,
-    public _parentFormGroup: FormGroupDirective,
-    public ngControl: NgControl
-  ) {}
-}
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const _ZvSelectMixinBase = mixinDisabled(mixinErrorState(ZvSelectBase));
-
 @Component({
   selector: 'zv-select',
   templateUrl: './select.component.html',
   styleUrls: ['./select.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // eslint-disable-next-line @angular-eslint/no-inputs-metadata-property
-  inputs: ['disabled'],
   // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[class.zv-select-multiple]': 'multiple',
@@ -74,10 +56,7 @@ const _ZvSelectMixinBase = mixinDisabled(mixinErrorState(ZvSelectBase));
   },
   providers: [{ provide: MatFormFieldControl, useExisting: ZvSelectComponent }],
 })
-export class ZvSelectComponent<T = unknown>
-  extends _ZvSelectMixinBase
-  implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy
-{
+export class ZvSelectComponent<T = unknown> implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy {
   public static nextId = 0;
   @HostBinding() public id = `zv-select-${ZvSelectComponent.nextId++}`;
 
@@ -139,7 +118,6 @@ export class ZvSelectComponent<T = unknown>
   /** If true, then there will be a toggle all checkbox available (only multiple select mode) */
   @Input() public showToggleAll = true;
   @Input() public multiple = false;
-  @Input() public override errorStateMatcher: ErrorStateMatcher = null;
   @Input() public panelClass: string | string[] | Set<string> | { [key: string]: any } = null;
   @Input() public placeholder: string = null;
   @Input() public required = false;
@@ -167,6 +145,32 @@ export class ZvSelectComponent<T = unknown>
       return this._focused || matFocus;
     }
     return this._focused;
+  }
+
+  @Input({ transform: booleanAttribute })
+  public disabled: boolean = false;
+
+  /**
+   * Implemented as part of MatFormFieldControl.
+   *
+   * @docs-private
+   */
+  readonly stateChanges: Subject<void> = new Subject<void>();
+
+  @Input()
+  get errorStateMatcher() {
+    return this._errorStateTracker.matcher;
+  }
+  set errorStateMatcher(value: ErrorStateMatcher) {
+    this._errorStateTracker.matcher = value;
+  }
+
+  /** Whether the input is in an error state. */
+  get errorState() {
+    return this._errorStateTracker.errorState;
+  }
+  set errorState(value: boolean) {
+    this._errorStateTracker.errorState = value;
   }
 
   public get compareWith(): (o1: any, o2: any) => boolean {
@@ -252,32 +256,37 @@ export class ZvSelectComponent<T = unknown>
   private _onModelTouched: any;
   private _focused = false;
   private _onInitCalled = false;
+  _errorStateTracker: _ErrorStateTracker;
 
   /** View -> model callback called when value changes */
   private _onChange: (value: any) => void = () => {};
 
   constructor(
-    elementRef: ElementRef,
     defaultErrorStateMatcher: ErrorStateMatcher,
     private cd: ChangeDetectorRef,
     @Optional() private selectService: ZvSelectService,
     @Optional() parentForm: NgForm,
     @Optional() parentFormGroup: FormGroupDirective,
-    @Optional() @Self() public override ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl
   ) {
-    super(elementRef, defaultErrorStateMatcher, parentForm, parentFormGroup, ngControl);
-
     if (this.ngControl) {
       // Note: we provide the value accessor through here, instead of
       // the `providers` to avoid running into a circular import.
       this.ngControl.valueAccessor = this;
     }
+
+    this._errorStateTracker = new _ErrorStateTracker(defaultErrorStateMatcher, ngControl, parentFormGroup, parentForm, this.stateChanges);
   }
 
   public ngDoCheck() {
     if (this.ngControl) {
       this.updateErrorState();
     }
+  }
+
+  /** Refreshes the error state of the input. */
+  updateErrorState() {
+    this._errorStateTracker.updateErrorState();
   }
 
   public ngOnInit() {

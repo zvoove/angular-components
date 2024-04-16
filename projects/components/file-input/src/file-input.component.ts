@@ -23,7 +23,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { CanUpdateErrorState, ErrorStateMatcher, mixinErrorState } from '@angular/material/core';
+import { ErrorStateMatcher, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject } from 'rxjs';
@@ -31,21 +31,6 @@ import { Subject } from 'rxjs';
 import type {} from '@angular/localize/init';
 
 let nextUniqueId = 0;
-
-// Boilerplate for applying mixins to ZvNumberInput.
-/** @docs-private */
-class ZvFileInputBase {
-  readonly stateChanges = new Subject<void>();
-
-  constructor(
-    public _defaultErrorStateMatcher: ErrorStateMatcher,
-    public _parentForm: NgForm,
-    public _parentFormGroup: FormGroupDirective,
-    /** @docs-private */
-    public ngControl: NgControl
-  ) {}
-}
-const zvFileInputMixinBase = mixinErrorState(ZvFileInputBase);
 
 @Component({
   selector: 'zv-file-input',
@@ -71,10 +56,7 @@ const zvFileInputMixinBase = mixinErrorState(ZvFileInputBase);
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ZvFileInputComponent
-  extends zvFileInputMixinBase
-  implements ControlValueAccessor, MatFormFieldControl<File>, OnChanges, OnDestroy, OnInit, DoCheck, CanUpdateErrorState
-{
+export class ZvFileInputComponent implements ControlValueAccessor, MatFormFieldControl<File>, OnChanges, OnDestroy, OnInit, DoCheck {
   fileSelectText = $localize`:@@zvc.chooseFile:Please choose a file.`;
 
   @Input() accept: string[] = [];
@@ -91,7 +73,7 @@ export class ZvFileInputComponent
    *
    * @docs-private
    */
-  override readonly stateChanges: Subject<void> = new Subject<void>();
+  readonly stateChanges: Subject<void> = new Subject<void>();
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -163,7 +145,21 @@ export class ZvFileInputComponent
   protected _required = false;
 
   /** An object used to control when error messages are shown. */
-  @Input() override errorStateMatcher!: ErrorStateMatcher;
+  @Input()
+  get errorStateMatcher() {
+    return this._errorStateTracker.matcher;
+  }
+  set errorStateMatcher(value: ErrorStateMatcher) {
+    this._errorStateTracker.matcher = value;
+  }
+
+  /** Whether the input is in an error state. */
+  get errorState() {
+    return this._errorStateTracker.errorState;
+  }
+  set errorState(value: boolean) {
+    this._errorStateTracker.errorState = value;
+  }
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -220,6 +216,7 @@ export class ZvFileInputComponent
 
   @ViewChild('input', { static: true })
   _inputfieldViewChild!: ElementRef<HTMLInputElement>;
+  _errorStateTracker: _ErrorStateTracker;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onModelChange: (val: unknown) => void = () => {};
@@ -228,17 +225,23 @@ export class ZvFileInputComponent
 
   constructor(
     /** @docs-private */
-    @Optional() @Self() public override ngControl: NgControl,
+    @Optional() @Self() public ngControl: NgControl,
     @Optional() _parentForm: NgForm,
     @Optional() _parentFormGroup: FormGroupDirective,
     _defaultErrorStateMatcher: ErrorStateMatcher,
     public _cd: ChangeDetectorRef
   ) {
-    super(_defaultErrorStateMatcher, _parentForm, _parentFormGroup, ngControl);
-
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+
+    this._errorStateTracker = new _ErrorStateTracker(
+      _defaultErrorStateMatcher,
+      ngControl,
+      _parentFormGroup,
+      _parentForm,
+      this.stateChanges
+    );
   }
 
   ngOnInit() {
@@ -262,6 +265,11 @@ export class ZvFileInputComponent
       // that whatever logic is in here has to be super lean or we risk destroying the performance.
       this.updateErrorState();
     }
+  }
+
+  /** Refreshes the error state of the input. */
+  updateErrorState() {
+    this._errorStateTracker.updateErrorState();
   }
 
   /**

@@ -20,6 +20,7 @@ import {
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
+  booleanAttribute,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -34,7 +35,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { CanUpdateErrorState, ErrorStateMatcher, mixinDisabled, mixinErrorState } from '@angular/material/core';
+import { ErrorStateMatcher, _ErrorStateTracker } from '@angular/material/core';
 import { MatDatepickerControl, MatDatepickerInput, MatDatepickerModule, MatDatepickerPanel } from '@angular/material/datepicker';
 import { MAT_FORM_FIELD, MatFormField, MatFormFieldControl } from '@angular/material/form-field';
 import { ZvDateTimeAdapter } from '@zvoove/components/core';
@@ -42,34 +43,6 @@ import { Subject } from 'rxjs';
 import { ZvTimeInput } from './time-input.directive';
 
 let nextUniqueId = 0;
-
-// Boilerplate for applying mixins to MatInput.
-/** @docs-private */
-const _zvDateTimeInputBase = mixinDisabled(
-  mixinErrorState(
-    class {
-      /**
-       * Emits whenever the component state changes and should cause the parent
-       * form field to update. Implemented as part of `MatFormFieldControl`.
-       * @docs-private
-       */
-      readonly stateChanges = new Subject<void>();
-
-      constructor(
-        public _elementRef: ElementRef,
-        public _defaultErrorStateMatcher: ErrorStateMatcher,
-        public _parentForm: NgForm,
-        public _parentFormGroup: FormGroupDirective,
-        /**
-         * Form control bound to the component.
-         * Implemented as part of `MatFormFieldControl`.
-         * @docs-private
-         */
-        public ngControl: NgControl
-      ) {}
-    }
-  )
-);
 
 @Component({
   selector: 'zv-date-time-input',
@@ -79,7 +52,6 @@ const _zvDateTimeInputBase = mixinDisabled(
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [MatDatepickerModule, ZvTimeInput, ReactiveFormsModule, NgIf],
-  inputs: ['disabled', 'errorStateMatcher'],
   host: {
     '[attr.id]': 'id',
     '[attr.aria-describedby]': '_ariaDescribedby || null',
@@ -90,8 +62,7 @@ const _zvDateTimeInputBase = mixinDisabled(
   providers: [{ provide: MatFormFieldControl, useExisting: ZvDateTimeInput }],
 })
 export class ZvDateTimeInput<TDateTime, TDate, TTime>
-  extends _zvDateTimeInputBase
-  implements ControlValueAccessor, MatFormFieldControl<TDateTime>, CanUpdateErrorState, OnChanges, OnInit, DoCheck
+  implements ControlValueAccessor, MatFormFieldControl<TDateTime>, OnChanges, OnInit, DoCheck
 {
   /**
    * An optional name for the control type that can be used to distinguish `mat-form-field` elements
@@ -139,6 +110,16 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   }
   private _focused = false;
 
+  @Input({ transform: booleanAttribute })
+  public disabled: boolean;
+
+  /**
+   * Implemented as part of MatFormFieldControl.
+   *
+   * @docs-private
+   */
+  readonly stateChanges: Subject<void> = new Subject<void>();
+
   /** Whether the control is empty. */
   get empty(): boolean {
     if (!this._dateInputElementRef || !this._timeInputElementRef) {
@@ -163,6 +144,22 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   }
   private _required: boolean | undefined;
 
+  @Input()
+  get errorStateMatcher() {
+    return this._errorStateTracker.matcher;
+  }
+  set errorStateMatcher(value: ErrorStateMatcher) {
+    this._errorStateTracker.matcher = value;
+  }
+
+  /** Whether the input is in an error state. */
+  get errorState() {
+    return this._errorStateTracker.errorState;
+  }
+  set errorState(value: boolean) {
+    this._errorStateTracker.errorState = value;
+  }
+
   datePlaceholder = this.dateTimeAdapter.dateAdapter.parseFormatExample();
   timePlaceholder = this.dateTimeAdapter.timeAdapter.parseFormatExample();
 
@@ -182,24 +179,30 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
 
   @ViewChild('date') _dateInputElementRef!: ElementRef<HTMLInputElement>;
   @ViewChild('time') _timeInputElementRef!: ElementRef<HTMLInputElement>;
+  _errorStateTracker: _ErrorStateTracker;
 
   constructor(
     public _changeDetectorRef: ChangeDetectorRef,
     _defaultErrorStateMatcher: ErrorStateMatcher,
-    elementRef: ElementRef,
     @Optional() _parentForm: NgForm,
     @Optional() _parentFormGroup: FormGroupDirective,
     @Optional() @Inject(MAT_FORM_FIELD) protected _parentFormField: MatFormField,
-    @Self() @Optional() ngControl: NgControl,
+    @Self() @Optional() public ngControl: NgControl,
     private dateTimeAdapter: ZvDateTimeAdapter<TDateTime, TDate, TTime>
   ) {
-    super(elementRef, _defaultErrorStateMatcher, _parentForm, _parentFormGroup, ngControl);
-
     if (this.ngControl) {
       // Note: we provide the value accessor through here, instead of
       // the `providers` to avoid running into a circular import.
       this.ngControl.valueAccessor = this;
     }
+
+    this._errorStateTracker = new _ErrorStateTracker(
+      _defaultErrorStateMatcher,
+      ngControl,
+      _parentFormGroup,
+      _parentForm,
+      this.stateChanges
+    );
 
     this._form.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
       const newValue = this.dateTimeAdapter.mergeDateTime(value.date, value.time);
@@ -236,6 +239,11 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
       // that whatever logic is in here has to be super lean or we risk destroying the performance.
       this.updateErrorState();
     }
+  }
+
+  /** Refreshes the error state of the input. */
+  updateErrorState() {
+    this._errorStateTracker.updateErrorState();
   }
 
   /**

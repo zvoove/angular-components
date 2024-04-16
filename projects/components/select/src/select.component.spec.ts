@@ -91,9 +91,7 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
   const matSelect = createFakeMatSelect();
   const dataSource = options && 'dataSource' in options ? options.dataSource : createFakeDataSource();
   const service = options && 'service' in options ? options.service : createFakeSelectService();
-  const component = new ZvSelectComponent({ nativeElement: {} }, null, <any>{ markForCheck: () => {} }, service, null, null, <any>{
-    control: null,
-  });
+  const component = new ZvSelectComponent(null, <any>{ markForCheck: () => {} }, service, null, null, <any>{ control: null });
   component.setMatSelect = matSelect;
   component.dataSource = dataSource;
   return { component: component, matSelect: matSelect, service: service, dataSource: dataSource, focused: component.focused };
@@ -268,7 +266,7 @@ describe('ZvSelectComponent', () => {
     expect(component.clearable).toBe(true);
     expect(component.showToggleAll).toBe(true);
     expect(component.multiple).toBe(false);
-    expect(component.errorStateMatcher).toBe(null);
+    expect(component.errorStateMatcher).toBe(undefined);
     expect(component.panelClass).toBe(null);
     expect(component.placeholder).toBe(null);
     expect(component.required).toBe(false);

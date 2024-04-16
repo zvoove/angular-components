@@ -28,27 +28,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
-import { CanUpdateErrorState, ErrorStateMatcher, mixinErrorState } from '@angular/material/core';
+import { _ErrorStateTracker, ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { replaceAll } from '@zvoove/components/utils';
 import { Subject } from 'rxjs';
 
 let nextUniqueId = 0;
-
-// Boilerplate for applying mixins to ZvNumberInput.
-/** @docs-private */
-class ZvNumberInputBase {
-  readonly stateChanges = new Subject<void>();
-
-  constructor(
-    public _defaultErrorStateMatcher: ErrorStateMatcher,
-    public _parentForm: NgForm,
-    public _parentFormGroup: FormGroupDirective,
-    /** @docs-private */
-    public ngControl: NgControl
-  ) {}
-}
-const zvNumberInputMixinBase = mixinErrorState(ZvNumberInputBase);
 
 /** Directive that allows a native input to work inside a `MatFormField`. */
 // eslint-disable-next-line @angular-eslint/no-conflicting-lifecycle
@@ -73,10 +58,7 @@ const zvNumberInputMixinBase = mixinErrorState(ZvNumberInputBase);
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ZvNumberInputComponent
-  extends zvNumberInputMixinBase
-  implements ControlValueAccessor, MatFormFieldControl<any>, OnChanges, OnDestroy, OnInit, DoCheck, CanUpdateErrorState
-{
+export class ZvNumberInputComponent implements ControlValueAccessor, MatFormFieldControl<any>, OnChanges, OnDestroy, OnInit, DoCheck {
   /** Mininum boundary value. */
   @Input() min: number;
 
@@ -116,7 +98,7 @@ export class ZvNumberInputComponent
    *
    * @docs-private
    */
-  override readonly stateChanges: Subject<void> = new Subject<void>();
+  readonly stateChanges: Subject<void> = new Subject<void>();
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -188,7 +170,21 @@ export class ZvNumberInputComponent
   protected _required = false;
 
   /** An object used to control when error messages are shown. */
-  @Input() override errorStateMatcher: ErrorStateMatcher;
+  @Input()
+  get errorStateMatcher() {
+    return this._errorStateTracker.matcher;
+  }
+  set errorStateMatcher(value: ErrorStateMatcher) {
+    this._errorStateTracker.matcher = value;
+  }
+
+  /** Whether the input is in an error state. */
+  get errorState() {
+    return this._errorStateTracker.errorState;
+  }
+  set errorState(value: boolean) {
+    this._errorStateTracker.errorState = value;
+  }
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -248,6 +244,7 @@ export class ZvNumberInputComponent
   _decimalSeparator: string;
   _thousandSeparator: string;
   _calculatedDecimals: number;
+  _errorStateTracker: _ErrorStateTracker;
 
   @ViewChild('inputfield', { static: true })
   _inputfieldViewChild: ElementRef<HTMLInputElement>;
@@ -257,18 +254,24 @@ export class ZvNumberInputComponent
 
   constructor(
     /** @docs-private */
-    @Optional() @Self() public override ngControl: NgControl,
+    @Optional() @Self() public ngControl: NgControl,
     @Optional() _parentForm: NgForm,
     @Optional() _parentFormGroup: FormGroupDirective,
     _defaultErrorStateMatcher: ErrorStateMatcher,
     private cd: ChangeDetectorRef,
     @Inject(LOCALE_ID) private localeId: string
   ) {
-    super(_defaultErrorStateMatcher, _parentForm, _parentFormGroup, ngControl);
-
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+
+    this._errorStateTracker = new _ErrorStateTracker(
+      _defaultErrorStateMatcher,
+      ngControl,
+      _parentFormGroup,
+      _parentForm,
+      this.stateChanges
+    );
   }
 
   ngOnInit() {
@@ -296,6 +299,11 @@ export class ZvNumberInputComponent
       // that whatever logic is in here has to be super lean or we risk destroying the performance.
       this.updateErrorState();
     }
+  }
+
+  /** Refreshes the error state of the input. */
+  updateErrorState() {
+    this._errorStateTracker.updateErrorState();
   }
 
   /**

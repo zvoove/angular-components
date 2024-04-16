@@ -8,8 +8,7 @@ import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { MatSortHarness } from '@angular/material/sort/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, ParamMap, Params, RouterLink, Routes, convertToParamMap } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, ParamMap, Params, RouterLink, Routes, convertToParamMap, provideRouter } from '@angular/router';
 import { filterAsync } from '@zvoove/components/utils/src/array';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -564,15 +563,9 @@ describe('ZvTableComponent', () => {
       ];
 
       await TestBed.configureTestingModule({
-        imports: [
-          NoopAnimationsModule,
-          CommonModule,
-          ZvTableModule,
-          RouterTestingModule.withRoutes(routes),
-          MatIconTestingModule,
-          TestComponent,
-        ],
+        imports: [NoopAnimationsModule, CommonModule, ZvTableModule, MatIconTestingModule, TestComponent],
         providers: [
+          provideRouter(routes),
           { provide: ZvTableSettingsService, useClass: TestSettingsService },
           { provide: MatPaginatorIntl, useClass: MatPaginatorIntl },
         ],

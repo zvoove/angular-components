@@ -1,11 +1,11 @@
-FROM node:20.11-alpine as build
+FROM node:20.12-alpine as build
 WORKDIR /app/src
 COPY package*.json ./
 RUN npm ci --no-audit
 COPY . ./
 RUN npm run build:components-demo -- --output-path=./dist/out
 
-FROM node:20.11-alpine
+FROM node:20.12-alpine
 WORKDIR /usr/app
 COPY --from=build /app/src/dist/out ./
 
