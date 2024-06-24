@@ -1,9 +1,9 @@
 <div class="zv-flip-container__container" [class]="'zv-flip-container__animation-' + animation">
-  <div class="zv-flip-container__flip-box" [@flipState]="_activeState" (@flipState.start)="_flipStart()" (@flipState.done)="_flipDone()">
-    <div #frontside class="zv-flip-container__side zv-flip-container__side__front">
+  <div class="zv-flip-container__flip-box" [class]="'zv-flip-container__flip-box--active-' + _active">
+    <div #frontside class="zv-flip-container__side zv-flip-container__side__front" [attr.inert]="!_attachFront || null">
       <ng-container *ngIf="_attachFront || !removeHiddenNodes" [ngTemplateOutlet]="_frontTemplate"></ng-container>
     </div>
-    <div #backside class="zv-flip-container__side zv-flip-container__side__back">
+    <div #backside class="zv-flip-container__side zv-flip-container__side__back" [attr.inert]="!_attachBack || null">
       <ng-container *ngIf="_attachBack || !removeHiddenNodes" [ngTemplateOutlet]="_backTemplate"></ng-container>
     </div>
   </div>

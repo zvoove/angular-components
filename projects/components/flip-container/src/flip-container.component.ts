@@ -1,4 +1,3 @@
-import { animate, query, sequence, state, style, transition, trigger } from '@angular/animations';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -17,40 +16,6 @@ import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-
   templateUrl: './flip-container.component.html',
   styleUrls: ['./flip-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('flipState', [
-      state(
-        'flip_back',
-        style({
-          transform: 'rotateY(180deg)',
-        })
-      ),
-      state(
-        'flip_front',
-        style({
-          transform: 'rotateY(0)',
-        })
-      ),
-      transition('flip_back => flip_front', animate('300ms ease-out')),
-      transition('flip_front => flip_back', animate('300ms ease-in')),
-      transition(
-        'fade_front => fade_back',
-        sequence([
-          query('.zv-flip-container__side__back', style({ opacity: 0 })),
-          query('.zv-flip-container__side__front', animate('150ms ease-in', style({ opacity: 0 }))),
-          query('.zv-flip-container__side__back', animate('150ms ease-out', style({ opacity: 1 }))),
-        ])
-      ),
-      transition(
-        'fade_back => fade_front',
-        sequence([
-          query('.zv-flip-container__side__front', style({ opacity: 0 })),
-          query('.zv-flip-container__side__back', animate('150ms ease-in', style({ opacity: 0 }))),
-          query('.zv-flip-container__side__front', animate('150ms ease-out', style({ opacity: 1 }))),
-        ])
-      ),
-    ]),
-  ],
 })
 export class ZvFlipContainerComponent implements AfterViewInit {
   @Input() public removeHiddenNodes = true;
@@ -90,10 +55,16 @@ export class ZvFlipContainerComponent implements AfterViewInit {
     this.show('back');
   }
 
+  private _timerRef: any = 0;
   public show(show: 'back' | 'front') {
     if (this._active !== show) {
       this._active = show;
       this.cd.markForCheck();
+      this._flipStart();
+      clearTimeout(this._timerRef);
+      this._timerRef = setTimeout(() => {
+        this._flipDone();
+      }, 300);
     }
   }
 

@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvFlipContainerComponent } from './flip-container.component';
 import { ZvFlipContainerModule } from './flip-container.module';
 
@@ -26,7 +25,7 @@ export class TestComponent {
 describe('ZvFlipContainerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, ZvFlipContainerModule],
+      imports: [CommonModule, ZvFlipContainerModule],
       declarations: [TestComponent],
     }).compileComponents();
   }));
@@ -36,8 +35,6 @@ describe('ZvFlipContainerComponent', () => {
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    const flipBoxDbg = fixture.debugElement.query(By.css('.zv-flip-container__flip-box'));
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
     expect(component.cmp.active).toEqual('front');
 
     component.cmp.toggleFlip();
@@ -45,7 +42,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
     expect(component.cmp.active).toEqual('back');
 
     component.cmp.toggleFlip();
@@ -53,7 +49,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
     expect(component.cmp.active).toEqual('front');
 
     component.cmp.showFront();
@@ -61,7 +56,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
     expect(component.cmp.active).toEqual('front');
 
     component.cmp.showBack();
@@ -69,7 +63,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
     expect(component.cmp.active).toEqual('back');
 
     component.cmp.showBack();
@@ -77,7 +70,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
     expect(component.cmp.active).toEqual('back');
 
     component.cmp.show('back');
@@ -85,7 +77,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
     expect(component.cmp.active).toEqual('back');
 
     component.cmp.show('front');
@@ -93,7 +84,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
     expect(component.cmp.active).toEqual('front');
 
     component.cmp.show('front');
@@ -101,7 +91,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(0deg)');
     expect(component.cmp.active).toEqual('front');
 
     component.cmp.show('back');
@@ -109,7 +98,6 @@ describe('ZvFlipContainerComponent', () => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
-    expect(flipBoxDbg.nativeElement.style.transform).toEqual('rotateY(180deg)');
     expect(component.cmp.active).toEqual('back');
   }));
 
@@ -163,5 +151,47 @@ describe('ZvFlipContainerComponent', () => {
     expect(backEl.children.length).toEqual(1);
     expect(frontEl.hidden).toEqual(true);
     expect(frontEl.children.length).toEqual(0);
+  }));
+
+  it('should set active css class', fakeAsync(() => {
+    const fixture = TestBed.createComponent(TestComponent);
+    const component = fixture.componentInstance;
+    component.removeHiddenNodes = true;
+    fixture.detectChanges();
+
+    const flipBoxDbgEl = fixture.debugElement.query(By.css('.zv-flip-container__flip-box')).nativeElement as HTMLElement;
+    expect(flipBoxDbgEl.className).toContain('zv-flip-container__flip-box--active-front');
+
+    component.cmp.toggleFlip();
+    fixture.detectChanges();
+
+    expect(flipBoxDbgEl.className).toContain('zv-flip-container__flip-box--active-back');
+
+    tick(300);
+    fixture.detectChanges();
+
+    expect(flipBoxDbgEl.className).toContain('zv-flip-container__flip-box--active-back');
+  }));
+
+  it('should set inert attribute', fakeAsync(() => {
+    const fixture = TestBed.createComponent(TestComponent);
+    const component = fixture.componentInstance;
+    component.removeHiddenNodes = true;
+    fixture.detectChanges();
+
+    const backEl = fixture.debugElement.query(By.css('.zv-flip-container__side__back')).nativeElement as HTMLDivElement;
+    const frontEl = fixture.debugElement.query(By.css('.zv-flip-container__side__front')).nativeElement as HTMLDivElement;
+
+    expect(frontEl.inert).toEqual(false);
+    expect(backEl.inert).toEqual(true);
+
+    component.cmp.toggleFlip();
+    fixture.detectChanges();
+
+    tick(300);
+    fixture.detectChanges();
+
+    expect(frontEl.inert).toEqual(true);
+    expect(backEl.inert).toEqual(false);
   }));
 });

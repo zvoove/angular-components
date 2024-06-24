@@ -15,6 +15,8 @@
   .zv-flip-container__flip-box {
     position: relative;
     transform-style: preserve-3d;
+
+    transition: transform 300ms ease-in-out;
   }
 
   .zv-flip-container__side {
@@ -28,10 +30,64 @@
   .zv-flip-container__side__front {
     transform: rotateY(0deg);
   }
+
+  .zv-flip-container__flip-box--active-front {
+    transform: rotateY(0deg);
+  }
+  .zv-flip-container__flip-box--active-back {
+    transform: rotateY(180deg);
+  }
 }
 
 .zv-flip-container__animation-fade {
   .zv-flip-container__side__front {
     z-index: 1;
+  }
+
+  .zv-flip-container__flip-box--active-front {
+    .zv-flip-container__side__back {
+      opacity: 0;
+      animation: 300ms linear fadeOut;
+    }
+
+    .zv-flip-container__side__front {
+      opacity: 1;
+      animation: 300ms linear fadeIn;
+    }
+  }
+  .zv-flip-container__flip-box--active-back {
+    .zv-flip-container__side__back {
+      opacity: 1;
+      animation: 300ms linear fadeIn;
+    }
+
+    .zv-flip-container__side__front {
+      opacity: 0;
+      animation: 300ms linear fadeOut;
+    }
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
