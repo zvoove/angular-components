@@ -3,22 +3,6 @@ import { ZvTableDataSource } from '../data/table-data-source';
 import { ZvTableDataComponent } from './table-data.component';
 
 describe('ZvTableDataComponent', () => {
-  it('onShowSettingsClicked should emit showSettingsClicked', () => {
-    const component = new ZvTableDataComponent(null);
-
-    spyOn(component.showSettingsClicked, 'emit');
-    component.onShowSettingsClicked();
-    expect(component.showSettingsClicked.emit).toHaveBeenCalled();
-  });
-
-  it('onRefreshDataClicked should emit refreshDataClicked', () => {
-    const component = new ZvTableDataComponent(null);
-
-    spyOn(component.refreshDataClicked, 'emit');
-    component.onRefreshDataClicked();
-    expect(component.refreshDataClicked.emit).toHaveBeenCalled();
-  });
-
   it('onSortChanged should emit sortChanged', () => {
     const component = new ZvTableDataComponent(null);
 

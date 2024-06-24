@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation, input, model, output, signal } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 
 @Component({
   selector: 'zv-table-search',
@@ -16,29 +16,29 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
   imports: [MatFormField, MatLabel, MatInput, MatIconButton, MatSuffix, MatIcon],
 })
 export class ZvTableSearchComponent implements OnInit, OnDestroy {
-  @Input() public searchText: string;
-  @Input() public debounceTime: number;
-  @Output() public readonly searchChanged = new EventEmitter<string>();
+  public searchText = model<string>();
+  public debounceTime = input<number>();
+  public readonly searchChanged = output<string>();
 
-  public currentSearchText = '';
+  public currentSearchText = signal('');
 
   private _searchValueChanged$ = new Subject<void>();
 
   public ngOnInit() {
-    this.currentSearchText = this.searchText;
-    this._searchValueChanged$.pipe(debounceTime(this.debounceTime)).subscribe(() => {
+    this.currentSearchText.set(this.searchText());
+    this._searchValueChanged$.pipe(debounceTime(this.debounceTime())).subscribe(() => {
       this.emitChange();
     });
   }
 
   public onSearch(key: string, value: string) {
     if (key.startsWith('Esc')) {
-      this.searchText = '';
+      this.searchText.set('');
       this.emitChange();
       return;
     }
 
-    this.searchText = value;
+    this.searchText.set(value);
     this._searchValueChanged$.next();
   }
 
@@ -47,9 +47,9 @@ export class ZvTableSearchComponent implements OnInit, OnDestroy {
   }
 
   private emitChange() {
-    if (this.currentSearchText !== this.searchText) {
-      this.currentSearchText = this.searchText;
-      this.searchChanged.emit(this.currentSearchText);
+    if (this.currentSearchText() !== this.searchText()) {
+      this.currentSearchText.set(this.searchText());
+      this.searchChanged.emit(this.currentSearchText());
     }
   }
 }

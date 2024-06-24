@@ -28,12 +28,13 @@ import {
   MatTable,
 } from '@angular/material/table';
 import { Subscription } from 'rxjs';
-import { ZvTableDataSource } from '../data/table-data-source';
 import { ZvTableColumn, ZvTableRowDetail } from '../directives/table.directives';
-import { IZvTableSort } from '../models';
+import { ITableDataSource, IZvTableAction, IZvTableSort, ZvTableActionScope } from '../models';
 import { ZvTableActionsComponent } from './table-actions.component';
 import { ZvTableRowActionsComponent } from './table-row-actions.component';
 import { TableRowDetailComponent } from './table-row-detail.component';
+
+import type {} from '@angular/localize/init';
 
 @Component({
   selector: 'zv-table-data',
@@ -68,7 +69,7 @@ import { TableRowDetailComponent } from './table-row-detail.component';
   ],
 })
 export class ZvTableDataComponent implements OnChanges {
-  @Input() public dataSource: ZvTableDataSource<{ [key: string]: any }>;
+  @Input() public dataSource: ITableDataSource<{ [key: string]: any }>;
   @Input() public tableId: string;
   @Input() public rowDetail: ZvTableRowDetail | null;
   @Input() public columnDefs: ZvTableColumn[];
@@ -83,6 +84,29 @@ export class ZvTableDataComponent implements OnChanges {
   @Output() public readonly refreshDataClicked = new EventEmitter<void>();
   @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
 
+  private refreshAction: IZvTableAction<any> = {
+    icon: 'refresh',
+    label: $localize`:@@zvc.refreshList:Refresh list`,
+    actionFn: () => this.refreshDataClicked.emit(),
+    scope: ZvTableActionScope.list,
+  };
+  private settingsAction: IZvTableAction<any> = {
+    icon: 'settings',
+    label: $localize`:@@zvc.listSettings:List settings`,
+    actionFn: () => this.showSettingsClicked.emit(),
+    scope: ZvTableActionScope.list,
+  };
+  public get listActions() {
+    const actions = [...this.dataSource.listActions];
+    if (this.refreshable) {
+      actions.push(this.refreshAction);
+    }
+    if (this.settingsEnabled) {
+      actions.push(this.settingsAction);
+    }
+    return actions;
+  }
+
   private _dataSourceChangesSub = Subscription.EMPTY;
 
   constructor(private cd: ChangeDetectorRef) {}
@@ -90,18 +114,12 @@ export class ZvTableDataComponent implements OnChanges {
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.dataSource) {
       this._dataSourceChangesSub.unsubscribe();
-      this._dataSourceChangesSub = this.dataSource._internalDetectChanges.subscribe(() => {
-        this.cd.markForCheck();
-      });
+      if (this.dataSource._internalDetectChanges) {
+        this._dataSourceChangesSub = this.dataSource._internalDetectChanges.subscribe(() => {
+          this.cd.markForCheck();
+        });
+      }
     }
-  }
-
-  public onShowSettingsClicked() {
-    this.showSettingsClicked.emit();
-  }
-
-  public onRefreshDataClicked() {
-    this.refreshDataClicked.emit();
   }
 
   public onSortChanged(sort: Sort) {

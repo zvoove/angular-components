@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, viewChild } from '@angular/core';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 import { NgTemplateOutlet } from '@angular/common';
@@ -27,24 +27,13 @@ import { ZvTableActionTypePipe } from '../pipes/table-actions-type.pipe';
     ZvTableActionTypePipe,
   ],
 })
-export class ZvTableActionsComponent implements OnChanges {
-  @Input() public root = true;
-  @Input() public actions: IZvTableAction<unknown>[];
-  @Input() public items: unknown[];
-  @Input() public refreshable: boolean;
-  @Input() public loading: boolean;
-  @Input() public settingsEnabled: boolean;
+export class ZvTableActionsComponent<T> {
+  public root = input<boolean>(true);
+  public actions = input.required<IZvTableAction<T>[]>();
+  public items = input.required<T[]>();
+  public loading = input<boolean>(false);
 
-  @Output() public readonly refreshData = new EventEmitter<void>();
-  @Output() public readonly showSettings = new EventEmitter<void>();
+  public showIcon = computed(() => this.root() || this.actions().some((x) => x.icon));
 
-  public showIcon: boolean;
-
-  @ViewChild('menu', { static: true }) menu: MatMenu;
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.root || changes.actions) {
-      this.showIcon = this.root || this.actions?.some((x) => x.icon);
-    }
-  }
+  public menu = viewChild.required<MatMenu>('menu');
 }

@@ -111,22 +111,22 @@ describe('ZvTableSearchComponent', () => {
     component.debounceTime = 100;
 
     component.searchText = 'text';
-    component.tableSearch.currentSearchText = '';
+    component.tableSearch.currentSearchText.set('');
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText = '';
-    component.tableSearch.currentSearchText = 'text';
+    component.tableSearch.currentSearchText.set('text');
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText = 'text';
-    component.tableSearch.currentSearchText = 'text';
+    component.tableSearch.currentSearchText.set('text');
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText = '';
-    component.tableSearch.currentSearchText = '';
+    component.tableSearch.currentSearchText.set('');
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.directive(MatIconButton))).toBe(null);
   }));

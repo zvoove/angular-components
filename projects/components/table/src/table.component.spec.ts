@@ -787,7 +787,7 @@ describe('ZvTableComponent', () => {
         expect(listActions.length).toEqual(3);
 
         spyOn(component.table.dataSource, 'updateData');
-        await listActionsMenu.clickItem({ text: 'refreshRefresh list' });
+        await listActionsMenu.clickItem({ text: 'refresh Refresh list' });
         expect(component.table.dataSource.updateData).toHaveBeenCalled();
       });
 
@@ -799,7 +799,7 @@ describe('ZvTableComponent', () => {
         const listActions = await listActionsMenu.getItems();
         expect(listActions.length).toEqual(2);
         expect(await listActions[0].getText()).toEqual('check custom action');
-        expect(await listActions[1].getText()).toEqual('settingsList settings');
+        expect(await listActions[1].getText()).toEqual('settings List settings');
       });
 
       it('should flip to settings', async () => {
@@ -809,7 +809,7 @@ describe('ZvTableComponent', () => {
         expect(listActions.length).toEqual(3);
 
         expect(await table.getSettingsHarness()).toBeNull();
-        await listActionsMenu.clickItem({ text: 'settingsList settings' });
+        await listActionsMenu.clickItem({ text: 'settings List settings' });
         expect(await table.getSettingsHarness()).toBeDefined();
       });
 
@@ -821,7 +821,7 @@ describe('ZvTableComponent', () => {
         const listActions = await listActionsMenu.getItems();
         expect(listActions.length).toEqual(2);
         expect(await listActions[0].getText()).toEqual('check custom action');
-        expect(await listActions[1].getText()).toEqual('refreshRefresh list');
+        expect(await listActions[1].getText()).toEqual('refresh Refresh list');
       });
 
       it('should call customListAction', async () => {

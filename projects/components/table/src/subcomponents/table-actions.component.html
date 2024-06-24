@@ -4,13 +4,13 @@ mat-menu-item has to be in the same template as the parent mat-menu otherwise th
 https://github.com/angular/components/issues/16457
 -->
 <mat-menu #menu>
-  <zv-block-ui [blocked]="loading">
+  <zv-block-ui [blocked]="loading()">
     <ng-template matMenuContent>
-      @for (action of actions; track action) {
+      @for (action of actions(); track action) {
         @switch (action | zvTableActionType) {
           @case ('button') {
-            <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items)" (click)="action.actionFn(items)">
-              @if (showIcon) {
+            <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items())" (click)="action.actionFn(items())">
+              @if (showIcon()) {
                 <ng-container
                   ngProjectAs="mat-icon"
                   [ngTemplateOutlet]="actionIcon"
@@ -21,8 +21,8 @@ https://github.com/angular/components/issues/16457
             </button>
           }
           @case ('link') {
-            <a mat-menu-item [routerLink]="action.routerLink(items).path" [queryParams]="action.routerLink(items).queryParams">
-              @if (showIcon) {
+            <a mat-menu-item [routerLink]="action.routerLink(items()).path" [queryParams]="action.routerLink(items()).queryParams">
+              @if (showIcon()) {
                 <ng-container
                   ngProjectAs="mat-icon"
                   [ngTemplateOutlet]="actionIcon"
@@ -33,8 +33,8 @@ https://github.com/angular/components/issues/16457
             </a>
           }
           @case ('menu') {
-            <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu">
-              @if (showIcon) {
+            <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu()">
+              @if (showIcon()) {
                 <ng-container
                   ngProjectAs="mat-icon"
                   [ngTemplateOutlet]="actionIcon"
@@ -45,24 +45,12 @@ https://github.com/angular/components/issues/16457
             </button>
             <zv-table-actions
               #innerPanel
-              [actions]="action.children | zvTableActionsToRender: items"
-              [items]="items"
+              [actions]="action.children | zvTableActionsToRender: items()"
+              [items]="items()"
               [root]="false"
             ></zv-table-actions>
           }
         }
-      }
-      @if (refreshable) {
-        <button type="button" mat-menu-item (click)="refreshData.emit()">
-          <mat-icon>refresh</mat-icon>
-          <ng-container i18n="@@zvc.refreshList">Refresh list</ng-container>
-        </button>
-      }
-      @if (settingsEnabled) {
-        <button type="button" mat-menu-item (click)="showSettings.emit()">
-          <mat-icon>settings</mat-icon>
-          <ng-container i18n="@@zvc.listSettings">List settings</ng-container>
-        </button>
       }
     </ng-template>
   </zv-block-ui>

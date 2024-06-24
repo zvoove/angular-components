@@ -3,8 +3,7 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { NEVER, of, Subject, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 
-import { ZvTableDataSource, ZvTableDataSourceOptions } from '../data/table-data-source';
-import { IExtendedZvTableUpdateDataInfo } from '../models';
+import { ZvTableDataSource, ZvTableDataSourceOptions, IExtendedZvTableUpdateDataInfo } from '../data/table-data-source';
 
 describe('ZvTableDataSource', () => {
   it('should have sensible default values', fakeAsync(() => {

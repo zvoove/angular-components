@@ -1,14 +1,20 @@
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
 import { TrackByFunction } from '@angular/core';
-import { BehaviorSubject, NEVER, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, NEVER, Observable, Subject, Subscription, of } from 'rxjs';
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 import { _isNumberValue } from '../helper/table.helper';
-import { IExtendedZvTableUpdateDataInfo, IZvTableAction, IZvTableUpdateDataInfo, ZvTableActionScope } from '../models';
+import { ITableDataSource, IZvTableAction, IZvTableUpdateDataInfo, ZvTableActionScope } from '../models';
 /**
  * Corresponds to `Number.MAX_SAFE_INTEGER`. Moved out into a variable here due to
  * flaky browser support and the value not being defined in Closure's typings.
  */
 const MAX_SAFE_INTEGER = 9007199254740991;
+
+export interface IExtendedZvTableUpdateDataInfo<TTrigger> extends IZvTableUpdateDataInfo {
+  currentPage: number;
+  pageSize: number;
+  triggerData: TTrigger;
+}
 
 export interface ZvTableDataSourceOptions<TData, TTrigger = any> {
   loadTrigger$?: Observable<TTrigger>;
@@ -30,7 +36,7 @@ export interface IZvTableFilterResult<T> {
 
 export declare type ZvTableMode = 'client' | 'server';
 
-export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> {
+export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implements ITableDataSource<T> {
   /** Subject that emits, when the table should be checked by the change detection */
   public _internalDetectChanges = new Subject<void>();
 

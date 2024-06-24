@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, input, model, output } from '@angular/core';
 import { MatMiniFabButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -16,29 +16,29 @@ import { IZvTableSort, IZvTableSortDefinition } from '../models';
   imports: [MatFormField, MatLabel, MatSelect, MatOption, MatMiniFabButton, MatIcon],
 })
 export class ZvTableSortComponent {
-  @Input() public sortColumn: string;
-  @Input() public sortDirection: 'asc' | 'desc';
-  @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
-  @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
+  public sortColumn = model.required<string>();
+  public sortDirection = model.required<'asc' | 'desc'>();
+  public sortDefinitions = input<IZvTableSortDefinition[]>([]);
+  public readonly sortChanged = output<IZvTableSort>();
 
   public onSortColumnChange(event: MatSelectChange) {
-    if (this.sortColumn !== event.value) {
-      this.sortColumn = event.value;
+    if (this.sortColumn() !== event.value) {
+      this.sortColumn.set(event.value);
       this.emitChange();
     }
   }
 
   public onSortDirectionChange(dir: 'asc' | 'desc') {
-    if (this.sortDirection !== dir) {
-      this.sortDirection = dir;
+    if (this.sortDirection() !== dir) {
+      this.sortDirection.set(dir);
       this.emitChange();
     }
   }
 
   private emitChange() {
     this.sortChanged.emit({
-      sortColumn: this.sortColumn,
-      sortDirection: this.sortDirection,
+      sortColumn: this.sortColumn(),
+      sortDirection: this.sortDirection(),
     });
   }
 }

@@ -1,7 +1,7 @@
 <mat-form-field>
   <mat-label i18n="@@zvc.sorting">Sorting</mat-label>
   <mat-select [value]="sortColumn" (selectionChange)="onSortColumnChange($event)">
-    @for (sortDefinition of sortDefinitions; track sortDefinition.prop) {
+    @for (sortDefinition of sortDefinitions(); track sortDefinition.prop) {
       <mat-option [value]="sortDefinition.prop">{{ sortDefinition.displayName }}</mat-option>
     }
   </mat-select>
@@ -11,7 +11,7 @@
   type="button"
   (click)="onSortDirectionChange('desc')"
   class="zv-table-sort__dir-button"
-  [class.zv-table-sort__dir-button--inactive]="sortDirection !== 'desc'"
+  [class.zv-table-sort__dir-button--inactive]="sortDirection() !== 'desc'"
 >
   <mat-icon>arrow_downward</mat-icon>
 </button>
@@ -20,7 +20,7 @@
   type="button"
   (click)="onSortDirectionChange('asc')"
   class="zv-table-sort__dir-button"
-  [class.zv-table-sort__dir-button--inactive]="sortDirection !== 'asc'"
+  [class.zv-table-sort__dir-button--inactive]="sortDirection() !== 'asc'"
 >
   <mat-icon>arrow_upward</mat-icon>
 </button>

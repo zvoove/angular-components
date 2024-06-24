@@ -70,19 +70,10 @@
   <ng-container matColumnDef="options">
     <th class="zv-table-data__options-column-header" mat-header-cell *matHeaderCellDef>
       @if (showListActions) {
-        <button mat-icon-button type="button" [matMenuTriggerFor]="listActionsComponent.menu">
+        <button mat-icon-button type="button" [matMenuTriggerFor]="listActionsComponent.menu()">
           <mat-icon>more_vert</mat-icon>
         </button>
-        <zv-table-actions
-          #listActionsComponent
-          [actions]="dataSource.listActions"
-          [items]="getSelectedRows()"
-          [refreshable]="refreshable"
-          [settingsEnabled]="settingsEnabled"
-          (refreshData)="onRefreshDataClicked()"
-          (showSettings)="onShowSettingsClicked()"
-        >
-        </zv-table-actions>
+        <zv-table-actions #listActionsComponent [actions]="listActions" [items]="getSelectedRows()"> </zv-table-actions>
       }
     </th>
     <td class="zv-table-data__options-column" mat-cell *matCellDef="let element">

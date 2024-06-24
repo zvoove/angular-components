@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, Output, ViewEncapsulation, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation, computed, input, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatOption } from '@angular/material/core';
 import { MatFormField } from '@angular/material/form-field';
@@ -23,7 +23,7 @@ export class ZvTablePaginationComponent implements OnDestroy {
   public pageSizeOptions = input.required<number[]>();
   public pageDebounce = input.required<number>();
 
-  @Output() public readonly page = new EventEmitter<PageEvent>();
+  public readonly page = output<PageEvent>();
 
   public pages = computed(() => {
     const pageCount = Math.ceil(this.dataLength() / this.pageSize());

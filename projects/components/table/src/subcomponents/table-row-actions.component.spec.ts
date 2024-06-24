@@ -31,7 +31,7 @@ export class TestComponent {
   public item: any = {};
   public moreMenuThreshold = 2;
 
-  @ViewChild(ZvTableRowActionsComponent, { static: true }) comp: ZvTableRowActionsComponent;
+  @ViewChild(ZvTableRowActionsComponent, { static: true }) comp: ZvTableRowActionsComponent<any>;
 
   public onSearchChanged(_event: string) {}
 }

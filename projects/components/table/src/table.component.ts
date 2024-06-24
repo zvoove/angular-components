@@ -27,7 +27,6 @@ import { ZvExceptionMessageExtractor } from '@zvoove/components/core';
 import { ZvFlipContainerComponent, ZvFlipContainerModule } from '@zvoove/components/flip-container';
 import { Subscription, combineLatest } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { ZvTableDataSource } from './data/table-data-source';
 import {
   ZvTableColumn,
   ZvTableCustomHeaderTemplate,
@@ -36,7 +35,7 @@ import {
   ZvTableTopButtonSectionTemplate,
 } from './directives/table.directives';
 import { ZvTableStateManager, ZvTableUrlStateManager } from './helper/state-manager';
-import { IZvTableSort, IZvTableSortDefinition, IZvTableUpdateDataInfo } from './models';
+import { ITableDataSource, IZvTableSort, IZvTableSortDefinition, IZvTableUpdateDataInfo } from './models';
 import { IZvTableSetting, ZvTableSettingsService } from './services/table-settings.service';
 import { ZvTableDataComponent } from './subcomponents/table-data.component';
 import { ZvTableHeaderComponent } from './subcomponents/table-header.component';
@@ -67,7 +66,7 @@ import { ZvTableSettingsComponent } from './subcomponents/table-settings.compone
 })
 export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @Input() public caption: string;
-  @Input({ required: true }) public dataSource: ZvTableDataSource<any, any>;
+  @Input({ required: true }) public dataSource: ITableDataSource<any>;
   @Input({ required: true }) public tableId: string;
   @Input()
   public set sortDefinitions(value: IZvTableSortDefinition[]) {
@@ -297,7 +296,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   }
 
   public onRefreshDataClicked() {
-    this.dataSource.updateData();
+    this.dataSource.updateData(true);
   }
 
   public onSettingsSaved() {

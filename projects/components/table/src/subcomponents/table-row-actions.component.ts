@@ -1,16 +1,17 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
-import { IZvTableAction } from '../models';
-import { isObservable, Observable, of, Subject, Subscription } from 'rxjs';
-import { catchError, finalize, take, takeUntil } from 'rxjs/operators';
-import { ZvTableActionTypePipe } from '../pipes/table-actions-type.pipe';
-import { ZvTableActionsToRenderPipe } from '../pipes/table-actions-to-render.pipe';
-import { RouterLink } from '@angular/router';
 import { NgTemplateOutlet } from '@angular/common';
-import { MatTooltip } from '@angular/material/tooltip';
-import { ZvTableActionsComponent } from './table-actions.component';
-import { MatIcon } from '@angular/material/icon';
-import { MatMenuTrigger, MatMenuItem } from '@angular/material/menu';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
+import { NEVER, Observable, isObservable, of } from 'rxjs';
+import { catchError, finalize, first, switchMap } from 'rxjs/operators';
+import { IZvTableAction } from '../models';
+import { ZvTableActionsToRenderPipe } from '../pipes/table-actions-to-render.pipe';
+import { ZvTableActionTypePipe } from '../pipes/table-actions-type.pipe';
+import { ZvTableActionsComponent } from './table-actions.component';
 
 @Component({
   selector: 'zv-table-row-actions',
@@ -30,90 +31,61 @@ import { MatIconButton } from '@angular/material/button';
     ZvTableActionTypePipe,
   ],
 })
-export class ZvTableRowActionsComponent implements OnChanges, OnDestroy {
-  @Input() public root = true;
-  @Input() public actions: IZvTableAction<any>[];
-  @Input() public loadActionsFn: (data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]>;
-  @Input() public openMenuFn: (
-    data: any,
-    actions: IZvTableAction<any>[]
-  ) => Observable<IZvTableAction<any>[]> | IZvTableAction<any>[] | null;
-  @Input() public moreMenuThreshold: number;
-  @Input() public item: any;
+export class ZvTableRowActionsComponent<T> {
+  public root = input<boolean>(true);
+  public item = input.required<T>();
+  public actions = input.required<IZvTableAction<T>[]>();
+  public loadActionsFn = input<(data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]>>();
+  public openMenuFn = input<(data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]> | IZvTableAction<T>[] | null>();
+  public moreMenuThreshold = input<number>();
 
-  public itemAsArray: any[];
-  public loading: boolean;
+  public loadedActions = signal<IZvTableAction<T>[] | null>(null);
+  public loading = signal<boolean>(false);
 
-  private _loadActionsFnSubscription: Subscription;
-  private _ngUnsubscribe$ = new Subject<void>();
+  public itemAsArray = computed(() => [this.item()]);
+  public combinedActions = computed(() => this.loadedActions() ?? this.actions());
 
-  constructor(private cd: ChangeDetectorRef) {}
+  private _destroyRef = inject(DestroyRef);
 
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes.item) {
-      this.itemAsArray = [this.item];
-    }
-
-    if (changes.loadActionsFn) {
-      this.updateLoadActionsFnSubscription();
-    }
-  }
-
-  public ngOnDestroy(): void {
-    this._ngUnsubscribe$.next();
-    this._ngUnsubscribe$.complete();
-  }
-
-  public onMenuButtonClicked() {
-    if (!this.openMenuFn) {
-      return;
-    }
-
-    const openMenuFnResult = this.openMenuFn(this.item, [...this.actions]);
-
-    if (isObservable(openMenuFnResult)) {
-      this.loading = true;
-      openMenuFnResult
-        .pipe(
-          take(1),
-          finalize(() => (this.loading = false)),
-          catchError((err) => {
-            this.loading = false;
-            return of(err);
-          }),
-          takeUntil(this._ngUnsubscribe$)
-        )
-        .subscribe((newActions) => {
-          this.updateActions(newActions);
-          this.loading = false;
-        });
-    } else if (openMenuFnResult && Array.isArray(openMenuFnResult)) {
-      this.updateActions(openMenuFnResult);
-    }
-  }
-
-  private updateLoadActionsFnSubscription(): void {
-    if (!this.loadActionsFn) {
-      return;
-    }
-
-    this._loadActionsFnSubscription?.unsubscribe();
-
-    this._loadActionsFnSubscription = this.loadActionsFn(this.item, [...this.actions])
+  constructor() {
+    toObservable(this.loadActionsFn)
       .pipe(
-        catchError((err) => {
-          this.loading = false;
-          return of(err);
+        switchMap((loadActionsFn) => {
+          if (!loadActionsFn) {
+            return NEVER;
+          }
+          this.loading.set(true);
+          return loadActionsFn(this.item(), [...this.actions()]);
         }),
-        takeUntil(this._ngUnsubscribe$)
+        takeUntilDestroyed()
       )
-      .subscribe((newActions) => {
-        this.updateActions(newActions);
+      .subscribe((actions) => {
+        this.loading.set(false);
+        this.loadedActions.set(actions);
       });
   }
 
-  private updateActions(newActions: IZvTableAction<any>[]): void {
-    this.actions = newActions && newActions.length > 0 ? newActions : this.actions;
-    this.cd.markForCheck();
+  public onMenuButtonClicked() {
+    if (!this.openMenuFn()) {
+      return;
+    }
+
+    const openMenuFnResult = this.openMenuFn()(this.item(), [...this.actions()]);
+
+    if (isObservable(openMenuFnResult)) {
+      this.loading.set(true);
+      openMenuFnResult
+        .pipe(
+          first(),
+          finalize(() => this.loading.set(false)),
+          catchError((err) => of(err)),
+          takeUntilDestroyed(this._destroyRef)
+        )
+        .subscribe((newActions) => {
+          this.loadedActions.set(newActions);
+        });
+    } else if (openMenuFnResult && Array.isArray(openMenuFnResult)) {
+      this.loadedActions.set(openMenuFnResult);
+    }
   }
 }
