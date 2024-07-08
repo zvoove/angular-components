@@ -1,23 +1,21 @@
 <div class="zv-header__text">
   <div class="zv-header__caption mat-headline-6">
-    <ng-container *ngIf="caption; else customCaptionTemplate">
+    @if (caption) {
       {{ caption }}
-    </ng-container>
+    } @else {
+      <ng-container [ngTemplateOutlet]="captionSection"></ng-container>
+    }
   </div>
   <div class="zv-header__description mat-body">
-    <ng-container *ngIf="description; else customDescriptionTemplate">
+    @if (description) {
       {{ description }}
-    </ng-container>
+    } @else {
+      <ng-container [ngTemplateOutlet]="descriptionSection"></ng-container>
+    }
   </div>
 </div>
-<div *ngIf="topButtonSection" class="zv-header__actions">
-  <ng-container [ngTemplateOutlet]="topButtonSection"></ng-container>
-</div>
-
-<ng-template #customCaptionTemplate>
-  <ng-container [ngTemplateOutlet]="captionSection"></ng-container>
-</ng-template>
-
-<ng-template #customDescriptionTemplate>
-  <ng-container [ngTemplateOutlet]="descriptionSection"></ng-container>
-</ng-template>
+@if (topButtonSection) {
+  <div class="zv-header__actions">
+    <ng-container [ngTemplateOutlet]="topButtonSection"></ng-container>
+  </div>
+}

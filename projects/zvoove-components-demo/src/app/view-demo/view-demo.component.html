@@ -11,6 +11,8 @@
     <mat-card style="height: 500px; margin-top: 1em">dummy card</mat-card>
   </zv-view>
   <mat-card class="app-view-data-source-demo__logs">
-    <div *ngFor="let log of logs" class="app-view-data-source-demo__log-item">{{ log | json }}</div>
+    @for (log of logs; track log) {
+      <div class="app-view-data-source-demo__log-item">{{ log | json }}</div>
+    }
   </mat-card>
 </div>

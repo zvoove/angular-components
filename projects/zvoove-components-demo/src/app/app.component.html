@@ -2,15 +2,11 @@
   &#64;zvoove/components
   <div class="app-root__locale-box">
     LOCALE_ID:
-    <button
-      *ngFor="let locale of supportedLocales; trackBy: trackByString"
-      mat-button
-      type="button"
-      (click)="setLocaleId(locale)"
-      [class.app-root__locale-active]="locale === localeId"
-    >
-      {{ locale }}
-    </button>
+    @for (locale of supportedLocales; track trackByString($index, locale)) {
+      <button mat-button type="button" (click)="setLocaleId(locale)" [class.app-root__locale-active]="locale === localeId">
+        {{ locale }}
+      </button>
+    }
   </div>
 </mat-toolbar>
 <mat-sidenav-container class="app-root__sidenav-container">
@@ -44,8 +40,8 @@
     </mat-nav-list>
   </mat-sidenav>
   <!--
-    margin-left will be overwritten by the component to the corrent one, after angular is instantiated.
-    But if we don't set it here now, then SSR will render margin-left: 0; and it will flicker on the first load
+  margin-left will be overwritten by the component to the corrent one, after angular is instantiated.
+  But if we don't set it here now, then SSR will render margin-left: 0; and it will flicker on the first load
   -->
   <mat-sidenav-content class="app-root__sidenav-content" style="margin-left: 153px">
     <router-outlet></router-outlet>

@@ -31,7 +31,6 @@
       <mat-select [(ngModel)]="subscriptType">
         <mat-option [value]="'single-line'">material default</mat-option>
         <mat-option [value]="'resize'">auto height</mat-option>
-        <mat-option [value]="'bubble'">bubble</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field style="margin: 0.5em">
@@ -46,177 +45,200 @@
         Use the following style to align the heights of checkboxes, radio groups and sliders for outline appearance. <br />
         CSS rules may need adjustments if you do not use the default material typography.
         <pre>
-            {{
+          {{
             '
-.zv-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider {
-  margin: -1em 0;
-  width: 100%;
-}
+          .zv-form-field-type-mat-slider .mat-form-field-appearance-outline mat-slider {
+          margin: -1em 0;
+          width: 100%;
+        }
 
-.zv-form-field-type-mat-radio-group .mat-form-field-appearance-outline .mat-mdc-form-field-infix,
-.zv-form-field-type-mat-mdc-checkbox .mat-form-field-appearance-outline .mat-mdc-form-field-infix {
-  padding: 0.5em 0;
-}
-              '
+        .zv-form-field-type-mat-radio-group .mat-form-field-appearance-outline .mat-mdc-form-field-infix,
+        .zv-form-field-type-mat-mdc-checkbox .mat-form-field-appearance-outline .mat-mdc-form-field-infix {
+        padding: 0.5em 0;
+      }
+      '
           }}
-          </pre
+      </pre
         >
       </li>
     </ul>
   </div>
-  <div
-    *ngIf="showControls"
-    [formGroup]="form"
-    style="display: grid; grid-template-columns: repeat(6, min-content); grid-auto-rows: min-content; grid-gap: 5px"
-  >
-    <div>Referenz Column</div>
-    <div>Control Column</div>
-    <div>Referenz Column</div>
-    <div>Control Column</div>
-    <div>Referenz Column</div>
-    <div>Control Column</div>
-    <div>
-      <div *ngFor="let i of ctrlCountNumbers">
-        <app-reference-column
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-          [required]="required"
-        ></app-reference-column>
-      </div>
-    </div>
-    <div>
+  @if (showControls) {
+    <div
+      [formGroup]="form"
+      style="display: grid; grid-template-columns: repeat(6, min-content); grid-auto-rows: min-content; grid-gap: 5px"
+    >
+      <div>Referenz Column</div>
+      <div>Control Column</div>
+      <div>Referenz Column</div>
+      <div>Control Column</div>
+      <div>Referenz Column</div>
+      <div>Control Column</div>
       <div>
-        <app-reference-column
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-          [required]="required"
-        ></app-reference-column>
+        @for (i of ctrlCountNumbers; track i) {
+          <div>
+            <app-reference-column
+              [hint]="hintText"
+              [hintToggle]="hintToggle"
+              [subscriptType]="subscriptType"
+              [required]="required"
+            ></app-reference-column>
+          </div>
+        }
       </div>
       <div>
-        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-          <mat-label *ngIf="customLabel">Custom Label</mat-label>
-          <mat-select formControlName="select">
-            <mat-option [value]="null"><i>keine Auswahl</i></mat-option>
-            <mat-option value="item_ok">Ok</mat-option>
-            <mat-option value="item_error">Error</mat-option>
-          </mat-select>
-        </zv-form-field>
-      </div>
-      <div>
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
-      </div>
-      <div>
-        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-          <mat-label *ngIf="customLabel">Custom Label</mat-label>
-          <mat-icon matPrefix class="app-form-example__icon">home</mat-icon>
-          <input matInput formControlName="prefixText" type="text" />
-          <mat-icon matSuffix class="app-form-example__icon">phone</mat-icon>
-        </zv-form-field>
-      </div>
-      <div>
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
-      </div>
-      <div>
-        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-          <mat-label *ngIf="customLabel">Custom Label</mat-label>
-          <mat-slider><input matSliderThumb formControlName="slider" /></mat-slider>
-        </zv-form-field>
-      </div>
-      <div>
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
-      </div>
-    </div>
-    <div>
-      <div *ngFor="let i of ctrlCountNumbers">
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
-      </div>
-    </div>
-    <div>
-      <div>
-        <app-reference-column
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-          [required]="required"
-        ></app-reference-column>
-      </div>
-      <div>
-        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-          <mat-checkbox formControlName="checkbox"></mat-checkbox>
-        </zv-form-field>
-      </div>
-      <div>
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
-      </div>
-      <div>
-        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-          <mat-checkbox formControlName="checkbox">{{ asyncLabel$ | async }}</mat-checkbox>
-        </zv-form-field>
-      </div>
-      <div>
-        <app-reference-column
-          [hint]="hintText"
-          [hintToggle]="hintToggle"
-          [subscriptType]="subscriptType"
-          [required]="required"
-        ></app-reference-column>
-      </div>
-      <div>
-        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-          <mat-label *ngIf="customLabel">Custom Label</mat-label>
-          <mat-radio-group formControlName="radio" style="display: flex; place-content: end space-between">
-            <mat-radio-button [value]="true" style="padding-right: 8px">Ja</mat-radio-button>
-            <mat-radio-button [value]="false" style="padding-right: 8px">Nein</mat-radio-button>
-            <button
-              mat-icon-button
-              [disabled]="form.controls.radio.disabled || form.controls.radio.value === null"
-              (click)="form.controls.radio.patchValue(null)"
-              style="height: 40px; width: 40px; padding-left: 10px"
-            >
-              <mat-icon style="line-height: 20px">clear</mat-icon>
-            </button>
-          </mat-radio-group>
-        </zv-form-field>
-      </div>
-      <div>
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
-      </div>
-    </div>
-    <div>
-      <div *ngFor="let i of ctrlCountNumbers">
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
-      </div>
-    </div>
-    <div>
-      <div>
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
-      </div>
-      <div>
-        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-          <mat-label *ngIf="customLabel">Custom Label</mat-label>
-          <zv-select
-            formControlName="zvSelect"
-            [dataSource]="{ mode: 'id', idKey: 'key', labelKey: 'label', items: zvSelectData }"
+        <div>
+          <app-reference-column
+            [hint]="hintText"
+            [hintToggle]="hintToggle"
+            [subscriptType]="subscriptType"
             [required]="required"
-          ></zv-select>
-        </zv-form-field>
+          ></app-reference-column>
+        </div>
+        <div>
+          <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+            @if (customLabel) {
+              <mat-label>Custom Label</mat-label>
+            }
+            <mat-select formControlName="select">
+              <mat-option [value]="null"><i>keine Auswahl</i></mat-option>
+              <mat-option value="item_ok">Ok</mat-option>
+              <mat-option value="item_error">Error</mat-option>
+            </mat-select>
+          </zv-form-field>
+        </div>
+        <div>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        </div>
+        <div>
+          <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+            @if (customLabel) {
+              <mat-label>Custom Label</mat-label>
+            }
+            <mat-icon matPrefix class="app-form-example__icon">home</mat-icon>
+            <input matInput formControlName="prefixText" type="text" />
+            <mat-icon matSuffix class="app-form-example__icon">phone</mat-icon>
+          </zv-form-field>
+        </div>
+        <div>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        </div>
+        <div>
+          <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+            @if (customLabel) {
+              <mat-label>Custom Label</mat-label>
+            }
+            <mat-slider><input matSliderThumb formControlName="slider" /></mat-slider>
+          </zv-form-field>
+        </div>
+        <div>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        </div>
       </div>
       <div>
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        @for (i of ctrlCountNumbers; track i) {
+          <div>
+            <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          </div>
+        }
       </div>
       <div>
-        <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-          <mat-label *ngIf="customLabel">Custom Label</mat-label>
-          <zv-date-time-input formControlName="zvDateTimeInput" [matDatepicker]="datepickerRef" [required]="required"></zv-date-time-input>
-          <mat-datepicker-toggle matSuffix [for]="datepickerRef"></mat-datepicker-toggle>
-          <mat-datepicker #datepickerRef></mat-datepicker>
-        </zv-form-field>
+        <div>
+          <app-reference-column
+            [hint]="hintText"
+            [hintToggle]="hintToggle"
+            [subscriptType]="subscriptType"
+            [required]="required"
+          ></app-reference-column>
+        </div>
+        <div>
+          <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+            <mat-checkbox formControlName="checkbox"></mat-checkbox>
+          </zv-form-field>
+        </div>
+        <div>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        </div>
+        <div>
+          <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+            <mat-checkbox formControlName="checkbox">{{ asyncLabel$ | async }}</mat-checkbox>
+          </zv-form-field>
+        </div>
+        <div>
+          <app-reference-column
+            [hint]="hintText"
+            [hintToggle]="hintToggle"
+            [subscriptType]="subscriptType"
+            [required]="required"
+          ></app-reference-column>
+        </div>
+        <div>
+          <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+            @if (customLabel) {
+              <mat-label>Custom Label</mat-label>
+            }
+            <mat-radio-group formControlName="radio" style="display: flex; place-content: end space-between">
+              <mat-radio-button [value]="true" style="padding-right: 8px">Ja</mat-radio-button>
+              <mat-radio-button [value]="false" style="padding-right: 8px">Nein</mat-radio-button>
+              <button
+                mat-icon-button
+                [disabled]="form.controls.radio.disabled || form.controls.radio.value === null"
+                (click)="form.controls.radio.patchValue(null)"
+                style="height: 40px; width: 40px; padding-left: 10px"
+              >
+                <mat-icon style="line-height: 20px">clear</mat-icon>
+              </button>
+            </mat-radio-group>
+          </zv-form-field>
+        </div>
+        <div>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        </div>
       </div>
       <div>
-        <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        @for (i of ctrlCountNumbers; track i) {
+          <div>
+            <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          </div>
+        }
+      </div>
+      <div>
+        <div>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        </div>
+        <div>
+          <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+            @if (customLabel) {
+              <mat-label>Custom Label</mat-label>
+            }
+            <zv-select
+              formControlName="zvSelect"
+              [dataSource]="{ mode: 'id', idKey: 'key', labelKey: 'label', items: zvSelectData }"
+              [required]="required"
+            ></zv-select>
+          </zv-form-field>
+        </div>
+        <div>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        </div>
+        <div>
+          <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+            @if (customLabel) {
+              <mat-label>Custom Label</mat-label>
+            }
+            <zv-date-time-input
+              formControlName="zvDateTimeInput"
+              [matDatepicker]="datepickerRef"
+              [required]="required"
+            ></zv-date-time-input>
+            <mat-datepicker-toggle matSuffix [for]="datepickerRef"></mat-datepicker-toggle>
+            <mat-datepicker #datepickerRef></mat-datepicker>
+          </zv-form-field>
+        </div>
+        <div>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>

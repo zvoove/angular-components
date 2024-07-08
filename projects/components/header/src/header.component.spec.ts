@@ -11,13 +11,19 @@ import { ZvHeaderHarness } from './testing/header.harness';
   template: `
     <zv-header [caption]="caption" [description]="description">
       <ng-container *zvHeaderTopButtonSection>
-        <button mat-button color="accent" *ngIf="addButtons">testButton</button>
+        @if (addButtons) {
+          <button mat-button color="accent">testButton</button>
+        }
       </ng-container>
       <ng-container *zvHeaderCaptionSection>
-        <h1 style="background-color: cyan;" *ngIf="addCaptionTemplate">caption text</h1>
+        @if (addCaptionTemplate) {
+          <h1 style="background-color: cyan;">caption text</h1>
+        }
       </ng-container>
       <ng-container *zvHeaderDescriptionSection>
-        <span style="background-color: lightblue;" *ngIf="addDescriptionTemplate">description text</span>
+        @if (addDescriptionTemplate) {
+          <span style="background-color: lightblue;">description text</span>
+        }
       </ng-container>
     </zv-header>
   `,

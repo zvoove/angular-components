@@ -124,7 +124,7 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
-  imports: [CommonModule, MatIconTestingModule, ZvTableModule],
+  imports: [MatIconTestingModule, ZvTableModule],
 })
 export class TestComponent {
   public caption = 'title';

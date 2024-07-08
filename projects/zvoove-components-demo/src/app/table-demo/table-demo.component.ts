@@ -1,4 +1,4 @@
-import { DatePipe, JsonPipe, NgIf } from '@angular/common';
+import { DatePipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -99,7 +99,6 @@ function generateSampleData(rowCount: number): ISampleData[] {
     MatSelectModule,
     MatOptionModule,
     MatInputModule,
-    NgIf,
     ZvTableModule,
     JsonPipe,
     DatePipe,

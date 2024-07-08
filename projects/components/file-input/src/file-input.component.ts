@@ -3,7 +3,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { NgIf } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -37,7 +37,7 @@ let nextUniqueId = 0;
   templateUrl: './file-input.component.html',
   styleUrls: ['./file-input.component.scss'],
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, NgIf],
+  imports: [MatButtonModule, MatIconModule],
 
   // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {

@@ -107,80 +107,74 @@
       </mat-card>
     </div>
 
-    <zv-table
-      #table
-      *ngIf="show"
-      tableId="example"
-      [dataSource]="dataSource"
-      [caption]="caption"
-      [sortDefinitions]="
-        sortDefinitions && !disableAllSortable ? [{ displayName: 'custom: `${boolean}${string}`', prop: 'hiddenSortable' }] : null
-      "
-      [preferSortDropdown]="preferSortDropdown"
-      [refreshable]="refreshable"
-      [filterable]="filterable"
-      [showSettings]="showSettings"
-      [layout]="layout"
-      [striped]="striped"
-      [pageDebounce]="pageDebounce"
-      (page)="onPage($event)"
-    >
-      <zv-table-column [header]="'id'" property="id" [sortable]="!disableAllSortable"></zv-table-column>
-      <zv-table-column [header]="'number'" property="num" [sortable]="!disableAllSortable"></zv-table-column>
-      <zv-table-column [header]="'boolean'" property="bool" [sortable]="!disableAllSortable"></zv-table-column>
-      <zv-table-column
-        [header]="columnHeader"
-        property="date"
-        [mandatory]="columnMandatory"
-        [sortable]="columnSortable && !disableAllSortable"
-        [headerStyles]="columnHeaderStyles ? { color: 'green' } : null"
-        [columnStyles]="columnColumnStyles ? { color: 'green' } : null"
-        [width]="columnWidth"
+    @if (show) {
+      <zv-table
+        #table
+        tableId="example"
+        [dataSource]="dataSource"
+        [caption]="caption"
+        [sortDefinitions]="
+          sortDefinitions && !disableAllSortable ? [{ displayName: 'custom: `${boolean}${string}`', prop: 'hiddenSortable' }] : null
+        "
+        [preferSortDropdown]="preferSortDropdown"
+        [refreshable]="refreshable"
+        [filterable]="filterable"
+        [showSettings]="showSettings"
+        [layout]="layout"
+        [striped]="striped"
+        [pageDebounce]="pageDebounce"
+        (page)="onPage($event)"
       >
-        <ng-container *ngIf="columnHeaderTemplate">
-          <ng-container *zvTableColumnHeaderTemplate>
-            <i style="color: blue">date</i>
-          </ng-container>
-        </ng-container>
-        <ng-container *ngIf="columnColumnTemplate">
-          <ng-container *zvTableColumnTemplate="let item">
-            {{ item.date | date: 'yyyy-MM-dd HH:mm:ss' }}
-          </ng-container>
-        </ng-container>
-      </zv-table-column>
-      <zv-table-column [header]="'string'" property="str" [sortable]="!disableAllSortable"></zv-table-column>
-      <zv-table-column
-        [header]="'Custom row detail toggle'"
-        property="__custom"
-        [sortable]="false"
-        *ngIf="showCustomToggleColumn && expandable"
-      >
-        <ng-container *zvTableColumnTemplate="let item; let expanded = expanded">
-          <button (click)="table.toggleRowDetail(item)">Custom row detail expand button</button>
-        </ng-container>
-      </zv-table-column>
-      <zv-table-column [header]="'virtual column'" property="__virtual" [sortable]="false">
-        <ng-container *zvTableColumnTemplate="let item; let expanded = expanded"> expanded: {{ expanded }} </ng-container>
-      </zv-table-column>
-
-      <ng-container *ngIf="customHeader">
-        <div *zvTableCustomHeader style="border: 1px solid black; width: 100%">custom header</div>
-      </ng-container>
-
-      <ng-container *ngIf="customSettings">
-        <div *zvTableCustomSettings style="border: 1px solid black; width: 100%">custom settings</div>
-      </ng-container>
-
-      <ng-container *ngIf="customTopButton">
-        <div *zvTableTopButtonSection style="border: 1px solid black">custom button section</div>
-      </ng-container>
-
-      <ng-container *ngIf="expandable">
-        <zv-table-row-detail [expanded]="expanded" [showToggleColumn]="showToggleColumn">
-          <ng-container *zvTableRowDetailTemplate="let item"> item: {{ item.id }} expanded: {{ expanded }} </ng-container>
-        </zv-table-row-detail>
-      </ng-container>
-    </zv-table>
+        <zv-table-column [header]="'id'" property="id" [sortable]="!disableAllSortable"></zv-table-column>
+        <zv-table-column [header]="'number'" property="num" [sortable]="!disableAllSortable"></zv-table-column>
+        <zv-table-column [header]="'boolean'" property="bool" [sortable]="!disableAllSortable"></zv-table-column>
+        <zv-table-column
+          [header]="columnHeader"
+          property="date"
+          [mandatory]="columnMandatory"
+          [sortable]="columnSortable && !disableAllSortable"
+          [headerStyles]="columnHeaderStyles ? { color: 'green' } : null"
+          [columnStyles]="columnColumnStyles ? { color: 'green' } : null"
+          [width]="columnWidth"
+        >
+          @if (columnHeaderTemplate) {
+            <ng-container *zvTableColumnHeaderTemplate>
+              <i style="color: blue">date</i>
+            </ng-container>
+          }
+          @if (columnColumnTemplate) {
+            <ng-container *zvTableColumnTemplate="let item">
+              {{ item.date | date: 'yyyy-MM-dd HH:mm:ss' }}
+            </ng-container>
+          }
+        </zv-table-column>
+        <zv-table-column [header]="'string'" property="str" [sortable]="!disableAllSortable"></zv-table-column>
+        @if (showCustomToggleColumn && expandable) {
+          <zv-table-column [header]="'Custom row detail toggle'" property="__custom" [sortable]="false">
+            <ng-container *zvTableColumnTemplate="let item; let expanded = expanded">
+              <button (click)="table.toggleRowDetail(item)">Custom row detail expand button</button>
+            </ng-container>
+          </zv-table-column>
+        }
+        <zv-table-column [header]="'virtual column'" property="__virtual" [sortable]="false">
+          <ng-container *zvTableColumnTemplate="let item; let expanded = expanded"> expanded: {{ expanded }} </ng-container>
+        </zv-table-column>
+        @if (customHeader) {
+          <div *zvTableCustomHeader style="border: 1px solid black; width: 100%">custom header</div>
+        }
+        @if (customSettings) {
+          <div *zvTableCustomSettings style="border: 1px solid black; width: 100%">custom settings</div>
+        }
+        @if (customTopButton) {
+          <div *zvTableTopButtonSection style="border: 1px solid black">custom button section</div>
+        }
+        @if (expandable) {
+          <zv-table-row-detail [expanded]="expanded" [showToggleColumn]="showToggleColumn">
+            <ng-container *zvTableRowDetailTemplate="let item"> item: {{ item.id }} expanded: {{ expanded }} </ng-container>
+          </zv-table-row-detail>
+        }
+      </zv-table>
+    }
 
     <mat-card style="margin: 1em 0">
       <mat-card-content>Last page event: {{ pageEvent | json }} </mat-card-content>

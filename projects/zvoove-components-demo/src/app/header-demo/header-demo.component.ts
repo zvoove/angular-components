@@ -1,4 +1,4 @@
-import { DatePipe, NgFor } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -36,7 +36,7 @@ import { ZvHeaderModule } from '@zvoove/components/header';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ZvHeaderModule, MatCardModule, MatButtonModule, MatIconModule, NgFor, MatTabsModule, DatePipe],
+  imports: [ZvHeaderModule, MatCardModule, MatButtonModule, MatIconModule, MatTabsModule, DatePipe],
 })
 export class HeaderDemoComponent {
   public demoTableData = [

@@ -7,11 +7,11 @@
   grid-gap: 1em;
 }
 
-mat-card.zv-form__error-container {
+.zv-form__error-container {
   color: var(--zv-components-error);
 }
 
-mat-card.zv-form__error-container--center {
+.zv-form__error-container--center {
   display: grid;
   justify-items: center;
 }

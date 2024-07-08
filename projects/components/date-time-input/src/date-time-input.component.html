@@ -12,7 +12,9 @@
     (keydown)="_onDateInputKeydown($event)"
     #date
   />
-  <div class="zv-date-time__separator" *ngIf="shouldLabelFloat"></div>
+  @if (shouldLabelFloat) {
+    <div class="zv-date-time__separator"></div>
+  }
   <input
     class="zv-date-time__time mat-mdc-input-element mat-mdc-form-field-input-control"
     zvTime

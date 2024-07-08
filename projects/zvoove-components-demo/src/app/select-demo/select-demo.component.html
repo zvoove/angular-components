@@ -82,7 +82,7 @@
       </mat-card>
     </div>
 
-    <ng-container *ngIf="visible">
+    @if (visible) {
       <app-form-control-demo-card
         [type]="'form'"
         [formGroup]="form"
@@ -102,20 +102,19 @@
             [selectedLabel]="selectedLabel"
             [panelClass]="{ 'app-select-demo__panel': panelClass }"
           >
-            <ng-container *ngIf="customTriggerTpl">
+            @if (customTriggerTpl) {
               <ng-container *zvSelectTriggerTemplate="let item">
                 {{ item | json }}
               </ng-container>
-            </ng-container>
-            <ng-container *ngIf="customOptionTpl">
+            }
+            @if (customOptionTpl) {
               <ng-container *zvSelectOptionTemplate="let item">
                 {{ item | json }}
               </ng-container>
-            </ng-container>
+            }
           </zv-select>
         </zv-form-field>
       </app-form-control-demo-card>
-
       <app-form-control-demo-card [type]="'model'" [value]="ngModel" [codeFiles]="getCodeFiles('ngmodel')" [additionalData]="ngModelLogs">
         <zv-form-field>
           <mat-label>Your select</mat-label>
@@ -129,20 +128,19 @@
             [selectedLabel]="selectedLabel"
             [panelClass]="{ 'app-select-demo__panel': panelClass }"
           >
-            <ng-container *ngIf="customTriggerTpl">
+            @if (customTriggerTpl) {
               <ng-container *zvSelectTriggerTemplate="let item">
                 {{ item | json }}
               </ng-container>
-            </ng-container>
-            <ng-container *ngIf="customOptionTpl">
+            }
+            @if (customOptionTpl) {
               <ng-container *zvSelectOptionTemplate="let item">
                 {{ item | json }}
               </ng-container>
-            </ng-container>
+            }
           </zv-select>
         </zv-form-field>
       </app-form-control-demo-card>
-
       <app-form-control-demo-card [type]="'value'" [value]="value" [codeFiles]="getCodeFiles('value')" [additionalData]="valueLogs">
         <zv-form-field>
           <mat-label>Your select</mat-label>
@@ -156,20 +154,20 @@
             [selectedLabel]="selectedLabel"
             [panelClass]="{ 'app-select-demo__panel': panelClass }"
           >
-            <ng-container *ngIf="customTriggerTpl">
+            @if (customTriggerTpl) {
               <ng-container *zvSelectTriggerTemplate="let item">
                 {{ item | json }}
               </ng-container>
-            </ng-container>
-            <ng-container *ngIf="customOptionTpl">
+            }
+            @if (customOptionTpl) {
               <ng-container *zvSelectOptionTemplate="let item">
                 {{ item | json }}
               </ng-container>
-            </ng-container>
+            }
           </zv-select>
         </zv-form-field>
       </app-form-control-demo-card>
-    </ng-container>
+    }
   </ng-template>
 
   <ng-template appComponentPageContent [type]="'api'">

@@ -81,7 +81,9 @@ export class TestNgModelComponent {
   selector: 'zv-test-component',
   template: `
     <zv-form-field [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-      <mat-label *ngIf="customLabel">{{ customLabel }}</mat-label>
+      @if (customLabel) {
+        <mat-label>{{ customLabel }}</mat-label>
+      }
       <input type="text" [formControl]="formControl" matInput [required]="required" />
     </zv-form-field>
   `,

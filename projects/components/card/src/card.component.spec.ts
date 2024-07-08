@@ -13,19 +13,29 @@ import { ZvCardHarness } from './testing/card.harness';
   template: `
     <zv-card [caption]="caption" [description]="description">
       <ng-container *zvCardCaptionSection>
-        <h1 *ngIf="addCaptionTemplate">customCaption</h1>
+        @if (addCaptionTemplate) {
+          <h1>customCaption</h1>
+        }
       </ng-container>
       <ng-container *zvCardDescriptionSection>
-        <span *ngIf="addDescriptionTemplate">customDescription</span>
+        @if (addDescriptionTemplate) {
+          <span>customDescription</span>
+        }
       </ng-container>
       <ng-container *zvCardTopButtonSection>
-        <button *ngIf="addTopButton" mat-button>testTopButton</button>
+        @if (addTopButton) {
+          <button mat-button>testTopButton</button>
+        }
       </ng-container>
       <ng-container *zvCardFooterSection>
-        <span *ngIf="addFooterTemplate">testFooter</span>
+        @if (addFooterTemplate) {
+          <span>testFooter</span>
+        }
       </ng-container>
       <ng-container *zvCardActionsSection>
-        <button *ngIf="addCardActionButton" mat-button>testActionButton</button>
+        @if (addCardActionButton) {
+          <button mat-button>testActionButton</button>
+        }
       </ng-container>
       <h2>Test content</h2>
     </zv-card>

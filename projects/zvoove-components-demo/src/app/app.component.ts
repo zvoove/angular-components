@@ -6,7 +6,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
-import { NgFor } from '@angular/common';
+
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
@@ -15,7 +15,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatToolbarModule, NgFor, MatButtonModule, MatSidenavModule, MatListModule, RouterLink, MatDividerModule, RouterOutlet],
+  imports: [MatToolbarModule, MatButtonModule, MatSidenavModule, MatListModule, RouterLink, MatDividerModule, RouterOutlet],
 })
 export class AppComponent {
   supportedLocales = ['de', 'en-US', 'en-GB'];

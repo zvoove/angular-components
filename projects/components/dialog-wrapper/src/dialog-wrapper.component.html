@@ -1,58 +1,79 @@
 <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
-<h1 mat-dialog-title *ngIf="dialogTitle">
-  {{ dialogTitle }}
-</h1>
+@if (dialogTitle) {
+  <h1 mat-dialog-title>
+    {{ dialogTitle }}
+  </h1>
+}
 <mat-dialog-content>
-  <zv-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
-    <ng-content></ng-content>
-  </zv-block-ui>
+  @if (contentVisible) {
+    <zv-block-ui [blocked]="contentBlocked">
+      <ng-content></ng-content>
+    </zv-block-ui>
+  }
 </mat-dialog-content>
 <mat-dialog-actions class="zv-dialog-wrapper__action-bar-container">
   <div class="zv-dialog-wrapper__progress-container">
-    <mat-progress-bar *ngIf="showProgress" mode="determinate" [value]="progress" class="zv-dialog-wrapper__progres-bar"></mat-progress-bar>
+    @if (showProgress) {
+      <mat-progress-bar mode="determinate" [value]="progress" class="zv-dialog-wrapper__progres-bar"></mat-progress-bar>
+    }
   </div>
-  <div *ngIf="showProgress" class="zv-dialog-wrapper__progress-text">{{ progress }}%</div>
-  <div *ngIf="exception" class="zv-dialog-wrapper__error">
-    {{ exception.errorObject | zvErrorMessage }}
-  </div>
+  @if (showProgress) {
+    <div class="zv-dialog-wrapper__progress-text">{{ progress }}%</div>
+  }
+  @if (exception) {
+    <div class="zv-dialog-wrapper__error">
+      {{ exception.errorObject | zvErrorMessage }}
+    </div>
+  }
   <div class="zv-dialog-wrapper__buttons">
-    <ng-container *ngFor="let btn of buttons" [ngSwitch]="btn.type">
-      <button
-        *ngSwitchCase="'raised'"
-        type="button"
-        class="zv-dialog-wrapper__action-button"
-        mat-raised-button
-        [color]="btn.color"
-        [disabled]="btn.disabled && btn.disabled()"
-        (click)="btn.click()"
-      >
-        <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon
-        >{{ btn.label }}
-      </button>
-      <button
-        *ngSwitchCase="'stroked'"
-        type="button"
-        class="zv-dialog-wrapper__action-button"
-        mat-stroked-button
-        [color]="btn.color"
-        [disabled]="btn.disabled && btn.disabled()"
-        (click)="btn.click()"
-      >
-        <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon
-        >{{ btn.label }}
-      </button>
-      <button
-        *ngSwitchCase="'icon'"
-        type="button"
-        class="zv-dialog-wrapper__action-button"
-        mat-icon-button
-        [color]="btn.color"
-        [disabled]="btn.disabled && btn.disabled()"
-        (click)="btn.click()"
-      >
-        <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon
-        >{{ btn.label }}
-      </button>
-    </ng-container>
+    @for (btn of buttons; track btn) {
+      @switch (btn.type) {
+        @case ('raised') {
+          <button
+            type="button"
+            class="zv-dialog-wrapper__action-button"
+            mat-raised-button
+            [color]="btn.color"
+            [disabled]="btn.disabled && btn.disabled()"
+            (click)="btn.click()"
+          >
+            @if (btn.icon) {
+              <mat-icon>{{ btn.icon }}</mat-icon>
+            }
+            {{ btn.label }}
+          </button>
+        }
+        @case ('stroked') {
+          <button
+            type="button"
+            class="zv-dialog-wrapper__action-button"
+            mat-stroked-button
+            [color]="btn.color"
+            [disabled]="btn.disabled && btn.disabled()"
+            (click)="btn.click()"
+          >
+            @if (btn.icon) {
+              <mat-icon>{{ btn.icon }}</mat-icon>
+            }
+            {{ btn.label }}
+          </button>
+        }
+        @case ('icon') {
+          <button
+            type="button"
+            class="zv-dialog-wrapper__action-button"
+            mat-icon-button
+            [color]="btn.color"
+            [disabled]="btn.disabled && btn.disabled()"
+            (click)="btn.click()"
+          >
+            @if (btn.icon) {
+              <mat-icon>{{ btn.icon }}</mat-icon>
+            }
+            {{ btn.label }}
+          </button>
+        }
+      }
+    }
   </div>
 </mat-dialog-actions>

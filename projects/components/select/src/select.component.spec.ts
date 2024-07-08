@@ -155,11 +155,14 @@ const ITEMS = {
       [selectedLabel]="selectedLabel"
     >
       <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
-      <ng-container *ngIf="customTemplate">
+      @if (customTemplate) {
         <ng-container *zvSelectTriggerTemplate="let items"
-          >custom:<span *ngFor="let item of items">{{ item.value }}:</span></ng-container
-        >
-      </ng-container>
+          >custom:
+          @for (item of items; track item) {
+            <span>{{ item.value }}:</span>
+          }
+        </ng-container>
+      }
     </zv-select>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -624,7 +627,7 @@ describe('ZvSelectComponent', () => {
     }
     await zvSelect.close();
 
-    expect(await zvSelect.getValueText()).toEqual('item1, item2, item3, item4 (4 selected)');
+    expect(await zvSelect.getValueText()).toEqual('item1, item2, item3, item4  (4 selected)');
 
     component.selectedLabel = false;
     fixture.detectChanges();
@@ -635,12 +638,12 @@ describe('ZvSelectComponent', () => {
     component.customTemplate = true;
     fixture.detectChanges();
 
-    expect(await zvSelect.getValueText()).toEqual('custom:1:2:3:4: (4 selected)');
+    expect(await zvSelect.getValueText()).toEqual('custom: 1:2:3:4: (4 selected)');
 
     component.selectedLabel = false;
     fixture.detectChanges();
 
-    expect(await zvSelect.getValueText()).toEqual('custom:1:2:3:4:');
+    expect(await zvSelect.getValueText()).toEqual('custom: 1:2:3:4:');
   });
 
   it('should take DataSource compareWith function', async () => {

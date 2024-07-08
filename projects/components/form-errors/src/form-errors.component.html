@@ -1,4 +1,8 @@
 <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
-<mat-chip-listbox class="zv-form-errors__container" *ngIf="errors$ | async as errors">
-  <mat-chip class="zv-form-errors__item" *ngFor="let error of errors">{{ error.errorText }}</mat-chip>
-</mat-chip-listbox>
+@if (errors$ | async; as errors) {
+  <mat-chip-listbox class="zv-form-errors__container">
+    @for (error of errors; track error.errorText) {
+      <mat-chip class="zv-form-errors__item">{{ error.errorText }}</mat-chip>
+    }
+  </mat-chip-listbox>
+}

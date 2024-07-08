@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import {
   AfterRenderPhase,
   ChangeDetectionStrategy,
@@ -25,7 +24,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [NgIf, MatProgressSpinner],
+  imports: [MatProgressSpinner],
 })
 export class ZvBlockUi {
   public blocked = input.required<boolean>();

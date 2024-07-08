@@ -25,13 +25,15 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let data of demoTableData">
-      <td>{{ data.value1 }}</td>
-      <td>{{ data.value2 }}</td>
-      <td>{{ data.value3 | date }}</td>
-      <td>{{ data.value4 }}</td>
-      <td>{{ data.value5 }}</td>
-    </tr>
+    @for (data of demoTableData; track data) {
+      <tr>
+        <td>{{ data.value1 }}</td>
+        <td>{{ data.value2 }}</td>
+        <td>{{ data.value3 | date }}</td>
+        <td>{{ data.value4 }}</td>
+        <td>{{ data.value5 }}</td>
+      </tr>
+    }
   </tbody>
 </table>
 

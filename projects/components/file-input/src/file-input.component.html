@@ -15,7 +15,9 @@
     />
   </button>
   <span class="app-file-input__text">{{ value?.name ?? (placeholder || fileSelectText) }}</span>
-  <button *ngIf="!empty && !readonly && !disabled" type="button" mat-icon-button class="app-file-input__remove" (click)="removeFile()">
-    <mat-icon>close</mat-icon>
-  </button>
+  @if (!empty && !readonly && !disabled) {
+    <button type="button" mat-icon-button class="app-file-input__remove" (click)="removeFile()">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
 </div>

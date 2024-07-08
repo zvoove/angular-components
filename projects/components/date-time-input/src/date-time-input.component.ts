@@ -2,7 +2,7 @@
 /* eslint-disable @angular-eslint/no-inputs-metadata-property */
 /* eslint-disable @angular-eslint/no-host-metadata-property */
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
-import { NgIf } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -51,7 +51,7 @@ let nextUniqueId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   standalone: true,
-  imports: [MatDatepickerModule, ZvTimeInput, ReactiveFormsModule, NgIf],
+  imports: [MatDatepickerModule, ZvTimeInput, ReactiveFormsModule],
   host: {
     '[attr.id]': 'id',
     '[attr.aria-describedby]': '_ariaDescribedby || null',

@@ -15,7 +15,12 @@
         <tbody>
           @for (input of inputs(); track input.name) {
             <tr>
-              <td>[{{ input.name }}]<i *ngIf="input.required"> - required</i></td>
+              <td>
+                [{{ input.name }}]
+                @if (input.required) {
+                  <i> - required</i>
+                }
+              </td>
               <td>
                 @if (!input.typeUrl) {
                   {{ input.type }}
@@ -23,7 +28,12 @@
                   <a [href]="input.typeUrl" rel="noopener noreferrer">{{ input.type }}</a>
                 }
               </td>
-              <td>{{ input.desc }} <span *ngIf="input.twoWay">Can be used for two-way binding.</span></td>
+              <td>
+                {{ input.desc }}
+                @if (input.twoWay) {
+                  <span>Can be used for two-way binding.</span>
+                }
+              </td>
             </tr>
           }
         </tbody>
@@ -47,7 +57,12 @@
                   <a [href]="output.typeUrl" rel="noopener noreferrer">{{ output.type }}</a>
                 }
               </td>
-              <td>{{ output.desc }} <span *ngIf="output.twoWay">Can be used for two-way binding.</span></td>
+              <td>
+                {{ output.desc }}
+                @if (output.twoWay) {
+                  <span>Can be used for two-way binding.</span>
+                }
+              </td>
             </tr>
           }
         </tbody>

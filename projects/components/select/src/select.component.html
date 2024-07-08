@@ -13,33 +13,33 @@
     (selectionChange)="onSelectionChange($event)"
     (openedChange)="onOpenedChange($event)"
   >
-    <mat-select-trigger *ngIf="!multiple && triggerTemplate && !empty">
-      <ng-container
-        *ngIf="triggerTemplate"
-        [ngTemplateOutlet]="triggerTemplate"
-        [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }"
-      >
-      </ng-container>
-    </mat-select-trigger>
+    @if (!multiple && triggerTemplate && !empty) {
+      <mat-select-trigger>
+        @if (triggerTemplate) {
+          <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }">
+          </ng-container>
+        }
+      </mat-select-trigger>
+    }
 
-    <mat-select-trigger *ngIf="multiple && !empty" class="zv-select__multiple-trigger">
-      <div class="zv-select__multiple-trigger__label">
-        <ng-container *ngIf="!triggerTemplate">{{ $selectedItemsTriggerLabel() }}</ng-container>
-        <ng-container
-          *ngIf="triggerTemplate"
-          [ngTemplateOutlet]="triggerTemplate"
-          [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }"
-        >
-        </ng-container>
-      </div>
-      <div
-        *ngIf="$customTriggerDataArray().length > 1 && selectedLabel"
-        class="zv-select__multiple-trigger__selected-label"
-        i18n="@@zvc.xSelectedLabel"
-      >
-        ({{ $customTriggerDataArray().length }} selected)
-      </div>
-    </mat-select-trigger>
+    @if (multiple && !empty) {
+      <mat-select-trigger class="zv-select__multiple-trigger">
+        <div class="zv-select__multiple-trigger__label">
+          @if (!triggerTemplate) {
+            {{ $selectedItemsTriggerLabel() }}
+          }
+          @if (triggerTemplate) {
+            <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }">
+            </ng-container>
+          }
+        </div>
+        @if ($customTriggerDataArray().length > 1 && selectedLabel) {
+          <div class="zv-select__multiple-trigger__selected-label" i18n="@@zvc.xSelectedLabel">
+            ({{ $customTriggerDataArray().length }} selected)
+          </div>
+        }
+      </mat-select-trigger>
+    }
 
     <mat-option class="zv-select__search">
       <ngx-mat-select-search
@@ -52,24 +52,25 @@
       ></ngx-mat-select-search>
     </mat-option>
 
-    <mat-option *ngIf="hasError" [disabled]="true" class="zv-select__error">
-      <span class="zv-select__error-message">{{ error | zvErrorMessage }}</span>
-    </mat-option>
+    @if (hasError) {
+      <mat-option [disabled]="true" class="zv-select__error">
+        <span class="zv-select__error-message">{{ error | zvErrorMessage }}</span>
+      </mat-option>
+    }
 
-    <mat-option *ngIf="showEmptyInput" class="zv-select__empty-option"> -- </mat-option>
+    @if (showEmptyInput) {
+      <mat-option class="zv-select__empty-option"> -- </mat-option>
+    }
 
-    <mat-option
-      *ngFor="let item of items; trackBy: trackByOptions"
-      [value]="item.value"
-      [class.zv-select__option--hidden]="item.hidden"
-      [disabled]="item.disabled"
-      class="zv-select__option"
-    >
-      <ng-container *ngIf="!optionTemplate">
-        {{ item.label }}
-      </ng-container>
-      <ng-template *ngIf="optionTemplate" [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: item }">
-      </ng-template>
-    </mat-option>
+    @for (item of items; track trackByOptions($index, item)) {
+      <mat-option [value]="item.value" [class.zv-select__option--hidden]="item.hidden" [disabled]="item.disabled" class="zv-select__option">
+        @if (!optionTemplate) {
+          {{ item.label }}
+        }
+        @if (optionTemplate) {
+          <ng-template [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: item }"> </ng-template>
+        }
+      </mat-option>
+    }
   </mat-select>
 </div>

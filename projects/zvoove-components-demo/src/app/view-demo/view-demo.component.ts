@@ -1,4 +1,4 @@
-import { JsonPipe, NgFor } from '@angular/common';
+import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -84,7 +84,7 @@ class DemoZvViewDataSource<TParams, TData> implements IZvViewDataSource {
   styleUrls: ['./view-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatCardModule, MatCheckboxModule, ReactiveFormsModule, FormsModule, MatButtonModule, ZvViewModule, NgFor, JsonPipe],
+  imports: [MatCardModule, MatCheckboxModule, ReactiveFormsModule, FormsModule, MatButtonModule, ZvViewModule, JsonPipe],
 })
 export class ViewDemoComponent {
   public loadError = false;

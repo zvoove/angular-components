@@ -1,4 +1,4 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -64,8 +64,6 @@ export class ReferenceColumnComponent {
     MatCheckboxModule,
     MatSelectModule,
     MatOptionModule,
-    NgIf,
-    NgFor,
     ReferenceColumnComponent,
     MatIconModule,
     MatSliderModule,

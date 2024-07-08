@@ -1,4 +1,4 @@
-import { JsonPipe, NgIf } from '@angular/common';
+import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -55,7 +55,6 @@ interface DemoLogs extends Record<string, string | number> {
     MatSelectModule,
     MatOptionModule,
     MatInputModule,
-    NgIf,
     ZvSelectModule,
     SelectWithMultiselectComponent,
     SelectWithEventsOnlyComponent,

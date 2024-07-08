@@ -7,22 +7,34 @@
   [floatLabel]="floatLabel"
   [hintLabel]="hintText"
 >
-  <mat-label *ngIf="_labelChild">
-    <ng-content select="mat-label"></ng-content>
-  </mat-label>
-  <mat-label *ngIf="!_labelChild && calculatedLabel">
-    <mat-label>{{ calculatedLabel }}</mat-label>
-  </mat-label>
-  <ng-container matPrefix *ngIf="_prefixChildren.length">
-    <ng-content select="[matPrefix]"></ng-content>
-  </ng-container>
+  @if (_labelChild) {
+    <mat-label>
+      <ng-content select="mat-label"></ng-content>
+    </mat-label>
+  }
+  @if (!_labelChild && calculatedLabel) {
+    <mat-label>
+      <mat-label>{{ calculatedLabel }}</mat-label>
+    </mat-label>
+  }
+  @if (_prefixChildren.length) {
+    <ng-container matPrefix>
+      <ng-content select="[matPrefix]"></ng-content>
+    </ng-container>
+  }
   <ng-content></ng-content>
-  <ng-container matSuffix *ngIf="_suffixChildren.length">
-    <ng-content select="[matSuffix]"></ng-content>
-  </ng-container>
-  <button type="button" mat-icon-button matSuffix (click)="toggleHint($event)" *ngIf="showHintToggle">
-    <mat-icon>info_outline</mat-icon>
-  </button>
+  @if (_suffixChildren.length) {
+    <ng-container matSuffix>
+      <ng-content select="[matSuffix]"></ng-content>
+    </ng-container>
+  }
+  @if (showHintToggle) {
+    <button type="button" mat-icon-button matSuffix (click)="toggleHint($event)">
+      <mat-icon>info_outline</mat-icon>
+    </button>
+  }
 
-  <mat-error *ngFor="let error of errors$ | async">{{ error.errorText }}</mat-error>
+  @for (error of errors$ | async; track error.errorText) {
+    <mat-error>{{ error.errorText }}</mat-error>
+  }
 </mat-form-field>

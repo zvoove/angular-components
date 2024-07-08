@@ -1,84 +1,110 @@
 <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
-<form *ngIf="dataSource" class="zv-form__main-container" [formGroup]="form" [autocomplete]="autocomplete">
-  <div class="zv-form__cards-container">
-    <zv-block-ui *ngIf="contentVisible" [blocked]="contentBlocked">
-      <ng-content></ng-content>
-    </zv-block-ui>
-
-    <div #errorCardWrapper [style.display]="exception ? 'block' : 'none'">
-      <mat-card *ngIf="exception" class="zv-form__error-container" [class.zv-form__error-container--center]="exception.alignCenter">
+@if (dataSource) {
+  <form class="zv-form__main-container" [formGroup]="form" [autocomplete]="autocomplete">
+    <div class="zv-form__cards-container">
+      @if (contentVisible) {
+        <zv-block-ui [blocked]="contentBlocked">
+          <ng-content></ng-content>
+        </zv-block-ui>
+      }
+      <div #errorCardWrapper [style.display]="exception ? 'block' : 'none'">
+        @if (exception) {
+          <mat-card>
+            <mat-card-content class="zv-form__error-container" [class.zv-form__error-container--center]="exception.alignCenter">
+              @if (exception.icon) {
+                <mat-icon class="zv-form__error-icon">{{ exception.icon }}</mat-icon>
+              }
+              <span>{{ exception.errorObject | zvErrorMessage }}</span>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    </div>
+    @if (!savebarHidden) {
+      <mat-card class="zv-form__savebar" [class.zv-form__savebar--sticky]="savebarSticky">
         <mat-card-content>
-          <mat-icon *ngIf="exception.icon" class="zv-form__error-icon">{{ exception.icon }}</mat-icon>
-          <span>{{ exception.errorObject | zvErrorMessage }}</span>
+          <div class="zv-form__savebar-container">
+            <div class="zv-form__savebar-border" [class.zv-form__savebar-border--accent]="!showProgress">
+              @if (showProgress) {
+                <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+              }
+            </div>
+            @if (showProgress) {
+              <div class="zv-form__savebar-progress">{{ progress }}%</div>
+            }
+            <zv-form-errors [form]="form"></zv-form-errors>
+            <div class="zv-form__savebar-spacer"></div>
+            <div class="zv-form__buttons">
+              <ng-content select="[zvFormSavebarButtons]"></ng-content>
+              @for (btn of buttons; track btn) {
+                @switch (btn.type) {
+                  @case ('stroked') {
+                    <button
+                      mat-stroked-button
+                      type="button"
+                      [color]="btn.color"
+                      [disabled]="btn.disabled && btn.disabled()"
+                      [attr.data-cy]="btn.dataCy"
+                      (click)="btn.click()"
+                    >
+                      @if (btn.icon) {
+                        <mat-icon>{{ btn.icon }}</mat-icon>
+                      }
+                      {{ btn.label }}
+                    </button>
+                  }
+                  @case ('raised') {
+                    <button
+                      mat-raised-button
+                      type="button"
+                      [color]="btn.color"
+                      [disabled]="btn.disabled && btn.disabled()"
+                      [attr.data-cy]="btn.dataCy"
+                      (click)="btn.click()"
+                    >
+                      @if (btn.icon) {
+                        <mat-icon>{{ btn.icon }}</mat-icon>
+                      }
+                      {{ btn.label }}
+                    </button>
+                  }
+                  @case ('icon') {
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="zv-form__error-icon-btn"
+                      [color]="btn.color"
+                      [disabled]="btn.disabled && btn.disabled()"
+                      [attr.data-cy]="btn.dataCy"
+                      (click)="btn.click()"
+                    >
+                      @if (btn.icon) {
+                        <mat-icon>{{ btn.icon }}</mat-icon>
+                      }
+                      {{ btn.label }}
+                    </button>
+                  }
+                  @default {
+                    <button
+                      mat-button
+                      type="button"
+                      [color]="btn.color"
+                      [disabled]="btn.disabled && btn.disabled()"
+                      [attr.data-cy]="btn.dataCy"
+                      (click)="btn.click()"
+                    >
+                      @if (btn.icon) {
+                        <mat-icon>{{ btn.icon }}</mat-icon>
+                      }
+                      {{ btn.label }}
+                    </button>
+                  }
+                }
+              }
+            </div>
+          </div>
         </mat-card-content>
       </mat-card>
-    </div>
-  </div>
-
-  <mat-card *ngIf="!savebarHidden" class="zv-form__savebar" [class.zv-form__savebar--sticky]="savebarSticky">
-    <mat-card-content>
-      <div class="zv-form__savebar-container">
-        <div class="zv-form__savebar-border" [class.zv-form__savebar-border--accent]="!showProgress">
-          <mat-progress-bar *ngIf="showProgress" mode="determinate" [value]="progress"></mat-progress-bar>
-        </div>
-        <div *ngIf="showProgress" class="zv-form__savebar-progress">{{ progress }}%</div>
-        <zv-form-errors [form]="form"></zv-form-errors>
-        <div class="zv-form__savebar-spacer"></div>
-        <div class="zv-form__buttons">
-          <ng-content select="[zvFormSavebarButtons]"></ng-content>
-          <ng-container *ngFor="let btn of buttons" [ngSwitch]="btn.type">
-            <button
-              *ngSwitchCase="'stroked'"
-              mat-stroked-button
-              type="button"
-              [color]="btn.color"
-              [disabled]="btn.disabled && btn.disabled()"
-              [attr.data-cy]="btn.dataCy"
-              (click)="btn.click()"
-            >
-              <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
-              {{ btn.label }}
-            </button>
-            <button
-              *ngSwitchCase="'raised'"
-              mat-raised-button
-              type="button"
-              [color]="btn.color"
-              [disabled]="btn.disabled && btn.disabled()"
-              [attr.data-cy]="btn.dataCy"
-              (click)="btn.click()"
-            >
-              <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
-              {{ btn.label }}
-            </button>
-            <button
-              *ngSwitchCase="'icon'"
-              mat-icon-button
-              type="button"
-              class="zv-form__error-icon-btn"
-              [color]="btn.color"
-              [disabled]="btn.disabled && btn.disabled()"
-              [attr.data-cy]="btn.dataCy"
-              (click)="btn.click()"
-            >
-              <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
-              {{ btn.label }}
-            </button>
-            <button
-              *ngSwitchDefault
-              mat-button
-              type="button"
-              [color]="btn.color"
-              [disabled]="btn.disabled && btn.disabled()"
-              [attr.data-cy]="btn.dataCy"
-              (click)="btn.click()"
-            >
-              <mat-icon *ngIf="btn.icon">{{ btn.icon }}</mat-icon>
-              {{ btn.label }}
-            </button>
-          </ng-container>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</form>
+    }
+  </form>
+}

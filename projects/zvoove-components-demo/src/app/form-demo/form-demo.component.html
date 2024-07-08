@@ -1,12 +1,42 @@
+<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 <mat-card class="app-form-demo__settings">
   <mat-card-content>
-    <mat-form-field>
-      <mat-select [(ngModel)]="demoType">
-        <mat-option [value]="'dataSource'">dataSource</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
+    <mat-checkbox [(ngModel)]="saveError">save error</mat-checkbox>
+    <input type="number" matInput [(ngModel)]="dataSource.progress" />
+    <button mat-flat-button type="button" color="accent" (click)="hideProgress()">hide progress</button>
+    <button mat-flat-button type="button" color="accent" (click)="reload()">reload</button>
   </mat-card-content>
 </mat-card>
-<ng-container [ngSwitch]="demoType">
-  <app-form-data-source-demo *ngSwitchCase="'dataSource'"></app-form-data-source-demo>
-</ng-container>
+<div class="app-form-demo__grid">
+  <zv-form [dataSource]="dataSource">
+    <mat-card>
+      <mat-card-content>
+        <div [formGroup]="form">
+          <mat-form-field>
+            <mat-label>Input 1</mat-label>
+            <input type="text" matInput formControlName="input1" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Input 2</mat-label>
+            <input type="text" matInput formControlName="input2" />
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="app-form-demo__dummy-card">
+      <mat-card-content>dummy card</mat-card-content>
+    </mat-card>
+    <ng-container zvFormSavebarButtons>
+      <button mat-stroked-button type="button">dummy button 1</button>
+      <button mat-stroked-button type="button">dummy button 2</button>
+    </ng-container>
+  </zv-form>
+  <mat-card>
+    <mat-card-content>
+      @for (log of logs; track log) {
+        <div class="app-form-demo__log-item">{{ log | json }}</div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
