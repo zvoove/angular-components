@@ -1,46 +1,69 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
+import { AfterRenderPhase, ChangeDetectionStrategy, Component, ViewEncapsulation, afterNextRender, input, signal } from '@angular/core';
 
-import { ZvTableRowDetail } from '../directives/table.directives';
 import { NgTemplateOutlet } from '@angular/common';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { delay, of, switchMap, tap } from 'rxjs';
+import { ZvTableRowDetail } from '../directives/table.directives';
 
 @Component({
   selector: 'zv-table-row-detail',
   templateUrl: './table-row-detail.component.html',
   styleUrls: ['./table-row-detail.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
-      state('expanded', style({ height: '*', minHeight: '20px' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [NgTemplateOutlet],
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
+  host: {
+    '[class.zv-table-row-detail]': 'true',
+    '[class.zv-table-row-detail--expanding-init]': 'show() && animInit()',
+    '[class.zv-table-row-detail--expanding-to]': 'show() && animTo()',
+    '[class.zv-table-row-detail--expanded]': 'show() && animDone()',
+    '[class.zv-table-row-detail--collapsing-init]': '!show() && animInit()',
+    '[class.zv-table-row-detail--collapsing-to]': '!show() && animTo()',
+    '[class.zv-table-row-detail--collapsed]': '!show() && animDone()',
+  },
 })
-export class TableRowDetailComponent {
-  @Input() public rowDetail: ZvTableRowDetail;
-  @Input() public element: any;
-  @Input() public show: boolean;
-
-  public get animationState(): string {
-    return this.show ? 'expanded' : 'collapsed';
-  }
+export class TableRowDetailComponent<T> {
+  public rowDetail = input<ZvTableRowDetail>();
+  public element = input<T>();
+  public show = input<boolean>();
 
   /** Expanded Items, die sichtbar sind (wird beim Start der Aufklapp-Animation und am Ende der Zuklapp-Animation gesetzt) */
-  public visible = false;
+  public renderContent = signal(false);
+  public animInit = signal(false);
+  public animTo = signal(false);
+  public animDone = signal(true);
 
-  public rowDetailToggleStart() {
-    if (this.show) {
-      this.visible = true;
-    }
-  }
+  constructor() {
+    afterNextRender(() => {}, { phase: AfterRenderPhase.Read });
 
-  public rowDetailToggleEnd() {
-    if (!this.show) {
-      this.visible = false;
-    }
+    const cancelableDelay = (ms: number) => switchMap((v) => of(v).pipe(delay(ms)));
+    toObservable(this.show)
+      .pipe(
+        tap((show) => {
+          if (show) {
+            this.renderContent.set(true);
+          }
+          this.animInit.set(true);
+          this.animTo.set(false);
+          this.animDone.set(false);
+        }),
+        cancelableDelay(1),
+        tap(() => {
+          this.animTo.set(true);
+        }),
+        cancelableDelay(250),
+        tap((show) => {
+          if (!show) {
+            this.renderContent.set(false);
+          }
+          this.animInit.set(false);
+          this.animTo.set(false);
+          this.animDone.set(true);
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe();
   }
 }
