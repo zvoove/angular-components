@@ -11,7 +11,7 @@ describe('AutoFormArray', () => {
     expect(array.asyncValidator).toEqual(asyncValidator);
   });
   it('should add subforms when resizeTo is called with a higher value than length', () => {
-    const array = new AutoFormArray(() => new FormControl(''));
+    const array = new AutoFormArray(() => new FormControl<string | number>(''));
     array.push(new FormControl(0));
 
     array.resizeTo(3);
@@ -19,7 +19,7 @@ describe('AutoFormArray', () => {
     expect(array.value).toEqual([0, '', '']);
   });
   it('should remove subforms when resizeTo is called with a lower value than length', () => {
-    const array = new AutoFormArray(() => new FormControl(''));
+    const array = new AutoFormArray(() => new FormControl<string | number>(''));
     array.push(new FormControl(0));
     array.push(new FormControl(1));
     array.push(new FormControl(2));
@@ -29,7 +29,7 @@ describe('AutoFormArray', () => {
     expect(array.value).toEqual([0, 1]);
   });
   it('should not modify subforms when resizeTo is called with same value than length', () => {
-    const array = new AutoFormArray(() => new FormControl(''));
+    const array = new AutoFormArray(() => new FormControl<string | number>(''));
     array.push(new FormControl(0));
     array.push(new FormControl(1));
     array.push(new FormControl(2));
@@ -39,7 +39,7 @@ describe('AutoFormArray', () => {
     expect(array.value).toEqual([0, 1, 2]);
   });
   it('should add subforms disabled if FormArray is disabled', () => {
-    const array = new AutoFormArray(() => new FormControl(''));
+    const array = new AutoFormArray(() => new FormControl<string | number>(''));
     array.push(new FormControl(0));
     array.disable();
 
@@ -49,7 +49,7 @@ describe('AutoFormArray', () => {
     }
   });
   it('should add subforms enabled if FormArray is enabled', () => {
-    const array = new AutoFormArray(() => new FormControl(''));
+    const array = new AutoFormArray(() => new FormControl<string | number>(''));
     array.push(new FormControl(0));
 
     array.resizeTo(3);
@@ -58,7 +58,7 @@ describe('AutoFormArray', () => {
     }
   });
   it('should adjust number of subforms when patchValue is called', () => {
-    const array = new AutoFormArray(() => new FormControl(''));
+    const array = new AutoFormArray(() => new FormControl<string | number>(''));
     spyOn(array, 'resizeTo').and.callThrough();
 
     array.patchValue([0, 1, 2, 3]);
@@ -68,7 +68,7 @@ describe('AutoFormArray', () => {
     expect(array.value).toEqual([0, 1, 2, 3]);
   });
   it('should adjust number of subforms when reset is called', () => {
-    const array = new AutoFormArray(() => new FormControl(''));
+    const array = new AutoFormArray(() => new FormControl<string | number>(''));
     spyOn(array, 'resizeTo').and.callThrough();
 
     array.reset([0, 1, 2, 3]);
@@ -78,7 +78,7 @@ describe('AutoFormArray', () => {
     expect(array.value).toEqual([0, 1, 2, 3]);
   });
   it('should NOT adjust number of subforms when setValue is called', () => {
-    const array = new AutoFormArray(() => new FormControl(''));
+    const array = new AutoFormArray(() => new FormControl<string | number>(''));
     spyOn(array, 'resizeTo').and.callThrough();
 
     expect(() => array.setValue([0, 1, 2, 3])).toThrow();

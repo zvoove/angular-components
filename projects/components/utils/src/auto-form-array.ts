@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, FormArray, ValidatorFn } from '@angular/forms';
 
-export class AutoFormArray extends FormArray {
+export class AutoFormArray<TControl extends AbstractControl<any> = any> extends FormArray<TControl> {
   /**
    * Creates a new `FormArray` instance.
    *
@@ -14,33 +15,21 @@ export class AutoFormArray extends FormArray {
    *
    */
   constructor(
-    private controlGenerator: () => AbstractControl,
+    private controlGenerator: () => TControl,
     validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
     asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null
   ) {
     super([], validatorOrOpts, asyncValidator);
   }
 
-  public override patchValue(
-    value: unknown[],
-    options?: {
-      onlySelf?: boolean;
-      emitEvent?: boolean;
-    }
-  ): void {
-    this.resizeTo(value ? value.length : 0);
-    return super.patchValue(value, options);
+  public override patchValue(...args: Parameters<FormArray<TControl>['patchValue']>) {
+    this.resizeTo(args[0] ? args[0].length : 0);
+    return super.patchValue(...args);
   }
 
-  public override reset(
-    value?: { length: number },
-    options?: {
-      onlySelf?: boolean;
-      emitEvent?: boolean;
-    }
-  ): void {
-    this.resizeTo(value ? value.length : 0);
-    return super.reset(value, options);
+  public override reset(...args: Parameters<FormArray<TControl>['reset']>) {
+    this.resizeTo(args[0] ? args[0].length : 0);
+    return super.reset(...args);
   }
 
   public resizeTo(length: number) {
