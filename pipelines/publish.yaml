@@ -39,15 +39,14 @@ jobs:
     workspace:
       clean: all
     steps:
+      - powershell: docker login acrzvoovesaasdev.azurecr.io --username "$(ACR Client Id)" --password "$(ACR Client Secret)"
+        displayName: "Docker Login to SaaS Dev ACR"
+
       - powershell: |
           docker build . `
             -t acrzvoovesaasdev.azurecr.io/components:$((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version) `
             -t acrzvoovesaasdev.azurecr.io/components:latest
         displayName: "Docker Build Image"
-
-      - powershell: |
-          docker login acrzvoovesaasdev.azurecr.io --username "$(ACR Client Id)" --password "$(ACR Client Secret)"
-        displayName: "Docker Login to SaaS Dev ACR"
 
       - powershell: |
           docker push acrzvoovesaasdev.azurecr.io/components:$((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version)
