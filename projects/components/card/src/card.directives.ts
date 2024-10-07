@@ -2,25 +2,30 @@ import { Directive } from '@angular/core';
 
 @Directive({
   selector: '[zvCardTopButtonSection]',
+  standalone: true,
 })
-export class ZvCardTopButtonSectionDirective {}
+export class ZvCardTopButtonSection {}
 
 @Directive({
   selector: '[zvCardCaptionSection]',
+  standalone: true,
 })
-export class ZvCardCaptionSectionDirective {}
+export class ZvCardCaptionSection {}
 
 @Directive({
   selector: '[zvCardDescriptionSection]',
+  standalone: true,
 })
-export class ZvCardDescriptionSectionDirective {}
+export class ZvCardDescriptionSection {}
 
 @Directive({
   selector: '[zvCardFooterSection]',
+  standalone: true,
 })
-export class ZvCardFooterSectionDirective {}
+export class ZvCardFooterSection {}
 
 @Directive({
   selector: '[zvCardActionsSection]',
+  standalone: true,
 })
-export class ZvCardActionsSectionDirective {}
+export class ZvCardActionsSection {}

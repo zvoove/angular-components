@@ -1,5 +1,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DebugElement, Injectable, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,8 +13,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormService } from '@zvoove/components/form-base';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { ZV_FORM_FIELD_CONFIG, ZvFormFieldComponent, ZvFormFieldSubscriptType } from './form-field.component';
-import { ZvFormFieldModule } from './form-field.module';
+import { ZV_FORM_FIELD_CONFIG, ZvFormField, ZvFormFieldSubscriptType } from './form-field.component';
 
 @Injectable()
 class TestZvFormService extends BaseZvFormService {
@@ -52,9 +52,11 @@ class TestZvFormService extends BaseZvFormService {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [FormsModule, MatInputModule, ZvFormField],
 })
 export class TestNoFormComponent {
-  @ViewChild('f1', { static: true }) formField: ZvFormFieldComponent;
+  @ViewChild('f1', { static: true }) formField: ZvFormField;
 }
 
 @Component({
@@ -67,11 +69,13 @@ export class TestNoFormComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [FormsModule, MatInputModule, ZvFormField],
 })
 export class TestNgModelComponent {
   value: any = null;
 
-  @ViewChild(ZvFormFieldComponent, { static: true }) formField: ZvFormFieldComponent;
+  @ViewChild(ZvFormField, { static: true }) formField: ZvFormField;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
@@ -88,6 +92,8 @@ export class TestNgModelComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ReactiveFormsModule, MatInputModule, ZvFormField],
 })
 export class TestFormComponent {
   formControl = new FormControl('', [Validators.pattern('pattern'), Validators.minLength(5)]);
@@ -97,7 +103,7 @@ export class TestFormComponent {
   hintToggle = false;
   required = false;
 
-  @ViewChild(ZvFormFieldComponent, { static: true }) formField: ZvFormFieldComponent;
+  @ViewChild(ZvFormField, { static: true }) formField: ZvFormField;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
@@ -114,23 +120,24 @@ export class TestFormComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ReactiveFormsModule, MatCheckboxModule, ZvFormField, AsyncPipe],
 })
 export class TestCheckboxComponent {
   public asyncLabel$ = of('async label');
   formControl = new FormControl('');
 
-  @ViewChild('f1', { static: true }) formFieldTemplateLabel: ZvFormFieldComponent;
-  @ViewChild('f2', { static: true }) formFieldNoLabel: ZvFormFieldComponent;
+  @ViewChild('f1', { static: true }) formFieldTemplateLabel: ZvFormField;
+  @ViewChild('f2', { static: true }) formFieldNoLabel: ZvFormField;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
 
-describe('ZvFormFieldComponent', () => {
+describe('ZvFormField', () => {
   describe('checkbox', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, ZvFormFieldModule],
-        declarations: [TestCheckboxComponent],
+        imports: [NoopAnimationsModule, TestCheckboxComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
     }));
@@ -153,8 +160,7 @@ describe('ZvFormFieldComponent', () => {
   describe('formControl', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, ZvFormFieldModule],
-        declarations: [TestFormComponent],
+        imports: [NoopAnimationsModule, TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
     }));
@@ -285,8 +291,7 @@ describe('ZvFormFieldComponent', () => {
     let loader: HarnessLoader;
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, FormsModule, MatInputModule, ZvFormFieldModule],
-        declarations: [TestNgModelComponent],
+        imports: [NoopAnimationsModule, TestNgModelComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
       fixture = TestBed.createComponent(TestNgModelComponent);
@@ -314,8 +319,7 @@ describe('ZvFormFieldComponent', () => {
     let loader: HarnessLoader;
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, FormsModule, MatInputModule, ZvFormFieldModule],
-        declarations: [TestNoFormComponent],
+        imports: [NoopAnimationsModule, TestNoFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
       fixture = TestBed.createComponent(TestNoFormComponent);
@@ -343,8 +347,7 @@ describe('ZvFormFieldComponent', () => {
   describe('initialization', () => {
     it('should initialize properly with its own default settings', waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, ZvFormFieldModule],
-        declarations: [TestFormComponent],
+        imports: [NoopAnimationsModule, TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
 
@@ -357,8 +360,7 @@ describe('ZvFormFieldComponent', () => {
 
     it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatCheckboxModule, ZvFormFieldModule],
-        declarations: [TestFormComponent],
+        imports: [NoopAnimationsModule, TestFormComponent],
         providers: [
           { provide: ZvFormService, useClass: TestZvFormService },
           {
@@ -378,8 +380,7 @@ describe('ZvFormFieldComponent', () => {
   describe('hint', () => {
     it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is set', waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, ZvFormFieldModule],
-        declarations: [TestFormComponent],
+        imports: [NoopAnimationsModule, TestFormComponent],
         providers: [
           { provide: ZvFormService, useClass: TestZvFormService },
           { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: 'foo' } },
@@ -421,8 +422,7 @@ describe('ZvFormFieldComponent', () => {
 
     it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is not set', waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, ReactiveFormsModule, MatInputModule, ZvFormFieldModule],
-        declarations: [TestFormComponent],
+        imports: [NoopAnimationsModule, TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
 
@@ -451,7 +451,7 @@ describe('ZvFormFieldComponent', () => {
   });
 });
 
-function getHelpButton(fixture: ComponentFixture<any>): DebugElement {
+function getHelpButton<T>(fixture: ComponentFixture<T>): DebugElement {
   const button = fixture.debugElement.query(By.css('.mdc-icon-button'));
   if (button && button.nativeElement.textContent.indexOf('info_outline') !== -1) {
     return button;
@@ -459,20 +459,20 @@ function getHelpButton(fixture: ComponentFixture<any>): DebugElement {
   return null;
 }
 
-function getShownHelpText(fixture: ComponentFixture<any>): string {
+function getShownHelpText<T>(fixture: ComponentFixture<T>): string {
   const bubble = fixture.debugElement.query(By.css('.mat-mdc-form-field-hint-wrapper'));
   return bubble && bubble.nativeElement.textContent.trim();
 }
 
-function getFormFieldClasses(fixture: ComponentFixture<any>): DOMTokenList {
-  const node = fixture.debugElement.query(By.directive(ZvFormFieldComponent));
+function getFormFieldClasses<T>(fixture: ComponentFixture<T>): DOMTokenList {
+  const node = fixture.debugElement.query(By.directive(ZvFormField));
   if (node) {
     return node.nativeElement.classList;
   }
   return null;
 }
 
-function detectChangesAndIgnoreChangeAfterChecked(fixture: ComponentFixture<any>) {
+function detectChangesAndIgnoreChangeAfterChecked<T>(fixture: ComponentFixture<T>) {
   try {
     fixture.detectChanges();
   } catch (e) {

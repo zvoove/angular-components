@@ -16,7 +16,7 @@ export abstract class ZvFormService {
    *
    * @param control The control class (MatSlider, MatSelect, ...)
    */
-  public abstract getControlType(control: any): string | null;
+  public abstract getControlType(control: unknown): string | null;
   public abstract getControlErrors(control: FormControl): Observable<IZvFormError[]>;
   public abstract getFormErrors(form: FormGroup, includeControls: boolean): Observable<IZvFormError[]>;
 }
@@ -46,7 +46,9 @@ export abstract class BaseZvFormService extends ZvFormService {
    */
   public filterErrors(
     errorData: IZvFormErrorData[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _includeControls: boolean,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _source: 'form' | 'control'
   ): Observable<IZvFormErrorData[]> {
     return of(errorData);
@@ -63,8 +65,8 @@ export abstract class BaseZvFormService extends ZvFormService {
     );
   }
 
-  private createUpdateTrigger(control: AbstractControl): Observable<any> {
-    return merge(control.valueChanges, control.statusChanges).pipe(startWith(null as any), debounceTime(this.options.debounceTime));
+  private createUpdateTrigger(control: AbstractControl): Observable<void> {
+    return merge(control.valueChanges, control.statusChanges).pipe(startWith(null), debounceTime(this.options.debounceTime));
   }
 
   private getErrorInfo(control: AbstractControl, includeControls = false): IZvFormErrorData[] {
@@ -95,7 +97,7 @@ export abstract class BaseZvFormService extends ZvFormService {
     return errors;
   }
 
-  private createFormErrorData(error: { key: string; value: any }, control: AbstractControl, controlPath: string): IZvFormErrorData {
+  private createFormErrorData(error: { key: string; value: unknown }, control: AbstractControl, controlPath: string): IZvFormErrorData {
     return {
       controlPath: controlPath,
       errorKey: error.key,

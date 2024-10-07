@@ -1,9 +1,9 @@
-import { Directionality } from '@angular/cdk/bidi';
-import {ElementRef, NgZone, EventEmitter} from '@angular/core';
+import { Direction, Directionality } from '@angular/cdk/bidi';
+import { ElementRef, NgZone, EventEmitter } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { getControlType, hasRequiredField } from './helpers';
-import {TestBed} from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 
 describe('hasRequiredField', () => {
   it('should return true when the control is required', () => {
@@ -44,16 +44,16 @@ describe('getControlType', () => {
   });
   it('should work with mat-slider', () => {
     const elementRef: ElementRef = { nativeElement: { classList: { add: () => {} }, addEventListener: () => {} } };
-    const zone: NgZone = { runOutsideAngular: (x: any) => x } as any;
+    const zone: NgZone = { runOutsideAngular: (x: unknown) => x } as NgZone;
     const dir: Directionality = {
       value: 'ltr',
-      change: new EventEmitter() as any,
+      change: new EventEmitter<Direction>(),
       ngOnDestroy: () => {},
     };
     TestBed.runInInjectionContext(() => {
       const control = new MatSlider(zone, null, elementRef, dir);
       expect(getControlType(control)).toBe('mat-slider');
-    })
+    });
   });
   it('should return unknown when not type is found', () => {
     const control = {};

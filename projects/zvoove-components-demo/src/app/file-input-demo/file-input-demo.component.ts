@@ -6,7 +6,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ZvFileInputComponent } from '@zvoove/components/file-input';
+import { ZvFileInput } from '@zvoove/components/file-input';
 import { ZvFormService } from '@zvoove/components/form-base';
 import { ZvFormFieldModule } from '@zvoove/components/form-field';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
@@ -26,7 +26,7 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    ZvFileInputComponent,
+    ZvFileInput,
   ],
   providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })

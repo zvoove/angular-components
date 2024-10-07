@@ -1,1 +1,1 @@
-export { ZvFileInputComponent } from './src/file-input.component';
+export { ZvFileInput } from './src/file-input.component';

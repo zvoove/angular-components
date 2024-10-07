@@ -1,20 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ZvHeaderComponent } from './header.component';
-import {
-  ZvHeaderCaptionSectionDirective,
-  ZvHeaderDescriptionSectionDirective,
-  ZvHeaderTopButtonSectionDirective,
-} from './header.directives';
+import { ZvHeader } from './header.component';
+import { ZvHeaderCaptionSection, ZvHeaderDescriptionSection, ZvHeaderTopButtonSection } from './header.directives';
 
 @NgModule({
-  declarations: [
-    ZvHeaderComponent,
-    ZvHeaderTopButtonSectionDirective,
-    ZvHeaderCaptionSectionDirective,
-    ZvHeaderDescriptionSectionDirective,
-  ],
-  imports: [CommonModule],
-  exports: [ZvHeaderComponent, ZvHeaderTopButtonSectionDirective, ZvHeaderCaptionSectionDirective, ZvHeaderDescriptionSectionDirective],
+  imports: [ZvHeader, ZvHeaderTopButtonSection, ZvHeaderCaptionSection, ZvHeaderDescriptionSection],
+  exports: [ZvHeader, ZvHeaderTopButtonSection, ZvHeaderCaptionSection, ZvHeaderDescriptionSection],
 })
 export class ZvHeaderModule {}

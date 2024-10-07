@@ -1,5 +1,10 @@
+import { CdkScrollable } from '@angular/cdk/scrolling';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { IZvButton, IZvException } from '@zvoove/components/core';
+import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { ZvBlockUi } from '@zvoove/components/block-ui';
+import { ZvButton } from '@zvoove/components/button';
+import { IZvButton, IZvException, ZvErrorMessagePipe } from '@zvoove/components/core';
 import { Subscription } from 'rxjs';
 import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
 
@@ -9,8 +14,10 @@ import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
   styleUrls: ['./dialog-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, ZvBlockUi, MatDialogActions, MatProgressBar, ZvButton, ZvErrorMessagePipe],
 })
-export class ZvDialogWrapperComponent implements OnDestroy {
+export class ZvDialogWrapper implements OnDestroy {
   public get dialogTitle(): string {
     return this.dataSource.dialogTitle;
   }

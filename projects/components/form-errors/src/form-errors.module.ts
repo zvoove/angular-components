@@ -1,12 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatChipsModule } from '@angular/material/chips';
-import { ZvFormErrorsComponent } from './form-errors.component';
+import { ZvFormErrors } from './form-errors.component';
 
+/** @deprecated Use ZvFormErrors */
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, MatChipsModule],
-  declarations: [ZvFormErrorsComponent],
-  exports: [ZvFormErrorsComponent],
+  imports: [ZvFormErrors],
+  exports: [ZvFormErrors],
 })
 export class ZvFormErrorsModule {}

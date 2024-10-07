@@ -3,12 +3,10 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Subject } from 'rxjs';
 import { ZvViewHarness } from './testing/view.harness';
 import { IZvViewDataSource } from './view-data-source';
-import { ZvViewComponent } from './view.component';
-import { ZvViewModule } from './view.module';
+import { ZvView } from './view.component';
 
 @Component({
   selector: 'zv-test-component',
@@ -20,13 +18,15 @@ import { ZvViewModule } from './view.module';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [CommonModule, ZvView],
 })
 export class TestDataSourceComponent {
   public dataSource: IZvViewDataSource;
-  @ViewChild(ZvViewComponent) formComponent: ZvViewComponent;
+  @ViewChild(ZvView) formComponent: ZvView;
 }
 
-describe('ZvViewComponent', () => {
+describe('ZvView', () => {
   describe('integration with dataSource', () => {
     let fixture: ComponentFixture<TestDataSourceComponent>;
     let component: TestDataSourceComponent;
@@ -34,8 +34,7 @@ describe('ZvViewComponent', () => {
     let view: ZvViewHarness;
     beforeEach(async () => {
       await TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, ZvViewModule],
-        declarations: [TestDataSourceComponent],
+        imports: [TestDataSourceComponent],
       });
       fixture = TestBed.createComponent(TestDataSourceComponent);
       component = fixture.componentInstance;

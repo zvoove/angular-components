@@ -29,11 +29,14 @@ import {
   MatLabel,
   MatPrefix,
   MatSuffix,
+  MatError,
 } from '@angular/material/form-field';
 import { IZvFormError, ZvFormService, hasRequiredField } from '@zvoove/components/form-base';
 import { Observable, Subscription, of } from 'rxjs';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
-import { isPlatformServer } from '@angular/common';
+import { isPlatformServer, AsyncPipe } from '@angular/common';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 export declare type ZvFormFieldSubscriptType = 'resize' | 'single-line';
 
@@ -51,8 +54,10 @@ export const ZV_FORM_FIELD_CONFIG = new InjectionToken<ZvFormFieldConfig>('ZV_FO
   styleUrls: ['./form-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [MatFormField, MatLabel, MatPrefix, MatSuffix, MatIconButton, MatIcon, MatError, AsyncPipe],
 })
-export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnDestroy {
+export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
   @Input() public createLabel = true;
   @Input() public hint: string = null;
   @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
@@ -65,7 +70,7 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
   @ContentChild(NgControl) public _ngControl: NgControl | null;
 
   /** The MatFormFieldControl or null, if it is no MatFormFieldControl */
-  @ContentChild(MatFormFieldControl) public _control: MatFormFieldControl<any> | null;
+  @ContentChild(MatFormFieldControl) public _control: MatFormFieldControl<unknown> | null;
 
   /** The MatLabel, if it is set or null */
   @ContentChild(MatLabel) public set labelChild(value: MatLabel) {
@@ -128,10 +133,10 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
   private formControl: FormControl;
 
   /** Either the MatFormFieldControl or a DummyMatFormFieldControl */
-  private matFormFieldControl: MatFormFieldControl<any>;
+  private matFormFieldControl: MatFormFieldControl<unknown>;
 
   /** The real control instance (MatSlider, MatSelect, MatCheckbox, ...) */
-  private realFormControl: any;
+  private realFormControl: { noUnderline?: boolean; shouldLabelFloat?: boolean };
 
   /** The control type. Most of the time this is the same as the selector */
   private controlType: string;
@@ -254,7 +259,7 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
   }
 }
 
-function getRealFormControl(ngControl: NgControl, matFormFieldControl: MatFormFieldControl<any>): any {
+function getRealFormControl(ngControl: NgControl, matFormFieldControl: MatFormFieldControl<unknown>): unknown {
   if (!(matFormFieldControl instanceof DummyMatFormFieldControl) || !ngControl) {
     return matFormFieldControl;
   }

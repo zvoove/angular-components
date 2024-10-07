@@ -1,3 +1,5 @@
+import { isPlatformServer } from '@angular/common';
+import type { ElementRef } from '@angular/core';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -10,15 +12,18 @@ import {
   ViewEncapsulation,
   inject,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { IZvButton, IZvException } from '@zvoove/components/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { ZvBlockUi } from '@zvoove/components/block-ui';
+import { ZvButton } from '@zvoove/components/button';
+import { IZvButton, IZvException, ZvErrorMessagePipe } from '@zvoove/components/core';
+import { ZvFormErrors } from '@zvoove/components/form-errors';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
-
 import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
 
-import type { ElementRef } from '@angular/core';
-import { isPlatformServer } from '@angular/common';
 export const dependencies = {
   intersectionObserver: null as typeof IntersectionObserver | null,
 };
@@ -29,8 +34,10 @@ export const dependencies = {
   styleUrls: ['./form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [ReactiveFormsModule, ZvBlockUi, MatCard, MatCardContent, MatIcon, MatProgressBar, ZvFormErrors, ZvButton, ZvErrorMessagePipe],
 })
-export class ZvFormComponent implements AfterViewInit, OnDestroy {
+export class ZvForm implements AfterViewInit, OnDestroy {
   @Input({ required: true }) public set dataSource(value: IZvFormDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
@@ -150,13 +157,13 @@ export class ZvFormComponent implements AfterViewInit, OnDestroy {
     }
     if (!this._errorCardObserver && this._dataSource && this._viewReady) {
       const options = {
-        root: null as any, // relative to document viewport
+        root: null, // relative to document viewport
         rootMargin: '-100px', // margin around root. Values are similar to css property. Unitless values not allowed
         threshold: 0, // visible amount of item shown in relation to root
       } as IntersectionObserverInit;
 
       const intersectionObserverCtor = dependencies.intersectionObserver ?? IntersectionObserver;
-      this._errorCardObserver = new intersectionObserverCtor((changes, _) => {
+      this._errorCardObserver = new intersectionObserverCtor((changes) => {
         const isErrorCardInView = changes[0].intersectionRatio > 0;
         this._errrorInView$.next(isErrorCardInView);
         this.cd.markForCheck();

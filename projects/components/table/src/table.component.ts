@@ -24,7 +24,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { ZvExceptionMessageExtractor } from '@zvoove/components/core';
-import { ZvFlipContainerComponent, ZvFlipContainerModule } from '@zvoove/components/flip-container';
+import { ZvFlipContainer, ZvFlipContainerModule } from '@zvoove/components/flip-container';
 import { Subscription, combineLatest } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import {
@@ -95,7 +95,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   /** @deprecated use the datasource to detect paginations */
   @Output() public readonly page = new EventEmitter<PageEvent>();
 
-  @ViewChild(ZvFlipContainerComponent, { static: true }) public flipContainer: ZvFlipContainerComponent | null = null;
+  @ViewChild(ZvFlipContainer, { static: true }) public flipContainer: ZvFlipContainer | null = null;
 
   @ContentChild(ZvTableCustomHeaderTemplate, { read: TemplateRef })
   public set customHeader(value: TemplateRef<any> | null) {

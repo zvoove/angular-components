@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -9,15 +10,17 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-container.directives';
+import { FlipContainerBack, FlipContainerFront } from './flip-container.directives';
 
 @Component({
   selector: 'zv-flip-container',
   templateUrl: './flip-container.component.html',
   styleUrls: ['./flip-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgTemplateOutlet, FlipContainerFront, FlipContainerBack],
 })
-export class ZvFlipContainerComponent implements AfterViewInit {
+export class ZvFlipContainer implements AfterViewInit {
   @Input() public removeHiddenNodes = true;
   @Input() public animation: 'flip' | 'fade' = 'flip';
 
@@ -25,14 +28,14 @@ export class ZvFlipContainerComponent implements AfterViewInit {
     return this._active;
   }
 
-  @ContentChild(FlipContainerFrontDirective, { read: TemplateRef })
-  public _frontTemplate: TemplateRef<any> | null = null;
+  @ContentChild(FlipContainerFront, { read: TemplateRef })
+  public _frontTemplate: TemplateRef<unknown> | null = null;
 
-  @ContentChild(FlipContainerBackDirective, { read: TemplateRef })
-  public _backTemplate: TemplateRef<any> | null = null;
+  @ContentChild(FlipContainerBack, { read: TemplateRef })
+  public _backTemplate: TemplateRef<unknown> | null = null;
 
-  @ViewChild('frontside', { static: true }) public _frontside: ElementRef<any>;
-  @ViewChild('backside', { static: true }) public _backside: ElementRef<any>;
+  @ViewChild('frontside', { static: true }) public _frontside: ElementRef<HTMLDivElement>;
+  @ViewChild('backside', { static: true }) public _backside: ElementRef<HTMLDivElement>;
 
   public get _activeState(): string {
     return this.animation + '_' + this.active;

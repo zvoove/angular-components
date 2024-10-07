@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule, Provider, Type } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ZvErrorMessagePipeModule } from '@zvoove/components/core';
+import { ZvErrorMessagePipe } from '@zvoove/components/core';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { ZvSelectOptionTemplateDirective } from './directives/select-option-template.directive';
-import { ZvSelectTriggerTemplateDirective } from './directives/select-trigger-template.directive';
-import { ZvSelectComponent } from './select.component';
+import { ZvSelectOptionTemplate } from './directives/select-option-template.directive';
+import { ZvSelectTriggerTemplate } from './directives/select-trigger-template.directive';
+import { ZvSelect } from './select.component';
 import { ZvSelectService } from './services/select.service';
 
 @NgModule({
@@ -18,16 +18,23 @@ import { ZvSelectService } from './services/select.service';
     MatSelectModule,
     MatTooltipModule,
     NgxMatSelectSearchModule,
-    ZvErrorMessagePipeModule,
+    ZvErrorMessagePipe,
+    ZvSelect,
+    ZvSelectOptionTemplate,
+    ZvSelectTriggerTemplate,
   ],
-  declarations: [ZvSelectComponent, ZvSelectOptionTemplateDirective, ZvSelectTriggerTemplateDirective],
-  exports: [MatSelectModule, ZvSelectComponent, ZvSelectOptionTemplateDirective, ZvSelectTriggerTemplateDirective],
+  exports: [ZvSelect, ZvSelectOptionTemplate, ZvSelectTriggerTemplate],
 })
 export class ZvSelectModule {
-  public static forRoot(selectServiceType: any): ModuleWithProviders<ZvSelectModule> {
+  /** @deprecated Use provideSelectService */
+  public static forRoot(selectServiceType: Type<ZvSelectService>): ModuleWithProviders<ZvSelectModule> {
     return {
       ngModule: ZvSelectModule,
       providers: [{ provide: ZvSelectService, useClass: selectServiceType }],
     };
   }
+}
+
+export function provideSelectService(selectServiceType: Type<ZvSelectService>): Provider[] {
+  return [{ provide: ZvSelectService, useClass: selectServiceType }];
 }

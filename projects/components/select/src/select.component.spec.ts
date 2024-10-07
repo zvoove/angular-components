@@ -15,17 +15,23 @@ import {
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatOptionHarness, OptionHarnessFilters } from '@angular/material/core/testing';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
-import { MatSelect } from '@angular/material/select';
+import { MatLabel, MatSelect } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormBaseModule } from '@zvoove/components/form-base';
-import { ZvFormFieldModule } from '@zvoove/components/form-field';
-import { DefaultZvSelectDataSource, DefaultZvSelectService, ZvSelectData } from '@zvoove/components/select';
+import { BaseZvFormService, IZvFormError, IZvFormErrorData, provideFormService } from '@zvoove/components/form-base';
+import { ZvFormField } from '@zvoove/components/form-field/src/form-field.component';
+import {
+  DefaultZvSelectDataSource,
+  DefaultZvSelectService,
+  ZvSelectData,
+  ZvSelectOptionTemplate,
+  ZvSelectTriggerTemplate,
+} from '@zvoove/components/select';
 import { Observable, ReplaySubject, Subject, Subscription, of, throwError } from 'rxjs';
 import { ZvSelectDataSource } from './data/select-data-source';
 import { ZvSelectItem } from './models';
-import { ZvSelectComponent } from './select.component';
-import { ZvSelectModule } from './select.module';
+import { ZvSelect } from './select.component';
+import { provideSelectService } from './select.module';
 import { ZvSelectService } from './services/select.service';
 import { ZvSelectHarness } from './testing/select.harness';
 
@@ -91,7 +97,7 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
   const matSelect = createFakeMatSelect();
   const dataSource = options && 'dataSource' in options ? options.dataSource : createFakeDataSource();
   const service = options && 'service' in options ? options.service : createFakeSelectService();
-  const component = new ZvSelectComponent(null, { markForCheck: () => {} } as any, service, null, null, { control: null } as any);
+  const component = new ZvSelect(null, { markForCheck: () => {} } as any, service, null, null, { control: null } as any);
   component.setMatSelect = matSelect;
   component.dataSource = dataSource;
   return { component: component, matSelect: matSelect, service: service, dataSource: dataSource, focused: component.focused };
@@ -112,6 +118,8 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, ZvSelect],
 })
 export class TestComponent implements OnDestroy {
   dataSource: any = [ITEMS.red, ITEMS.green, ITEMS.blue];
@@ -124,7 +132,7 @@ export class TestComponent implements OnDestroy {
   panelClass: Record<string, boolean> = {};
   clearable = true;
 
-  @ViewChild(ZvSelectComponent, { static: true }) select: ZvSelectComponent;
+  @ViewChild(ZvSelect, { static: true }) select: ZvSelect;
 
   private valuesSubscription: Subscription;
   constructor() {
@@ -166,6 +174,8 @@ const ITEMS = {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, ZvSelect, ZvSelectTriggerTemplate],
 })
 export class TestMultipleComponent {
   showToggleAll = true;
@@ -174,7 +184,7 @@ export class TestMultipleComponent {
   selectedLabel = true;
   customTemplate = false;
 
-  @ViewChild(ZvSelectComponent, { static: true }) select: ZvSelectComponent;
+  @ViewChild(ZvSelect, { static: true }) select: ZvSelect;
 
   constructor(public cd: ChangeDetectorRef) {}
 }
@@ -184,6 +194,8 @@ export class TestMultipleComponent {
   template: `<zv-select [(value)]="value" [dataSource]="items"></zv-select>`,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, ZvSelect],
 })
 export class TestValueComponent {
   public items = [ITEMS.red, ITEMS.green, ITEMS.blue];
@@ -206,6 +218,8 @@ export class TestValueComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, ZvSelect, ZvSelectTriggerTemplate, ZvSelectOptionTemplate],
 })
 export class TestCustomTemplateComponent {
   public items = [ITEMS.red, ITEMS.green, ITEMS.blue];
@@ -222,6 +236,8 @@ export class TestCustomTemplateComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvSelect, ZvFormField, MatLabel, FormsModule],
 })
 export class TestWithFormFieldComponent {
   public dataSource: any = [ITEMS.red, ITEMS.green, ITEMS.blue];
@@ -239,14 +255,12 @@ export class TestZvSelectService extends DefaultZvSelectService {
 }
 
 async function initTest<T>(
-  type: Type<T>,
-  additionalImports: any[] = [],
-  additionalDeclarations: any[] = []
+  type: Type<T>
 ): Promise<{ fixture: ComponentFixture<T>; component: T; loader: HarnessLoader; zvSelect: ZvSelectHarness }> {
   TestZvSelectService.calledwith = [];
   await TestBed.configureTestingModule({
-    imports: [NoopAnimationsModule, ZvSelectModule.forRoot(TestZvSelectService), FormsModule, ReactiveFormsModule, ...additionalImports],
-    declarations: [TestComponent, TestMultipleComponent, TestCustomTemplateComponent, TestValueComponent, ...additionalDeclarations],
+    imports: [NoopAnimationsModule, type],
+    providers: [provideSelectService(TestZvSelectService), provideFormService(TestZvFormsService)],
   });
   const fixture = TestBed.createComponent(type);
   const component = fixture.componentInstance;
@@ -261,7 +275,7 @@ async function initTest<T>(
   };
 }
 
-describe('ZvSelectComponent', () => {
+describe('ZvSelect', () => {
   it('should use right default values', () => {
     const { component } = createZvSelect();
 
@@ -316,15 +330,7 @@ describe('ZvSelectComponent', () => {
   });
 
   it('should update floating label state', async () => {
-    const {
-      component,
-      zvSelect: zvSelect,
-      loader,
-    } = await initTest(
-      TestWithFormFieldComponent,
-      [ZvFormFieldModule, ZvFormBaseModule.forRoot(TestZvFormsService)],
-      [TestWithFormFieldComponent]
-    );
+    const { component, zvSelect: zvSelect, loader } = await initTest(TestWithFormFieldComponent);
 
     const matFormField = await loader.getHarness(MatFormFieldHarness);
 

@@ -1,5 +1,5 @@
 export { IZvButton, ZvButtonTypes, ZvButtonColors } from './src/button';
-export { ZvErrorMessagePipe, ZvErrorMessagePipeModule } from './src/error-message.pipe';
+export { ZvErrorMessagePipe } from './src/error-message.pipe';
 export { IZvException } from './src/exception';
 export { ZvExceptionMessageExtractor } from './src/exception-message-extractor.service';
 

@@ -8,7 +8,7 @@ export class ZvExceptionMessageExtractor {
    * @param error The error object.
    * @returns The error message
    */
-  public extractErrorMessage(error: unknown): string {
+  public extractErrorMessage(error: unknown): string | null {
     if (!error) {
       return null;
     }
@@ -18,7 +18,7 @@ export class ZvExceptionMessageExtractor {
     }
 
     if (typeof error === 'object') {
-      return (error as any).message;
+      return (error as Error).message ?? null;
     }
 
     return null;

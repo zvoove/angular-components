@@ -1,20 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { ZvNumberInputComponent } from './number-input.component';
-import { zvNumberInputModuleImports } from './number-input.module';
+import { ZvNumberInput } from './number-input.component';
 
-describe('ZvNumberInputComponent', () => {
-  let spinner: ZvNumberInputComponent;
-  let fixture: ComponentFixture<ZvNumberInputComponent>;
+describe('ZvNumberInput', () => {
+  let spinner: ZvNumberInput;
+  let fixture: ComponentFixture<ZvNumberInput>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: zvNumberInputModuleImports,
-      declarations: [ZvNumberInputComponent],
+      imports: [ZvNumberInput],
     });
 
-    fixture = TestBed.createComponent(ZvNumberInputComponent);
+    fixture = TestBed.createComponent(ZvNumberInput);
     spinner = fixture.componentInstance;
   });
 
@@ -76,7 +74,7 @@ describe('ZvNumberInputComponent', () => {
     fixture.detectChanges();
 
     spinner.decimals = 4;
-    const spinnerInput = spinner._inputfieldViewChild.nativeElement as any;
+    const spinnerInput = spinner._inputfieldViewChild.nativeElement;
     spinnerInput.value = '1234.1234';
     triggerEvent(spinnerInput, 'input');
 
@@ -101,7 +99,7 @@ describe('ZvNumberInputComponent', () => {
     fixture.detectChanges();
 
     spinner.disabled = true;
-    const spinnerInput = spinner._inputfieldViewChild.nativeElement as any;
+    const spinnerInput = spinner._inputfieldViewChild.nativeElement;
     spinnerInput.value = '1';
     triggerEvent(spinnerInput, 'keyup');
     fixture.detectChanges();

@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -19,15 +20,18 @@ import {
   computed,
   signal,
 } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
+import { ControlValueAccessor, FormControl, FormGroupDirective, FormsModule, NgControl, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { ErrorStateMatcher, MatOption, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatSelect, MatSelectChange, MatSelectTrigger } from '@angular/material/select';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ZvErrorMessagePipe } from '@zvoove/components/core';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { DEFAULT_COMPARER, ZvSelectDataSource, isZvSelectDataSource } from './data/select-data-source';
-import { ZvSelectOptionTemplateDirective } from './directives/select-option-template.directive';
-import { ZvSelectTriggerTemplateDirective } from './directives/select-trigger-template.directive';
+import { ZvSelectOptionTemplate } from './directives/select-option-template.directive';
+import { ZvSelectTriggerTemplate } from './directives/select-trigger-template.directive';
 import { getSelectUnknownDataSourceError } from './helpers/errors';
 import { ZvSelectItem, ZvSelectTriggerData } from './models';
 import { ZvSelectService } from './services/select.service';
@@ -53,19 +57,31 @@ const enum ValueChangeSource {
     '[class.zv-select-empty]': 'empty',
     class: 'zv-select',
   },
-  providers: [{ provide: MatFormFieldControl, useExisting: ZvSelectComponent }],
+  providers: [{ provide: MatFormFieldControl, useExisting: ZvSelect }],
+  standalone: true,
+  imports: [
+    MatTooltip,
+    MatSelect,
+    ReactiveFormsModule,
+    FormsModule,
+    MatSelectTrigger,
+    NgTemplateOutlet,
+    MatOption,
+    NgxMatSelectSearchModule,
+    ZvErrorMessagePipe,
+  ],
 })
-export class ZvSelectComponent<T = unknown> implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy {
+export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy {
   public static nextId = 0;
-  @HostBinding() public id = `zv-select-${ZvSelectComponent.nextId++}`;
+  @HostBinding() public id = `zv-select-${ZvSelect.nextId++}`;
 
-  @ContentChild(ZvSelectOptionTemplateDirective, { read: TemplateRef })
-  public optionTemplate: TemplateRef<any> | null = null;
+  @ContentChild(ZvSelectOptionTemplate, { read: TemplateRef })
+  public optionTemplate: TemplateRef<unknown> | null = null;
 
-  @ContentChild(ZvSelectTriggerTemplateDirective)
-  public customTrigger: ZvSelectTriggerTemplateDirective | null = null;
+  @ContentChild(ZvSelectTriggerTemplate)
+  public customTrigger: ZvSelectTriggerTemplate | null = null;
 
-  public get triggerTemplate(): TemplateRef<any> | null {
+  public get triggerTemplate(): TemplateRef<unknown> | null {
     return this.customTrigger?.templateRef;
   }
 

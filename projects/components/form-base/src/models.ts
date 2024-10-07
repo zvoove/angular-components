@@ -1,7 +1,7 @@
 export interface IZvFormErrorData {
   controlPath: string;
   errorKey: string;
-  errorValue: any;
+  errorValue: unknown;
   isControl: boolean;
 }
 

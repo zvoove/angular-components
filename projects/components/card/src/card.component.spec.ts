@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { ZvHeaderHarness } from '@zvoove/components/header/src/testing/header.harness';
-import { ZvCardComponent } from './card.component';
+import { ZvCard } from './card.component';
 import { ZvCardModule } from './card.module';
 import { ZvCardHarness } from './testing/card.harness';
 
@@ -42,6 +42,8 @@ import { ZvCardHarness } from './testing/card.harness';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvCardModule],
 })
 export class TestDataSourceComponent {
   public caption: string;
@@ -51,10 +53,10 @@ export class TestDataSourceComponent {
   public addCaptionTemplate = false;
   public addDescriptionTemplate = false;
   public addFooterTemplate = false;
-  @ViewChild(ZvCardComponent) headerComponent: ZvCardComponent;
+  @ViewChild(ZvCard) headerComponent: ZvCard;
 }
 
-describe('ZvCardComponent', () => {
+describe('ZvCard', () => {
   let fixture: ComponentFixture<TestDataSourceComponent>;
   let component: TestDataSourceComponent;
   let loader: HarnessLoader;
@@ -62,8 +64,7 @@ describe('ZvCardComponent', () => {
   let card: ZvCardHarness;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ZvCardModule, MatButtonModule],
-      declarations: [TestDataSourceComponent],
+      imports: [TestDataSourceComponent, MatButtonModule],
     });
     fixture = TestBed.createComponent(TestDataSourceComponent);
     component = fixture.componentInstance;

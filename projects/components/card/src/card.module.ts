@@ -1,33 +1,15 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { ZvHeaderModule } from '@zvoove/components/header';
-import { ZvCardComponent } from './card.component';
+import { ZvCard } from './card.component';
 import {
-  ZvCardActionsSectionDirective,
-  ZvCardCaptionSectionDirective,
-  ZvCardDescriptionSectionDirective,
-  ZvCardFooterSectionDirective,
-  ZvCardTopButtonSectionDirective,
+  ZvCardActionsSection,
+  ZvCardCaptionSection,
+  ZvCardDescriptionSection,
+  ZvCardFooterSection,
+  ZvCardTopButtonSection,
 } from './card.directives';
 
 @NgModule({
-  imports: [CommonModule, MatCardModule, ZvHeaderModule],
-  exports: [
-    ZvCardComponent,
-    ZvCardTopButtonSectionDirective,
-    ZvCardFooterSectionDirective,
-    ZvCardCaptionSectionDirective,
-    ZvCardDescriptionSectionDirective,
-    ZvCardActionsSectionDirective,
-  ],
-  declarations: [
-    ZvCardComponent,
-    ZvCardTopButtonSectionDirective,
-    ZvCardFooterSectionDirective,
-    ZvCardCaptionSectionDirective,
-    ZvCardDescriptionSectionDirective,
-    ZvCardActionsSectionDirective,
-  ],
+  imports: [ZvCard, ZvCardTopButtonSection, ZvCardFooterSection, ZvCardCaptionSection, ZvCardDescriptionSection, ZvCardActionsSection],
+  exports: [ZvCard, ZvCardTopButtonSection, ZvCardFooterSection, ZvCardCaptionSection, ZvCardDescriptionSection, ZvCardActionsSection],
 })
 export class ZvCardModule {}

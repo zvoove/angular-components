@@ -8,6 +8,7 @@ export function hasRequiredField(abstractControl: AbstractControl): boolean {
     }
   }
   if (abstractControl instanceof FormGroup || abstractControl instanceof FormArray) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const controls: any = abstractControl.controls; // any because of https://github.com/microsoft/TypeScript/issues/32552
     for (const controlName in controls) {
       if (controls[controlName]) {

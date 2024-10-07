@@ -3,7 +3,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { ZvHeaderComponent, ZvHeaderModule } from '..';
+import { ZvHeader, ZvHeaderModule } from '..';
 import { ZvHeaderHarness } from './testing/header.harness';
 
 @Component({
@@ -29,6 +29,8 @@ import { ZvHeaderHarness } from './testing/header.harness';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvHeaderModule, MatButtonModule],
 })
 export class TestDataSourceComponent {
   public caption: string;
@@ -36,18 +38,17 @@ export class TestDataSourceComponent {
   public addButtons = false;
   public addCaptionTemplate = false;
   public addDescriptionTemplate = false;
-  @ViewChild(ZvHeaderComponent) headerComponent: ZvHeaderComponent;
+  @ViewChild(ZvHeader) headerComponent: ZvHeader;
 }
 
-describe('ZvHeaderComponent', () => {
+describe('ZvHeader', () => {
   let fixture: ComponentFixture<TestDataSourceComponent>;
   let component: TestDataSourceComponent;
   let loader: HarnessLoader;
   let header: ZvHeaderHarness;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ZvHeaderModule, MatButtonModule],
-      declarations: [TestDataSourceComponent],
+      imports: [TestDataSourceComponent],
     });
     fixture = TestBed.createComponent(TestDataSourceComponent);
     component = fixture.componentInstance;

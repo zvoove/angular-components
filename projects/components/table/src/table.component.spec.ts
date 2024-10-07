@@ -136,7 +136,7 @@ export class TestComponent {
   public showSettings = true;
   public layout: 'card' | 'border' | 'flat' = 'card';
   public striped = true;
-  public sortDefinitions: IZvTableSortDefinition[] = [{ prop: '__virtual', displayName: 'Virtual Column' }];
+  public sortDefinitions: IZvTableSortDefinition[] = [{ prop: '__customSort', displayName: 'Custom Sort' }];
   public preferSortDropdown = true;
 
   /** Karma doesn't recognize url changes from code. */
@@ -152,7 +152,7 @@ export class TestComponent {
   public onListActionExecute(_selection: unknown[]) {}
 }
 
-describe('ZvTableComponent', () => {
+describe('ZvTable', () => {
   describe('isolated', () => {
     const cd = { markForCheck: () => {} } as ChangeDetectorRef;
 
@@ -719,7 +719,7 @@ describe('ZvTableComponent', () => {
 
         await sortSelect.open();
         const optionTexts = await Promise.all((await sortSelect.getOptions()).map(async (o) => await o.getText()));
-        expect(optionTexts).toEqual(['', 'id', 'Virtual Column']);
+        expect(optionTexts).toEqual(['', 'Custom Sort', 'id']);
 
         spyOn(component.table, 'onSortChanged');
         await sortSelect.clickOptions({ text: 'id' });

@@ -14,6 +14,7 @@ module.exports = tseslint.config(
     ],
     processor: angular.processInlineTemplates,
     rules: {
+      "@angular-eslint/prefer-standalone": "error",
       "@angular-eslint/directive-selector": [
         "error",
         {
@@ -73,6 +74,8 @@ module.exports = tseslint.config(
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility,
     ],
-    rules: {},
+    rules: {
+      "@angular-eslint/template/prefer-control-flow": "error",
+    },
   }
 );

@@ -1,18 +1,15 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DebugElement, Injectable, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIcon } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormService } from '@zvoove/components/form-base';
 import { Observable, Subject, Subscription, of } from 'rxjs';
 import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
-import { ZvFormComponent, dependencies } from './form.component';
-import { ZvFormModule } from './form.module';
+import { ZvForm, dependencies } from './form.component';
 
 @Injectable()
 class TestZvFormService extends BaseZvFormService {
@@ -21,7 +18,7 @@ class TestZvFormService extends BaseZvFormService {
     this.options.debounceTime = null;
   }
 
-  public getLabel(formControl: any): Observable<string> | null {
+  public getLabel(formControl: FormControl & { zvLabel: string }): Observable<string> | null {
     return formControl.zvLabel ? of(formControl.zvLabel) : null;
   }
   protected mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]> {
@@ -47,18 +44,19 @@ class TestZvFormService extends BaseZvFormService {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvForm],
 })
 export class TestDataSourceComponent {
   public dataSource: IZvFormDataSource;
-  @ViewChild(ZvFormComponent) formComponent: ZvFormComponent;
+  @ViewChild(ZvForm) formComponent: ZvForm;
 }
 
-describe('ZvFormComponent', () => {
+describe('ZvForm', () => {
   describe('integration with dataSource', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, CommonModule, ZvFormModule],
-        declarations: [TestDataSourceComponent],
+        imports: [TestDataSourceComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
     }));
@@ -248,19 +246,20 @@ describe('ZvFormComponent', () => {
     });
 
     it('should handle scrolling to error card and visibility updates correctly', async () => {
-      let intersectCallback: (x: any) => void;
-      let observedEl: any;
-      let observerOptions: any;
-      dependencies.intersectionObserver = function mockIO(callback: any, options: any) {
-        intersectCallback = callback;
+      let intersectCallback: (x: unknown) => void;
+      let observedEl: Element;
+      let observerOptions: IntersectionObserverInit;
+      dependencies.intersectionObserver = function mockIO(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+        intersectCallback = callback as unknown as (x: unknown) => void;
         observerOptions = options;
 
         return {
-          observe: (el: any) => {
+          observe: (el: Element) => {
             observedEl = el;
           },
           disconnect: () => {},
-        };
+        } as unknown as IntersectionObserver;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any;
 
       const fixture = TestBed.createComponent(TestDataSourceComponent);
@@ -284,7 +283,7 @@ describe('ZvFormComponent', () => {
 
       expect(opts).toBeDefined();
       expect(observerOptions).toEqual({
-        root: null as any,
+        root: null,
         rootMargin: '-100px',
         threshold: 0,
       });
@@ -325,16 +324,16 @@ function createDataSource(override: Partial<IZvFormDataSource> = {}): ITestZvFor
   };
 }
 
-function getBlockUi(fixture: ComponentFixture<any>): DebugElement {
+function getBlockUi<T>(fixture: ComponentFixture<T>): DebugElement {
   return fixture.debugElement.query(By.directive(ZvBlockUi));
 }
-function getErrorContainer(fixture: ComponentFixture<any>): DebugElement {
+function getErrorContainer<T>(fixture: ComponentFixture<T>): DebugElement {
   return fixture.debugElement.query(By.css('.zv-form__error-container'));
 }
-function getErrorIcon(fixture: ComponentFixture<any>): DebugElement {
+function getErrorIcon<T>(fixture: ComponentFixture<T>): DebugElement {
   return getErrorContainer(fixture).query(By.directive(MatIcon));
 }
-function getErrorText(fixture: ComponentFixture<any>): string {
+function getErrorText<T>(fixture: ComponentFixture<T>): string {
   let errorText: string = getErrorContainer(fixture).nativeElement.textContent.trim();
   const errorIconNode = getErrorIcon(fixture);
   if (errorIconNode) {
@@ -343,9 +342,9 @@ function getErrorText(fixture: ComponentFixture<any>): string {
   }
   return errorText;
 }
-function getProgress(fixture: ComponentFixture<any>): string {
+function getProgress<T>(fixture: ComponentFixture<T>): string {
   return fixture.debugElement.query(By.css('.zv-form__savebar-progress'))?.nativeElement.textContent.trim() ?? null;
 }
-function isProgressBarVisible(fixture: ComponentFixture<any>): boolean {
+function isProgressBarVisible<T>(fixture: ComponentFixture<T>): boolean {
   return !!fixture.debugElement.query(By.css('mat-progress-bar'));
 }

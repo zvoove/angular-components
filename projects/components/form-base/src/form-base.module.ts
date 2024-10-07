@@ -1,6 +1,7 @@
-import { ModuleWithProviders, NgModule, Type } from '@angular/core';
+import { ModuleWithProviders, NgModule, Provider, Type } from '@angular/core';
 import { ZvFormService } from './form.service';
 
+/** @deprecated Use provideFormService instead */
 @NgModule({})
 export class ZvFormBaseModule {
   public static forRoot(formsServiceType: Type<ZvFormService>): ModuleWithProviders<ZvFormBaseModule> {
@@ -9,4 +10,8 @@ export class ZvFormBaseModule {
       providers: [{ provide: ZvFormService, useClass: formsServiceType }],
     };
   }
+}
+
+export function provideFormService(formsServiceType: Type<ZvFormService>): Provider[] {
+  return [{ provide: ZvFormService, useClass: formsServiceType }];
 }

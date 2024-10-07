@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { IZvException } from '@zvoove/components/core';
+import { MatCard } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { ZvBlockUi } from '@zvoove/components/block-ui';
+import { IZvException, ZvErrorMessagePipe } from '@zvoove/components/core';
 import { Subscription } from 'rxjs';
-
 import { IZvViewDataSource } from './view-data-source';
 
 @Component({
@@ -10,8 +12,10 @@ import { IZvViewDataSource } from './view-data-source';
   styleUrls: ['./view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [ZvBlockUi, MatCard, MatIcon, ZvErrorMessagePipe],
 })
-export class ZvViewComponent implements OnDestroy {
+export class ZvView implements OnDestroy {
   @Input({ required: true }) public set dataSource(value: IZvViewDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();

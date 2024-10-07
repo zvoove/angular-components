@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation, afterNextRender, effect, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, afterNextRender, effect, input, signal, viewChild } from '@angular/core';
 
 import type { ElementRef } from '@angular/core';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -22,7 +22,7 @@ export class ZvBlockUi {
 
   public spinnerDiameter = signal(20); // start with min width and then see if we can increase it in updateSpinner
 
-  @ViewChild('content', { static: true }) public contentNode: ElementRef<HTMLElement>;
+  public contentNode = viewChild<ElementRef>('content');
 
   constructor() {
     afterNextRender({ read: () => this.updateSpinner() });
@@ -34,7 +34,7 @@ export class ZvBlockUi {
   }
 
   private updateSpinner() {
-    const nativeEl = this.contentNode.nativeElement;
+    const nativeEl = this.contentNode().nativeElement;
     const minDimension = Math.min(nativeEl.offsetWidth, nativeEl.offsetHeight);
     const textSpace = this.spinnerText() ? 20 : 0;
     const newDiameter = Math.max(Math.min(minDimension - textSpace, 100), 20);

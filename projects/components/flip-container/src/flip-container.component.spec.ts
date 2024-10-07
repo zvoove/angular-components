@@ -1,8 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ZvFlipContainerComponent } from './flip-container.component';
+import { ZvFlipContainer } from './flip-container.component';
 import { ZvFlipContainerModule } from './flip-container.module';
 
 @Component({
@@ -15,18 +14,19 @@ import { ZvFlipContainerModule } from './flip-container.module';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvFlipContainerModule],
 })
 export class TestComponent {
   public removeHiddenNodes = true;
 
-  @ViewChild(ZvFlipContainerComponent, { static: true }) cmp: ZvFlipContainerComponent;
+  @ViewChild(ZvFlipContainer, { static: true }) cmp: ZvFlipContainer;
 }
 
-describe('ZvFlipContainerComponent', () => {
+describe('ZvFlipContainer', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [CommonModule, ZvFlipContainerModule],
-      declarations: [TestComponent],
+      imports: [TestComponent],
     }).compileComponents();
   }));
 

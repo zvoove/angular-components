@@ -30,6 +30,7 @@ import { _ErrorStateTracker, ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { replaceAll } from '@zvoove/components/utils';
 import { Subject } from 'rxjs';
+import { MatIcon } from '@angular/material/icon';
 
 let nextUniqueId = 0;
 
@@ -50,11 +51,13 @@ let nextUniqueId = 0;
     '[attr.aria-invalid]': 'errorState',
     '[attr.aria-required]': 'required.toString()',
   },
-  providers: [{ provide: MatFormFieldControl, useExisting: ZvNumberInputComponent }],
+  providers: [{ provide: MatFormFieldControl, useExisting: ZvNumberInput }],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [MatIcon],
 })
-export class ZvNumberInputComponent implements ControlValueAccessor, MatFormFieldControl<any>, OnChanges, OnDestroy, OnInit, DoCheck {
+export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<number>, OnChanges, OnDestroy, OnInit, DoCheck {
   /** Mininum boundary value. */
   @Input() min: number;
 

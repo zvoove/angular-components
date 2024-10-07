@@ -9,6 +9,7 @@ import { IZvFormError, IZvFormErrorData } from './models';
 
 @Injectable()
 class TestZvFormService extends BaseZvFormService {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getLabel(_formControl: FormControl): Observable<string> | null {
     return null;
   }

@@ -1,10 +1,8 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvBlockUi } from './block-ui.component';
 import { ZvBlockUiHarness } from './testing/block-ui.harness';
 
@@ -17,14 +15,12 @@ import { ZvBlockUiHarness } from './testing/block-ui.harness';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvBlockUi],
 })
 export class TestComponent {
   public blocked = false;
   public spinnerText: string = null;
-
-  @ViewChild(ZvBlockUi, { static: true }) blockui: ZvBlockUi;
-
-  constructor(public cd: ChangeDetectorRef) {}
 }
 
 describe('ZvBlockUi', () => {
@@ -35,8 +31,7 @@ describe('ZvBlockUi', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, CommonModule, ZvBlockUi],
-      declarations: [TestComponent],
+      imports: [TestComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponent);

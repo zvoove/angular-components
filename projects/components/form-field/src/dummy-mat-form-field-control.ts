@@ -58,7 +58,10 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
   private _valueSubscription: Subscription;
   private _statusSubscription: Subscription;
 
-  constructor(public ngControl: NgControl, formControl: AbstractControl) {
+  constructor(
+    public ngControl: NgControl,
+    formControl: AbstractControl
+  ) {
     if (formControl) {
       this._valueSubscription = formControl.valueChanges.pipe(startWith(formControl.value)).subscribe((value) => {
         this.value = value;
@@ -70,11 +73,11 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
     }
   }
 
-  public onContainerClick(_: MouseEvent): void {}
-  public setDescribedByIds(_: string[]): void {}
+  public onContainerClick(): void {}
+  public setDescribedByIds(): void {}
 
-  public onChange = (_: any) => {};
-  public onTouched = (_: any) => {};
+  public onChange = () => {};
+  public onTouched = () => {};
 
   public ngOnDestroy() {
     this.stateChanges.complete();
@@ -86,11 +89,11 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
     }
   }
 
-  public writeValue(_: any) {}
+  public writeValue() {}
 
-  public registerOnChange(_: () => void) {}
+  public registerOnChange() {}
 
-  public registerOnTouched(_: any): void {}
+  public registerOnTouched(): void {}
 
-  public setDisabledState(_: boolean): void {}
+  public setDisabledState(): void {}
 }

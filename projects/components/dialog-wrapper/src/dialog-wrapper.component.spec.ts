@@ -3,17 +3,16 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { IZvButton, IZvException } from '@zvoove/components/core';
 import { Observable, of, Subject } from 'rxjs';
+import { ZvDialogWrapper } from './dialog-wrapper.component';
 import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
-import { ZvDialogWrapperModule } from './dialog-wrapper.module';
 import { ZvDialogWrapperHarness } from './testing/dialog-wrapper.harness';
 
 interface ITestDialogWrapperDataSourceOptions {
   dialogTitle: string;
-  actionFn: () => Observable<any>;
+  actionFn: () => Observable<unknown>;
   cancelFn: () => void;
 }
 
@@ -73,6 +72,8 @@ export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvDialogWrapper],
 })
 export class ZvDialogWrapperTestDialog {
   dataSource = new TestDialogWrapperDataSource({
@@ -97,8 +98,11 @@ export class ZvDialogWrapperTestDialog {
 
 @Component({
   selector: 'zv-dialog-wrapper-test',
+  template: ``,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
+  standalone: true,
+  imports: [ZvDialogWrapper],
 })
 export class ZvDialogWrapperTestComponent {
   constructor(public dialog: MatDialog) {}
@@ -118,8 +122,7 @@ describe('DialogUnitTestComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, MatDialogModule, ZvDialogWrapperModule],
-      declarations: [ZvDialogWrapperTestDialog, ZvDialogWrapperTestComponent],
+      imports: [ZvDialogWrapperTestComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ZvDialogWrapperTestComponent);

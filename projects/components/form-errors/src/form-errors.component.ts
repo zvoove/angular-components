@@ -3,6 +3,8 @@ import { IZvFormError, ZvFormService } from '@zvoove/components/form-base';
 import { Observable } from 'rxjs';
 
 import type { FormGroup } from '@angular/forms';
+import { MatChipListbox, MatChip } from '@angular/material/chips';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'zv-form-errors',
@@ -10,8 +12,10 @@ import type { FormGroup } from '@angular/forms';
   styleUrls: ['./form-errors.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [MatChipListbox, MatChip, AsyncPipe],
 })
-export class ZvFormErrorsComponent implements OnChanges {
+export class ZvFormErrors implements OnChanges {
   @Input({ required: true }) public form!: FormGroup;
   @Input() public includeControls: boolean = null;
 

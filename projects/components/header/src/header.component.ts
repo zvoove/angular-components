@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, ContentChild, Input, TemplateRef, ViewEncapsulation } from '@angular/core';
-import {
-  ZvHeaderCaptionSectionDirective,
-  ZvHeaderDescriptionSectionDirective,
-  ZvHeaderTopButtonSectionDirective,
-} from './header.directives';
+import { ZvHeaderCaptionSection, ZvHeaderDescriptionSection, ZvHeaderTopButtonSection } from './header.directives';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'zv-header',
@@ -11,17 +8,19 @@ import {
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [NgTemplateOutlet],
 })
-export class ZvHeaderComponent {
+export class ZvHeader {
   @Input() public caption: string;
   @Input() public description: string;
 
-  @ContentChild(ZvHeaderCaptionSectionDirective, { read: TemplateRef })
-  public captionSection: TemplateRef<any> | null;
+  @ContentChild(ZvHeaderCaptionSection, { read: TemplateRef })
+  public captionSection: TemplateRef<unknown> | null;
 
-  @ContentChild(ZvHeaderDescriptionSectionDirective, { read: TemplateRef })
-  public descriptionSection: TemplateRef<any> | null;
+  @ContentChild(ZvHeaderDescriptionSection, { read: TemplateRef })
+  public descriptionSection: TemplateRef<unknown> | null;
 
-  @ContentChild(ZvHeaderTopButtonSectionDirective, { read: TemplateRef })
-  public topButtonSection: TemplateRef<any> | null;
+  @ContentChild(ZvHeaderTopButtonSection, { read: TemplateRef })
+  public topButtonSection: TemplateRef<unknown> | null;
 }

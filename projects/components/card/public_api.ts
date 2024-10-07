@@ -1,9 +1,9 @@
-export { ZvCardComponent } from './src/card.component';
+export { ZvCard } from './src/card.component';
 export {
-  ZvCardActionsSectionDirective,
-  ZvCardCaptionSectionDirective,
-  ZvCardDescriptionSectionDirective,
-  ZvCardFooterSectionDirective,
-  ZvCardTopButtonSectionDirective,
+  ZvCardActionsSection,
+  ZvCardCaptionSection,
+  ZvCardDescriptionSection,
+  ZvCardFooterSection,
+  ZvCardTopButtonSection,
 } from './src/card.directives';
 export { ZvCardModule } from './src/card.module';

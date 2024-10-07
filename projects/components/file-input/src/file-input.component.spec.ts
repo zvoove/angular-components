@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader } from '@angular/cdk/testing';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { ZvFileInputComponent } from './file-input.component';
+import { ZvFileInput } from './file-input.component';
 import { ZvFileInputHarness } from './testing/file-input.harness';
 
 @Component({
@@ -12,14 +12,14 @@ import { ZvFileInputHarness } from './testing/file-input.harness';
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
   standalone: true,
-  imports: [ZvFileInputComponent],
+  imports: [ZvFileInput],
 })
 export class TestComponent {
-  @ViewChild(ZvFileInputComponent) fileInputCmp!: ZvFileInputComponent;
+  @ViewChild(ZvFileInput) fileInputCmp!: ZvFileInput;
 }
 
-describe('ZvFileInputComponent', () => {
-  let cmp: ZvFileInputComponent;
+describe('ZvFileInput', () => {
+  let cmp: ZvFileInput;
   let fixture: ComponentFixture<TestComponent>;
   let loader: HarnessLoader;
   let harness: ZvFileInputHarness;

@@ -1,11 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ZvFlipContainerComponent } from './flip-container.component';
-import { FlipContainerBackDirective, FlipContainerFrontDirective } from './flip-container.directives';
+import { ZvFlipContainer } from './flip-container.component';
+import { FlipContainerBack, FlipContainerFront } from './flip-container.directives';
 
 @NgModule({
-  imports: [CommonModule],
-  declarations: [ZvFlipContainerComponent, FlipContainerFrontDirective, FlipContainerBackDirective],
-  exports: [ZvFlipContainerComponent, FlipContainerFrontDirective, FlipContainerBackDirective],
+  imports: [ZvFlipContainer, FlipContainerFront, FlipContainerBack],
+  exports: [ZvFlipContainer, FlipContainerFront, FlipContainerBack],
 })
 export class ZvFlipContainerModule {}

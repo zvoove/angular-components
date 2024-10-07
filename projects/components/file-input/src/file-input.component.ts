@@ -46,11 +46,11 @@ let nextUniqueId = 0;
     '[attr.aria-invalid]': 'errorState',
     '[attr.aria-required]': 'required.toString()',
   },
-  providers: [{ provide: MatFormFieldControl, useExisting: ZvFileInputComponent }],
+  providers: [{ provide: MatFormFieldControl, useExisting: ZvFileInput }],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ZvFileInputComponent implements ControlValueAccessor, MatFormFieldControl<File>, OnChanges, OnDestroy, OnInit, DoCheck {
+export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<File>, OnChanges, OnDestroy, OnInit, DoCheck {
   fileSelectText = $localize`:@@zvc.chooseFile:Please choose a file.`;
 
   @Input() accept: string[] = [];

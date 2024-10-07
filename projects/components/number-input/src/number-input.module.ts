@@ -1,14 +1,10 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 
-import { ZvNumberInputComponent } from './number-input.component';
+import { ZvNumberInput } from './number-input.component';
 
-export const zvNumberInputModuleImports = [CommonModule, MatIconModule];
-
+/** @deprecated Use ZvNumberInput */
 @NgModule({
-  imports: zvNumberInputModuleImports,
-  exports: [ZvNumberInputComponent],
-  declarations: [ZvNumberInputComponent],
+  imports: [ZvNumberInput],
+  exports: [ZvNumberInput],
 })
 export class ZvNumberInputModule {}
