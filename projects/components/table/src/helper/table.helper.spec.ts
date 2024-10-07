@@ -17,41 +17,41 @@ describe('asQueryParams', () => {
 
 describe('fromQueryParams', () => {
   it('should return data when all values are valid', () => {
-    expect(fromQueryParams('22◬2◬asdf◬Column1◬desc')).toEqual(<IZvTableUpdateDataInfo>{
+    expect(fromQueryParams('22◬2◬asdf◬Column1◬desc')).toEqual({
       pageSize: 22,
       currentPage: 2,
       searchText: 'asdf',
       sortColumn: 'Column1',
       sortDirection: 'desc',
-    });
+    } as IZvTableUpdateDataInfo);
   });
 
   it('should never return NaN for a parameter', () => {
-    expect(fromQueryParams('foo◬foo◬asdf◬Column1◬desc')).toEqual(<IZvTableUpdateDataInfo>{
+    expect(fromQueryParams('foo◬foo◬asdf◬Column1◬desc')).toEqual({
       pageSize: null,
       currentPage: null,
       searchText: 'asdf',
       sortColumn: 'Column1',
       sortDirection: 'desc',
-    });
+    } as IZvTableUpdateDataInfo);
   });
 
   it('should return partial data when some values are set', () => {
-    expect(fromQueryParams('22◬2◬◬◬desc')).toEqual(<IZvTableUpdateDataInfo>{
+    expect(fromQueryParams('22◬2◬◬◬desc')).toEqual({
       pageSize: 22,
       currentPage: 2,
       searchText: null,
       sortColumn: null,
       sortDirection: 'desc',
-    });
+    } as IZvTableUpdateDataInfo);
 
-    expect(fromQueryParams('◬◬test◬◬')).toEqual(<IZvTableUpdateDataInfo>{
+    expect(fromQueryParams('◬◬test◬◬')).toEqual({
       pageSize: null,
       currentPage: null,
       searchText: 'test',
       sortColumn: null,
       sortDirection: null,
-    });
+    } as IZvTableUpdateDataInfo);
   });
 
   it('should return undefined when all values are empty', () => {

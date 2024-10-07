@@ -75,12 +75,12 @@ export class ZvTableSettingsComponent implements OnInit {
     this.settings$ = this.settingsService.getStream(this.tableId, true).pipe(
       map((settings) => {
         settings = settings || ({} as IZvTableSetting);
-        return <IZvTableSetting>{
+        return {
           ...settings,
           columnBlacklist: settings.columnBlacklist || [],
           pageSize: settings.pageSize || 15,
           sortDirection: settings.sortDirection || 'asc',
-        };
+        } as IZvTableSetting;
       })
     );
   }

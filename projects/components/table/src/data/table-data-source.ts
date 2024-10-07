@@ -155,9 +155,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
       'loadDataFn' in optionsOrLoadDataFn ? optionsOrLoadDataFn : { loadDataFn: optionsOrLoadDataFn, actions: [], mode: mode };
 
     this.mode = options.mode || 'client';
-    // eslint-disable-next-line no-bitwise
     this.rowActions = options.actions?.filter((a) => a.scope & ZvTableActionScope.row) || [];
-    // eslint-disable-next-line no-bitwise
     this.listActions = options.actions?.filter((a) => a.scope & ZvTableActionScope.list) || [];
     this._updateDataTrigger$ = options.loadTrigger$ || NEVER;
     this._loadData = options.loadDataFn;
@@ -172,7 +170,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * on its data relative to the function to know if a row should be added/removed/moved.
    * Accepts a function that takes two parameters, index and item.
    */
-  public trackBy: TrackByFunction<T> = (i) => i; // index is more performant than item reference when paginating
+  public trackBy: TrackByFunction<T> = (_, item) => item;
 
   /**
    * Returns the names of the property that should be used in filterPredicate.
@@ -180,7 +178,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * @param row Data object for which the property names should be returned.
    * @returns The names of the properties to use in the filter.
    */
-  public filterProperties(row: { [key: string]: any }): string[] {
+  public filterProperties(row: Record<string, any>): string[] {
     return Object.keys(row);
   }
 
@@ -190,7 +188,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * @param row Data object used to check against the filter.
    * @returns The values to use in the filter.
    */
-  public filterValues = (row: { [key: string]: any }): any[] => this.filterProperties(row).map((key) => row[key]);
+  public filterValues = (row: Record<string, any>): any[] => this.filterProperties(row).map((key) => row[key]);
 
   /**
    * Checks if a data object matches the data source's filter string. By default, each data object
@@ -203,7 +201,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * @param filter Filter string that has been set on the data source.
    * @returns Whether the filter matches against the data
    */
-  public filterPredicate = (row: { [key: string]: any }, filter: string) => {
+  public filterPredicate = (row: Record<string, any>, filter: string) => {
     // Transform the data into a lowercase string of all property values.
     const dataStr = this.filterValues(row)
       .map((value) => (value instanceof Date ? value.toLocaleString(this.locale) : value + '').toLowerCase())
@@ -231,7 +229,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * @param columnName The name of the column that represents the data.
    */
   public sortingDataAccessor = (data: T, columnName: string): any => {
-    const value = (data as { [key: string]: any })[columnName];
+    const value = (data as Record<string, any>)[columnName];
 
     if (_isNumberValue(value)) {
       const numberValue = Number(value);

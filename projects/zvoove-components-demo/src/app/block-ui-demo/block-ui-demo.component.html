@@ -15,7 +15,7 @@
         <mat-card-title>Usage</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <app-code [code]="usageCode"> </app-code>
+        <app-code [code]="usageCode" [language]="'typescript'"> </app-code>
       </mat-card-content>
     </mat-card>
 
@@ -24,13 +24,13 @@
     <div style="height: 1em"></div>
     <zv-block-ui [blocked]="blocked" [clickthrough]="true">
       <div>this block-ui is clickthrough</div>
-      <button type="button" mat-raised-button color="primary">clickable</button>
+      <button type="button" mat-raised-button>clickable</button>
     </zv-block-ui>
 
     <div style="height: 1em"></div>
     <zv-block-ui [blocked]="blocked">
       <div>this block-ui is NOT clickthrough</div>
-      <button type="button" mat-raised-button color="primary">NOT clickable while blocked</button>
+      <button type="button" mat-raised-button>NOT clickable while blocked</button>
     </zv-block-ui>
 
     <div style="height: 1em"></div>
@@ -92,7 +92,7 @@
       </mat-card-header>
       <mat-card-content>
         <p>Add the following to your imports, where you want to use the zv-date-time-input:</p>
-        <app-code [code]="importsCode" />
+        <app-code [code]="importsCode" [language]="'typescript'" />
       </mat-card-content>
     </mat-card>
   </ng-template>

@@ -2,26 +2,61 @@
 @use '@angular/material' as mat;
 
 @mixin theme($theme) {
-  html {
-    // Get the color config from the theme.
-    $color-config: mat.get-color-config($theme);
+  // SCSS method docs: https://github.com/angular/components/blob/10da6c63757200b5848c00e560eabe8642435fe8/guides/theming-your-components.md
+  // Get the primary color palette from the color-config.
+  --zv-components-primary: #{mat.get-theme-color($theme, primary, 40)};
+  --zv-components-primary-contrast: #{mat.get-theme-color($theme, on-primary)};
 
-    // Get the primary color palette from the color-config.
-    $primary-palette: map.get($color-config, primary);
-    --zv-components-primary: #{mat.get-color-from-palette($primary-palette, 500)};
-    --zv-components-primary-contrast: #{mat.get-color-from-palette($primary-palette, 500-contrast)};
+  // Get the accent color palette from the color-config.
+  --zv-components-accent: #{mat.get-theme-color($theme, tertiary, 40)};
+  --zv-components-accent-contrast: #{mat.get-theme-color($theme, on-tertiary)};
 
-    // Get the accent color palette from the color-config.
-    $accent-palette: map.get($color-config, accent);
-    --zv-components-accent: #{mat.get-color-from-palette($accent-palette, 500)};
-    --zv-components-accent-contrast: #{mat.get-color-from-palette($accent-palette, 500-contrast)};
+  // Get the error color palette from the color-config.
+  --zv-components-error: #{mat.get-theme-color($theme, error, 40)};
+  --zv-components-error-contrast: #{mat.get-theme-color($theme, on-error)};
 
-    // Get the error color palette from the color-config.
-    $warn-palette: map.get($color-config, warn);
-    --zv-components-error: #{mat.get-color-from-palette($warn-palette, 500)};
-    --zv-components-error-contrast: #{mat.get-color-from-palette($warn-palette, 500-contrast)};
+  --zv-components-font: #{mat.get-theme-color($theme, on-surface)};
 
-    $foreground-palette: map.get($color-config, foreground);
-    --zv-components-font: #{mat.get-color-from-palette($foreground-palette, base)};
+  .zv-btn-primary {
+    @include mat.button-color($theme, $color-variant: primary);
+    --mdc-icon-button-icon-color: var(--mdc-text-button-label-text-color);
   }
+
+  .zv-btn-secondary {
+    @include mat.button-color($theme, $color-variant: secondary);
+    --mdc-icon-button-icon-color: var(--mdc-text-button-label-text-color);
+  }
+
+  .zv-btn-tertiary {
+    @include mat.button-color($theme, $color-variant: tertiary);
+    --mdc-icon-button-icon-color: var(--mdc-text-button-label-text-color);
+  }
+
+  .zv-btn-error {
+    @include mat.button-color($theme, $color-variant: error);
+    --mdc-icon-button-icon-color: var(--mdc-text-button-label-text-color);
+  }
+}
+
+@mixin m2-theme($theme) {
+  // Get the color config from the theme.
+  $color-config: mat.m2-get-color-config($theme);
+
+  // Get the primary color palette from the color-config.
+  $primary-palette: map.get($color-config, primary);
+  --zv-components-primary: #{mat.m2-get-color-from-palette($primary-palette, 500)};
+  --zv-components-primary-contrast: #{mat.m2-get-color-from-palette($primary-palette, 500-contrast)};
+
+  // Get the accent color palette from the color-config.
+  $accent-palette: map.get($color-config, accent);
+  --zv-components-accent: #{mat.m2-get-color-from-palette($accent-palette, 500)};
+  --zv-components-accent-contrast: #{mat.m2-get-color-from-palette($accent-palette, 500-contrast)};
+
+  // Get the error color palette from the color-config.
+  $warn-palette: map.get($color-config, warn);
+  --zv-components-error: #{mat.m2-get-color-from-palette($warn-palette, 500)};
+  --zv-components-error-contrast: #{mat.m2-get-color-from-palette($warn-palette, 500-contrast)};
+
+  $foreground-palette: map.get($color-config, foreground);
+  --zv-components-font: #{mat.m2-get-color-from-palette($foreground-palette, base)};
 }

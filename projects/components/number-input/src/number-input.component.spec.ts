@@ -20,7 +20,6 @@ describe('ZvNumberInputComponent', () => {
 
   function triggerEvent(el: HTMLElement, type: string) {
     const e = document.createEvent('HTMLEvents');
-    // eslint-disable-next-line deprecation/deprecation
     e.initEvent(type, false, true);
     el.dispatchEvent(e);
   }
@@ -77,7 +76,7 @@ describe('ZvNumberInputComponent', () => {
     fixture.detectChanges();
 
     spinner.decimals = 4;
-    const spinnerInput = <any>spinner._inputfieldViewChild.nativeElement;
+    const spinnerInput = spinner._inputfieldViewChild.nativeElement as any;
     spinnerInput.value = '1234.1234';
     triggerEvent(spinnerInput, 'input');
 
@@ -102,7 +101,7 @@ describe('ZvNumberInputComponent', () => {
     fixture.detectChanges();
 
     spinner.disabled = true;
-    const spinnerInput = <any>spinner._inputfieldViewChild.nativeElement;
+    const spinnerInput = spinner._inputfieldViewChild.nativeElement as any;
     spinnerInput.value = '1';
     triggerEvent(spinnerInput, 'keyup');
     fixture.detectChanges();

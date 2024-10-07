@@ -87,7 +87,9 @@ export class FormFieldDemoComponent {
   public hintToggle = false;
   public hintText = 'hint text';
   public asyncLabel$ = of('Custom Label');
-  public ctrlCountNumbers = Array(7).fill(1);
+  public ctrlCountNumbers = Array(7)
+    .fill(1)
+    .map((_, idx) => idx);
   public value = '';
   public required = false;
 

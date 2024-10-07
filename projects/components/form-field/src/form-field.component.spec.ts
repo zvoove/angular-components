@@ -1,8 +1,11 @@
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DebugElement, Injectable, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -44,9 +47,7 @@ class TestZvFormService extends BaseZvFormService {
   template: `
     <zv-form-field #f1>
       <input type="text" matInput />
-    </zv-form-field>
-    <zv-form-field #f2>
-      <input type="text" />
+      <mat-label>mat-input</mat-label>
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -54,9 +55,6 @@ class TestZvFormService extends BaseZvFormService {
 })
 export class TestNoFormComponent {
   @ViewChild('f1', { static: true }) formField: ZvFormFieldComponent;
-  @ViewChild('f2', { static: true }) formFieldEmulated: ZvFormFieldComponent;
-
-  constructor(public cd: ChangeDetectorRef) {}
 }
 
 @Component({
@@ -64,6 +62,7 @@ export class TestNoFormComponent {
   template: `
     <zv-form-field>
       <input type="text" [(ngModel)]="value" matInput />
+      <mat-label>test</mat-label>
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -141,7 +140,7 @@ describe('ZvFormFieldComponent', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      (<any>component.formControl).zvLabel = 'service label';
+      (component.formControl as any).zvLabel = 'service label';
       fixture.detectChanges();
 
       expect(fixture.debugElement.query(By.css('.template-label')).query(By.css('label')).nativeElement.textContent.trim()).toBe(
@@ -166,7 +165,7 @@ describe('ZvFormFieldComponent', () => {
       expect(component).toBeDefined();
 
       // Label calculated from the service
-      (<any>component.formControl).zvLabel = 'service label';
+      (component.formControl as any).zvLabel = 'service label';
       fixture.detectChanges();
       expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('service label');
 
@@ -177,7 +176,7 @@ describe('ZvFormFieldComponent', () => {
 
       // Label calculated from the service with delay
       component.customLabel = null;
-      (<any>component.formControl).zvLabel = 'async label';
+      (component.formControl as any).zvLabel = 'async label';
       (TestBed.inject(ZvFormService) as TestZvFormService).labelDelay = 10;
       fixture.detectChanges();
       tick(10);
@@ -282,70 +281,63 @@ describe('ZvFormFieldComponent', () => {
   });
 
   describe('ngModel', () => {
+    let fixture: ComponentFixture<TestNgModelComponent>;
+    let loader: HarnessLoader;
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [NoopAnimationsModule, FormsModule, MatInputModule, ZvFormFieldModule],
         declarations: [TestNgModelComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
+      fixture = TestBed.createComponent(TestNgModelComponent);
+      loader = TestbedHarnessEnvironment.loader(fixture);
     }));
 
-    it('should work with ngModel', fakeAsync(() => {
-      const fixture = TestBed.createComponent(TestNgModelComponent);
+    it('should work with ngModel', async () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      fixture.detectChanges();
+      const formFieldHarness = await loader.getHarness(MatFormFieldHarness);
 
       expect(component.formField.emulated).toBe(false);
       expect(component.formField.noUnderline).toBe(false);
-      expect(component.formField._matFormField._shouldLabelFloat()).toBe(false);
+      expect(await formFieldHarness.isLabelFloating()).toBe(false);
 
       component.value = 'test';
-      fixture.detectChanges();
 
-      tick(1);
-      expect(component.formField._matFormField._shouldLabelFloat()).toBe(true);
-    }));
+      expect(await formFieldHarness.isLabelFloating()).toBe(true);
+    });
   });
 
   describe('no form', () => {
+    let fixture: ComponentFixture<TestNoFormComponent>;
+    let loader: HarnessLoader;
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [NoopAnimationsModule, FormsModule, MatInputModule, ZvFormFieldModule],
         declarations: [TestNoFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
+      fixture = TestBed.createComponent(TestNoFormComponent);
+      loader = TestbedHarnessEnvironment.loader(fixture);
     }));
 
-    it('should work without form binding', fakeAsync(() => {
-      const fixture = TestBed.createComponent(TestNoFormComponent);
+    it('should work without form binding on matInput', async () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      fixture.detectChanges();
+      const formFieldHarness = await loader.getHarness(MatFormFieldHarness);
 
-      // real form control
       expect(component.formField.emulated).toBe(false);
       expect(component.formField.noUnderline).toBe(false);
-      expect(component.formField._matFormField._shouldLabelFloat()).toBe(false);
-
-      // emulated form control
-      expect(component.formFieldEmulated.emulated).toBe(true);
-      expect(component.formFieldEmulated.noUnderline).toBe(true);
-      expect(component.formFieldEmulated._matFormField._shouldLabelFloat()).toBe(true);
-
-      fixture.detectChanges();
-
-      tick(1);
+      expect(await formFieldHarness.isLabelFloating()).toBe(false);
 
       const el = fixture.debugElement.query(By.css('input')).nativeElement;
       el.value = 'someValue';
       el.dispatchEvent(new Event('input'));
 
-      expect(component.formField._matFormField._shouldLabelFloat()).toBe(true);
-      expect(component.formFieldEmulated._matFormField._shouldLabelFloat()).toBe(true);
-    }));
+      expect(await formFieldHarness.isLabelFloating()).toBe(true);
+    });
   });
 
   describe('initialization', () => {

@@ -1,5 +1,14 @@
-<mat-toolbar color="primary" [style.height]="'50px'">
+<mat-toolbar [style.height]="'50px'">
   &#64;zvoove/components
+  <div class="app-root__locale-box">
+    Theme:
+    <button ngSkipHydration mat-button type="button" (click)="theme.set('m2')" [class.app-root__locale-active]="theme() === 'm2'">
+      m2
+    </button>
+    <button ngSkipHydration mat-button type="button" (click)="theme.set('m3')" [class.app-root__locale-active]="theme() === 'm3'">
+      m3
+    </button>
+  </div>
   <div class="app-root__locale-box">
     LOCALE_ID:
     @for (locale of supportedLocales; track trackByString($index, locale)) {
@@ -27,6 +36,7 @@
 
       <div mat-subheader>Components</div>
       <a mat-list-item [routerLink]="['block-ui']">Block Ui</a>
+      <a mat-list-item [routerLink]="['button']">Button</a>
       <a mat-list-item [routerLink]="['card']">Card</a>
       <a mat-list-item [routerLink]="['dialog-wrapper']">Dialog Wrapper</a>
       <a mat-list-item [routerLink]="['flip-container']">Flip Container</a>
@@ -39,11 +49,7 @@
       <a mat-list-item [routerLink]="['upgrade-notes']">Upgrade Notes</a>
     </mat-nav-list>
   </mat-sidenav>
-  <!--
-  margin-left will be overwritten by the component to the corrent one, after angular is instantiated.
-  But if we don't set it here now, then SSR will render margin-left: 0; and it will flicker on the first load
-  -->
-  <mat-sidenav-content class="app-root__sidenav-content" style="margin-left: 153px">
+  <mat-sidenav-content class="app-root__sidenav-content">
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

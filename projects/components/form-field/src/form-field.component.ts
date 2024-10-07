@@ -72,7 +72,7 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
     this._labelChild = value;
     this.updateLabel();
     if (this._matFormField) {
-      (<any>this._matFormField)._changeDetectorRef.markForCheck();
+      (this._matFormField as any)._changeDetectorRef.markForCheck();
     }
   }
   public _labelChild: MatLabel;
@@ -172,7 +172,6 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
     }
     // We hope noone subscribed matFormFieldControl.stateChanges already - 🤞
     if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
-      // eslint-disable-next-line @angular-eslint/no-lifecycle-call
       this.matFormFieldControl.ngOnDestroy();
     }
     this.matFormFieldControl = this._control || new DummyMatFormFieldControl(this._ngControl, this.formControl);
@@ -193,7 +192,7 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
 
     if (this.formControl) {
       if (this.formsService.tryDetectRequired) {
-        (<any>this.matFormFieldControl).required = hasRequiredField(this.formControl);
+        (this.matFormFieldControl as any).required = hasRequiredField(this.formControl);
       }
 
       this.errors$ = this.formsService.getControlErrors(this.formControl);
@@ -204,7 +203,6 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
 
   public ngOnDestroy(): void {
     if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
-      // eslint-disable-next-line @angular-eslint/no-lifecycle-call
       this.matFormFieldControl.ngOnDestroy();
     }
 
@@ -251,7 +249,7 @@ export class ZvFormFieldComponent implements OnChanges, AfterContentChecked, OnD
 
       // when only our own component is marked for check, then the label will not be shown
       // when labelText$ didn't run synchronously
-      (<any>this._matFormField)._changeDetectorRef.markForCheck();
+      (this._matFormField as any)._changeDetectorRef.markForCheck();
     });
   }
 }

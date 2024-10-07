@@ -40,19 +40,16 @@ export const enum ZvSelectLoadTrigger {
   /**
    * Load values of select only once, on initial rendering of zv-select.
    */
-  // eslint-disable-next-line no-bitwise
   initial = 1 << 0,
 
   /**
    * Load values of select only once, when the user first clicks on it.
    */
-  // eslint-disable-next-line no-bitwise
   firstPanelOpen = 1 << 1,
 
   /**
    * Load values of select every time when the user first clicks on it.
    */
-  // eslint-disable-next-line no-bitwise
   everyPanelOpen = 1 << 2,
 
   /**
@@ -62,11 +59,8 @@ export const enum ZvSelectLoadTrigger {
 }
 
 export const enum ZvSelectSortBy {
-  // eslint-disable-next-line no-bitwise
   none = 0,
-  // eslint-disable-next-line no-bitwise
   selected = 1 << 0,
-  // eslint-disable-next-line no-bitwise
   comparer = 1 << 1,
   both = selected + comparer,
 }
@@ -224,7 +218,7 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
 
   private _createOptionsLoadTrigger(): Observable<void> {
     const loadTriggers: Observable<any>[] = [];
-    // eslint-disable-next-line no-bitwise
+
     if (this._loadTrigger & ZvSelectLoadTrigger.initial) {
       loadTriggers.push(of(null));
     }
@@ -233,10 +227,9 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
       distinctUntilChanged(),
       filter((panelOpen) => panelOpen)
     );
-    // eslint-disable-next-line no-bitwise
+
     if (this._loadTrigger & ZvSelectLoadTrigger.everyPanelOpen) {
       loadTriggers.push(panelOpen$);
-      // eslint-disable-next-line no-bitwise
     } else if (this._loadTrigger & ZvSelectLoadTrigger.firstPanelOpen) {
       loadTriggers.push(panelOpen$.pipe(take(1)));
     }
@@ -261,7 +254,7 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
 
   private _cloneAndSort(unsortedOptions: ZvSelectItem<T>[]) {
     let selectedOptionsSet: WeakSet<ZvSelectItem> = null;
-    // eslint-disable-next-line no-bitwise
+
     if (this._sortBy & ZvSelectSortBy.selected) {
       const selectedOptions = unsortedOptions.filter((option) =>
         this._currentValues$.value.find((value) => this.compareWith(option.value, value))
@@ -269,7 +262,6 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
       selectedOptionsSet = new WeakSet(selectedOptions);
     }
     const sortedOptions = unsortedOptions.slice().sort((a, b) => {
-      // eslint-disable-next-line no-bitwise
       if (this._sortBy & ZvSelectSortBy.selected) {
         const aSelected = +selectedOptionsSet.has(a);
         const bSelected = +selectedOptionsSet.has(b);
@@ -279,7 +271,6 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
         }
       }
 
-      // eslint-disable-next-line no-bitwise
       return this._sortBy & ZvSelectSortBy.comparer ? this.sortCompare(a, b) : 0;
     });
     return sortedOptions;

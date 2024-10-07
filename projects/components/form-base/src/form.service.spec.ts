@@ -59,14 +59,14 @@ describe('BaseZvFormService', () => {
     }));
 
     it('result should be used', fakeAsync(() => {
-      const expected = <IZvFormErrorData>{
+      const expected = {
         errorKey: 'key',
         controlPath: null,
         errorValue: {
           localizationKey: 'loca_key',
         },
         isControl: false,
-      };
+      } as IZvFormErrorData;
 
       service.filterErrors = () => of([expected]);
       const form = new FormControl({});

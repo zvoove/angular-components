@@ -19,7 +19,7 @@ export abstract class ZvTimeAdapter<TTime> {
    *     (type is implementation-dependent).
    * @returns The parsed time.
    */
-  abstract parse(value: unknown, parseFormat: any): TTime | null;
+  abstract parse(value: unknown, parseFormat: unknown): TTime | null;
 
   /**
    * Formats a time as a string according to the given format.
@@ -27,7 +27,7 @@ export abstract class ZvTimeAdapter<TTime> {
    * @param displayFormat The format to use to display the time as a string.
    * @returns The formatted time string.
    */
-  abstract format(time: TTime | null, displayFormat: any): string | null;
+  abstract format(time: TTime | null, displayFormat: unknown): string | null;
 
   /**
    * Given a potential date object, returns that same date object if it is
@@ -44,7 +44,7 @@ export abstract class ZvTimeAdapter<TTime> {
    * @param obj The object to check
    * @returns Whether the object is a time instance.
    */
-  abstract isTimeInstance(obj: any): boolean;
+  abstract isTimeInstance(obj: unknown): boolean;
 
   /**
    * Checks whether the given time is valid.

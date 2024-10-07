@@ -1,4 +1,3 @@
-<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 @if (dialogTitle) {
   <h1 mat-dialog-title>
     {{ dialogTitle }}
@@ -27,53 +26,16 @@
   }
   <div class="zv-dialog-wrapper__buttons">
     @for (btn of buttons; track btn) {
-      @switch (btn.type) {
-        @case ('raised') {
-          <button
-            type="button"
-            class="zv-dialog-wrapper__action-button"
-            mat-raised-button
-            [color]="btn.color"
-            [disabled]="btn.disabled && btn.disabled()"
-            (click)="btn.click()"
-          >
-            @if (btn.icon) {
-              <mat-icon>{{ btn.icon }}</mat-icon>
-            }
-            {{ btn.label }}
-          </button>
-        }
-        @case ('stroked') {
-          <button
-            type="button"
-            class="zv-dialog-wrapper__action-button"
-            mat-stroked-button
-            [color]="btn.color"
-            [disabled]="btn.disabled && btn.disabled()"
-            (click)="btn.click()"
-          >
-            @if (btn.icon) {
-              <mat-icon>{{ btn.icon }}</mat-icon>
-            }
-            {{ btn.label }}
-          </button>
-        }
-        @case ('icon') {
-          <button
-            type="button"
-            class="zv-dialog-wrapper__action-button"
-            mat-icon-button
-            [color]="btn.color"
-            [disabled]="btn.disabled && btn.disabled()"
-            (click)="btn.click()"
-          >
-            @if (btn.icon) {
-              <mat-icon>{{ btn.icon }}</mat-icon>
-            }
-            {{ btn.label }}
-          </button>
-        }
-      }
+      <zv-button
+        [type]="btn.type"
+        [color]="btn.color"
+        [icon]="btn.icon"
+        [disabled]="btn.disabled && btn.disabled()"
+        [dataCy]="btn.dataCy"
+        (click)="btn.click()"
+      >
+        {{ btn.label }}
+      </zv-button>
     }
   </div>
 </mat-dialog-actions>

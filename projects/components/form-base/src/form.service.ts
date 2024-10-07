@@ -79,7 +79,7 @@ export abstract class BaseZvFormService extends ZvFormService {
         if (!Object.prototype.hasOwnProperty.call(control.controls, childName)) {
           continue;
         }
-        const childControl = (<{ [key: string]: AbstractControl }>control.controls)[childName];
+        const childControl = (control.controls as Record<string, AbstractControl>)[childName];
         if (!(childControl instanceof FormControl) || includeControls) {
           errors.push(
             ...this.getControlErrorInfoInternal(childControl, controlPath ? controlPath + '.' + childName : childName, includeControls)

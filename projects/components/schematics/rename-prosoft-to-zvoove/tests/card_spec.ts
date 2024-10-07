@@ -10,13 +10,13 @@ const htmlContent = `
     <span style="background-color: lightblue;">You can also set a custom description</span>
   </ng-container>
   <ng-container *psCardTopButtonSection>
-    <button mat-mini-fab color="primary">
+    <button mat-mini-fab>
       <mat-icon>add</mat-icon>
     </button>
-    <button style="margin-left: 1em;" mat-mini-fab color="accent">
+    <button style="margin-left: 1em;" mat-mini-fab>
       <mat-icon>edit</mat-icon>
     </button>
-    <button style="margin-left: 1em;" mat-mini-fab color="warn">
+    <button style="margin-left: 1em;" mat-mini-fab>
       <mat-icon>clear</mat-icon>
     </button>
   </ng-container>
@@ -25,7 +25,7 @@ const htmlContent = `
   </div>
   <ng-container *psCardActionsSection>
     <div style="text-align: right;">
-      <button mat-button color="primary">Add</button>
+      <button mat-button>Add</button>
       <button mat-stroked-button>Cancel</button>
     </div>
   </ng-container>
@@ -42,13 +42,13 @@ const htmlModifiedContent = `
     <span style="background-color: lightblue;">You can also set a custom description</span>
   </ng-container>
   <ng-container *zvCardTopButtonSection>
-    <button mat-mini-fab color="primary">
+    <button mat-mini-fab>
       <mat-icon>add</mat-icon>
     </button>
-    <button style="margin-left: 1em;" mat-mini-fab color="accent">
+    <button style="margin-left: 1em;" mat-mini-fab>
       <mat-icon>edit</mat-icon>
     </button>
-    <button style="margin-left: 1em;" mat-mini-fab color="warn">
+    <button style="margin-left: 1em;" mat-mini-fab>
       <mat-icon>clear</mat-icon>
     </button>
   </ng-container>
@@ -57,7 +57,7 @@ const htmlModifiedContent = `
   </div>
   <ng-container *zvCardActionsSection>
     <div style="text-align: right;">
-      <button mat-button color="primary">Add</button>
+      <button mat-button>Add</button>
       <button mat-stroked-button>Cancel</button>
     </div>
   </ng-container>

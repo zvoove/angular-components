@@ -1,9 +1,6 @@
-.zv-form-errors__container {
+.zv-form-errors__container .zv-form-errors__item {
   font-size: 12px;
-}
-.mat-mdc-chip.zv-form-errors__item .mat-mdc-chip-action::before {
-  background-color: var(--zv-components-error);
-}
-.mat-mdc-chip.zv-form-errors__item .mat-mdc-chip-action .mat-mdc-chip-action-label {
-  color: var(--zv-components-error-contrast);
+  --mdc-chip-outline-color: var(--zv-components-error);
+  --mdc-chip-elevated-container-color: var(--zv-components-error);
+  --mdc-chip-label-text-color: var(--zv-components-error-contrast);
 }

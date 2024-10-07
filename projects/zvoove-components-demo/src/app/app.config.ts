@@ -29,6 +29,10 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi(), withFetch()),
     provideRouter([
       {
+        path: 'button',
+        loadComponent: () => import('./button-demo/button-demo.page').then((m) => m.ButtonDemoPage),
+      },
+      {
         path: 'date-time-input',
         loadComponent: () => import('./date-time-input-demo/date-time-input-demo.page').then((m) => m.DateTimeInputDemoComponent),
       },

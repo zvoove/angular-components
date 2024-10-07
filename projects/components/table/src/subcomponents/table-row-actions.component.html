@@ -1,4 +1,3 @@
-<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 @if (combinedActions() | zvTableActionsToRender: item(); as visibleActions) {
   @if (visibleActions.length >= moreMenuThreshold() || openMenuFn()) {
     <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu()" (click)="onMenuButtonClicked()">

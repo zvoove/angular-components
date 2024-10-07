@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/member-ordering */
 import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { MatOptionHarness, OptionHarnessFilters } from '@angular/material/core/testing';
@@ -7,7 +6,7 @@ import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/te
 import { MatSelectHarness } from '@angular/material/select/testing';
 
 /** A set of criteria that can be used to filter a list of `MatSelectHarness` instances. */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ZvSelectHarnessFilters extends BaseHarnessFilters {}
 
 /** Harness for interacting with a standard mat-select in tests. */

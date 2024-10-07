@@ -39,7 +39,6 @@ export class SelectWithCustomTemplateComponent {
   ];
   public ngModelValue: any = null;
   public panelNgClass = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     'app-select-with-custom-template__custom-panel': true,
   };
 }

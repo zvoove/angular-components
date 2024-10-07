@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -36,7 +35,6 @@ describe('ZvDateTimeInput', () => {
       fixture = TestBed.createComponent(ValueTestComponent);
       fixture.detectChanges();
       cmp = fixture.componentInstance.dateTimeInputCmp;
-      // eslint-disable-next-line jasmine/no-expect-in-setup-teardown
       expect(cmp).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
@@ -145,7 +143,7 @@ describe('ZvDateTimeInput', () => {
     });
 
     it('should integrate with form-field when selecing the date in the picker', async () => {
-      const [dateInput, _] = await harness.getInputs();
+      const [dateInput] = await harness.getInputs();
 
       expect(cmp.shouldLabelFloat).toEqual(false);
       expect(cmp.empty).toEqual(true);
@@ -371,7 +369,7 @@ describe('ZvDateTimeInput', () => {
     });
 
     it('should show separator only when label floats', async () => {
-      const [dateInput, _] = await harness.getInputs();
+      const [dateInput] = await harness.getInputs();
 
       expect(fixture.debugElement.query(By.css('.zv-date-time__separator'))).toBe(null);
 
@@ -394,7 +392,6 @@ describe('ZvDateTimeInput', () => {
       fixture = TestBed.createComponent(InputsTestComponent);
       fixture.detectChanges();
       cmp = fixture.componentInstance.dateTimeInputCmp;
-      // eslint-disable-next-line jasmine/no-expect-in-setup-teardown
       expect(cmp).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
@@ -449,7 +446,6 @@ describe('ZvDateTimeInput', () => {
       fixture.detectChanges();
       cmp = fixture.componentInstance.dateTimeInputCmp;
       formControl = fixture.componentInstance.control;
-      // eslint-disable-next-line jasmine/no-expect-in-setup-teardown
       expect(cmp).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);

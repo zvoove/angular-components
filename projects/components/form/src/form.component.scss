@@ -28,17 +28,6 @@ mat-icon.zv-form__error-icon {
   align-items: center;
 }
 
-.zv-form__error-icon-btn {
-  width: 25px !important;
-  height: 25px !important;
-  padding: 0 !important;
-}
-
-.zv-form__error-notfier-button {
-  vertical-align: middle;
-  cursor: pointer;
-}
-
 .zv-form__savebar {
   bottom: -1px;
   margin-top: 1em;
@@ -72,10 +61,13 @@ mat-card.zv-form__savebar--sticky {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   overflow: hidden;
-  min-height: 4px;
+  min-height: var(--mdc-elevated-card-container-shape, var(--mdc-shape-medium, 4px));
 }
 
-.zv-form__savebar-border--accent {
+.zv-form__savebar-border-fill {
+  height: 4px;
+}
+.zv-form__savebar-border-fill--accent {
   background-color: var(--zv-components-font);
 }
 

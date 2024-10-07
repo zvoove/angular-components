@@ -1,4 +1,3 @@
-<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 @if (errors$ | async; as errors) {
   <mat-chip-listbox class="zv-form-errors__container">
     @for (error of errors; track error.errorText) {

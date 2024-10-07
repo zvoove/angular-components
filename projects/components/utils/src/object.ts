@@ -1,4 +1,4 @@
-export function objectToKeyValueArray(errors: { [key: string]: any }): { key: string; value: any }[] {
+export function objectToKeyValueArray(errors: Record<string, unknown>): { key: string; value: unknown }[] {
   const errorList = [];
   for (const key in errors) {
     if (!Object.prototype.hasOwnProperty.call(errors, key)) {

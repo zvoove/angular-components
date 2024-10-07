@@ -11,13 +11,16 @@ export abstract class ZvTableStateManager {
 }
 
 export class ZvTableUrlStateManager extends ZvTableStateManager {
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     super();
   }
 
   public remove(tableId: string) {
     const currentParams = this.route.snapshot.queryParamMap;
-    const newQueryParams: { [id: string]: any } = {};
+    const newQueryParams: Record<string, any> = {};
     for (const key of currentParams.keys) {
       if (key !== tableId) {
         newQueryParams[key] = currentParams.get(key);
@@ -44,7 +47,7 @@ export class ZvTableUrlStateManager extends ZvTableStateManager {
   }
 
   public requestUpdate(tableId: string, updateInfo: IZvTableUpdateDataInfo) {
-    const newQueryParams: { [id: string]: any } = {};
+    const newQueryParams: Record<string, any> = {};
 
     const currentParams = this.route.snapshot.queryParamMap;
     for (const key of currentParams.keys) {

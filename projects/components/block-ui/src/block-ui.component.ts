@@ -1,14 +1,4 @@
-import {
-  AfterRenderPhase,
-  ChangeDetectionStrategy,
-  Component,
-  ViewChild,
-  ViewEncapsulation,
-  afterNextRender,
-  effect,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation, afterNextRender, effect, input, signal } from '@angular/core';
 
 import type { ElementRef } from '@angular/core';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -17,7 +7,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   selector: 'zv-block-ui',
   templateUrl: './block-ui.component.html',
   styleUrls: ['./block-ui.component.scss'],
-  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[class.zv-block-ui__clickthrough]': 'clickthrough()',
   },
@@ -36,7 +25,7 @@ export class ZvBlockUi {
   @ViewChild('content', { static: true }) public contentNode: ElementRef<HTMLElement>;
 
   constructor() {
-    afterNextRender(() => this.updateSpinner(), { phase: AfterRenderPhase.Read });
+    afterNextRender({ read: () => this.updateSpinner() });
     effect(() => {
       if (this.blocked()) {
         this.updateSpinner();

@@ -23,15 +23,15 @@ describe('ZvTableDataComponent', () => {
     const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();
 
-    (<any>component.dataSource).allVisibleRowsSelected = false;
+    (component.dataSource as any).allVisibleRowsSelected = false;
     component.dataSource.selectionModel.select({});
     expect(component.isMasterToggleChecked()).toBe(false);
 
-    (<any>component.dataSource).allVisibleRowsSelected = true;
+    (component.dataSource as any).allVisibleRowsSelected = true;
     component.dataSource.selectionModel.select({});
     expect(component.isMasterToggleChecked()).toBe(true);
 
-    (<any>component.dataSource).allVisibleRowsSelected = true;
+    (component.dataSource as any).allVisibleRowsSelected = true;
     component.dataSource.selectionModel.clear();
     expect(component.isMasterToggleChecked()).toBe(false);
   });
@@ -40,15 +40,15 @@ describe('ZvTableDataComponent', () => {
     const component = new ZvTableDataComponent(null);
     component.dataSource = createDataSourceMock();
 
-    (<any>component.dataSource).allVisibleRowsSelected = false;
+    (component.dataSource as any).allVisibleRowsSelected = false;
     component.dataSource.selectionModel.select({});
     expect(component.isMasterToggleIndeterminate()).toBe(true);
 
-    (<any>component.dataSource).allVisibleRowsSelected = true;
+    (component.dataSource as any).allVisibleRowsSelected = true;
     component.dataSource.selectionModel.select({});
     expect(component.isMasterToggleIndeterminate()).toBe(false);
 
-    (<any>component.dataSource).allVisibleRowsSelected = true;
+    (component.dataSource as any).allVisibleRowsSelected = true;
     component.dataSource.selectionModel.clear();
     expect(component.isMasterToggleIndeterminate()).toBe(false);
   });
@@ -57,11 +57,11 @@ describe('ZvTableDataComponent', () => {
     const cd: any = { markForCheck: () => {} };
     const component = new ZvTableDataComponent(cd);
     let toggledRow: any = null;
-    component.rowDetail = <any>{
+    component.rowDetail = {
       toggle: (x: any) => {
         toggledRow = x;
       },
-    };
+    } as any;
 
     spyOn(cd, 'markForCheck');
 

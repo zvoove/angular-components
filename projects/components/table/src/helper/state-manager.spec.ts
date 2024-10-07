@@ -14,7 +14,7 @@ describe('ZvTableStateManager', () => {
       },
     };
 
-    const route: ActivatedRoute = <any>{
+    const route: ActivatedRoute = {
       snapshot: new Proxy(queryParams$, {
         get: (obj, prop) => {
           if (prop === 'queryParamMap') {
@@ -24,7 +24,7 @@ describe('ZvTableStateManager', () => {
         },
       }),
       queryParamMap: queryParams$,
-    };
+    } as any;
     const stateManager = new ZvTableUrlStateManager(mockRouter, route);
     const source$ = stateManager.createStateSource('tableId');
     const states: IZvTableUpdateDataInfo[] = [];

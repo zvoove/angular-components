@@ -1,6 +1,6 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
 import { bufferCount, startWith } from 'rxjs/operators';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: FormControl | null): boolean {
     return !!(control && control.invalid);
   }
 }

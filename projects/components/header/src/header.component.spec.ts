@@ -12,7 +12,7 @@ import { ZvHeaderHarness } from './testing/header.harness';
     <zv-header [caption]="caption" [description]="description">
       <ng-container *zvHeaderTopButtonSection>
         @if (addButtons) {
-          <button mat-button color="accent">testButton</button>
+          <button mat-button>testButton</button>
         }
       </ng-container>
       <ng-container *zvHeaderCaptionSection>

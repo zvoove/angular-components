@@ -1,7 +1,7 @@
-import { Time } from '@angular/common';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
-import { ZvTimeAdapter } from './time-adapter';
+import { Time } from '../time/time';
 import { parseHumanTimeInput } from './parse-human-time-input';
+import { ZvTimeAdapter } from './time-adapter';
 
 @Injectable({ providedIn: 'root' })
 export class ZvNativeTimeAdapter extends ZvTimeAdapter<Time> {
@@ -33,7 +33,7 @@ export class ZvNativeTimeAdapter extends ZvTimeAdapter<Time> {
     };
   }
 
-  override parse(value: unknown, _parseFormat: any = null): Time {
+  override parse(value: unknown): Time {
     if (this.isTimeInstance(value)) {
       return this.createTime(value.hours, value.minutes);
     }
@@ -47,12 +47,16 @@ export class ZvNativeTimeAdapter extends ZvTimeAdapter<Time> {
     return this.invalid();
   }
 
-  override format(time: Time, displayFormat: any = null): string {
+  override format(time: Time, displayFormat: unknown = null): string {
     if (!time) {
       return '';
     }
     if (isNaN(time.hours) || isNaN(time.minutes)) {
       throw new Error('ZvNativeTimeAdapter: Cannot format invalid Time.');
+    }
+    displayFormat ??= {};
+    if (typeof displayFormat !== 'object') {
+      throw new Error('ZvNativeTimeAdapter: displayFormat must be of type Intl.DateTimeFormatOptions.');
     }
     return new Intl.DateTimeFormat(this.locale, {
       hour12: !this.is24HourFormat(),
@@ -62,7 +66,7 @@ export class ZvNativeTimeAdapter extends ZvTimeAdapter<Time> {
     }).format(new Date(2000, 1, 1, time.hours, time.minutes));
   }
 
-  override isTimeInstance(obj: any): obj is Time {
+  override isTimeInstance(obj: unknown): obj is Time {
     return obj !== null && typeof obj == 'object' && 'hours' in obj && 'minutes' in obj;
   }
 

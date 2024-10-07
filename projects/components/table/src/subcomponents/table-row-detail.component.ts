@@ -1,4 +1,4 @@
-import { AfterRenderPhase, ChangeDetectionStrategy, Component, ViewEncapsulation, afterNextRender, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, afterNextRender, input, signal } from '@angular/core';
 
 import { NgTemplateOutlet } from '@angular/common';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -13,7 +13,6 @@ import { ZvTableRowDetail } from '../directives/table.directives';
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [NgTemplateOutlet],
-  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[class.zv-table-row-detail]': 'true',
     '[class.zv-table-row-detail--expanding-init]': 'show() && animInit()',
@@ -36,7 +35,7 @@ export class TableRowDetailComponent<T> {
   public animDone = signal(true);
 
   constructor() {
-    afterNextRender(() => {}, { phase: AfterRenderPhase.Read });
+    afterNextRender({ read: () => {} });
 
     const cancelableDelay = (ms: number) => switchMap((v) => of(v).pipe(delay(ms)));
     toObservable(this.show)

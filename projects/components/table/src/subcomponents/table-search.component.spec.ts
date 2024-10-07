@@ -45,7 +45,7 @@ describe('ZvTableSearchComponent', () => {
     const input = fixture.debugElement.query(By.directive(MatInput));
 
     input.nativeElement.value = 'new text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', <any>{ key: 'a' }));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
 
     tick(99);
     expect(component.onSearchChanged).not.toHaveBeenCalled();
@@ -66,12 +66,12 @@ describe('ZvTableSearchComponent', () => {
     const input = fixture.debugElement.query(By.directive(MatInput));
 
     input.nativeElement.value = 'new text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', <any>{ key: 'a' }));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
 
     tick(50);
 
     input.nativeElement.value = 'initial text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', <any>{ key: 'a' }));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
 
     tick(100);
 
@@ -144,7 +144,7 @@ describe('ZvTableSearchComponent', () => {
     const input = fixture.debugElement.query(By.directive(MatInput));
 
     input.nativeElement.value = 'initial text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', <any>{ key: 'Escape' }));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'Escape' } as any));
 
     expect(component.onSearchChanged).toHaveBeenCalledWith('');
 
@@ -164,7 +164,7 @@ describe('ZvTableSearchComponent', () => {
 
     const input = fixture.debugElement.query(By.directive(MatInput));
 
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', <any>{ key: 'Escape' }));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'Escape' } as any));
 
     tick(100);
 

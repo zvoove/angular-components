@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { BaseHarnessFilters, ContentContainerComponentHarness, HarnessPredicate, parallel } from '@angular/cdk/testing';
 
 export type ZvFileInputHarnessFilters = BaseHarnessFilters;

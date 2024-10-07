@@ -64,7 +64,6 @@ export const ZV_TIME_VALIDATORS: any = {
   selector: 'input[zvTime]',
   standalone: true,
   providers: [ZV_TIME_VALUE_ACCESSOR, ZV_TIME_VALIDATORS, { provide: MAT_INPUT_VALUE_ACCESSOR, useExisting: ZvTimeInput }],
-  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     class: 'zv-time-input',
     '[disabled]': 'disabled',

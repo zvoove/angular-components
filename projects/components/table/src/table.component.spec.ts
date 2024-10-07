@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
@@ -26,7 +27,7 @@ import { ZvTableHarness } from './testing/table.harness';
 
 @Injectable()
 class TestSettingsService extends ZvTableSettingsService {
-  public settings$ = new BehaviorSubject<{ [id: string]: IZvTableSetting }>({});
+  public settings$ = new BehaviorSubject<Record<string, IZvTableSetting>>({});
   public override pageSizeOptions = [1, 5, 25, 50];
   public override settingsEnabled = false;
 
@@ -51,7 +52,7 @@ const router: any = {
 
 const queryParams$ = new BehaviorSubject<ParamMap>(convertToParamMap({ other: 'value' }));
 
-const route: ActivatedRoute = <any>{
+const route: ActivatedRoute = {
   snapshot: new Proxy(queryParams$, {
     get: (obj, prop) => {
       if (prop === 'queryParamMap') {
@@ -61,7 +62,7 @@ const route: ActivatedRoute = <any>{
     },
   }),
   queryParamMap: queryParams$,
-};
+} as any;
 
 function createColDef(data: { property?: string; header?: string; sortable?: boolean }) {
   const colDef = new ZvTableColumn();
@@ -147,13 +148,13 @@ export class TestComponent {
   @ViewChild(ZvTable, { static: true }) table: ZvTable;
   @ViewChild(ZvTablePaginationComponent, { static: true }) paginator: ZvTablePaginationComponent;
 
-  public onPage(_event: any) {}
-  public onListActionExecute(_selection: any[]) {}
+  public onPage(_event: unknown) {}
+  public onListActionExecute(_selection: unknown[]) {}
 }
 
 describe('ZvTableComponent', () => {
   describe('isolated', () => {
-    const cd = <ChangeDetectorRef>{ markForCheck: () => {} };
+    const cd = { markForCheck: () => {} } as ChangeDetectorRef;
 
     let settingsService: TestSettingsService;
     function createTableInstance(hooks = false): ZvTable {
@@ -178,7 +179,7 @@ describe('ZvTableComponent', () => {
       settingsService.settings$.next({});
       spyOn(settingsService, 'getStream').and.callThrough();
       table.columnDefs = [createColDef({ property: 'prop1' }), createColDef({ property: 'prop2' })];
-      table.rowDetail = <any>{ showToggleColumn: true };
+      table.rowDetail = { showToggleColumn: true } as any;
       table.dataSource.listActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.list });
       table.dataSource.rowActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.row });
 
@@ -195,12 +196,12 @@ describe('ZvTableComponent', () => {
       expect(settingsService.getStream).toHaveBeenCalledWith(table.tableId, false);
 
       settingsService.settings$.next({
-        tableid: <IZvTableSetting>{
+        tableid: {
           columnBlacklist: ['prop2'],
           pageSize: 22,
           sortColumn: 'col',
           sortDirection: 'desc',
-        },
+        } as IZvTableSetting,
       });
       tick(1);
 
@@ -212,9 +213,9 @@ describe('ZvTableComponent', () => {
       expect(table.displayedColumns).toEqual(['select', 'rowDetailExpander', 'prop1', 'options']);
 
       queryParams$.next(
-        convertToParamMap(<Params>{
+        convertToParamMap({
           tableid: '1◬1◬asdf◬Column1◬asc',
-        })
+        } as Params)
       );
       tick(1);
 
@@ -225,25 +226,25 @@ describe('ZvTableComponent', () => {
       expect(table.sortDirection).toEqual('asc');
       expect(table.displayedColumns).toEqual(['select', 'rowDetailExpander', 'prop1', 'options']);
 
-      table.rowDetail = <any>{ showToggleColumn: false };
-      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬1◬asdf◬Column1◬desc' }));
+      table.rowDetail = { showToggleColumn: false } as any;
+      queryParams$.next(convertToParamMap({ tableid: '1◬1◬asdf◬Column1◬desc' } as Params));
       tick(1);
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
       table.rowDetail = null;
-      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬2◬asdf◬Column1◬desc' }));
+      queryParams$.next(convertToParamMap({ tableid: '1◬2◬asdf◬Column1◬desc' } as Params));
       tick(1);
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
       table.dataSource.listActions.length = 0;
-      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬3◬asdf◬Column1◬desc' }));
+      queryParams$.next(convertToParamMap({ tableid: '1◬3◬asdf◬Column1◬desc' } as Params));
       tick(1);
       expect(table.displayedColumns).toEqual(['prop1', 'options']);
 
       table.dataSource.rowActions.length = 0;
       table.showSettings = false;
       table.refreshable = false;
-      queryParams$.next(convertToParamMap(<Params>{ tableid: '1◬4◬asdf◬Column1◬desc' }));
+      queryParams$.next(convertToParamMap({ tableid: '1◬4◬asdf◬Column1◬desc' } as Params));
       tick(1);
       expect(table.displayedColumns).toEqual(['prop1']);
     }));
@@ -258,17 +259,17 @@ describe('ZvTableComponent', () => {
     it('should show right content depending on the datatable state', fakeAsync(() => {
       const table = createTableInstance();
 
-      table.dataSource = <any>{ loading: false, error: null, visibleRows: [] };
+      table.dataSource = { loading: false, error: null, visibleRows: [] } as any;
       expect(table.showNoEntriesText).toBe(true);
       expect(table.showError).toBe(false);
       expect(table.showLoading).toBe(false);
 
-      table.dataSource = <any>{ loading: true, error: null, visibleRows: [] };
+      table.dataSource = { loading: true, error: null, visibleRows: [] } as any;
       expect(table.showNoEntriesText).toBe(false);
       expect(table.showError).toBe(false);
       expect(table.showLoading).toBe(true);
 
-      table.dataSource = <any>{ loading: false, error: new Error('error'), visibleRows: [] };
+      table.dataSource = { loading: false, error: new Error('error'), visibleRows: [] } as any;
       expect(table.showNoEntriesText).toBe(false);
       expect(table.showError).toBe(true);
       expect(table.showLoading).toBe(false);
@@ -420,7 +421,7 @@ describe('ZvTableComponent', () => {
       table.sortDirection = 'desc';
       table.tableId = 'requestUpdate';
 
-      (<any>table).requestUpdate();
+      (table as any).requestUpdate();
 
       const expectedQueryParams = {
         existingParam: '0815',
@@ -448,9 +449,9 @@ describe('ZvTableComponent', () => {
 
     it('should update state when sort changes', fakeAsync(() => {
       const table = createTableInstance(true);
-      spyOn(<any>table, 'requestUpdate').and.callThrough();
+      spyOn(table as any, 'requestUpdate').and.callThrough();
       table.onSortChanged({ sortColumn: 'col', sortDirection: 'desc' });
-      expect((<any>table).requestUpdate).toHaveBeenCalledTimes(1);
+      expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
       tick(1);
       expect(table.sortColumn).toEqual('col');
       expect(table.sortDirection).toEqual('desc');
@@ -458,9 +459,9 @@ describe('ZvTableComponent', () => {
 
     it('should update state when filter changes', fakeAsync(() => {
       const table = createTableInstance(true);
-      spyOn(<any>table, 'requestUpdate').and.callThrough();
+      spyOn(table as any, 'requestUpdate').and.callThrough();
       table.onSearchChanged('test');
-      expect((<any>table).requestUpdate).toHaveBeenCalledTimes(1);
+      expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
       tick(1);
       expect(table.filterText).toEqual('test');
     }));
@@ -468,9 +469,9 @@ describe('ZvTableComponent', () => {
     it('should update state when page changes and emit output', fakeAsync(() => {
       const table = createTableInstance(true);
       spyOn(table.page, 'emit');
-      spyOn(<any>table, 'requestUpdate').and.callThrough();
+      spyOn(table as any, 'requestUpdate').and.callThrough();
       table.onPage({ pageIndex: 5, pageSize: 3, length: 20, previousPageIndex: 4 });
-      expect((<any>table).requestUpdate).toHaveBeenCalledTimes(1);
+      expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
       expect(table.page.emit).toHaveBeenCalledTimes(1);
       tick(1);
       expect(table.pageIndex).toEqual(5);

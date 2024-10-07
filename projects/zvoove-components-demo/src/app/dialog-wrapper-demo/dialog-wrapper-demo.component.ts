@@ -62,7 +62,7 @@ export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
 
 @Component({
   selector: 'app-dialog-wrapper-demo',
-  template: `<button mat-raised-button color="accent" (click)="openDialog()">Open Dialog</button>`,
+  template: `<button mat-raised-button (click)="openDialog()">Open Dialog</button>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MatButtonModule, MatDialogModule],

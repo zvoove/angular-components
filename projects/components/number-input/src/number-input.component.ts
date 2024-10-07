@@ -1,4 +1,3 @@
-/* eslint-disable @angular-eslint/no-conflicting-lifecycle */
 /**
  * @license
  * Copyright Google LLC All Rights Reserved.
@@ -7,7 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { getLocaleNumberSymbol, NumberSymbol } from '@angular/common';
 import type { ElementRef } from '@angular/core';
 import {
   ChangeDetectionStrategy,
@@ -36,12 +34,10 @@ import { Subject } from 'rxjs';
 let nextUniqueId = 0;
 
 /** Directive that allows a native input to work inside a `MatFormField`. */
-// eslint-disable-next-line @angular-eslint/no-conflicting-lifecycle
 @Component({
   selector: 'zv-number-input',
   templateUrl: './number-input.component.html',
   styleUrls: ['./number-input.component.scss'],
-  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     // Native input properties that are overwritten by Angular inputs need to be synced with
     // the native input element. Otherwise property bindings for those don't work.
@@ -279,8 +275,9 @@ export class ZvNumberInputComponent implements ControlValueAccessor, MatFormFiel
     // eslint-disable-next-line no-self-assign
     this.id = this.id;
 
-    this._decimalSeparator = getLocaleNumberSymbol(this.localeId, NumberSymbol.Decimal);
-    this._thousandSeparator = getLocaleNumberSymbol(this.localeId, NumberSymbol.Group);
+    const intlParts = Intl.NumberFormat(this.localeId).formatToParts(1000.1);
+    this._decimalSeparator = intlParts.find((part) => part.type === 'decimal').value;
+    this._thousandSeparator = intlParts.find((part) => part.type === 'group').value;
   }
 
   ngOnChanges() {
@@ -482,7 +479,7 @@ export class ZvNumberInputComponent implements ControlValueAccessor, MatFormFiel
   }
 
   _onInput(event: Event) {
-    this._value = this._parseValue((<HTMLInputElement>event.target).value);
+    this._value = this._parseValue((event.target as HTMLInputElement).value);
     this.stateChanges.next();
     this._onModelChange(this.value);
     this.valueChange.emit(this.value);

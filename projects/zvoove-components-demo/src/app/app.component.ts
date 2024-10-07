@@ -1,11 +1,22 @@
-import { ChangeDetectionStrategy, Component, Inject, LOCALE_ID, TrackByFunction } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  Inject,
+  Injector,
+  LOCALE_ID,
+  signal,
+  TrackByFunction,
+} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { MatIconRegistry } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatButtonModule } from '@angular/material/button';
+import { DomSanitizer } from '@angular/platform-browser';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -18,7 +29,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   imports: [MatToolbarModule, MatButtonModule, MatSidenavModule, MatListModule, RouterLink, MatDividerModule, RouterOutlet],
 })
 export class AppComponent {
+  theme = signal('m3');
   supportedLocales = ['de', 'en-US', 'en-GB'];
+  injector = inject(Injector);
 
   constructor(
     matIconRegistry: MatIconRegistry,
@@ -26,6 +39,16 @@ export class AppComponent {
     @Inject(LOCALE_ID) public localeId: string
   ) {
     matIconRegistry.addSvgIcon('angular', domSanitizer.bypassSecurityTrustResourceUrl('../assets/angular.svg'));
+    afterNextRender(() => {
+      effect(
+        () => {
+          document.body.classList.remove('m2');
+          document.body.classList.remove('m3');
+          document.body.classList.add(this.theme());
+        },
+        { injector: this.injector }
+      );
+    });
   }
 
   setLocaleId(localeId: string) {

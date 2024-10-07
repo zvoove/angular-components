@@ -45,7 +45,6 @@ const enum ValueChangeSource {
   styleUrls: ['./select.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[class.zv-select-multiple]': 'multiple',
     '[class.zv-select-disabled]': 'disabled',
@@ -118,7 +117,7 @@ export class ZvSelectComponent<T = unknown> implements ControlValueAccessor, Mat
   /** If true, then there will be a toggle all checkbox available (only multiple select mode) */
   @Input() public showToggleAll = true;
   @Input() public multiple = false;
-  @Input() public panelClass: string | string[] | Set<string> | { [key: string]: any } = null;
+  @Input() public panelClass: string | string[] | Set<string> | Record<string, any> = null;
   @Input() public placeholder: string = null;
   @Input() public required = false;
   @Input() public selectedLabel = true;
@@ -148,7 +147,7 @@ export class ZvSelectComponent<T = unknown> implements ControlValueAccessor, Mat
   }
 
   @Input({ transform: booleanAttribute })
-  public disabled: boolean = false;
+  public disabled = false;
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -183,7 +182,7 @@ export class ZvSelectComponent<T = unknown> implements ControlValueAccessor, Mat
   public filterCtrl = new FormControl('');
 
   /** The items to display */
-  public items: ZvSelectItem<T>[] | ReadonlyArray<ZvSelectItem<T>> = [];
+  public items: ZvSelectItem<T>[] | readonly ZvSelectItem<T>[] = [];
 
   public toggleAllCheckboxChecked = false;
   public toggleAllCheckboxIndeterminate = false;
@@ -215,7 +214,7 @@ export class ZvSelectComponent<T = unknown> implements ControlValueAccessor, Mat
   public get tooltip(): string {
     // MatSelect is not fully initialized in the beginning, so we need to skip this here until it is ready
     if (this.multiple && this._matSelect?._selectionModel && this._matSelect.selected) {
-      return (<MatOption[]>this._matSelect.selected).map((x) => x.viewValue).join(', ');
+      return (this._matSelect.selected as MatOption[]).map((x) => x.viewValue).join(', ');
     }
     return '';
   }

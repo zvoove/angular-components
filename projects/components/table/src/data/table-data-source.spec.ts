@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { fakeAsync, tick } from '@angular/core/testing';
 import { NEVER, of, Subject, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
@@ -27,7 +26,7 @@ describe('ZvTableDataSource', () => {
   }));
 
   it('should return empty array on connect, even if data is not loaded yet', fakeAsync(() => {
-    const dataSource = new ZvTableDataSource<any>(() => <any>NEVER);
+    const dataSource = new ZvTableDataSource<any>(() => NEVER as any);
     dataSource.tableReady = true;
 
     const renderDataUpdates: any[] = [];
@@ -42,7 +41,7 @@ describe('ZvTableDataSource', () => {
   }));
 
   it('should not start loading data on connect (the table has to triggers this)', fakeAsync(() => {
-    const dataSource = new ZvTableDataSource<any>(() => <any>NEVER);
+    const dataSource = new ZvTableDataSource<any>(() => NEVER as any);
     dataSource.tableReady = true;
 
     spyOn(dataSource, 'updateData');
@@ -57,7 +56,7 @@ describe('ZvTableDataSource', () => {
     let dataLoadCalled = false;
     const dataSource = new ZvTableDataSource<any>(() => {
       dataLoadCalled = true;
-      return <any>NEVER;
+      return NEVER as any;
     });
 
     const sub = dataSource.connect().subscribe();

@@ -1,8 +1,8 @@
 import { LOCALE_ID } from '@angular/core';
-import { waitForAsync, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, waitForAsync } from '@angular/core/testing';
+import { Time } from '../time/time';
 import { ZvNativeTimeAdapter } from './native-time-adapter';
 import { ZvTimeAdapter } from './time-adapter';
-import { Time } from '@angular/common';
 
 function newTime(h: number, m: number) {
   return { hours: h, minutes: m };
@@ -25,9 +25,7 @@ describe('ZvNativeTimeAdapter', () => {
     adapter = timeAdapter;
 
     assertValidTime = (t: Time | null, valid: boolean) => {
-      // eslint-disable-next-line jasmine/no-expect-in-setup-teardown
       expect(adapter.isTimeInstance(t)).not.withContext(`Expected ${t} to be a time instance`).toBeNull();
-      // eslint-disable-next-line jasmine/no-expect-in-setup-teardown
       expect(adapter.isValid(t!))
         .withContext(`Expected ${JSON.stringify(t)} to be ${valid ? 'valid' : 'invalid'}, but ` + `was ${valid ? 'invalid' : 'valid'}`)
         .toBe(valid);

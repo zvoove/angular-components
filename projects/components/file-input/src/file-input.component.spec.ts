@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -30,7 +29,6 @@ describe('ZvFileInputComponent', () => {
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
     cmp = fixture.componentInstance.fileInputCmp;
-    // eslint-disable-next-line jasmine/no-expect-in-setup-teardown
     expect(cmp).toBeDefined();
 
     loader = TestbedHarnessEnvironment.loader(fixture);

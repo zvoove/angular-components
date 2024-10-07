@@ -50,8 +50,6 @@ export class DateTimeInputDemoComponent {
 
   public now = () => new Date();
 
-  constructor() {}
-
   public onValidatorChange() {
     if (this.validatorRequired) {
       this.control.addValidators(Validators.required);

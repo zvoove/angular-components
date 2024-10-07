@@ -537,7 +537,6 @@ describe('DefaultZvSelectDataSource', () => {
       if (sortCompare) {
         dataSource.sortCompare = sortCompare;
       }
-      // eslint-disable-next-line jasmine/no-unsafe-spy
       spyOn(dataSource, 'sortCompare').and.callThrough();
       dataSource.selectedValuesChanged([item3Label2Selected.value, item5Label6Selected.value, item6Label5Selected.value]);
 

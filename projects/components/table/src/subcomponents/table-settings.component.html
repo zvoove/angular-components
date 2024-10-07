@@ -1,4 +1,3 @@
-<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 @if (settings$ | async; as settings) {
   <mat-card>
     <mat-card-header>
@@ -40,6 +39,7 @@
       <ng-container [ngTemplateOutlet]="customSettings" [ngTemplateOutletContext]="{ $implicit: settings }"></ng-container>
     </mat-card-content>
     <mat-card-actions class="zv-table-settings__actions">
+      <!-- color="primary" from m2 compatibility -->
       <button mat-raised-button color="primary" (click)="onSaveClick(settings)" i18n="@@zvc.save">Save</button>
       <button style="margin-left: 1em" mat-stroked-button (click)="onCancelClick()" i18n="@@zvc.cancel">Cancel</button>
     </mat-card-actions>

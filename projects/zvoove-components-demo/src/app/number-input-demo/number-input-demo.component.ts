@@ -51,8 +51,6 @@ export class NumberInputDemoComponent {
   public validatorRequired = false;
   public useErrorStateMatcher = false;
 
-  constructor() {}
-
   public onValidatorChange() {
     const validators = [];
     if (this.validatorRequired) {

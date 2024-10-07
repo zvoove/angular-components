@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, FormArray, ValidatorFn } from '@angular/forms';
 
 export class AutoFormArray<TControl extends AbstractControl<any> = any> extends FormArray<TControl> {

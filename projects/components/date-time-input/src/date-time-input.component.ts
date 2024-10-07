@@ -1,6 +1,3 @@
-/* eslint-disable @angular-eslint/no-conflicting-lifecycle */
-/* eslint-disable @angular-eslint/no-inputs-metadata-property */
-/* eslint-disable @angular-eslint/no-host-metadata-property */
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import {
@@ -257,7 +254,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   @ViewChild(MatDatepickerInput) public matDateInput: MatDatepickerInput<TDate>;
   @ViewChild(ZvTimeInput) public zvTimeInput: ZvTimeInput<TTime>;
   _childValidators: ValidatorFn[] = [(control) => this.matDateInput?.validate(control), (control) => this.zvTimeInput?.validate(control)];
-  validate(control: AbstractControl): { [key: string]: any } | null {
+  validate(control: AbstractControl): Record<string, any> | null {
     const errors = this._childValidators.map((v) => v(control)).filter((error) => error);
     if (!errors.length) {
       if (this._form.value.time && !this._form.value.date) {

@@ -52,8 +52,6 @@ export class FileInputDemoComponent {
   public validatorRequired = false;
   public useErrorStateMatcher = false;
 
-  constructor() {}
-
   public onValidatorChange() {
     const validators = [];
     if (this.validatorRequired) {

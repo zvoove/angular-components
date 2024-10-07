@@ -1,7 +1,9 @@
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DebugElement, Injectable, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIcon } from '@angular/material/icon';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -39,7 +41,7 @@ class TestZvFormService extends BaseZvFormService {
       <div id="content">content text</div>
       <div id="hight-strech" style="height: 2000px;">hight strech</div>
       <ng-container zvFormSavebarButtons>
-        <button type="button">btnCus</button>
+        <button mat-button type="button">btnCus</button>
       </ng-container>
     </zv-form>
   `,
@@ -63,6 +65,7 @@ describe('ZvFormComponent', () => {
 
     it('should render buttons correctly', async () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
+      const loader = TestbedHarnessEnvironment.loader(fixture);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
@@ -84,34 +87,34 @@ describe('ZvFormComponent', () => {
       });
       fixture.detectChanges();
 
-      const buttons = getButtons(fixture);
+      const buttons = await loader.getAllHarnesses(MatButtonHarness);
       expect(buttons.length).toBe(3);
 
       {
-        const customButton = buttons.find((x) => x.nativeElement.textContent === 'btnCus');
+        const customButton = await loader.getHarness(MatButtonHarness.with({ text: 'btnCus' }));
         expect(customButton).toBeTruthy();
       }
 
       {
-        const btn1Button = buttons.find((x) => x.nativeElement.textContent.trim() === 'btn1');
+        const btn1Button = await loader.getHarness(MatButtonHarness.with({ text: 'btn1' }));
         expect(btn1Button).toBeTruthy();
-        const btn1Classes = getClasses(btn1Button);
-        expect(btn1Classes).toContain('mat-mdc-outlined-button');
-        expect(btn1Classes).toContain('mat-primary');
-        expect(btn1Button.attributes.type).toEqual('button');
-        expect(btn1Button.attributes.disabled).toEqual('true');
+        expect(await btn1Button.getVariant()).toBe('stroked');
+        expect(await btn1Button.isDisabled()).toBeTrue();
+        const host = await btn1Button.host();
+        expect(await host.hasClass('mat-primary')).toBeTrue();
+        expect(await host.hasClass('zv-btn-primary')).toBeTrue();
       }
 
       {
-        const btn2Button = buttons.find((x) => x.nativeElement.textContent.trim() === 'btn2');
+        const btn2Button = await loader.getHarness(MatButtonHarness.with({ text: 'btn2' }));
         expect(btn2Button).toBeTruthy();
-        const btn2Classes = getClasses(btn2Button);
-        expect(btn2Classes).toContain('mat-mdc-raised-button');
-        expect(btn2Classes).toContain('mat-accent');
-        expect(btn2Button.attributes.type).toEqual('button');
-        expect(btn2Button.attributes.disabled).toBeFalsy();
-        expect(btn2Button.attributes['data-cy']).toEqual('btn2');
-        btn2Button.triggerEventHandler('click', null);
+        expect(await btn2Button.getVariant()).toBe('raised');
+        expect(await btn2Button.isDisabled()).toBeFalse();
+        const host = await btn2Button.host();
+        expect(await host.hasClass('mat-accent')).toBeTrue();
+        expect(await host.hasClass('zv-btn-accent')).toBeTrue();
+        expect(await host.getAttribute('data-cy')).toEqual('btn2');
+        await btn2Button.click();
         expect(btn2Clicked).toBeTruthy();
       }
     });
@@ -322,12 +325,6 @@ function createDataSource(override: Partial<IZvFormDataSource> = {}): ITestZvFor
   };
 }
 
-function getButtons(fixture: ComponentFixture<TestDataSourceComponent>): DebugElement[] {
-  return fixture.debugElement.query(By.css('.zv-form__buttons')).children;
-}
-function getClasses(node: DebugElement): string[] {
-  return (node.nativeElement.className as string).split(' ');
-}
 function getBlockUi(fixture: ComponentFixture<any>): DebugElement {
   return fixture.debugElement.query(By.directive(ZvBlockUi));
 }

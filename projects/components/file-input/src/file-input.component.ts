@@ -1,7 +1,3 @@
-/* eslint-disable @angular-eslint/no-conflicting-lifecycle */
-/* eslint-disable @typescript-eslint/member-ordering */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/naming-convention */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import {
@@ -38,8 +34,6 @@ let nextUniqueId = 0;
   styleUrls: ['./file-input.component.scss'],
   standalone: true,
   imports: [MatButtonModule, MatIconModule],
-
-  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     // Native input properties that are overwritten by Angular inputs need to be synced with
     // the native input element. Otherwise property bindings for those don't work.
@@ -127,7 +121,7 @@ export class ZvFileInputComponent implements ControlValueAccessor, MatFormFieldC
    *
    * @docs-private
    */
-  @Input() placeholder: string = '';
+  @Input() placeholder = '';
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -206,9 +200,7 @@ export class ZvFileInputComponent implements ControlValueAccessor, MatFormFieldC
    *
    * @docs-private
    */
-  get shouldLabelFloat(): boolean {
-    return true;
-  }
+  readonly shouldLabelFloat = true;
 
   protected _uid = `zv-file-input-${nextUniqueId++}`;
   /** The aria-describedby attribute on the input for improved a11y. */
@@ -218,9 +210,7 @@ export class ZvFileInputComponent implements ControlValueAccessor, MatFormFieldC
   _inputfieldViewChild!: ElementRef<HTMLInputElement>;
   _errorStateTracker: _ErrorStateTracker;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onModelChange: (val: unknown) => void = () => {};
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onModelTouched = () => {};
 
   constructor(

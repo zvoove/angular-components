@@ -46,7 +46,6 @@ import { ZvTableSettingsComponent } from './subcomponents/table-settings.compone
   selector: 'zv-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
-  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     '[class.mat-elevation-z1]': `layout === 'card'`,
     '[class.zv-table--card]': `layout === 'card'`,
@@ -384,7 +383,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   private mergeSortDefinitions() {
     const sortableColumns = this.columnDefs
       .filter((def) => def.sortable)
-      .map((def) => <IZvTableSortDefinition>{ prop: def.property, displayName: def.header });
+      .map((def) => ({ prop: def.property, displayName: def.header }) as IZvTableSortDefinition);
 
     this._mergedSortDefinitions = sortableColumns
       .concat(this._sortDefinitions)

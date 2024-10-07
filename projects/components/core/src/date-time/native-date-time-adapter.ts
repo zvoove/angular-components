@@ -1,5 +1,5 @@
-import { Time } from '@angular/common';
 import { Injectable } from '@angular/core';
+import { Time } from '../time/time';
 import { ZvDateTimeAdapter, ZvDateTimeParts } from './date-time-adapter';
 
 @Injectable({ providedIn: 'root' })

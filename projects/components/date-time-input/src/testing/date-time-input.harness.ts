@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { BaseHarnessFilters, HarnessPredicate } from '@angular/cdk/testing';
 import { MatDatepickerInputHarness } from '@angular/material/datepicker/testing';
 import { MatFormFieldControlHarness } from '@angular/material/form-field/testing';

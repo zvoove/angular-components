@@ -56,8 +56,8 @@
   <app-api-doc-input [name]="'sortable'" [type]="'boolean'" [desc]="'When true, the column is sortable.'" />
   <app-api-doc-input [name]="'mandatory'" [type]="'boolean'" [desc]="'When true, the column can\'t be hidden from view in the settings.'" />
   <app-api-doc-input [name]="'width'" [type]="'string'" [desc]="'The column width (default auto).'" />
-  <app-api-doc-input [name]="'headerStyles'" [type]="'{ [key: string]: string }'" [desc]="'Column header styles.'" />
-  <app-api-doc-input [name]="'columnStyles'" [type]="'{ [key: string]: string }'" [desc]="'Column styles.'" />
+  <app-api-doc-input [name]="'headerStyles'" [type]="'Record<string, string>'" [desc]="'Column header styles.'" />
+  <app-api-doc-input [name]="'columnStyles'" [type]="'Record<string, string>'" [desc]="'Column styles.'" />
 </app-api-doc>
 
 <mat-card>

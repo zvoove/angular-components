@@ -19,7 +19,7 @@ export abstract class ZvSelectDataSource<T = any> {
    *
    * @returns Observable that emits a new value when the data changes.
    */
-  public abstract connect(): Observable<ZvSelectItem<T>[] | ReadonlyArray<ZvSelectItem<T>>>;
+  public abstract connect(): Observable<ZvSelectItem<T>[] | readonly ZvSelectItem<T>[]>;
 
   /**
    * Disconnects a collection viewer (such as a data-table) from this data source. Can be used

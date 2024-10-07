@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AppCodeComponent } from '../code/code.component';
 
 export interface CodeFiles {
   filename: string;
   code: string;
+  language?: string;
 }
 
 @Component({
@@ -17,5 +18,18 @@ export interface CodeFiles {
   encapsulation: ViewEncapsulation.None,
 })
 export class AppCodeFilesComponent {
-  @Input({ required: true }) files: CodeFiles[];
+  files = input.required<CodeFiles[]>();
+  filesAdjusted = computed(() =>
+    this.files().map((file) => ({
+      ...file,
+      language: file.language ?? getLanguage(file.filename),
+    }))
+  );
+}
+
+function getLanguage(filename: string) {
+  const parts = filename.split('.');
+  const ext = parts[parts.length - 1];
+  if (ext === 'ts') return 'typescript';
+  return ext;
 }

@@ -16,7 +16,10 @@ zv-table {
 }
 
 .zv-table--card {
-  background-color: #fafafa;
+  background-color: var(--mdc-elevated-card-container-color);
+}
+.zv-table--border {
+  background-color: var(--mdc-outlined-card-container-color);
 }
 
 .zv-table--border {

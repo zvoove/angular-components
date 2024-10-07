@@ -1,11 +1,10 @@
-<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 <mat-card class="app-form-demo__settings">
   <mat-card-content>
     <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
     <mat-checkbox [(ngModel)]="saveError">save error</mat-checkbox>
     <input type="number" matInput [(ngModel)]="dataSource.progress" />
-    <button mat-flat-button type="button" color="accent" (click)="hideProgress()">hide progress</button>
-    <button mat-flat-button type="button" color="accent" (click)="reload()">reload</button>
+    <button mat-flat-button type="button" (click)="hideProgress()">hide progress</button>
+    <button mat-flat-button type="button" (click)="reload()">reload</button>
   </mat-card-content>
 </mat-card>
 <div class="app-form-demo__grid">
@@ -28,8 +27,7 @@
       <mat-card-content>dummy card</mat-card-content>
     </mat-card>
     <ng-container zvFormSavebarButtons>
-      <button mat-stroked-button type="button">dummy button 1</button>
-      <button mat-stroked-button type="button">dummy button 2</button>
+      <button mat-stroked-button type="button">additional button</button>
     </ng-container>
   </zv-form>
   <mat-card>

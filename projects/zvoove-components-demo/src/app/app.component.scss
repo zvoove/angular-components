@@ -1,5 +1,11 @@
 @use '@angular/material' as mat;
 
+:host {
+  --mat-sidenav-container-width: 160px;
+  --mat-toolbar-container-background-color: var(--zv-components-primary);
+  --mat-toolbar-container-text-color: var(--zv-components-primary-contrast);
+}
+
 .app-root__locale-box {
   margin-left: auto;
 }

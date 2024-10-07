@@ -69,7 +69,7 @@ import type {} from '@angular/localize/init';
   ],
 })
 export class ZvTableDataComponent implements OnChanges {
-  @Input() public dataSource: ITableDataSource<{ [key: string]: any }>;
+  @Input() public dataSource: ITableDataSource<Record<string, any>>;
   @Input() public tableId: string;
   @Input() public rowDetail: ZvTableRowDetail | null;
   @Input() public columnDefs: ZvTableColumn[];
@@ -126,7 +126,7 @@ export class ZvTableDataComponent implements OnChanges {
     this.sortChanged.emit({ sortColumn: sort.active, sortDirection: sort.direction || 'asc' });
   }
 
-  public toggleRowDetail(item: { [key: string]: any }) {
+  public toggleRowDetail(item: Record<string, any>) {
     this.rowDetail.toggle(item);
     this.cd.markForCheck();
   }

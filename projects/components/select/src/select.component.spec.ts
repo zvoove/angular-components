@@ -45,7 +45,7 @@ export class TestZvFormsService extends BaseZvFormService {
 }
 
 function createFakeMatSelect(): MatSelect {
-  const matSelect = <any>{
+  const matSelect = {
     value: null,
     stateChanges: new Subject<void>(),
     openedChange: new Subject<void>(),
@@ -56,7 +56,7 @@ function createFakeMatSelect(): MatSelect {
     options: new QueryList(),
     writeValue: () => {},
     setDisabledState: () => {},
-  };
+  } as any;
 
   matSelect.writeValue = (val: any) => {
     matSelect.value = val;
@@ -78,20 +78,20 @@ function createFakeSelectService(): ZvSelectService {
 }
 
 function createFakeDataSource(items: ZvSelectItem[] = []): ZvSelectDataSource {
-  return <ZvSelectDataSource>{
+  return {
     connect: () => of<ZvSelectItem[]>(items),
     disconnect: () => {},
     selectedValuesChanged: (_: any | any[]) => {},
     panelOpenChanged: (_: boolean) => {},
     searchTextChanged: (_: string) => {},
-  };
+  } as ZvSelectDataSource;
 }
 
 function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: ZvSelectService }) {
   const matSelect = createFakeMatSelect();
   const dataSource = options && 'dataSource' in options ? options.dataSource : createFakeDataSource();
   const service = options && 'service' in options ? options.service : createFakeSelectService();
-  const component = new ZvSelectComponent(null, <any>{ markForCheck: () => {} }, service, null, null, <any>{ control: null });
+  const component = new ZvSelectComponent(null, { markForCheck: () => {} } as any, service, null, null, { control: null } as any);
   component.setMatSelect = matSelect;
   component.dataSource = dataSource;
   return { component: component, matSelect: matSelect, service: service, dataSource: dataSource, focused: component.focused };
@@ -121,7 +121,7 @@ export class TestComponent implements OnDestroy {
   });
   emittedValues: any[] = [];
   errorStateMatcher: ErrorStateMatcher = null;
-  panelClass: { [key: string]: boolean } = {};
+  panelClass: Record<string, boolean> = {};
   clearable = true;
 
   @ViewChild(ZvSelectComponent, { static: true }) select: ZvSelectComponent;
@@ -154,7 +154,6 @@ const ITEMS = {
       [showToggleAll]="showToggleAll"
       [selectedLabel]="selectedLabel"
     >
-      <!-- eslint-disable @angular-eslint/template/use-track-by-function -->
       @if (customTemplate) {
         <ng-container *zvSelectTriggerTemplate="let items"
           >custom:

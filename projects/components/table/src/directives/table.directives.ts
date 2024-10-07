@@ -22,8 +22,8 @@ export class ZvTableColumn {
   @Input() public sortable = true;
   @Input() public mandatory = false;
   @Input() public width = 'auto';
-  @Input() public headerStyles: { [key: string]: string } = {};
-  @Input() public columnStyles: { [key: string]: string } = {};
+  @Input() public headerStyles: Record<string, string> = {};
+  @Input() public columnStyles: Record<string, string> = {};
   @ContentChild(ZvTableColumnTemplate, { read: TemplateRef })
   public columnTemplate: TemplateRef<any> | null = null;
   @ContentChild(ZvTableColumnHeaderTemplate, { read: TemplateRef })

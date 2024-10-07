@@ -10,6 +10,7 @@ import { ZvFormErrorsModule } from '@zvoove/components/form-errors';
 
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ZvFormComponent } from './form.component';
+import { ZvButton } from '@zvoove/components/button';
 
 @NgModule({
   declarations: [ZvFormComponent],
@@ -25,6 +26,7 @@ import { ZvFormComponent } from './form.component';
     ZvBlockUi,
     ZvFormErrorsModule,
     ZvErrorMessagePipeModule,
+    ZvButton,
   ],
   exports: [ZvFormComponent],
 })

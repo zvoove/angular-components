@@ -20,7 +20,7 @@
             "outputPath": "dist/zvoove-components-demo",
             "index": "projects/zvoove-components-demo/src/index.html",
             "browser": "projects/zvoove-components-demo/src/main.ts",
-            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts", "zone.js"],
+            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts", "zone.js", "@angular/localize/init"],
             "tsConfig": "projects/zvoove-components-demo/tsconfig.app.json",
             "assets": ["projects/zvoove-components-demo/src/favicon.ico", "projects/zvoove-components-demo/src/assets"],
             "styles": ["projects/zvoove-components-demo/src/styles.scss"],
@@ -93,22 +93,11 @@
             "scripts": []
           }
         },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/zvoove-components-demo/e2e/protractor.conf.js",
-            "devServerTarget": "zvoove-components-demo:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "zvoove-components-demo:serve:production"
-            }
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/zvoove-components-demo/**/*.ts", "projects/zvoove-components-demo/**/*.html"]
+            "lintFilePatterns": ["projects/zvoove-components-demo/**/*.ts", "projects/zvoove-components-demo/**/*.html"],
+            "eslintConfig": "projects/zvoove-components-demo/eslint.config.js"
           }
         }
       }
@@ -142,7 +131,8 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/components/**/*.ts", "projects/components/**/*.html"]
+            "lintFilePatterns": ["projects/components/**/*.ts", "projects/components/**/*.html"],
+            "eslintConfig": "projects/components/eslint.config.js"
           }
         }
       }
@@ -151,13 +141,5 @@
   "cli": {
     "analytics": false,
     "schematicCollections": ["@angular-eslint/schematics"]
-  },
-  "schematics": {
-    "@angular-eslint/schematics:application": {
-      "setParserOptionsProject": true
-    },
-    "@angular-eslint/schematics:library": {
-      "setParserOptionsProject": true
-    }
   }
 }

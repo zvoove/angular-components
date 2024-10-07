@@ -153,7 +153,6 @@ export class SelectDemoComponent implements OnInit {
 
   public getZvSelectLoadTrigger() {
     return (
-      // eslint-disable-next-line no-bitwise
       (this.loadTriggerInitial && ZvSelectLoadTrigger.initial) |
       (this.loadTriggerFirstPanelOpen && ZvSelectLoadTrigger.firstPanelOpen) |
       (this.loadTriggerEveryPanelOpen && ZvSelectLoadTrigger.everyPanelOpen)
@@ -161,7 +160,6 @@ export class SelectDemoComponent implements OnInit {
   }
 
   public getZvSelectSortBy() {
-    // eslint-disable-next-line no-bitwise
     return (this.sortBySelected && ZvSelectSortBy.selected) | (this.sortByComparer && ZvSelectSortBy.comparer);
   }
 

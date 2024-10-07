@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 require('./tests/base_spec');
 require('./tests/block-ui_spec');
 require('./tests/card_spec');

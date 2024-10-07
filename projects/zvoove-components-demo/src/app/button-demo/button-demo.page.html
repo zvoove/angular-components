@@ -1,0 +1,87 @@
+<app-component-page-wrapper [componentName]="'zv-button'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <mat-card>
+      <mat-card-content
+        >Only use this component when you absolutely need to dynamically switch the type! Otherwise just use the material buttons
+        directly.</mat-card-content
+      >
+    </mat-card>
+
+    <mat-card>
+      <mat-card-content>
+        <mat-form-field>
+          <mat-select [(ngModel)]="type">
+            <mat-option [value]="null">default</mat-option>
+            <mat-option [value]="'flat'">flat</mat-option>
+            <mat-option [value]="'stroked'">stroked</mat-option>
+            <mat-option [value]="'raised'">raised</mat-option>
+            <mat-option [value]="'icon'">icon</mat-option>
+          </mat-select>
+          <mat-label>type</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select [(ngModel)]="color">
+            <mat-option [value]="null">default</mat-option>
+            <mat-option [value]="'primary'">primary</mat-option>
+            <mat-option [value]="'secondary'">secondary</mat-option>
+            <mat-option [value]="'tertiary'">tertiary</mat-option>
+            <mat-option [value]="'error'">error</mat-option>
+          </mat-select>
+          <mat-label>color</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput [(ngModel)]="label" />
+          <mat-label>label</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput [(ngModel)]="icon" />
+          <mat-label>icon</mat-label>
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="disabled">disabled</mat-checkbox>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-content> Click count: {{ clickCount() }} </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-content>
+        <zv-button [type]="type" [color]="color" [icon]="icon" [disabled]="disabled" [dataCy]="dataCy" (click)="clicked()">
+          @if(type !== 'icon') { {{ label }} }
+        </zv-button>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'api'">
+    <app-api-doc [name]="'zv-button'">
+      <app-api-doc-input [name]="'type'" [type]="'ZvButtonTypes'" [desc]="'flat, stroked, raised, icon or default.'" />
+      <app-api-doc-input
+        [name]="'color'"
+        [type]="'ZvButtonColors'"
+        [desc]="'M2: primary, accent, warn. M3: primary, secondary, tertiary, error.'"
+      />
+      <app-api-doc-input [name]="'icon'" [type]="'string'" [desc]="'The mat icon to use.'" />
+      <app-api-doc-input [name]="'dataCy'" [type]="'string'" [desc]="'Sets the data-cy attribute on the button.'" />
+      <app-api-doc-input [name]="'disabled'" [type]="'boolean'" [desc]="'Disables the button.'" />
+      <app-api-doc-output [name]="'click'" [type]="'void'" [desc]="'Emits whenever the button is clicked.'" [twoWay]="true" />
+    </app-api-doc>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Imports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Add the following to your imports, where you want to use the zv-button:</p>
+        <app-code [code]="importsCode" [language]="'typescript'" />
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>

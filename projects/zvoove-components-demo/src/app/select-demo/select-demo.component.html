@@ -182,7 +182,7 @@
       <app-api-doc-input [name]="'clearable'" [type]="'boolean'" [desc]="'When true, you can clear your selection.'" />
       <app-api-doc-input
         [name]="'panelClass'"
-        [type]="'string | string[] | { [key: string]: any }'"
+        [type]="'string | string[] | Record<string, any>'"
         [desc]="'CSS classes to apply to the selects panel.'"
       />
       <app-api-doc-input [name]="'placeholder'" [type]="'string'" [desc]="'Placeholder text.'" />
@@ -227,7 +227,7 @@
       </mat-card-header>
       <mat-card-content>
         <p>Add the following to your imports, where you want to use the zv-select:</p>
-        <app-code [code]="importsCode" />
+        <app-code [code]="importsCode" [language]="'typescript'" />
       </mat-card-content>
     </mat-card>
     <mat-card>

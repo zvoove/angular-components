@@ -1,7 +1,6 @@
-<!-- eslint-disable @angular-eslint/template/use-track-by-function -->
 <mat-card class="app-view-data-source-demo__settings">
   <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
-  <button mat-flat-button type="button" color="accent" (click)="reload()">reload</button>
+  <button mat-flat-button type="button" (click)="reload()">reload</button>
 </mat-card>
 <div class="app-form-data-source-demo__grid">
   <zv-view [dataSource]="dataSource">

@@ -23,7 +23,7 @@ export interface IZvTableUpdateDataInfo {
 export const enum ZvTableActionScope {
   row = 1,
   list = 2,
-  // eslint-disable-next-line no-bitwise
+
   all = row | list,
 }
 
@@ -42,7 +42,7 @@ export interface IZvTableAction<T> {
 
 export interface IZvTableActionRouterLink {
   path: string[];
-  queryParams?: { [key: string]: any };
+  queryParams?: Record<string, any>;
 }
 
 export interface ITableDataSource<T> extends DataSource<T> {
