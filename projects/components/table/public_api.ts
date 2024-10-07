@@ -1,10 +1,10 @@
 // reexport
 export {
-  IZvTableFilterResult,
+  type IZvTableFilterResult,
   ZvTableDataSource,
-  ZvTableMode,
-  IExtendedZvTableUpdateDataInfo,
-  ZvTableDataSourceOptions,
+  type ZvTableMode,
+  type IExtendedZvTableUpdateDataInfo,
+  type ZvTableDataSourceOptions,
 } from './src/data/table-data-source';
 export {
   ZvTableColumn,
@@ -17,7 +17,13 @@ export {
   ZvTableTopButtonSectionTemplate,
 } from './src/directives/table.directives';
 export { ZvTableMemoryStateManager, ZvTableStateManager, ZvTableUrlStateManager } from './src/helper/state-manager';
-export { IZvTableAction, IZvTableActionRouterLink, IZvTableSortDefinition, IZvTableUpdateDataInfo, ZvTableActionScope } from './src/models';
-export { IZvTableSetting, ZvTableSettingsService } from './src/services/table-settings.service';
+export {
+  type IZvTableAction,
+  type IZvTableActionRouterLink,
+  type IZvTableSortDefinition,
+  type IZvTableUpdateDataInfo,
+  ZvTableActionScope,
+} from './src/models';
+export { type IZvTableSetting, ZvTableSettingsService } from './src/services/table-settings.service';
 export { ZvTable } from './src/table.component';
 export { ZvTableModule, zvTableImports } from './src/table.module';

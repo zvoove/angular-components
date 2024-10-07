@@ -8,7 +8,7 @@ import {
   ContentChildren,
   EventEmitter,
   HostBinding,
-  Inject,
+  inject,
   Input,
   LOCALE_ID,
   OnChanges,
@@ -25,7 +25,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ZvBlockUi } from '@zvoove/components/block-ui';
 import { ZvExceptionMessageExtractor } from '@zvoove/components/core';
 import { ZvFlipContainer, ZvFlipContainerModule } from '@zvoove/components/flip-container';
-import { Subscription, combineLatest } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import {
   ZvTableColumn,
@@ -63,9 +63,16 @@ import { ZvTableSettingsComponent } from './subcomponents/table-settings.compone
     ZvTableSettingsComponent,
   ],
 })
-export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
+export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContentInit, OnDestroy {
+  public _settingsService = inject(ZvTableSettingsService);
+  public _exceptionMessageExtractor = inject(ZvExceptionMessageExtractor);
+  public _cd = inject(ChangeDetectorRef);
+  public _route = inject(ActivatedRoute);
+  public _router = inject(Router);
+  public _locale = inject(LOCALE_ID);
+
   @Input() public caption: string;
-  @Input({ required: true }) public dataSource: ITableDataSource<any>;
+  @Input({ required: true }) public dataSource: ITableDataSource<TData>;
   @Input({ required: true }) public tableId: string;
   @Input()
   public set sortDefinitions(value: IZvTableSortDefinition[]) {
@@ -81,7 +88,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @Input() public filterable = true;
   @Input() public showSettings = true;
   @Input() public pageDebounce: number;
-  @Input() public preferSortDropdown = this.settingsService.preferSortDropdown;
+  @Input() public preferSortDropdown = this._settingsService.preferSortDropdown;
 
   @Input()
   public layout: 'card' | 'border' | 'flat' = 'card';
@@ -90,7 +97,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @HostBinding('class.zv-table--striped')
   public striped = false;
 
-  @Input() stateManager: ZvTableStateManager = new ZvTableUrlStateManager(this.router, this.route);
+  @Input() stateManager: ZvTableStateManager = new ZvTableUrlStateManager(this._router, this._route);
 
   /** @deprecated use the datasource to detect paginations */
   @Output() public readonly page = new EventEmitter<PageEvent>();
@@ -98,40 +105,40 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   @ViewChild(ZvFlipContainer, { static: true }) public flipContainer: ZvFlipContainer | null = null;
 
   @ContentChild(ZvTableCustomHeaderTemplate, { read: TemplateRef })
-  public set customHeader(value: TemplateRef<any> | null) {
+  public set customHeader(value: TemplateRef<unknown> | null) {
     this._customHeader = value;
-    this.cd.markForCheck();
+    this._cd.markForCheck();
   }
 
   public get customHeader() {
     return this._customHeader;
   }
 
-  private _customHeader: TemplateRef<any> | null = null;
+  private _customHeader: TemplateRef<unknown> | null = null;
 
   @ContentChild(ZvTableCustomSettingsTemplate, { read: TemplateRef })
-  public set customSettings(value: TemplateRef<any> | null) {
+  public set customSettings(value: TemplateRef<unknown> | null) {
     this._customSettings = value;
-    this.cd.markForCheck();
+    this._cd.markForCheck();
   }
 
   public get customSettings() {
     return this._customSettings;
   }
 
-  private _customSettings: TemplateRef<any> | null = null;
+  private _customSettings: TemplateRef<unknown> | null = null;
 
   @ContentChild(ZvTableTopButtonSectionTemplate, { read: TemplateRef })
-  public set topButtonSection(value: TemplateRef<any> | null) {
+  public set topButtonSection(value: TemplateRef<unknown> | null) {
     this._topButtonSection = value;
-    this.cd.markForCheck();
+    this._cd.markForCheck();
   }
 
   public get topButtonSection() {
     return this._topButtonSection;
   }
 
-  private _topButtonSection: TemplateRef<any> | null = null;
+  private _topButtonSection: TemplateRef<unknown> | null = null;
 
   @ContentChildren(ZvTableColumn)
   public set columnDefsSetter(queryList: QueryList<ZvTableColumn>) {
@@ -207,7 +214,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   }
 
   public get errorMessage(): string {
-    return this.exceptionMessageExtractor.extractErrorMessage(this.dataSource.error);
+    return this._exceptionMessageExtractor.extractErrorMessage(this.dataSource.error);
   }
 
   public get showError(): boolean {
@@ -219,7 +226,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   }
 
   public get settingsEnabled(): boolean {
-    return !!(this.tableId && this.settingsService.settingsEnabled && this.showSettings);
+    return !!(this.tableId && this._settingsService.settingsEnabled && this.showSettings);
   }
 
   public get showListActions(): boolean {
@@ -240,18 +247,9 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   private _tableSettings: Partial<IZvTableSetting> = {};
   private _urlSettings: Partial<IZvTableUpdateDataInfo> = {};
 
-  constructor(
-    public settingsService: ZvTableSettingsService,
-    private exceptionMessageExtractor: ZvExceptionMessageExtractor,
-    private cd: ChangeDetectorRef,
-    private route: ActivatedRoute,
-    private router: Router,
-    @Inject(LOCALE_ID) private _locale: string
-  ) {}
-
   public ngOnInit() {
     this.dataSource.locale = this._locale;
-    this.pageSizeOptions = this.settingsService.pageSizeOptions;
+    this.pageSizeOptions = this._settingsService.pageSizeOptions;
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -304,7 +302,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   }
 
   /** @public This is a public api */
-  public toggleRowDetail(item: any, open?: boolean) {
+  public toggleRowDetail(item: TData, open?: boolean) {
     if (!this.rowDetail) {
       return;
     }
@@ -321,7 +319,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
   }
 
   private initListSettingsSubscription() {
-    const tableSettings$ = this.settingsService.getStream(this.tableId, false);
+    const tableSettings$ = this._settingsService.getStream(this.tableId, false);
     const stateSettings$ = this.stateManager.createStateSource(this.tableId);
     this.subscriptions.push(
       combineLatest([stateSettings$, tableSettings$])
@@ -340,7 +338,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
             this.dataSource.tableReady = true;
             this.dataSource.updateData(false);
           },
-          error: (err: Error | any) => {
+          error: (err: Error | unknown) => {
             this.dataSource.error = err;
           },
         })
@@ -377,7 +375,7 @@ export class ZvTable implements OnInit, OnChanges, AfterContentInit, OnDestroy {
       this.displayedColumns.push('options');
     }
 
-    this.cd.markForCheck();
+    this._cd.markForCheck();
   }
 
   private mergeSortDefinitions() {

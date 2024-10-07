@@ -1,3 +1,4 @@
+import { AsyncPipe, isPlatformServer } from '@angular/common';
 import type { QueryList } from '@angular/core';
 import {
   AfterContentChecked,
@@ -7,12 +8,10 @@ import {
   ContentChildren,
   ElementRef,
   HostBinding,
-  Inject,
   InjectionToken,
   Input,
   OnChanges,
   OnDestroy,
-  Optional,
   PLATFORM_ID,
   SimpleChanges,
   ViewChild,
@@ -20,23 +19,21 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
 import {
   FloatLabelType,
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
+  MatError,
   MatFormField,
   MatFormFieldControl,
-  MatFormFieldDefaultOptions,
   MatLabel,
   MatPrefix,
   MatSuffix,
-  MatError,
 } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { IZvFormError, ZvFormService, hasRequiredField } from '@zvoove/components/form-base';
 import { Observable, Subscription, of } from 'rxjs';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
-import { isPlatformServer, AsyncPipe } from '@angular/common';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 
 export declare type ZvFormFieldSubscriptType = 'resize' | 'single-line';
 
@@ -48,6 +45,14 @@ export interface ZvFormFieldConfig {
 
 export const ZV_FORM_FIELD_CONFIG = new InjectionToken<ZvFormFieldConfig>('ZV_FORM_FIELD_CONFIG');
 
+function applyConfigDefaults(config: ZvFormFieldConfig): ZvFormFieldConfig {
+  return {
+    hintToggle: config?.hintToggle ?? false,
+    subscriptType: config?.subscriptType ?? 'resize',
+    requiredText: config?.requiredText ?? null,
+  };
+}
+
 @Component({
   selector: 'zv-form-field',
   templateUrl: './form-field.component.html',
@@ -58,6 +63,11 @@ export const ZV_FORM_FIELD_CONFIG = new InjectionToken<ZvFormFieldConfig>('ZV_FO
   imports: [MatFormField, MatLabel, MatPrefix, MatSuffix, MatIconButton, MatIcon, MatError, AsyncPipe],
 })
 export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
+  private _elementRef = inject(ElementRef);
+  private formsService = inject(ZvFormService);
+  private defaults = applyConfigDefaults(inject(ZV_FORM_FIELD_CONFIG, { optional: true }));
+  private matDefaults = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
+
   @Input() public createLabel = true;
   @Input() public hint: string = null;
   @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
@@ -146,19 +156,6 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
   private initialized = false;
 
   private isServer = isPlatformServer(inject(PLATFORM_ID));
-
-  constructor(
-    private _elementRef: ElementRef,
-    private formsService: ZvFormService,
-    @Optional() @Inject(ZV_FORM_FIELD_CONFIG) private defaults?: ZvFormFieldConfig,
-    @Optional() @Inject(MAT_FORM_FIELD_DEFAULT_OPTIONS) private matDefaults?: MatFormFieldDefaultOptions
-  ) {
-    this.defaults = {
-      hintToggle: this.defaults?.hintToggle ?? false,
-      subscriptType: this.defaults?.subscriptType ?? 'resize',
-      requiredText: this.defaults?.requiredText ?? null,
-    } as ZvFormFieldConfig;
-  }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.hintToggle) {

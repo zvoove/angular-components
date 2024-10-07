@@ -68,8 +68,8 @@ import type {} from '@angular/localize/init';
     MatSortHeader,
   ],
 })
-export class ZvTableDataComponent implements OnChanges {
-  @Input() public dataSource: ITableDataSource<Record<string, any>>;
+export class ZvTableDataComponent<TData = unknown> implements OnChanges {
+  @Input() public dataSource: ITableDataSource<TData>;
   @Input() public tableId: string;
   @Input() public rowDetail: ZvTableRowDetail | null;
   @Input() public columnDefs: ZvTableColumn[];

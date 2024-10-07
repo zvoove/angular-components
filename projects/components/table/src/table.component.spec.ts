@@ -2,14 +2,14 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, QueryList, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, LOCALE_ID, QueryList, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { IconType, MatIconHarness, MatIconTestingModule } from '@angular/material/icon/testing';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { MatSortHarness } from '@angular/material/sort/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, ParamMap, Params, RouterLink, Routes, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, ParamMap, Params, Router, RouterLink, Routes, convertToParamMap, provideRouter } from '@angular/router';
 import { filterAsync } from '@zvoove/components/utils/src/array';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,6 +24,7 @@ import { ZvTablePaginationComponent } from './subcomponents/table-pagination.com
 import { ZvTable } from './table.component';
 import { ZvTableModule } from './table.module';
 import { ZvTableHarness } from './testing/table.harness';
+import { ZvExceptionMessageExtractor } from 'dist/components/core';
 
 @Injectable()
 class TestSettingsService extends ZvTableSettingsService {
@@ -159,9 +160,20 @@ describe('ZvTable', () => {
     let settingsService: TestSettingsService;
     function createTableInstance(hooks = false): ZvTable {
       settingsService = new TestSettingsService();
-      const table = new ZvTable(settingsService, null, cd, route, router, 'de');
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: ZvTable, useClass: ZvTable },
+          { provide: ChangeDetectorRef, useValue: cd },
+          { provide: ActivatedRoute, useValue: route },
+          { provide: Router, useValue: router },
+          { provide: LOCALE_ID, useValue: 'de' },
+          { provide: ZvTableSettingsService, useValue: settingsService },
+          { provide: ZvExceptionMessageExtractor, useValue: null },
+        ],
+      });
+      const table = TestBed.inject(ZvTable);
       table.tableId = 'tableid';
-      table.dataSource = new ZvTableDataSource<any>(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
+      table.dataSource = new ZvTableDataSource(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
       if (hooks) {
         table.ngOnChanges({});
         table.ngOnInit();
@@ -611,8 +623,8 @@ describe('ZvTable', () => {
           })
         );
 
-        component.table.settingsService.settingsEnabled = true;
-        (component.table.settingsService as TestSettingsService).settings$.next({
+        component.table._settingsService.settingsEnabled = true;
+        (component.table._settingsService as TestSettingsService).settings$.next({
           [component.tableId]: {
             pageSize: 2,
             sortColumn: null,

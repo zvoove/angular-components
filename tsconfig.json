@@ -13,7 +13,6 @@
     "forceConsistentCasingInFileNames": true,
 
     "strict": true,
-    "esModuleInterop": true,
     "strictNullChecks": false,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
@@ -27,15 +26,16 @@
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
 
+    "esModuleInterop": true,
+    "isolatedModules": true,
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "es2022",
     "module": "es2022",
     "lib": ["es2022", "dom"],
-    "useDefineForClassFields": false,
 
     "paths": {
       "@zvoove/components/*": ["projects/components/*"]

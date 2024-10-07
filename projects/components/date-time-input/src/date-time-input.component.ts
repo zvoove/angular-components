@@ -7,17 +7,15 @@ import {
   DoCheck,
   ElementRef,
   EventEmitter,
-  Inject,
   Input,
   OnChanges,
   OnInit,
-  Optional,
   Output,
-  Self,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
   booleanAttribute,
+  inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -34,7 +32,7 @@ import {
 } from '@angular/forms';
 import { ErrorStateMatcher, _ErrorStateTracker } from '@angular/material/core';
 import { MatDatepickerControl, MatDatepickerInput, MatDatepickerModule, MatDatepickerPanel } from '@angular/material/datepicker';
-import { MAT_FORM_FIELD, MatFormField, MatFormFieldControl } from '@angular/material/form-field';
+import { MAT_FORM_FIELD, MatFormFieldControl } from '@angular/material/form-field';
 import { ZvDateTimeAdapter } from '@zvoove/components/core';
 import { Subject } from 'rxjs';
 import { ZvTimeInput } from './time-input.directive';
@@ -61,6 +59,14 @@ let nextUniqueId = 0;
 export class ZvDateTimeInput<TDateTime, TDate, TTime>
   implements ControlValueAccessor, MatFormFieldControl<TDateTime>, OnChanges, OnInit, DoCheck
 {
+  public _changeDetectorRef = inject(ChangeDetectorRef);
+  _defaultErrorStateMatcher = inject(ErrorStateMatcher);
+  _parentForm = inject(NgForm, { optional: true });
+  _parentFormGroup = inject(FormGroupDirective, { optional: true });
+  _parentFormField = inject(MAT_FORM_FIELD, { optional: true });
+  ngControl = inject(NgControl, { optional: true, self: true });
+  private dateTimeAdapter = inject(ZvDateTimeAdapter<TDateTime, TDate, TTime>);
+
   /**
    * An optional name for the control type that can be used to distinguish `mat-form-field` elements
    * based on their control type. The form field will add a class,
@@ -178,15 +184,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   @ViewChild('time') _timeInputElementRef!: ElementRef<HTMLInputElement>;
   _errorStateTracker: _ErrorStateTracker;
 
-  constructor(
-    public _changeDetectorRef: ChangeDetectorRef,
-    _defaultErrorStateMatcher: ErrorStateMatcher,
-    @Optional() _parentForm: NgForm,
-    @Optional() _parentFormGroup: FormGroupDirective,
-    @Optional() @Inject(MAT_FORM_FIELD) protected _parentFormField: MatFormField,
-    @Self() @Optional() public ngControl: NgControl,
-    private dateTimeAdapter: ZvDateTimeAdapter<TDateTime, TDate, TTime>
-  ) {
+  constructor() {
     if (this.ngControl) {
       // Note: we provide the value accessor through here, instead of
       // the `providers` to avoid running into a circular import.
@@ -194,10 +192,10 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     }
 
     this._errorStateTracker = new _ErrorStateTracker(
-      _defaultErrorStateMatcher,
-      ngControl,
-      _parentFormGroup,
-      _parentForm,
+      this._defaultErrorStateMatcher,
+      this.ngControl,
+      this._parentFormGroup,
+      this._parentForm,
       this.stateChanges
     );
 

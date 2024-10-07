@@ -17,7 +17,7 @@ interface ITestDialogWrapperDataSourceOptions {
 }
 
 export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
-  dialogTitle: string = this.options.dialogTitle;
+  dialogTitle: string;
   buttons: IZvButton[] = [
     {
       label: 'Ok',
@@ -41,7 +41,9 @@ export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
 
   public somethingChanged$ = new Subject<void>();
 
-  constructor(private options: ITestDialogWrapperDataSourceOptions) {}
+  constructor(private options: ITestDialogWrapperDataSourceOptions) {
+    this.dialogTitle = this.options.dialogTitle;
+  }
 
   connect(): Observable<void> {
     return this.somethingChanged$;
