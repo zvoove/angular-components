@@ -2,7 +2,7 @@
   <mat-card-content>
     <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
     <mat-checkbox [(ngModel)]="saveError">save error</mat-checkbox>
-    <input type="number" matInput [(ngModel)]="dataSource.progress" />
+    <input type="number" matInput [ngModel]="dataSource.progress" (ngModelChange)="dataSource.setProgress($event)" />
     <button mat-flat-button type="button" (click)="hideProgress()">hide progress</button>
     <button mat-flat-button type="button" (click)="reload()">reload</button>
   </mat-card-content>

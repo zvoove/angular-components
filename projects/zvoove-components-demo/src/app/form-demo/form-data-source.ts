@@ -124,6 +124,11 @@ export class FormDataSource<
     this.stateChanges$.next();
   }
 
+  public setProgress(value: number | null): void {
+    this.progress = value;
+    this.stateChanges$.next();
+  }
+
   public updateButtonDefs(
     btnConfigFn: (btns: { save: IZvButton | null; saveAndClose: IZvButton | null; cancel: IZvButton | null }) => void
   ) {

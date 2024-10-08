@@ -1,4 +1,4 @@
-import { ApplicationConfig, LOCALE_ID, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, importProvidersFrom, provideExperimentalZonelessChangeDetection } from '@angular/core';
 
 import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +21,7 @@ registerLocaleData(localeEnGb);
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideExperimentalZonelessChangeDetection(),
     importProvidersFrom(BrowserModule, MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule, MatButtonModule),
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: '* Required' } },

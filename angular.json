@@ -20,7 +20,7 @@
             "outputPath": "dist/zvoove-components-demo",
             "index": "projects/zvoove-components-demo/src/index.html",
             "browser": "projects/zvoove-components-demo/src/main.ts",
-            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts", "zone.js", "@angular/localize/init"],
+            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts", "@angular/localize/init"],
             "tsConfig": "projects/zvoove-components-demo/tsconfig.app.json",
             "assets": ["projects/zvoove-components-demo/src/favicon.ico", "projects/zvoove-components-demo/src/assets"],
             "styles": ["projects/zvoove-components-demo/src/styles.scss"],
