@@ -58,7 +58,7 @@ export enum ZvSelectLoadTrigger {
   all = initial + firstPanelOpen + everyPanelOpen,
 }
 
-export const enum ZvSelectSortBy {
+export enum ZvSelectSortBy {
   none = 0,
   selected = 1 << 0,
   comparer = 1 << 1,
