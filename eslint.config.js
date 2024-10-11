@@ -2,6 +2,7 @@
 const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
+const jasmine = require("eslint-plugin-jasmine");
 
 module.exports = tseslint.config(
   {
@@ -12,6 +13,9 @@ module.exports = tseslint.config(
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
     ],
+    plugins: {
+      jasmine: jasmine,
+    },
     processor: angular.processInlineTemplates,
     rules: {
       "@angular-eslint/prefer-standalone": "error",
@@ -66,6 +70,19 @@ module.exports = tseslint.config(
       "no-underscore-dangle": "off",
       "object-shorthand": ["error", "never"],
       "prefer-arrow/prefer-arrow-functions": "off",
+
+      "jasmine/expect-single-argument": "error",
+      "jasmine/missing-expect": "error",
+      "jasmine/no-disabled-tests": "error",
+      "jasmine/no-focused-tests": "error",
+      "jasmine/no-pending-tests": "error",
+      "jasmine/no-promise-without-done-fail": "error",
+      "jasmine/no-spec-dupes": "error",
+      "jasmine/no-suite-callback-args": "error",
+      "jasmine/no-suite-dupes": "error",
+      "jasmine/no-unsafe-spy": "error",
+      "jasmine/prefer-jasmine-matcher": "error",
+      "jasmine/prefer-promise-strategies": "error",
     },
   },
   {

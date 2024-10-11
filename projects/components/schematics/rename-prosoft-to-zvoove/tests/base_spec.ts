@@ -27,6 +27,7 @@ describe('rename-prosoft-to-zvoove', () => {
     expect(tree.files).toEqual([]);
   });
 
+  // eslint-disable-next-line jasmine/missing-expect
   it('should skip dist and node_modules folders', async () => {
     const runner = new SchematicTestRunner('test', require.resolve('../../migrations.json'));
     const tree = Tree.empty();

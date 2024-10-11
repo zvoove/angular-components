@@ -411,7 +411,7 @@ describe('ZvTableDataSource', () => {
   });
   describe('sortData', () => {
     function sortAssert<T>(inData: T[], ascExpectedData: T[], descExpectedData: T[]) {
-      const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
+      const dataSource = new ZvTableDataSource<unknown>(() => of([]), 'client');
       dataSource.tableReady = true;
 
       const data = inData.map((x) => ({ prop: x }));
@@ -421,18 +421,23 @@ describe('ZvTableDataSource', () => {
       const sortedDataDesc = dataSource.sortData(data, { sortColumn: 'prop', sortDirection: 'desc' });
       expect(sortedDataDesc).toEqual(descExpectedData.map((x) => ({ prop: x })));
     }
+    // eslint-disable-next-line jasmine/missing-expect
     it('should sort strings', () => {
       sortAssert(['b', 'a', 'c'], ['a', 'b', 'c'], ['c', 'b', 'a']);
     });
+    // eslint-disable-next-line jasmine/missing-expect
     it('should sort numbers', () => {
       sortAssert([2, 1, 3], [1, 2, 3], [3, 2, 1]);
     });
+    // eslint-disable-next-line jasmine/missing-expect
     it('should sort string numbers', () => {
       sortAssert(['2', '10', '3'], ['2', '3', '10'], ['10', '3', '2']);
     });
+    // eslint-disable-next-line jasmine/missing-expect
     it('should sort booleans', () => {
       sortAssert([true, false, true], [false, true, true], [true, true, false]);
     });
+    // eslint-disable-next-line jasmine/missing-expect
     it('should sort dates', () => {
       const now = new Date();
       const future = new Date();
