@@ -6,7 +6,7 @@ export interface ZvCardHarnessFilters extends BaseHarnessFilters {
   description?: string | RegExp;
 }
 
-export const enum ZvCardSection {
+export enum ZvCardSection {
   footer = '.mat-mdc-card-footer',
   actions = '.mat-mdc-card-actions',
 }

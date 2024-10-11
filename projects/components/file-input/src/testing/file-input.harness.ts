@@ -2,7 +2,7 @@ import { BaseHarnessFilters, ContentContainerComponentHarness, HarnessPredicate,
 
 export type ZvFileInputHarnessFilters = BaseHarnessFilters;
 
-export const enum ZvFileInputSection {
+export enum ZvFileInputSection {
   text = '.app-file-input__text',
   removeButton = '.app-file-input__remove',
   input = 'input',

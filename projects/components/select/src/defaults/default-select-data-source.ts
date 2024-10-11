@@ -36,7 +36,7 @@ export function isZvSelectOptionsData(value: any): value is ZvSelectDataSourceOp
 /**
  * At which point(s) to load the select data. Defaults to {@link ZvSelectLoadTrigger.initial}.
  */
-export const enum ZvSelectLoadTrigger {
+export enum ZvSelectLoadTrigger {
   /**
    * Load values of select only once, on initial rendering of zv-select.
    */

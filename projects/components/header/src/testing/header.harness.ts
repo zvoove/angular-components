@@ -5,7 +5,7 @@ export interface ZvHeaderHarnessFilters extends BaseHarnessFilters {
   description?: string | RegExp;
 }
 
-export const enum ZvHeaderSection {
+export enum ZvHeaderSection {
   caption = '.zv-header__caption',
   description = '.zv-header__description',
   actions = '.zv-header__actions',

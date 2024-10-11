@@ -7,7 +7,7 @@ export interface ZvDialogWrapperHarnessFilters extends BaseHarnessFilters {
   description?: string | RegExp;
 }
 
-export const enum ZvDialogWrapperSection {
+export enum ZvDialogWrapperSection {
   dialogTitle = '.mat-mdc-dialog-title',
 }
 

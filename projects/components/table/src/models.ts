@@ -20,7 +20,7 @@ export interface IZvTableUpdateDataInfo {
   sortColumn: string | null;
 }
 
-export const enum ZvTableActionScope {
+export enum ZvTableActionScope {
   row = 1,
   list = 2,
 
