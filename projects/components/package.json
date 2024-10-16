@@ -1,7 +1,7 @@
 {
   "name": "@zvoove/components",
   "description": "",
-  "version": "18.0.2",
+  "version": "18.0.3",
   "license": "MIT",
   "dependencies": {
     "tslib": "^2.6.2"

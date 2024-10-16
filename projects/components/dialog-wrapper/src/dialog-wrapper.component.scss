@@ -4,6 +4,8 @@
 
 .zv-dialog-wrapper__buttons {
   margin-left: auto;
+  display: flex;
+  gap: 8px;
 }
 
 .zv-dialog-wrapper__action-button {

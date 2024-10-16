@@ -24,6 +24,13 @@ zv-form-field .mat-form-field-invalid .mdc-radio__outer-circle,
 zv-form-field .mat-form-field-invalid .mdc-slider__thumb-knob {
   border-color: var(--zv-components-error) !important;
 }
+
+.zv-form-field-type-mat-mdc-checkbox,
+.zv-form-field-type-mat-radio-group {
+  --mdc-outlined-text-field-container-shape: 0;
+  --mat-form-field-container-vertical-padding: 0.5em;
+}
+
 /* Centers suffix icon */
 .mat-mdc-form-field-icon-suffix {
   display: flex;
