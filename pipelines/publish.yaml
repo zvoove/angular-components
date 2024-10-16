@@ -43,7 +43,7 @@ jobs:
         displayName: "Docker Login to SaaS Dev ACR"
 
       - powershell: |
-          docker build . `
+          docker build --pull . `
             -t acrzvoovesaasdev.azurecr.io/components:$((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version) `
             -t acrzvoovesaasdev.azurecr.io/components:latest
         displayName: "Docker Build Image"
