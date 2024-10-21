@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { BehaviorSubject, combineLatest, isObservable, merge, NEVER, Observable, of, Subject } from 'rxjs';
 import {
   catchError,
@@ -253,7 +260,7 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
   }
 
   private _cloneAndSort(unsortedOptions: ZvSelectItem<T>[]) {
-    let selectedOptionsSet: WeakSet<ZvSelectItem> = null;
+    let selectedOptionsSet: WeakSet<ZvSelectItem> = null!;
 
     if (this._sortBy & ZvSelectSortBy.selected) {
       const selectedOptions = unsortedOptions.filter((option) =>
@@ -288,7 +295,7 @@ function createEntityToSelectItemMapper(
   mode: 'id' | 'entity',
   idKey: keyof any,
   labelKey: keyof any,
-  disabledKey: keyof any
+  disabledKey: keyof any | undefined
 ): (item: any) => ZvSelectItem<any> {
   if (mode === 'id') {
     return (item: any) => ({

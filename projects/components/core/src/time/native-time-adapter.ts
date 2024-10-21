@@ -33,7 +33,7 @@ export class ZvNativeTimeAdapter extends ZvTimeAdapter<Time> {
     };
   }
 
-  override parse(value: unknown): Time {
+  override parse(value: unknown): Time | null {
     if (this.isTimeInstance(value)) {
       return this.createTime(value.hours, value.minutes);
     }

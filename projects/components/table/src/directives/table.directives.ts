@@ -61,16 +61,16 @@ export class ZvTableRowDetailTemplate {}
 export class ZvTableRowDetail {
   /** Gibt an, ob die Row Details initial expanded sein sollen */
   @Input() public expanded = false;
-  @Input() public showToggleColumn: boolean | ((row: any) => boolean) = true;
+  @Input() public showToggleColumn: boolean | ((row: object) => boolean) = true;
 
   @ContentChild(ZvTableRowDetailTemplate, { read: TemplateRef })
   public template: TemplateRef<any> | null = null;
 
   private expandedItems = new WeakSet();
-  private seenItems = new WeakSet();
+  private seenItems = new WeakSet<object>();
 
   /** @public This is a public api */
-  public toggle(item: any, open?: boolean) {
+  public toggle(item: object, open?: boolean) {
     if (this.expandedItems.has(item)) {
       if (open === true) {
         return;
@@ -87,7 +87,7 @@ export class ZvTableRowDetail {
   }
 
   /** @public This is a public api */
-  public isExpanded(item: any) {
+  public isExpanded(item: object) {
     // Beim ersten Aufruf für ein Item expanden, wenn expanded === true
     if (this.expanded && !this.seenItems.has(item)) {
       this.expandedItems.add(item);

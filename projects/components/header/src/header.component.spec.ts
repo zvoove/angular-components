@@ -49,7 +49,7 @@ describe('ZvHeader', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TestDataSourceComponent],
-    });
+    }).compileComponents();
     fixture = TestBed.createComponent(TestDataSourceComponent);
     component = fixture.componentInstance;
 

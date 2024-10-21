@@ -480,10 +480,12 @@ describe('ZvTable', () => {
 
     it('should update state when page changes and emit output', fakeAsync(() => {
       const table = createTableInstance(true);
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       spyOn(table.page, 'emit');
       spyOn(table as any, 'requestUpdate').and.callThrough();
       table.onPage({ pageIndex: 5, pageSize: 3, length: 20, previousPageIndex: 4 });
       expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       expect(table.page.emit).toHaveBeenCalledTimes(1);
       tick(1);
       expect(table.pageIndex).toEqual(5);
@@ -511,7 +513,7 @@ describe('ZvTable', () => {
 
     it('should update view when view/content children change', fakeAsync(() => {
       spyOn(cd, 'markForCheck');
-      const table = createTableInstance() as ZvTable;
+      const table = createTableInstance();
       spyOn(table as any, 'updateTableState').and.callThrough();
 
       table.customHeader = null;
@@ -582,7 +584,7 @@ describe('ZvTable', () => {
           { provide: ZvTableSettingsService, useClass: TestSettingsService },
           { provide: MatPaginatorIntl, useClass: MatPaginatorIntl },
         ],
-      });
+      }).compileComponents();
 
       await initTestComponent(
         new ZvTableDataSource({
@@ -679,7 +681,7 @@ describe('ZvTable', () => {
 
         const customHeaderCells = await headerRows[0].getCells({ columnName: '__virtual' });
         expect(customHeaderCells.length).toEqual(1);
-        expect(await await customHeaderCells[0].getText()).toEqual('custom');
+        expect(await customHeaderCells[0].getText()).toEqual('custom');
       });
 
       it('should create data rows', async () => {

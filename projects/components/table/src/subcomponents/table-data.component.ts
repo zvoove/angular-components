@@ -69,28 +69,28 @@ import type {} from '@angular/localize/init';
   ],
 })
 export class ZvTableDataComponent<TData = unknown> implements OnChanges {
-  @Input() public dataSource: ITableDataSource<TData>;
-  @Input() public tableId: string;
-  @Input() public rowDetail: ZvTableRowDetail | null;
-  @Input() public columnDefs: ZvTableColumn[];
-  @Input() public showListActions: boolean;
-  @Input() public refreshable: boolean;
-  @Input() public settingsEnabled: boolean;
-  @Input() public displayedColumns: string[];
-  @Input() public showSorting: boolean;
-  @Input() public sortColumn: string;
-  @Input() public sortDirection: 'asc' | 'desc';
+  @Input() public dataSource!: ITableDataSource<TData>;
+  @Input() public tableId!: string;
+  @Input() public rowDetail!: ZvTableRowDetail | null;
+  @Input() public columnDefs!: ZvTableColumn[];
+  @Input() public showListActions!: boolean;
+  @Input() public refreshable!: boolean;
+  @Input() public settingsEnabled!: boolean;
+  @Input() public displayedColumns!: string[];
+  @Input() public showSorting!: boolean;
+  @Input() public sortColumn!: string | null;
+  @Input() public sortDirection!: 'asc' | 'desc';
   @Output() public readonly showSettingsClicked = new EventEmitter<void>();
   @Output() public readonly refreshDataClicked = new EventEmitter<void>();
   @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
 
-  private refreshAction: IZvTableAction<any> = {
+  private refreshAction: IZvTableAction<TData> = {
     icon: 'refresh',
     label: $localize`:@@zvc.refreshList:Refresh list`,
     actionFn: () => this.refreshDataClicked.emit(),
     scope: ZvTableActionScope.list,
   };
-  private settingsAction: IZvTableAction<any> = {
+  private settingsAction: IZvTableAction<TData> = {
     icon: 'settings',
     label: $localize`:@@zvc.listSettings:List settings`,
     actionFn: () => this.showSettingsClicked.emit(),
@@ -127,7 +127,7 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
   }
 
   public toggleRowDetail(item: Record<string, any>) {
-    this.rowDetail.toggle(item);
+    this.rowDetail!.toggle(item);
     this.cd.markForCheck();
   }
 
@@ -135,7 +135,7 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
     this.dataSource.toggleVisibleRowSelection();
   }
 
-  public onRowToggleChange(row: any) {
+  public onRowToggleChange(row: TData) {
     this.dataSource.selectionModel.toggle(row);
   }
 
@@ -147,7 +147,7 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
     return this.dataSource.selectionModel.hasValue() && !this.dataSource.allVisibleRowsSelected;
   }
 
-  public isRowSelected(row: any) {
+  public isRowSelected(row: TData) {
     return this.dataSource.selectionModel.isSelected(row);
   }
 
@@ -156,8 +156,9 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
   }
 
   public showRowDetails(row: any) {
-    if (typeof this.rowDetail.showToggleColumn === 'function') {
-      return this.rowDetail.showToggleColumn(row);
+    if (typeof this.rowDetail!.showToggleColumn === 'function') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      return this.rowDetail!.showToggleColumn(row);
     }
 
     return true;

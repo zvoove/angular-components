@@ -71,9 +71,9 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   public _router = inject(Router);
   public _locale = inject(LOCALE_ID);
 
-  @Input() public caption: string;
-  @Input({ required: true }) public dataSource: ITableDataSource<TData>;
-  @Input({ required: true }) public tableId: string;
+  @Input() public caption = '';
+  @Input({ required: true }) public dataSource!: ITableDataSource<TData>;
+  @Input({ required: true }) public tableId!: string;
   @Input()
   public set sortDefinitions(value: IZvTableSortDefinition[]) {
     this._sortDefinitions = value ? [...value] : [];
@@ -87,7 +87,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   @Input() public refreshable = true;
   @Input() public filterable = true;
   @Input() public showSettings = true;
-  @Input() public pageDebounce: number;
+  @Input() public pageDebounce: number | null = null;
   @Input() public preferSortDropdown = this._settingsService.preferSortDropdown;
 
   @Input()
@@ -102,7 +102,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   /** @deprecated use the datasource to detect paginations */
   @Output() public readonly page = new EventEmitter<PageEvent>();
 
-  @ViewChild(ZvFlipContainer, { static: true }) public flipContainer: ZvFlipContainer | null = null;
+  @ViewChild(ZvFlipContainer, { static: true }) public flipContainer!: ZvFlipContainer;
 
   @ContentChild(ZvTableCustomHeaderTemplate, { read: TemplateRef })
   public set customHeader(value: TemplateRef<unknown> | null) {
@@ -160,7 +160,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
 
   private _rowDetail: ZvTableRowDetail | null = null;
 
-  public pageSizeOptions: number[];
+  public pageSizeOptions!: number[];
   public columnDefs: ZvTableColumn[] = [];
 
   public displayedColumns: string[] = [];
@@ -173,11 +173,11 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
     this.dataSource.sortDirection = value;
   }
 
-  public get sortColumn(): string {
+  public get sortColumn(): string | null {
     return this.dataSource.sortColumn;
   }
 
-  public set sortColumn(value: string) {
+  public set sortColumn(value: string | null) {
     this.dataSource.sortColumn = value;
   }
 
@@ -213,7 +213,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
     return !this.dataSource.loading && !this.dataSource.error && !this.dataSource.visibleRows.length;
   }
 
-  public get errorMessage(): string {
+  public get errorMessage(): string | null {
     return this._exceptionMessageExtractor.extractErrorMessage(this.dataSource.error);
   }
 
@@ -238,7 +238,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   }
 
   public get showDropdownSorting(): boolean {
-    return this.useSortDropdown && !!this._mergedSortDefinitions.length;
+    return (this.useSortDropdown && !!this._mergedSortDefinitions.length) ?? false;
   }
 
   private subscriptions: Subscription[] = [];
@@ -254,7 +254,8 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.dataSource && !changes.dataSource.firstChange) {
-      this.dataSource.tableReady = changes.dataSource.previousValue.tableReady;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      this.dataSource.tableReady = changes.dataSource.previousValue.tableReady as unknown as boolean;
     }
 
     this.updateTableState();
@@ -271,7 +272,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
     }
   }
 
-  public onSearchChanged(value: string) {
+  public onSearchChanged(value: string | null) {
     this.requestUpdate({
       searchText: value,
     });
@@ -285,6 +286,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   }
 
   public onPage(event: PageEvent) {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     this.page.emit(event);
     this.requestUpdate({
       currentPage: event.pageIndex,
@@ -307,7 +309,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
       return;
     }
 
-    this.rowDetail.toggle(item, open);
+    this.rowDetail.toggle(item as object, open);
   }
 
   private requestUpdate(data: Partial<IZvTableUpdateDataInfo>) {
@@ -338,6 +340,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
             this.dataSource.tableReady = true;
             this.dataSource.updateData(false);
           },
+          // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
           error: (err: Error | unknown) => {
             this.dataSource.error = err;
           },
@@ -357,7 +360,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
 
     this.displayedColumns = this.columnDefs.map((x) => x.property);
     if (tableSettings.columnBlacklist && tableSettings.columnBlacklist.length) {
-      this.displayedColumns = this.displayedColumns.filter((x) => !tableSettings.columnBlacklist.includes(x));
+      this.displayedColumns = this.displayedColumns.filter((x) => !tableSettings.columnBlacklist!.includes(x));
     }
 
     // Row Detail Expander aktivieren

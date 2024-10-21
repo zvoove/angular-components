@@ -12,15 +12,15 @@ import { NgTemplateOutlet } from '@angular/common';
   imports: [NgTemplateOutlet],
 })
 export class ZvHeader {
-  @Input() public caption: string;
-  @Input() public description: string;
+  @Input() public caption: string | null = null;
+  @Input() public description: string | null = null;
 
   @ContentChild(ZvHeaderCaptionSection, { read: TemplateRef })
-  public captionSection: TemplateRef<unknown> | null;
+  public captionSection: TemplateRef<unknown> | null = null;
 
   @ContentChild(ZvHeaderDescriptionSection, { read: TemplateRef })
-  public descriptionSection: TemplateRef<unknown> | null;
+  public descriptionSection: TemplateRef<unknown> | null = null;
 
   @ContentChild(ZvHeaderTopButtonSection, { read: TemplateRef })
-  public topButtonSection: TemplateRef<unknown> | null;
+  public topButtonSection: TemplateRef<unknown> | null = null;
 }

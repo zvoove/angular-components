@@ -17,7 +17,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class ZvFormErrors implements OnChanges {
   @Input({ required: true }) public form!: FormGroup;
-  @Input() public includeControls: boolean = null;
+  @Input() public includeControls = false;
 
   public errors$!: Observable<IZvFormError[]>;
 

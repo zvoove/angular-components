@@ -18,6 +18,7 @@ describe('ZvNumberInput', () => {
 
   function triggerEvent(el: HTMLElement, type: string) {
     const e = document.createEvent('HTMLEvents');
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     e.initEvent(type, false, true);
     el.dispatchEvent(e);
   }

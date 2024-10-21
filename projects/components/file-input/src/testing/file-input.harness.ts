@@ -41,7 +41,9 @@ export class ZvFileInputHarness extends ContentContainerComponentHarness<ZvFileI
   /** Gets the placeholder of the input. */
   async getPlaceholder(): Promise<string> {
     const host = await this._input();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const [nativePlaceholder, fallback] = await parallel(() => [host.getProperty('placeholder'), host.getAttribute('data-placeholder')]);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return nativePlaceholder || fallback || '';
   }
 

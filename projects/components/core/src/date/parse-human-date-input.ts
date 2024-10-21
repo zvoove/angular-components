@@ -29,6 +29,7 @@ export const parseHumanDateInput = (
     return null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
   const stringValue = `${value}`.trim();
   const dateParserFuzzy = new RegExp(`^${dmyOrder.map((c) => fuzzyRegexMap[c]).join('')}$`);
   const match = stringValue.match(dateParserExact) || stringValue.match(dateParserFuzzy);

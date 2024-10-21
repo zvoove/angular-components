@@ -87,6 +87,7 @@ function createFakeDataSource(items: ZvSelectItem[] = []): ZvSelectDataSource {
   return {
     connect: () => of<ZvSelectItem[]>(items),
     disconnect: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
     selectedValuesChanged: (_: any | any[]) => {},
     panelOpenChanged: (_: boolean) => {},
     searchTextChanged: (_: string) => {},
@@ -261,7 +262,7 @@ async function initTest<T>(
   await TestBed.configureTestingModule({
     imports: [NoopAnimationsModule, type],
     providers: [provideSelectService(TestZvSelectService), provideFormService(TestZvFormsService)],
-  });
+  }).compileComponents();
   const fixture = TestBed.createComponent(type);
   const component = fixture.componentInstance;
   expect(component).toBeDefined();
@@ -283,8 +284,8 @@ describe('ZvSelect', () => {
     expect(component.showToggleAll).toBe(true);
     expect(component.multiple).toBe(false);
     expect(component.errorStateMatcher).toBe(undefined);
-    expect(component.panelClass).toBe(null);
-    expect(component.placeholder).toBe(null);
+    expect(component.panelClass).toBe('');
+    expect(component.placeholder).toBe('');
     expect(component.required).toBe(false);
     expect(component.disabled).toBe(false);
     expect(component.focused).toBe(false);
@@ -379,7 +380,7 @@ describe('ZvSelect', () => {
     expect(component.disabled).toBe(true);
   });
 
-  it("should not switch dataSource when dataSource input doesn't change", async () => {
+  it("should not switch dataSource when dataSource input doesn't change", () => {
     const { component, service } = createZvSelect();
     const items = [{ value: 1, label: 'i1', hidden: false }];
     const ds = createFakeDataSource(items);
@@ -399,7 +400,7 @@ describe('ZvSelect', () => {
     expect(component.dataSource).toBe(ds);
   });
 
-  it("should switch dataSource to provided dataSource, if service doesn't exist", async () => {
+  it("should switch dataSource to provided dataSource, if service doesn't exist", () => {
     const { component, service } = createZvSelect({ service: null });
     expect(service).toBeNull();
     component.ngOnInit();

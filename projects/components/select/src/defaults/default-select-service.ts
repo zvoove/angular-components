@@ -12,6 +12,7 @@ export declare type ZvSelectData<T = any> = T[] | Observable<T[]> | ZvSelectData
 export class DefaultZvSelectService extends ZvSelectService {
   public createDataSource<T>(dataSource: ZvSelectData<T>, _: AbstractControl | null): ZvSelectDataSource<T> {
     if (isZvSelectDataSource(dataSource)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return dataSource;
     }
 
@@ -19,7 +20,9 @@ export class DefaultZvSelectService extends ZvSelectService {
     if (Array.isArray(dataSource) || isObservable(dataSource)) {
       options = {
         mode: 'id',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         labelKey: 'label' as any,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         idKey: 'value' as any,
         items: dataSource,
       };

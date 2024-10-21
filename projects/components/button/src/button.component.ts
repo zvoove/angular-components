@@ -15,13 +15,13 @@ import { ZvButtonColors, ZvButtonTypes } from '@zvoove/components/core';
 })
 export class ZvButton implements OnDestroy {
   type = input<ZvButtonTypes>('default');
-  color = input<ZvButtonColors | null>(null);
-  icon = input<string | null>(null);
-  dataCy = input<string | null>(null);
+  color = input<ZvButtonColors | null | undefined>(null);
+  icon = input<string | null | undefined>(null);
+  dataCy = input<string | null | undefined>(null);
   disabled = input<boolean>(false);
   click = output();
 
-  constructor(private elementRef: ElementRef) {
+  constructor(private elementRef: ElementRef<HTMLElement>) {
     this.elementRef.nativeElement.addEventListener('click', this.captureClick, true);
   }
 
@@ -29,7 +29,7 @@ export class ZvButton implements OnDestroy {
     this.elementRef.nativeElement.removeEventListener('click', this.captureClick, true);
   }
 
-  private captureClick = (event: PointerEvent) => {
+  private captureClick = (event: MouseEvent) => {
     if (this.disabled()) {
       event.stopPropagation();
       event.preventDefault();

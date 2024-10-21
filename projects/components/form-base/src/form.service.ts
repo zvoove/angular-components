@@ -66,6 +66,7 @@ export abstract class BaseZvFormService extends ZvFormService {
   }
 
   private createUpdateTrigger(control: AbstractControl): Observable<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return merge(control.valueChanges, control.statusChanges).pipe(startWith(null), debounceTime(this.options.debounceTime));
   }
 

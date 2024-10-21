@@ -34,9 +34,10 @@ export abstract class ZvSelectDataSource<T = any> {
 }
 
 /** Checks whether an object is a data source. */
-export function isZvSelectDataSource(value: any): value is ZvSelectDataSource<any> {
+export function isZvSelectDataSource(value: any): value is ZvSelectDataSource<unknown> {
   // Check if the value is a ZvSelectDataSource by observing if it has a connect function. Cannot
   // be checked as an `instanceof ZvSelectDataSource` since people could create their own sources
   // that match the interface, but don't extend ZvSelectDataSource.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   return value && typeof value.connect === 'function';
 }

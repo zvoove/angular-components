@@ -8,6 +8,7 @@ const currentYear = new Date().getFullYear();
 
 @Injectable({ providedIn: 'root' })
 export class ZvNativeDateAdapter extends NativeDateAdapter implements ZvDateAdapter<Date> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   private _dmyOrder = detectDmyOrder(this.locale);
 
   constructor(@Inject(LOCALE_ID) _locale: string) {
@@ -15,6 +16,7 @@ export class ZvNativeDateAdapter extends NativeDateAdapter implements ZvDateAdap
   }
 
   public override getFirstDayOfWeek(): number {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-deprecated
     return getLocaleFirstDayOfWeek(this.locale);
   }
 
@@ -32,6 +34,7 @@ export class ZvNativeDateAdapter extends NativeDateAdapter implements ZvDateAdap
   }
 
   public parseFormatExample(): string {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const formattedDate = new Intl.DateTimeFormat(this.locale).format(new Date(2222, 11, 15));
     return formattedDate.replace('2222', 'YYYY').replace('12', 'MM').replace('15', 'DD');
   }

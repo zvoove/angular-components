@@ -45,7 +45,11 @@ export interface ZvFormFieldConfig {
 
 export const ZV_FORM_FIELD_CONFIG = new InjectionToken<ZvFormFieldConfig>('ZV_FORM_FIELD_CONFIG');
 
-function applyConfigDefaults(config: ZvFormFieldConfig): ZvFormFieldConfig {
+function applyConfigDefaults(config: ZvFormFieldConfig | null): {
+  subscriptType: ZvFormFieldSubscriptType;
+  hintToggle: boolean;
+  requiredText: string | null;
+} {
   return {
     hintToggle: config?.hintToggle ?? false,
     subscriptType: config?.subscriptType ?? 'resize',
@@ -69,31 +73,32 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
   private matDefaults = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
 
   @Input() public createLabel = true;
-  @Input() public hint: string = null;
+  @Input() public hint = '';
   @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
-  @Input() public subscriptType: ZvFormFieldSubscriptType = this.defaults ? this.defaults.subscriptType : 'resize';
+  @Input() public subscriptType: ZvFormFieldSubscriptType = (this.defaults ? this.defaults.subscriptType : null) ?? 'resize';
   @Input() public hintToggle: boolean | null = null;
 
-  @ViewChild(MatFormField, { static: true }) public _matFormField: MatFormField;
+  @ViewChild(MatFormField, { static: true }) public _matFormField!: MatFormField;
 
   /** We can get the FromControl from this */
-  @ContentChild(NgControl) public _ngControl: NgControl | null;
+  @ContentChild(NgControl) public _ngControl: NgControl | null = null;
 
   /** The MatFormFieldControl or null, if it is no MatFormFieldControl */
-  @ContentChild(MatFormFieldControl) public _control: MatFormFieldControl<unknown> | null;
+  @ContentChild(MatFormFieldControl) public _control: MatFormFieldControl<unknown> | null = null;
 
   /** The MatLabel, if it is set or null */
   @ContentChild(MatLabel) public set labelChild(value: MatLabel) {
     this._labelChild = value;
     this.updateLabel();
     if (this._matFormField) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       (this._matFormField as any)._changeDetectorRef.markForCheck();
     }
   }
-  public _labelChild: MatLabel;
+  public _labelChild: MatLabel | null = null;
 
-  @ContentChildren(MatPrefix) public _prefixChildren: QueryList<MatPrefix>;
-  @ContentChildren(MatSuffix) public _suffixChildren: QueryList<MatSuffix>;
+  @ContentChildren(MatPrefix) public _prefixChildren!: QueryList<MatPrefix>;
+  @ContentChildren(MatSuffix) public _suffixChildren!: QueryList<MatSuffix>;
 
   @HostBinding('class.zv-form-field--subscript-resize') public get autoResizeHintError() {
     return this.subscriptType === 'resize';
@@ -116,7 +121,7 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
     const hintShouldBeShown = this.showHint || !this.hintToggleOptionActive;
 
     if (!hintShouldBeShown) {
-      return null;
+      return '';
     }
 
     const isRequired = this._control?.required;
@@ -138,20 +143,20 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
   /** Hide the underline for the control */
   public noUnderline = false;
   public showHint = false;
-  public calculatedLabel: string = null;
+  public calculatedLabel: string | null = null;
 
-  private formControl: FormControl;
+  private formControl: FormControl | null = null;
 
   /** Either the MatFormFieldControl or a DummyMatFormFieldControl */
-  private matFormFieldControl: MatFormFieldControl<unknown>;
+  private matFormFieldControl!: MatFormFieldControl<unknown>;
 
   /** The real control instance (MatSlider, MatSelect, MatCheckbox, ...) */
-  private realFormControl: { noUnderline?: boolean; shouldLabelFloat?: boolean };
+  private realFormControl!: { noUnderline?: boolean; shouldLabelFloat?: boolean };
 
   /** The control type. Most of the time this is the same as the selector */
-  private controlType: string;
+  private controlType!: string;
 
-  private labelTextSubscription: Subscription;
+  private labelTextSubscription!: Subscription;
 
   private initialized = false;
 
@@ -180,11 +185,14 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
     this._matFormField._control = this.matFormFieldControl;
     this.emulated = this.matFormFieldControl instanceof DummyMatFormFieldControl;
     // This tells the mat-input that it is inside a mat-form-field
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if ((this.matFormFieldControl as any)._isInFormField !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (this.matFormFieldControl as any)._isInFormField = true;
     }
     this.realFormControl = getRealFormControl(this._ngControl, this.matFormFieldControl);
     this.controlType = this.formsService.getControlType(this.realFormControl) || 'unknown';
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     this._elementRef.nativeElement.classList.add(`zv-form-field-type-${this.controlType}`);
 
     this.noUnderline = this.emulated || !!this.realFormControl.noUnderline;
@@ -194,6 +202,7 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
 
     if (this.formControl) {
       if (this.formsService.tryDetectRequired) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (this.matFormFieldControl as any).required = hasRequiredField(this.formControl);
       }
 
@@ -237,11 +246,16 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
     }
     this.labelTextSubscription = labelText$.subscribe((label) => {
       if (this.controlType.startsWith('mat-mdc-checkbox')) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         const labelNode = this._elementRef.nativeElement.querySelectorAll('label')[0];
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         if (!labelNode.innerText.trim()) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (labelNode.childNodes.length === 1) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             labelNode.childNodes.nodeValue = label;
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             labelNode.appendChild(document.createTextNode(label));
           }
         }
@@ -251,14 +265,18 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
 
       // when only our own component is marked for check, then the label will not be shown
       // when labelText$ didn't run synchronously
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       (this._matFormField as any)._changeDetectorRef.markForCheck();
     });
   }
 }
 
-function getRealFormControl(ngControl: NgControl, matFormFieldControl: MatFormFieldControl<unknown>): unknown {
+function getRealFormControl(
+  ngControl: NgControl | null,
+  matFormFieldControl: MatFormFieldControl<unknown>
+): { noUnderline?: boolean; shouldLabelFloat?: boolean } {
   if (!(matFormFieldControl instanceof DummyMatFormFieldControl) || !ngControl) {
     return matFormFieldControl;
   }
-  return ngControl.valueAccessor;
+  return ngControl.valueAccessor as unknown as { noUnderline?: boolean; shouldLabelFloat?: boolean };
 }

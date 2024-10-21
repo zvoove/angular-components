@@ -18,7 +18,7 @@ import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
   imports: [MatDialogTitle, CdkScrollable, MatDialogContent, ZvBlockUi, MatDialogActions, MatProgressBar, ZvButton, ZvErrorMessagePipe],
 })
 export class ZvDialogWrapper implements OnDestroy {
-  public get dialogTitle(): string {
+  public get dialogTitle(): string | null {
     return this.dataSource.dialogTitle;
   }
   public get buttons(): IZvButton[] {
@@ -56,7 +56,7 @@ export class ZvDialogWrapper implements OnDestroy {
   public get dataSource(): IZvDialogWrapperDataSource {
     return this._dataSource;
   }
-  private _dataSource: IZvDialogWrapperDataSource;
+  private _dataSource!: IZvDialogWrapperDataSource;
 
   private _dataSourceSubscription = Subscription.EMPTY;
   constructor(private cd: ChangeDetectorRef) {}

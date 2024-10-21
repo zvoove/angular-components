@@ -16,13 +16,14 @@ import { IZvTableSort, IZvTableSortDefinition } from '../models';
   imports: [MatFormField, MatLabel, MatSelect, MatOption, MatMiniFabButton, MatIcon],
 })
 export class ZvTableSortComponent {
-  public sortColumn = model.required<string>();
-  public sortDirection = model.required<'asc' | 'desc'>();
+  public sortColumn = model.required<string | null>();
+  public sortDirection = model.required<'asc' | 'desc' | null>();
   public sortDefinitions = input<IZvTableSortDefinition[]>([]);
   public readonly sortChanged = output<IZvTableSort>();
 
   public onSortColumnChange(event: MatSelectChange) {
     if (this.sortColumn() !== event.value) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.sortColumn.set(event.value);
       this.emitChange();
     }

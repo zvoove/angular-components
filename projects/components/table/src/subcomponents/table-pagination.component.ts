@@ -21,7 +21,7 @@ export class ZvTablePaginationComponent implements OnDestroy {
   public dataLength = input.required<number>();
   public pageIndex = input.required<number>();
   public pageSizeOptions = input.required<number[]>();
-  public pageDebounce = input.required<number>();
+  public pageDebounce = input.required<number | null>();
 
   public readonly page = output<PageEvent>();
 
@@ -35,7 +35,7 @@ export class ZvTablePaginationComponent implements OnDestroy {
   constructor() {
     this._onPage$
       .pipe(
-        debounce(() => (this.pageDebounce() == null ? of(null) : timer(this.pageDebounce()))),
+        debounce(() => (this.pageDebounce() == null ? of(null) : timer(this.pageDebounce()!))),
         takeUntilDestroyed()
       )
       .subscribe((pageEvent) => this.page.emit(pageEvent));

@@ -8,7 +8,7 @@ https://github.com/angular/components/issues/16457
       @for (action of actions(); track action) {
         @switch (action | zvTableActionType) {
           @case ('button') {
-            <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items())" (click)="action.actionFn(items())">
+            <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items())" (click)="action.actionFn!(items())">
               @if (showIcon()) {
                 <ng-container
                   ngProjectAs="mat-icon"
@@ -20,7 +20,7 @@ https://github.com/angular/components/issues/16457
             </button>
           }
           @case ('link') {
-            <a mat-menu-item [routerLink]="action.routerLink(items()).path" [queryParams]="action.routerLink(items()).queryParams">
+            <a mat-menu-item [routerLink]="action.routerLink!(items()).path" [queryParams]="action.routerLink!(items()).queryParams">
               @if (showIcon()) {
                 <ng-container
                   ngProjectAs="mat-icon"
@@ -44,7 +44,7 @@ https://github.com/angular/components/issues/16457
             </button>
             <zv-table-actions
               #innerPanel
-              [actions]="action.children | zvTableActionsToRender: items()"
+              [actions]="action.children! | zvTableActionsToRender: items()"
               [items]="items()"
               [root]="false"
             ></zv-table-actions>

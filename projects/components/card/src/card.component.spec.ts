@@ -65,7 +65,7 @@ describe('ZvCard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TestDataSourceComponent, MatButtonModule],
-    });
+    }).compileComponents();
     fixture = TestBed.createComponent(TestDataSourceComponent);
     component = fixture.componentInstance;
 

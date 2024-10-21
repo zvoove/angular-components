@@ -31,7 +31,7 @@ export class ZvView implements OnDestroy {
   public get dataSource(): IZvViewDataSource {
     return this._dataSource;
   }
-  private _dataSource: IZvViewDataSource;
+  private _dataSource!: IZvViewDataSource;
 
   public get contentVisible(): boolean {
     return this.dataSource.contentVisible;

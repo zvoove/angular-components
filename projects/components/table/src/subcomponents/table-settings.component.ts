@@ -56,18 +56,18 @@ import { ZvTableSortComponent } from './table-sort.component';
   ],
 })
 export class ZvTableSettingsComponent implements OnInit {
-  @Input() public tableId: string;
+  @Input() public tableId!: string;
   @Input() public columnDefinitions: ZvTableColumn[] = [];
   @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
-  @Input() public pageSizeOptions: number[];
+  @Input() public pageSizeOptions!: number[];
   @Input() public customSettings: TemplateRef<any> | null = null;
 
   @Output() public readonly settingsSaved = new EventEmitter<void>();
   @Output() public readonly settingsAborted = new EventEmitter<void>();
 
-  public settings$: Observable<IZvTableSetting>;
+  public settings$!: Observable<IZvTableSetting>;
 
-  private _settingSaveSub: Subscription;
+  private _settingSaveSub!: Subscription;
 
   constructor(public settingsService: ZvTableSettingsService) {}
 

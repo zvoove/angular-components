@@ -7,6 +7,7 @@ export const parseHumanTimeInput = (value: unknown): [number, number] | typeof N
     return null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
   const stringValue = `${value}`.trim();
   const match = stringValue.match(dateParserExact) || stringValue.match(dateParserFuzzy3to4) || stringValue.match(dateParserFuzzy2);
   if (!match || (match[1] === '' && match[2] === '')) {

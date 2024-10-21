@@ -75,7 +75,7 @@ export const ZV_TIME_VALIDATORS: any = {
 })
 export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, OnChanges, OnDestroy, Validator {
   /** Whether the component has been initialized. */
-  private _isInitialized: boolean;
+  private _isInitialized = false;
 
   /** The value of the input. */
   @Input()
@@ -83,9 +83,10 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
     return this._value;
   }
   set value(value: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this._assignValueProgrammatically(value);
   }
-  protected _value: TTime | null | undefined;
+  protected _value: TTime | null = null;
 
   /** Whether the input is disabled. */
   @Input()
@@ -112,7 +113,7 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
       element.blur();
     }
   }
-  private _disabled: boolean;
+  private _disabled = false;
 
   /** Emits when a `change` event is fired on this `<input>`. */
   @Output() readonly timeChange: EventEmitter<ZvTimeInputEvent<TTime>> = new EventEmitter<ZvTimeInputEvent<TTime>>();
@@ -243,7 +244,8 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
 
   /** Formats a value and sets it on the input element. */
   protected _formatValue(value: TTime | null) {
-    this._elementRef.nativeElement.value = value != null ? this._timeAdapter.format(value, this._timeFormats.display.timeInput) : '';
+    this._elementRef.nativeElement.value =
+      value != null ? (this._timeAdapter.format(value, this._timeFormats.display.timeInput) ?? '') : '';
   }
 
   /** Assigns a value to the model. */
@@ -274,6 +276,7 @@ export function timeInputsHaveChanged(changes: SimpleChanges, adapter: ZvTimeAda
   const keys = Object.keys(changes);
 
   for (const key of keys) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { previousValue, currentValue } = changes[key];
 
     if (adapter.isTimeInstance(previousValue) && adapter.isTimeInstance(currentValue)) {

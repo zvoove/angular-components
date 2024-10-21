@@ -21,7 +21,7 @@ describe(injectDestroy.name, () => {
     let component: TestComponent;
     let fixture: ComponentFixture<TestComponent>;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       fixture = TestBed.createComponent(TestComponent);
       component = fixture.componentInstance;
     });

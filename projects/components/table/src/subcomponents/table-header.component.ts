@@ -23,19 +23,19 @@ import { ZvTableSortComponent } from './table-sort.component';
   imports: [NgTemplateOutlet, ZvTableSortComponent, ZvTableSearchComponent],
 })
 export class ZvTableHeaderComponent {
-  @Input() public caption: string;
-  @Input() public topButtonSection: TemplateRef<any> | null;
-  @Input() public customHeader: TemplateRef<any> | null;
-  @Input() public selectedRows: any[];
-  @Input() public showSorting: boolean;
-  @Input() public sortColumn: string;
-  @Input() public sortDirection: 'asc' | 'desc';
+  @Input() public caption!: string;
+  @Input() public topButtonSection!: TemplateRef<any> | null;
+  @Input() public customHeader!: TemplateRef<any> | null;
+  @Input() public selectedRows!: any[];
+  @Input() public showSorting!: boolean;
+  @Input() public sortColumn!: string | null;
+  @Input() public sortDirection!: 'asc' | 'desc';
   @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
-  @Input() public filterable: boolean;
-  @Input() public searchText: string;
+  @Input() public filterable!: boolean;
+  @Input() public searchText!: string;
 
   @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
-  @Output() public readonly searchChanged = new EventEmitter<string>();
+  @Output() public readonly searchChanged = new EventEmitter<string | null>();
 
   @HostBinding('style.padding-top') public get paddingTop() {
     return !this.caption && (this.showSorting || this.filterable || this.topButtonSection) ? '1em' : '0';

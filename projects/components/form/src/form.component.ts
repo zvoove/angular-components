@@ -55,7 +55,7 @@ export class ZvForm implements AfterViewInit, OnDestroy {
   public get dataSource(): IZvFormDataSource {
     return this._dataSource;
   }
-  private _dataSource: IZvFormDataSource;
+  private _dataSource!: IZvFormDataSource;
 
   public get autocomplete() {
     return this.dataSource.autocomplete;
@@ -104,10 +104,10 @@ export class ZvForm implements AfterViewInit, OnDestroy {
     return this.dataSource.exception;
   }
 
-  @ViewChild('errorCardWrapper') public errorCardWrapper: ElementRef | null;
+  @ViewChild('errorCardWrapper') public errorCardWrapper: ElementRef | null = null;
 
   private _dataSourceSub = Subscription.EMPTY;
-  private _errorCardObserver: IntersectionObserver;
+  private _errorCardObserver: IntersectionObserver | null = null;
   private _viewReady = false;
   private _errrorInView$ = new BehaviorSubject<boolean>(false);
   private isServer = isPlatformServer(inject(PLATFORM_ID));
@@ -142,7 +142,8 @@ export class ZvForm implements AfterViewInit, OnDestroy {
     const options = {
       errorInView$: this._errrorInView$.pipe(distinctUntilChanged()),
       scrollToError: () => {
-        this.errorCardWrapper.nativeElement.scrollIntoView({ behavior: 'smooth' });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        this.errorCardWrapper?.nativeElement.scrollIntoView({ behavior: 'smooth' });
       },
     } as IZvFormDataSourceConnectOptions;
 
@@ -169,7 +170,8 @@ export class ZvForm implements AfterViewInit, OnDestroy {
         this.cd.markForCheck();
       }, options);
 
-      this._errorCardObserver.observe(this.errorCardWrapper.nativeElement);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      this._errorCardObserver.observe(this.errorCardWrapper?.nativeElement);
     } else if (this._errorCardObserver && !this._dataSource) {
       this._errorCardObserver.disconnect();
       this._errorCardObserver = null;

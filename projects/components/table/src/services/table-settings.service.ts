@@ -3,8 +3,8 @@ import { EMPTY, Observable, of } from 'rxjs';
 
 export interface IZvTableSetting {
   columnBlacklist: string[];
-  sortColumn: string;
-  sortDirection: 'asc' | 'desc';
+  sortColumn: string | null;
+  sortDirection: 'asc' | 'desc' | null;
   pageSize: number;
 }
 

@@ -5,7 +5,7 @@ export function asQueryParams(settings: IZvTableUpdateDataInfo): string {
   return [settings.pageSize, settings.currentPage, settings.searchText, settings.sortColumn, settings.sortDirection].join('◬');
 }
 
-export function fromQueryParams(settingsString: string): IZvTableUpdateDataInfo {
+export function fromQueryParams(settingsString: string): IZvTableUpdateDataInfo | null {
   if (!settingsString) {
     return null;
   }
@@ -24,7 +24,7 @@ export function fromQueryParams(settingsString: string): IZvTableUpdateDataInfo 
   };
 }
 
-function coerceSortDirectionProperty(input: unknown, fallback: 'asc' | 'desc' | null): 'asc' | 'desc' | null {
+function coerceSortDirectionProperty(input: string, fallback: 'asc' | 'desc' | null): 'asc' | 'desc' | null {
   const inputStr = (input + '').toLowerCase();
   if (inputStr === 'asc' || inputStr === 'desc') {
     return inputStr;
@@ -37,9 +37,9 @@ function coerceSortDirectionProperty(input: unknown, fallback: 'asc' | 'desc' | 
  *
  * @docs-private
  */
-export function _isNumberValue(value: any): boolean {
+export function _isNumberValue(value: unknown): boolean {
   // parseFloat(value) handles most of the cases we're interested in (it treats null, empty string,
   // and other non-number values as NaN, where Number just uses 0) but it considers the string
   // '123hello' to be a valid number. Therefore we also check if Number(value) is NaN.
-  return !isNaN(parseFloat(value as any)) && !isNaN(Number(value));
+  return !isNaN(parseFloat(value as string)) && !isNaN(Number(value));
 }

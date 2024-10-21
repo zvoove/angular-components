@@ -70,7 +70,7 @@ export class ZvTableRowActionsComponent<T> {
       return;
     }
 
-    const openMenuFnResult = this.openMenuFn()(this.item(), [...this.actions()]);
+    const openMenuFnResult = this.openMenuFn()!(this.item(), [...this.actions()]);
 
     if (isObservable(openMenuFnResult)) {
       this.loading.set(true);
@@ -82,7 +82,7 @@ export class ZvTableRowActionsComponent<T> {
           takeUntilDestroyed(this._destroyRef)
         )
         .subscribe((newActions) => {
-          this.loadedActions.set(newActions);
+          this.loadedActions.set(newActions as IZvTableAction<T>[]);
         });
     } else if (openMenuFnResult && Array.isArray(openMenuFnResult)) {
       this.loadedActions.set(openMenuFnResult);

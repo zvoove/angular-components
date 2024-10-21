@@ -6,7 +6,7 @@ import { startWith } from 'rxjs/operators';
 
 @Injectable()
 export class DummyMatFormFieldControl implements MatFormFieldControl<string>, OnDestroy {
-  public id: string;
+  public id = '';
   public userAriaDescribedBy?: string;
 
   public get required() {
@@ -45,7 +45,7 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
   }
 
   public stateChanges = new Subject<void>();
-  public placeholder: string;
+  public placeholder = '';
   public focused = false;
   public errorState = false;
   public controlType = 'zv-dummy';
@@ -55,15 +55,16 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
   private _value: string | null = null;
   private _required = false;
   private _disabled = false;
-  private _valueSubscription: Subscription;
-  private _statusSubscription: Subscription;
+  private _valueSubscription: Subscription | null = null;
+  private _statusSubscription: Subscription | null = null;
 
   constructor(
-    public ngControl: NgControl,
-    formControl: AbstractControl
+    public ngControl: NgControl | null,
+    formControl: AbstractControl | null
   ) {
     if (formControl) {
       this._valueSubscription = formControl.valueChanges.pipe(startWith(formControl.value)).subscribe((value) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         this.value = value;
         this.errorState = formControl.invalid;
       });

@@ -2,7 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
-    "types": ["jasmine", "node"]
+    "types": ["jasmine", "node"],
+
+    // To much errors for now, but we should enable this in the future.
+    "strictNullChecks": false
   },
   "files": ["test.ts", "polyfills-test.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]

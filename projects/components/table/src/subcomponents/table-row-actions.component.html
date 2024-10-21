@@ -1,5 +1,5 @@
 @if (combinedActions() | zvTableActionsToRender: item(); as visibleActions) {
-  @if (visibleActions.length >= moreMenuThreshold() || openMenuFn()) {
+  @if (visibleActions.length >= (moreMenuThreshold() ?? 2) || openMenuFn()) {
     <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu()" (click)="onMenuButtonClicked()">
       <mat-icon>more_vert</mat-icon>
     </button>
@@ -12,7 +12,7 @@
             type="button"
             mat-icon-button
             [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray())"
-            (click)="action.actionFn(itemAsArray())"
+            (click)="action.actionFn!(itemAsArray())"
             [matTooltip]="action.label"
           >
             <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
@@ -21,8 +21,8 @@
         @case ('link') {
           <a
             mat-menu-item
-            [routerLink]="action.routerLink(itemAsArray()).path"
-            [queryParams]="action.routerLink(itemAsArray()).queryParams"
+            [routerLink]="action.routerLink!(itemAsArray()).path"
+            [queryParams]="action.routerLink!(itemAsArray()).queryParams"
           >
             <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
             {{ action.label }}
@@ -41,7 +41,7 @@
               <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
             </button>
           }
-          <zv-table-actions #iconActions [actions]="action.children" [items]="itemAsArray()" [root]="false"></zv-table-actions>
+          <zv-table-actions #iconActions [actions]="action.children!" [items]="itemAsArray()" [root]="false"></zv-table-actions>
         }
       }
     }

@@ -3,5 +3,5 @@ zv-iframe autoheight funktioniert nur, wenn das iframe beim Initialisieren sicht
 Deshalb sorgen wir hier mit ngIf dafür, das es erst beim Aufklappen initialisiert wird.
 -->
 @if (renderContent()) {
-  <ng-template [ngTemplateOutlet]="rowDetail().template" [ngTemplateOutletContext]="{ $implicit: element() }"> </ng-template>
+  <ng-template [ngTemplateOutlet]="rowDetail()!.template" [ngTemplateOutletContext]="{ $implicit: element() }"> </ng-template>
 }

@@ -34,8 +34,8 @@ export class ZvFlipContainer implements AfterViewInit {
   @ContentChild(FlipContainerBack, { read: TemplateRef })
   public _backTemplate: TemplateRef<unknown> | null = null;
 
-  @ViewChild('frontside', { static: true }) public _frontside: ElementRef<HTMLDivElement>;
-  @ViewChild('backside', { static: true }) public _backside: ElementRef<HTMLDivElement>;
+  @ViewChild('frontside', { static: true }) public _frontside!: ElementRef<HTMLDivElement>;
+  @ViewChild('backside', { static: true }) public _backside!: ElementRef<HTMLDivElement>;
 
   public get _activeState(): string {
     return this.animation + '_' + this.active;
@@ -64,6 +64,7 @@ export class ZvFlipContainer implements AfterViewInit {
       this._active = show;
       this.cd.markForCheck();
       this._flipStart();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       clearTimeout(this._timerRef);
       this._timerRef = setTimeout(() => {
         this._flipDone();

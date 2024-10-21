@@ -67,13 +67,13 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
   public error: any = null;
 
   /** The locale for the table texts. */
-  public locale: string;
+  public locale!: string;
 
   /** The length of the total number of items that are being paginated. Defaulted to 0. */
   public dataLength = 0;
 
   /** The name of the column, after which the rows should be sorted. Defaulted to asc. */
-  public sortColumn: string = null;
+  public sortColumn: string | null = null;
 
   /** The sort direction. Defaulted to asc. */
   public sortDirection: 'asc' | 'desc' = 'asc';
@@ -127,7 +127,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
   /** Indicates if the data source currently holds data provided by the _loadData function. */
   private _hasData = false;
 
-  private _lastLoadTriggerData: TTrigger = null;
+  private _lastLoadTriggerData: TTrigger = null!;
 
   /**
    * Subscription to the result of the loadData function.
@@ -159,8 +159,8 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
     this.listActions = options.actions?.filter((a) => a.scope & ZvTableActionScope.list) || [];
     this._updateDataTrigger$ = options.loadTrigger$ || NEVER;
     this._loadData = options.loadDataFn;
-    this.loadRowActionFn = options.loadRowActionFn;
-    this.openMenuRowActionFn = options.openRowMenuActionFn;
+    this.loadRowActionFn = options.loadRowActionFn!;
+    this.openMenuRowActionFn = options.openRowMenuActionFn!;
     this.moreMenuThreshold = options.moreMenuThreshold ?? 3;
   }
 
@@ -178,7 +178,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * @param row Data object for which the property names should be returned.
    * @returns The names of the properties to use in the filter.
    */
-  public filterProperties(row: Record<string, any>): string[] {
+  public filterProperties(row: Record<string, unknown>): string[] {
     return Object.keys(row);
   }
 
@@ -188,7 +188,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * @param row Data object used to check against the filter.
    * @returns The values to use in the filter.
    */
-  public filterValues = (row: Record<string, any>): any[] => this.filterProperties(row).map((key) => row[key]);
+  public filterValues = (row: Record<string, unknown>): unknown[] => this.filterProperties(row).map((key) => row[key]);
 
   /**
    * Checks if a data object matches the data source's filter string. By default, each data object
@@ -201,10 +201,10 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * @param filter Filter string that has been set on the data source.
    * @returns Whether the filter matches against the data
    */
-  public filterPredicate = (row: Record<string, any>, filter: string) => {
+  public filterPredicate = (row: Record<string, unknown>, filter: string) => {
     // Transform the data into a lowercase string of all property values.
     const dataStr = this.filterValues(row)
-      .map((value) => (value instanceof Date ? value.toLocaleString(this.locale) : value + '').toLowerCase())
+      .map((value) => (value instanceof Date ? value.toLocaleString(this.locale) : (value as any) + '').toLowerCase())
       // Use an obscure Unicode character to delimit the words in the concatenated string.
       // This avoids matches where the values of two columns combined will match the user's query
       // (e.g. `Flute` and `Stop` will match `Test`). The character is intended to be something
@@ -228,8 +228,8 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
    * @param data Data object that is being accessed.
    * @param columnName The name of the column that represents the data.
    */
-  public sortingDataAccessor = (data: T, columnName: string): any => {
-    const value = (data as Record<string, any>)[columnName];
+  public sortingDataAccessor = (data: T, columnName: string): unknown => {
+    const value = (data as Record<string, unknown>)[columnName];
 
     if (_isNumberValue(value)) {
       const numberValue = Number(value);
@@ -260,8 +260,10 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
     }
 
     return data.sort((a: T, b: T) => {
-      let valueA = this.sortingDataAccessor(a, sortProp);
-      let valueB = this.sortingDataAccessor(b, sortProp);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      let valueA = this.sortingDataAccessor(a, sortProp) as any;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      let valueB = this.sortingDataAccessor(b, sortProp) as any;
 
       // If both valueA and valueB exist (truthy), then compare the two. Otherwise, check if
       // one value exists while the other doesn't. In this case, existing value should come first.
@@ -270,13 +272,13 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
       let comparatorResult = 0;
       if (valueA != null && valueB != null) {
         if (valueA instanceof Date || valueB instanceof Date) {
-          valueA = new Date(valueA).toISOString();
-          valueB = new Date(valueB).toISOString();
+          valueA = new Date(valueA as unknown as string).toISOString();
+          valueB = new Date(valueB as unknown as string).toISOString();
         }
 
         const propertyType = typeof valueA;
         if (propertyType === 'string') {
-          comparatorResult = valueA.localeCompare(valueB);
+          comparatorResult = (valueA as string).localeCompare(valueB as string);
         }
         // Check if one value is greater than the other; if equal, comparatorResult should remain 0.
         else if (valueA > valueB) {
@@ -333,7 +335,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
         .pipe(
           take(1),
           tap(() => (this._hasData = true)),
-          catchError((err: Error | any) => {
+          catchError((err: Error) => {
             this._hasData = false;
             this.error = err;
             return of([] as T[]);
@@ -388,6 +390,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
   public connect() {
     this._initDataChangeSubscription();
     this._updateDataTriggerSub = this._updateDataTrigger$.subscribe((data) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       this._lastLoadTriggerData = data;
       this.updateData();
     });
@@ -432,7 +435,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
     // If there is a filter string, filter out data that does not contain it.
     // Each data object is converted to a string using the function defined by filterTermAccessor.
     // May be overridden for customization.
-    const filteredData = !this.filter ? data : data.filter((obj) => this.filterPredicate(obj, this.filter));
+    const filteredData = !this.filter ? data : data.filter((obj) => this.filterPredicate(obj as Record<string, any>, this.filter));
 
     this.dataLength = filteredData.length;
 

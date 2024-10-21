@@ -59,16 +59,16 @@ let nextUniqueId = 0;
 })
 export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<number>, OnChanges, OnDestroy, OnInit, DoCheck {
   /** Mininum boundary value. */
-  @Input() min: number;
+  @Input() min: number | null = null;
 
   /** Maximum boundary value. */
-  @Input() max: number;
+  @Input() max: number | null = null;
 
   /** Index of the element in tabbing order. */
-  @Input() tabindex: number;
+  @Input() tabindex: number | null = null;
 
   /** Number of allowed decimal places. */
-  @Input() decimals: number;
+  @Input() decimals: number | null = null;
 
   /** Step factor to increment/decrement the value. */
   @Input()
@@ -80,7 +80,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
     if (this._stepSize != null) {
       const tokens = this.stepSize.toString().split(/[,]|[.]/);
-      this._calculatedDecimals = tokens[1] ? tokens[1].length : undefined;
+      this._calculatedDecimals = tokens[1] ? tokens[1].length : null;
     }
   }
   _stepSize = 1;
@@ -144,14 +144,14 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   set id(value: string) {
     this._id = value || this._uid;
   }
-  protected _id: string;
+  protected _id = '';
 
   /**
    * Implemented as part of MatFormFieldControl.
    *
    * @docs-private
    */
-  @Input() placeholder: string;
+  @Input() placeholder = '';
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -191,19 +191,19 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
    * @docs-private
    */
   @Input()
-  get value(): number {
+  get value(): number | null {
     return this._value;
   }
-  set value(value: number) {
+  set value(value: number | null) {
     if (value !== this.value) {
       this._value = value;
       this._formatValue();
       this.stateChanges.next();
     }
   }
-  _value: number = null;
+  _value: number | null = null;
 
-  @Output() public readonly valueChange = new EventEmitter<number>();
+  @Output() public readonly valueChange = new EventEmitter<number | null>();
 
   /** Whether the element is readonly. */
   @Input()
@@ -236,17 +236,17 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
   protected _uid = `zv-number-input-${nextUniqueId++}`;
   /** The aria-describedby attribute on the input for improved a11y. */
-  _ariaDescribedby: string;
+  _ariaDescribedby = '';
 
-  _formattedValue: string;
+  _formattedValue = '';
   _timer: any;
-  _decimalSeparator: string;
-  _thousandSeparator: string;
-  _calculatedDecimals: number;
+  _decimalSeparator!: string;
+  _thousandSeparator!: string;
+  _calculatedDecimals: number | null = null;
   _errorStateTracker: _ErrorStateTracker;
 
   @ViewChild('inputfield', { static: true })
-  _inputfieldViewChild: ElementRef<HTMLInputElement>;
+  _inputfieldViewChild!: ElementRef<HTMLInputElement>;
 
   _onModelChange = (_val: any) => {};
   _onModelTouched = () => {};
@@ -279,8 +279,8 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
     this.id = this.id;
 
     const intlParts = Intl.NumberFormat(this.localeId).formatToParts(1000.1);
-    this._decimalSeparator = intlParts.find((part) => part.type === 'decimal').value;
-    this._thousandSeparator = intlParts.find((part) => part.type === 'group').value;
+    this._decimalSeparator = intlParts.find((part) => part.type === 'decimal')!.value;
+    this._thousandSeparator = intlParts.find((part) => part.type === 'group')!.value;
   }
 
   ngOnChanges() {
@@ -332,6 +332,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   writeValue(value: any): void {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.value = value;
   }
 
@@ -347,7 +348,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
     this.disabled = val;
   }
 
-  _repeat(event: Event, interval: number, dir: number) {
+  _repeat(event: Event, interval: number | null, dir: number) {
     const i = interval || 500;
 
     this._clearTimer();
@@ -360,19 +361,20 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
   _clearTimer() {
     if (this._timer) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       clearInterval(this._timer);
     }
   }
 
   _spin(_event: Event, dir: number) {
     const step = this.stepSize * dir;
-    const newValue = this._fixNumber(this.value + step);
+    const newValue = this._fixNumber((this.value ?? 0) + step);
     this.value = newValue;
     this._onModelChange(newValue);
     this.valueChange.emit(newValue);
   }
 
-  _parseValue(val: string): number {
+  _parseValue(val: string): number | null {
     val = val.trim();
     if (val === '') {
       return null;
@@ -388,9 +390,10 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   _formatValue() {
     const value: any = this.value;
     if (value == null) {
-      this._formattedValue = null;
+      this._formattedValue = '';
     } else {
       const decimals = this._getDecimals();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       this._formattedValue = value.toLocaleString(this.localeId, { maximumFractionDigits: decimals });
     }
 
@@ -400,7 +403,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _getDecimals() {
-    return this.decimals === undefined ? this._calculatedDecimals : this.decimals;
+    return this.decimals === null ? this._calculatedDecimals : this.decimals;
   }
 
   _toFixed(value: number, decimals: number) {

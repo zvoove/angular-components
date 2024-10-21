@@ -114,7 +114,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   private _focused = false;
 
   @Input({ transform: booleanAttribute })
-  public disabled: boolean;
+  public disabled = false;
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -139,6 +139,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   /** Whether the component is required. */
   @Input()
   get required(): boolean {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     return this._required ?? this.ngControl?.control?.hasValidator(Validators.required) ?? false;
   }
   set required(value: BooleanInput) {
@@ -200,7 +201,9 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     );
 
     this._form.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const newValue = this.dateTimeAdapter.mergeDateTime(value.date, value.time);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this._assignValue(newValue, { assignForm: false, emitChange: true });
 
       // We need to markForCheck here, otherwise angular wouldn't recheck
@@ -216,8 +219,8 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     if (this.ngControl) {
       // Note: we provide the validator through here, instead of
       // the `providers` NG_VALIDATORS to avoid running into a circular import.
-      this.ngControl.control.addValidators(this.validate.bind(this));
-      this.ngControl.control.updateValueAndValidity();
+      this.ngControl.control!.addValidators(this.validate.bind(this));
+      this.ngControl.control!.updateValueAndValidity();
     }
   }
 
@@ -249,8 +252,8 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     this._ariaDescribedby = ids.join(' ');
   }
 
-  @ViewChild(MatDatepickerInput) public matDateInput: MatDatepickerInput<TDate>;
-  @ViewChild(ZvTimeInput) public zvTimeInput: ZvTimeInput<TTime>;
+  @ViewChild(MatDatepickerInput) public matDateInput!: MatDatepickerInput<TDate>;
+  @ViewChild(ZvTimeInput) public zvTimeInput!: ZvTimeInput<TTime>;
   _childValidators: ValidatorFn[] = [(control) => this.matDateInput?.validate(control), (control) => this.zvTimeInput?.validate(control)];
   validate(control: AbstractControl): Record<string, any> | null {
     const errors = this._childValidators.map((v) => v(control)).filter((error) => error);
@@ -261,6 +264,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
       return null;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return Object.assign({}, ...errors);
   }
 
@@ -277,6 +281,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   writeValue(value: any): void {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this._assignValue(value, { assignForm: true, emitChange: false });
   }
 
@@ -322,7 +327,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
 
   /** Handles a click on the control's container. */
   public onContainerClick(event: MouseEvent): void {
-    this._focus(event, null);
+    this._focus(event);
   }
 
   /** Focuses the date input element. */

@@ -42,7 +42,7 @@
                   [type]="btn.type"
                   [color]="btn.color"
                   [icon]="btn.icon"
-                  [disabled]="btn.disabled && btn.disabled()"
+                  [disabled]="(btn.disabled && btn.disabled()) ?? false"
                   [dataCy]="btn.dataCy"
                   (click)="btn.click()"
                 >

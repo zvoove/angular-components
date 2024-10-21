@@ -1,5 +1,6 @@
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, FormArray, ValidatorFn } from '@angular/forms';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class AutoFormArray<TControl extends AbstractControl<any> = any> extends FormArray<TControl> {
   /**
    * Creates a new `FormArray` instance.

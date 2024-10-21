@@ -75,7 +75,9 @@ export abstract class ZvTimeAdapter<TTime> {
     if (!value) {
       return null;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     if (this.isTimeInstance(value) && this.isValid(value)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return value;
     }
     if (typeof value === 'string') {

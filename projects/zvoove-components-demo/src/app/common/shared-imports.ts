@@ -3,7 +3,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
-import { ZvFormFieldModule } from '@zvoove/components/form-field';
 import { AppApiDocInput } from './api-doc/api-doc-input.component';
 import { AppApiDocMethod } from './api-doc/api-doc-method.component';
 import { AppApiDocOutput } from './api-doc/api-doc-output.component';
@@ -14,12 +13,13 @@ import { AppCodeComponent } from './code/code.component';
 import { ComponentPageContentDirective } from './component-page-wrapper/component-page-content.directive';
 import { AppComponentPageWrapper } from './component-page-wrapper/component-page-wrapper.component';
 import { FormControlDemoCard } from './form-control-card/form-control-demo-card.component';
+import { ZvFormField } from 'dist/components/form-field';
 
 export const materialImports = [MatCardModule, MatButtonModule, MatCheckboxModule, MatInputModule];
 
 export const componentPageImports = [AppComponentPageWrapper, ComponentPageContentDirective];
 
-export const formsImports = [FormsModule, ReactiveFormsModule, ZvFormFieldModule];
+export const formsImports = [FormsModule, ReactiveFormsModule, ZvFormField];
 
 export const formControlComponentPageImports = [...formsImports, ...componentPageImports, FormControlDemoCard];
 

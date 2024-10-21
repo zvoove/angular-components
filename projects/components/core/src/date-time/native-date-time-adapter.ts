@@ -12,7 +12,9 @@ export class ZvNativeDateTimeAdapter extends ZvDateTimeAdapter<Date, Date, Time>
       };
     }
     return {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       date: this.dateAdapter.createDate(date.getFullYear(), date.getMonth(), date.getDate()),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       time: this.timeAdapter.createTime(date.getHours(), date.getMinutes()),
     };
   }
@@ -22,6 +24,7 @@ export class ZvNativeDateTimeAdapter extends ZvDateTimeAdapter<Date, Date, Time>
       return null;
     }
     if (!this.dateAdapter.isValid(date) || (time != null && !this.timeAdapter.isValid(time))) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return this.dateAdapter.invalid();
     }
     const newValue = new Date(date.getFullYear(), date.getMonth(), date.getDate());

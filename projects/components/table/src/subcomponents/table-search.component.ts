@@ -16,12 +16,11 @@ import { debounceTime } from 'rxjs/operators';
   imports: [MatFormField, MatLabel, MatInput, MatIconButton, MatSuffix, MatIcon],
 })
 export class ZvTableSearchComponent implements OnInit, OnDestroy {
-  public searchText = model<string>();
-  public debounceTime = input<number>();
-  public readonly searchChanged = output<string>();
+  public searchText = model.required<string | null>();
+  public debounceTime = input.required<number>();
+  public readonly searchChanged = output<string | null>();
 
-  public currentSearchText = signal('');
-
+  public currentSearchText = signal<string | null>('');
   private _searchValueChanged$ = new Subject<void>();
 
   public ngOnInit() {
@@ -31,7 +30,7 @@ export class ZvTableSearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onSearch(key: string, value: string) {
+  public onSearch(key: string, value: string | null) {
     if (key.startsWith('Esc')) {
       this.searchText.set('');
       this.emitChange();

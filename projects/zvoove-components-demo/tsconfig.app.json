@@ -2,7 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/app",
-    "types": ["node"]
+    "types": ["node"],
+
+    // To much errors for now, but we should enable this in the future.
+    "strictNullChecks": false
   },
   "files": ["src/main.ts", "src/polyfills.ts", "src/main.server.ts", "server.ts"],
   "include": ["src/**/*.d.ts", "src/**/*.prod.ts"]

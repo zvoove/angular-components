@@ -6,7 +6,7 @@ import { asQueryParams, fromQueryParams } from './table.helper';
 
 export abstract class ZvTableStateManager {
   abstract remove(tableId: string): void;
-  abstract createStateSource(tableId: string): Observable<IZvTableUpdateDataInfo>;
+  abstract createStateSource(tableId: string): Observable<IZvTableUpdateDataInfo | null>;
   abstract requestUpdate(tableId: string, updateInfo: IZvTableUpdateDataInfo): void;
 }
 
@@ -27,7 +27,7 @@ export class ZvTableUrlStateManager extends ZvTableStateManager {
       }
     }
 
-    this.router.navigate([], {
+    void this.router.navigate([], {
       queryParams: newQueryParams,
       relativeTo: this.route,
     });
@@ -58,7 +58,7 @@ export class ZvTableUrlStateManager extends ZvTableStateManager {
       newQueryParams[tableId] = asQueryParams(updateInfo);
     }
 
-    this.router.navigate([], {
+    void this.router.navigate([], {
       queryParams: newQueryParams,
       relativeTo: this.route,
     });
@@ -66,7 +66,7 @@ export class ZvTableUrlStateManager extends ZvTableStateManager {
 }
 
 export class ZvTableMemoryStateManager extends ZvTableStateManager {
-  private settings$ = new BehaviorSubject<IZvTableUpdateDataInfo>(null);
+  private settings$ = new BehaviorSubject<IZvTableUpdateDataInfo | null>(null);
 
   public remove(_tableId: string) {
     this.settings$.next(null);

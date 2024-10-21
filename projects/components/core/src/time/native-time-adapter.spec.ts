@@ -25,6 +25,7 @@ describe('ZvNativeTimeAdapter', () => {
     adapter = timeAdapter;
 
     assertValidTime = (t: Time | null, valid: boolean) => {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       expect(adapter.isTimeInstance(t)).not.withContext(`Expected ${t} to be a time instance`).toBeNull();
       expect(adapter.isValid(t!))
         .withContext(`Expected ${JSON.stringify(t)} to be ${valid ? 'valid' : 'invalid'}, but ` + `was ${valid ? 'invalid' : 'valid'}`)

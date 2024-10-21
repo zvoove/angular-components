@@ -8,8 +8,8 @@ export interface IZvTableSortDefinition {
 }
 
 export interface IZvTableSort {
-  sortColumn: string;
-  sortDirection: 'asc' | 'desc';
+  sortColumn: string | null;
+  sortDirection: 'asc' | 'desc' | null;
 }
 
 export interface IZvTableUpdateDataInfo {
