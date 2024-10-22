@@ -77,6 +77,7 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
   private _loadTrigger: ZvSelectLoadTrigger;
   private _sortBy: ZvSelectSortBy;
   private _isPanelOpen$ = new BehaviorSubject<boolean>(false);
+  private _forceReload$ = new Subject<null>();
   private _searchText$ = new BehaviorSubject<string>('');
   private _currentValues$ = new BehaviorSubject<T[]>([]);
   private _ngUnsubscribe$ = new Subject<void>();
@@ -187,6 +188,7 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
 
   public disconnect(): void {
     this._isPanelOpen$.complete();
+    this._forceReload$.complete();
     this._searchText$.complete();
     this._currentValues$.complete();
     this._ngUnsubscribe$.next();
@@ -203,6 +205,10 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
 
   public selectedValuesChanged(values: T[]): void {
     this._currentValues$.next(values);
+  }
+
+  public forceReload(): void {
+    this._forceReload$.next(null);
   }
 
   public getItemsForValues(values: T[]): ZvSelectItem<T>[] {
@@ -224,7 +230,7 @@ export class DefaultZvSelectDataSource<T = any> extends ZvSelectDataSource<T> {
   public searchCompare = (option: ZvSelectItem, searchText: string): boolean => option.label.toLowerCase().indexOf(searchText) === -1;
 
   private _createOptionsLoadTrigger(): Observable<void> {
-    const loadTriggers: Observable<any>[] = [];
+    const loadTriggers: Observable<any>[] = [this._forceReload$];
 
     if (this._loadTrigger & ZvSelectLoadTrigger.initial) {
       loadTriggers.push(of(null));

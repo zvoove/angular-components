@@ -16,8 +16,8 @@ import {
   ZvSelectService,
   ZvSelectSortBy,
 } from '@zvoove/components/select';
-import { NEVER, of, throwError } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { iif, NEVER, of, throwError } from 'rxjs';
+import { delay, finalize, tap } from 'rxjs/operators';
 import { CodeFiles } from '../common/code-files/code-files.component';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
 import { allSharedImports } from '../common/shared-imports';
@@ -32,7 +32,7 @@ import { SelectWithNgModelComponent } from './demos/select-with-ng-model.compone
 import { SelectWithOtherLoadTriggerComponent } from './demos/select-with-other-load-trigger.component';
 import { SelectWithSelectedItemNotInDataSourceComponent } from './demos/select-with-selected-item-not-in-datasource.component';
 
-declare type DemoDataSourceItems = 'default' | 'error' | 'loading' | 'empty';
+declare type DemoDataSourceItems = 'default' | 'error' | 'error_once' | 'loading' | 'empty';
 
 interface DemoLogs extends Record<string, string | number> {
   loadCount: number;
@@ -192,6 +192,12 @@ export class SelectDemoComponent implements OnInit {
         return NEVER;
       case 'error':
         return throwError(() => new Error('loading failed'));
+      case 'error_once':
+        return iif(
+          () => logs.loadCount === 0,
+          throwError(() => new Error('loading failed')),
+          of(this.items)
+        ).pipe(finalize(() => ++logs.loadCount));
     }
   }
 

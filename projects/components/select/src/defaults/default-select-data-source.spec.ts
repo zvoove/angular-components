@@ -285,6 +285,29 @@ describe('DefaultZvSelectDataSource', () => {
     dataSource.disconnect();
   }));
 
+  it('should load options on forced reload', fakeAsync(() => {
+    let loadDataCallCount = 0;
+    const dataSource = new DefaultZvSelectDataSource(
+      createDataSourceOptions(() => {
+        ++loadDataCallCount;
+        return of([createItem('item', loadDataCallCount)]);
+      })
+    );
+
+    let currentRenderOptions;
+    dataSource.connect().subscribe((options) => {
+      currentRenderOptions = options;
+    });
+    tick(1);
+    expect(loadDataCallCount).toBe(1);
+    expect(currentRenderOptions).toEqual([createIdOption(createItem('item', 1))]);
+
+    dataSource.forceReload();
+    expect(loadDataCallCount).toBe(2);
+
+    dataSource.disconnect();
+  }));
+
   it('should load options on every panel open if loadTrigger is EveryPanelOpen', fakeAsync(() => {
     let loadDataCallCount = 0;
     const dataSource = new DefaultZvSelectDataSource(

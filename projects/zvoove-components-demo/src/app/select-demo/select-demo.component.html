@@ -29,6 +29,7 @@
             <mat-select [(ngModel)]="dataSourceItems" (selectionChange)="resetDataSource()">
               <mat-option [value]="'default'">500 items</mat-option>
               <mat-option [value]="'error'">error while loading</mat-option>
+              <mat-option [value]="'error_once'">items after error reload</mat-option>
               <mat-option [value]="'loading'">endless loading</mat-option>
               <mat-option [value]="'empty'">empty result</mat-option>
             </mat-select>

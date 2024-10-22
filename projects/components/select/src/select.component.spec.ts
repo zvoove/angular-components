@@ -91,6 +91,7 @@ function createFakeDataSource(items: ZvSelectItem[] = []): ZvSelectDataSource {
     selectedValuesChanged: (_: any | any[]) => {},
     panelOpenChanged: (_: boolean) => {},
     searchTextChanged: (_: string) => {},
+    forceReload: () => {},
   } as ZvSelectDataSource;
 }
 
@@ -797,6 +798,25 @@ describe('ZvSelect', () => {
 
     items$.complete();
   });
+});
+
+it('should force a reload on the datasource through reload button after error', async () => {
+  const { component, zvSelect: zvSelect } = await initTest(TestComponent);
+  let dataLoadCount = 0;
+  component.dataSource = new DefaultZvSelectDataSource({
+    mode: 'id',
+    labelKey: 'label',
+    idKey: 'value',
+    items: () => {
+      dataLoadCount++;
+      return throwError(() => 'my error');
+    },
+  });
+
+  await zvSelect.open();
+  expect(dataLoadCount).toBe(1);
+  await zvSelect.clickErrorReloadButton();
+  expect(dataLoadCount).toBe(2);
 });
 
 async function getOptionIsSelected(zvSelect: ZvSelectHarness) {

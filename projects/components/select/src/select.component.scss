@@ -1,8 +1,16 @@
 .zv-select__option--hidden {
   display: none !important;
 }
+.zv-select__error-container {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
 .zv-select__error-message {
   color: var(--zv-components-error);
+}
+.zv-select__error-reload-btn {
+  margin: 0 0.5em 0 auto;
 }
 
 ngx-mat-select-search .mat-select-search-clear {

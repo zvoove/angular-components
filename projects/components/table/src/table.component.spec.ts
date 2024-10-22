@@ -24,7 +24,7 @@ import { ZvTablePaginationComponent } from './subcomponents/table-pagination.com
 import { ZvTable } from './table.component';
 import { ZvTableModule } from './table.module';
 import { ZvTableHarness } from './testing/table.harness';
-import { ZvExceptionMessageExtractor } from 'dist/components/core';
+import { ZvExceptionMessageExtractor } from '@zvoove/components/core';
 
 @Injectable()
 class TestSettingsService extends ZvTableSettingsService {

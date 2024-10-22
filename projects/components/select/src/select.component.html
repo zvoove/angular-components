@@ -53,9 +53,14 @@
     </mat-option>
 
     @if (hasError) {
-      <mat-option [disabled]="true" class="zv-select__error">
-        <span class="zv-select__error-message">{{ error | zvErrorMessage }}</span>
-      </mat-option>
+      <div class="zv-select__error-container">
+        <mat-option [disabled]="true" class="zv-select__error">
+          <span class="zv-select__error-message">{{ error | zvErrorMessage }}</span>
+        </mat-option>
+        <button mat-icon-button class="zv-select__error-reload-btn" (click)="reloadAfterError()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
     }
 
     @if (showEmptyInput) {

@@ -1,4 +1,5 @@
 import { BaseHarnessFilters, ComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
+import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { MatOptionHarness, OptionHarnessFilters } from '@angular/material/core/testing';
 import { MatFormFieldControlHarness } from '@angular/material/form-field/testing/control';
@@ -163,6 +164,10 @@ export class ZvSelectHarness extends MatFormFieldControlHarness {
         ancestor: await this._getPanelSelector(),
       })
     )();
+  }
+
+  async clickErrorReloadButton() {
+    return (await this._documentRootLocator.locatorFor(MatButtonHarness.with({ ancestor: await this._getPanelSelector() }))()).click();
   }
 
   /** Gets the selector that should be used to find this select's panel. */

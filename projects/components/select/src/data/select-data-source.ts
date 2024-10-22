@@ -31,6 +31,7 @@ export abstract class ZvSelectDataSource<T = any> {
   public abstract searchTextChanged(searchText: string): void;
   public abstract selectedValuesChanged(values: T[]): void;
   public abstract getItemsForValues(values: T[]): ZvSelectItem<T>[];
+  public abstract forceReload(): void;
 }
 
 /** Checks whether an object is a data source. */

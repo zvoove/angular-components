@@ -21,8 +21,10 @@ import {
   signal,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroupDirective, FormsModule, NgControl, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
 import { ErrorStateMatcher, MatOption, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatSelect, MatSelectChange, MatSelectTrigger } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ZvErrorMessagePipe } from '@zvoove/components/core';
@@ -60,6 +62,8 @@ const enum ValueChangeSource {
   providers: [{ provide: MatFormFieldControl, useExisting: ZvSelect }],
   standalone: true,
   imports: [
+    MatIconButton,
+    MatIcon,
     MatTooltip,
     MatSelect,
     ReactiveFormsModule,
@@ -391,6 +395,10 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   public trackByOptions(_: number, item: ZvSelectItem<T>) {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `${item.value}#${item.label}`;
+  }
+
+  public reloadAfterError() {
+    this._dataSourceInstance.forceReload();
   }
 
   private _propagateValueChange(value: any, source: ValueChangeSource) {

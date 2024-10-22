@@ -27,6 +27,7 @@ describe('DefaultZvSelectService', () => {
       public getItemsForValues(_: any[]): ZvSelectItem<any>[] {
         return [];
       }
+      public forceReload(): void {}
     }
     const service = new DefaultZvSelectService();
 
@@ -134,7 +135,7 @@ function getRenderData(dataSource: ZvSelectDataSource) {
   dataSource.connect().subscribe((options) => {
     currentRenderOptions = options;
   });
-  dataSource.panelOpenChanged(true); // Just in case the loadTrigger is not Initial
+  dataSource.forceReload(); // Just in case the loadTrigger is not Initial
   dataSource.disconnect();
   return currentRenderOptions;
 }
