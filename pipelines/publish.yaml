@@ -1,7 +1,7 @@
 trigger: none
 
 pool:
-  name: zvoove Regensburg
+  vmImage: ubuntu-22.04
 
 variables:
   - name: "Tenant Id"
