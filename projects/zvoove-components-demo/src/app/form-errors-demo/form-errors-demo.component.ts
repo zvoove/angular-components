@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ZvFormService } from '@zvoove/components/form-base';
-import { ZvFormErrorsModule } from '@zvoove/components/form-errors';
+import { ZvFormErrors } from '@zvoove/components/form-errors';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
 
 @Component({
@@ -9,7 +9,7 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
   templateUrl: './form-errors-demo.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ReactiveFormsModule, ZvFormErrorsModule],
+  imports: [ReactiveFormsModule, ZvFormErrors],
   providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })
 export class FormErrorsDemoComponent {

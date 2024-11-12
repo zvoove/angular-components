@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { IZvButton, IZvException } from '@zvoove/components/core';
-import { IZvDialogWrapperDataSource, ZvDialogWrapperModule } from '@zvoove/components/dialog-wrapper';
+import { IZvDialogWrapperDataSource, ZvDialogWrapper } from '@zvoove/components/dialog-wrapper';
 import { Observable, Subject, of } from 'rxjs';
 
 interface IDemoDialogWrapperDataSourceOptions {
@@ -79,7 +79,7 @@ export class DialogWrapperDemoComponent {
   templateUrl: './dialog-wrapper-demo.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ZvDialogWrapperModule, MatButtonModule],
+  imports: [ZvDialogWrapper, MatButtonModule],
 })
 export class DialogWrapperDemoDialog {
   public actionFunctionCalled = 0;

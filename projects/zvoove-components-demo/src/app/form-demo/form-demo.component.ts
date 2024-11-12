@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ZvFormModule } from '@zvoove/components/form';
+import { ZvForm } from '@zvoove/components/form';
 import { ZvFormService } from '@zvoove/components/form-base';
 import { BehaviorSubject, of } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
@@ -27,7 +27,7 @@ import { FormDataSource } from './form-data-source';
     FormsModule,
     MatInputModule,
     MatButtonModule,
-    ZvFormModule,
+    ZvForm,
     MatFormFieldModule,
     JsonPipe,
   ],

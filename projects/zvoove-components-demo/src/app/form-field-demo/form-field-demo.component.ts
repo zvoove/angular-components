@@ -22,7 +22,7 @@ import {
 } from '@zvoove/components/core';
 import { ZvDateTimeInput } from '@zvoove/components/date-time-input';
 import { ZvFormService } from '@zvoove/components/form-base';
-import { ZvFormFieldModule, ZvFormFieldSubscriptType } from '@zvoove/components/form-field';
+import { ZvFormField, ZvFormFieldSubscriptType } from '@zvoove/components/form-field';
 import { DefaultZvSelectService, ZvSelectModule, ZvSelectService } from '@zvoove/components/select';
 import { of } from 'rxjs';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
@@ -38,7 +38,7 @@ import { InvalidErrorStateMatcher } from '../common/invalid-error-state-matcher'
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ZvFormFieldModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, FormsModule],
+  imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule, FormsModule, ZvFormField],
 })
 export class ReferenceColumnComponent {
   @Input() public subscriptType: ZvFormFieldSubscriptType = 'single-line';
@@ -56,7 +56,7 @@ export class ReferenceColumnComponent {
   encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [
-    ZvFormFieldModule,
+    ZvFormField,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,

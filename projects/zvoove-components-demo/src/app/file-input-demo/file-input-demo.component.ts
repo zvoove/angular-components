@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ZvFileInput } from '@zvoove/components/file-input';
 import { ZvFormService } from '@zvoove/components/form-base';
-import { ZvFormFieldModule } from '@zvoove/components/form-field';
+import { ZvFormField } from '@zvoove/components/form-field';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
 
 @Component({
@@ -22,7 +22,7 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
     MatCheckboxModule,
     ReactiveFormsModule,
     FormsModule,
-    ZvFormFieldModule,
+    ZvFormField,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,

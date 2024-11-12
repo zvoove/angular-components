@@ -7,8 +7,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ZvFormService } from '@zvoove/components/form-base';
-import { ZvFormFieldModule } from '@zvoove/components/form-field';
-import { ZvNumberInputModule } from '@zvoove/components/number-input';
+import { ZvFormField } from '@zvoove/components/form-field';
+import { ZvNumberInput } from '@zvoove/components/number-input';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
 
 @Component({
@@ -22,11 +22,11 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
     MatCheckboxModule,
     ReactiveFormsModule,
     FormsModule,
-    ZvFormFieldModule,
+    ZvFormField,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    ZvNumberInputModule,
+    ZvNumberInput,
   ],
   providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })

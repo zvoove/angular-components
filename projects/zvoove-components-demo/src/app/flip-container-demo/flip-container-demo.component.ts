@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ZvFlipContainerModule } from '@zvoove/components/flip-container';
 import { ZvFormService } from '@zvoove/components/form-base';
-import { ZvFormFieldModule } from '@zvoove/components/form-field';
+import { ZvFormField } from '@zvoove/components/form-field';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
 
 @Component({
@@ -25,15 +25,7 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatCheckboxModule,
-    ReactiveFormsModule,
-    FormsModule,
-    ZvFlipContainerModule,
-    ZvFormFieldModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+  imports: [MatCheckboxModule, ReactiveFormsModule, FormsModule, ZvFlipContainerModule, ZvFormField, MatFormFieldModule, MatInputModule],
   providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })
 export class FlipContainerDemoComponent {
