@@ -13,7 +13,7 @@ import { AppCodeComponent } from './code/code.component';
 import { ComponentPageContentDirective } from './component-page-wrapper/component-page-content.directive';
 import { AppComponentPageWrapper } from './component-page-wrapper/component-page-wrapper.component';
 import { FormControlDemoCard } from './form-control-card/form-control-demo-card.component';
-import { ZvFormField } from 'dist/components/form-field';
+import { ZvFormField } from '@zvoove/components/form-field';
 
 export const materialImports = [MatCardModule, MatButtonModule, MatCheckboxModule, MatInputModule];
 

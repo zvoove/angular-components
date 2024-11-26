@@ -20,7 +20,13 @@ https://github.com/angular/components/issues/16457
             </button>
           }
           @case ('link') {
-            <a mat-menu-item [routerLink]="action.routerLink!(items()).path" [queryParams]="action.routerLink!(items()).queryParams">
+            <a
+              mat-menu-item
+              [disabled]="action.isDisabledFn && action.isDisabledFn(items())"
+              [routerLink]="action.routerLink!(items()).path"
+              [queryParams]="action.routerLink!(items()).queryParams"
+              [class.zv-table-actions__no-pointer-events]="action.isDisabledFn && action.isDisabledFn(items())"
+            >
               @if (showIcon()) {
                 <ng-container
                   ngProjectAs="mat-icon"
@@ -32,7 +38,7 @@ https://github.com/angular/components/issues/16457
             </a>
           }
           @case ('menu') {
-            <button mat-menu-item [matMenuTriggerFor]="innerPanel.menu()">
+            <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items())" [matMenuTriggerFor]="innerPanel.menu()">
               @if (showIcon()) {
                 <ng-container
                   ngProjectAs="mat-icon"

@@ -12,6 +12,7 @@ import { ZvTableActionTypePipe } from '../pipes/table-actions-type.pipe';
 @Component({
   selector: 'zv-table-actions',
   templateUrl: './table-actions.component.html',
+  styleUrl: './table-actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [

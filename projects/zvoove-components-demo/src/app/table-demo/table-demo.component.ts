@@ -120,6 +120,7 @@ export class TableDemoComponent {
   public striped = true;
   public sortDefinitions = false;
   public preferSortDropdown = false;
+  public actionsWithLinks = false;
   public pageDebounce = 0;
   public dataSourceType: 'server' | 'client' = 'server';
 
@@ -178,6 +179,10 @@ export class TableDemoComponent {
   }
 
   public rebuildDataSource() {
+    const actionConfig = {
+      actionFn: !this.actionsWithLinks ? () => of() : undefined,
+      routerLink: this.actionsWithLinks ? () => ({ path: ['/', 'table'] }) : undefined,
+    };
     this.dataSource = new ZvTableDataSource<ISampleData>({
       mode: this.dataSourceType,
       loadTrigger$: of(null),
@@ -225,13 +230,12 @@ export class TableDemoComponent {
           label: 'rowAction 1',
           icon: 'check',
           iconColor: 'green',
-          actionFn: () => of(),
           scope: ZvTableActionScope.row,
+          ...actionConfig,
         },
         {
           label: 'rowAction 2',
           icon: 'cancel',
-          actionFn: () => of(),
           scope: ZvTableActionScope.row,
           isHiddenFn: () => Math.random() > 0.5,
           children: [
@@ -247,50 +251,49 @@ export class TableDemoComponent {
         {
           label: 'listAction 1',
           icon: 'cancel',
-          actionFn: () => of(),
           scope: ZvTableActionScope.list,
+          ...actionConfig,
         },
         {
           label: 'listAction 2',
           icon: 'cancel',
-          actionFn: () => of(),
           scope: ZvTableActionScope.list,
           isDisabledFn: () => true,
+          ...actionConfig,
         },
         {
           label: 'listAction 3',
           icon: 'cancel',
-          actionFn: () => of(),
           scope: ZvTableActionScope.list,
           isHiddenFn: () => Math.random() > 0.5,
+          ...actionConfig,
         },
         {
           label: 'disabledListAction',
           icon: 'cancel',
-          actionFn: () => of(),
           scope: ZvTableActionScope.list,
           isDisabledFn: () => true,
           children: [
             {
               label: 'disabledListAction 1',
               icon: 'cancel',
-              actionFn: () => of(),
               scope: ZvTableActionScope.list,
               isDisabledFn: () => true,
+              ...actionConfig,
             },
             {
               label: 'disabledListAction 2',
               icon: 'cancel',
-              actionFn: () => of(),
               scope: ZvTableActionScope.list,
               isDisabledFn: () => true,
+              ...actionConfig,
             },
             {
               label: 'disabledListAction 3',
               icon: 'cancel',
-              actionFn: () => of(),
               scope: ZvTableActionScope.list,
               isDisabledFn: () => true,
+              ...actionConfig,
             },
           ],
         },
@@ -302,8 +305,8 @@ export class TableDemoComponent {
             {
               label: 'allChildAction 1',
               icon: 'cancel',
-              actionFn: () => of(),
               scope: ZvTableActionScope.list,
+              ...actionConfig,
             },
             {
               label: 'allChildAction 2',
@@ -313,8 +316,8 @@ export class TableDemoComponent {
                 {
                   label: 'allChildAction 2 Child 1',
                   icon: 'cancel',
-                  actionFn: () => of(),
                   scope: ZvTableActionScope.list,
+                  ...actionConfig,
                 },
               ],
             },
@@ -332,14 +335,14 @@ export class TableDemoComponent {
                 {
                   label: 'Nested Menu without any icons 1',
                   icon: '',
-                  actionFn: () => of(),
                   scope: ZvTableActionScope.all,
+                  ...actionConfig,
                 },
                 {
                   label: 'Nested Menu without any icons 2',
                   icon: '',
-                  actionFn: () => of(),
                   scope: ZvTableActionScope.all,
+                  ...actionConfig,
                 },
               ],
             },

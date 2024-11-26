@@ -1,9 +1,9 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { MatIconButton } from '@angular/material/button';
+import { MatIconAnchor, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { NEVER, Observable, isObservable, of } from 'rxjs';
@@ -16,16 +16,17 @@ import { ZvTableActionsComponent } from './table-actions.component';
 @Component({
   selector: 'zv-table-row-actions',
   templateUrl: './table-row-actions.component.html',
+  styleUrl: './table-row-actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    MatIconAnchor,
     MatIconButton,
     MatMenuTrigger,
     MatIcon,
     ZvTableActionsComponent,
     MatTooltip,
     NgTemplateOutlet,
-    MatMenuItem,
     RouterLink,
     ZvTableActionsToRenderPipe,
     ZvTableActionTypePipe,

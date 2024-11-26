@@ -20,12 +20,15 @@
         }
         @case ('link') {
           <a
-            mat-menu-item
+            type="button"
+            mat-icon-button
+            [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray())"
             [routerLink]="action.routerLink!(itemAsArray()).path"
             [queryParams]="action.routerLink!(itemAsArray()).queryParams"
+            [matTooltip]="action.label"
+            [class.zv-table-row-actions__no-pointer-events]="action.isDisabledFn && action.isDisabledFn(itemAsArray())"
           >
             <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
-            {{ action.label }}
           </a>
         }
         @case ('menu') {

@@ -57,6 +57,7 @@
             </mat-select>
             <mat-label>DataSourceType</mat-label>
           </mat-form-field>
+          <mat-checkbox [(ngModel)]="actionsWithLinks" (change)="rebuildDataSource()">Use links for row/table actions</mat-checkbox>
         </mat-card-content>
       </mat-card>
 
