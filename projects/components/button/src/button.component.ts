@@ -19,6 +19,8 @@ export class ZvButton implements OnDestroy {
   icon = input<string | null | undefined>(null);
   dataCy = input<string | null | undefined>(null);
   disabled = input<boolean>(false);
+  // We want to call it like the dom-click event because catching a click event should work as expected for buttons as well
+  // eslint-disable-next-line @angular-eslint/no-output-native
   click = output();
 
   constructor(private elementRef: ElementRef<HTMLElement>) {
