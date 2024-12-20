@@ -1,5 +1,11 @@
 ---
 version: 2
+registries:
+  docker-zvoove:
+    type: docker-registry
+    url: https://acrzvoovesaasdev.azurecr.io
+    username: ${{ACR_CLIENT_ID}}
+    password: ${{ACR_CLIENT_SECRET}}
 updates:
   - package-ecosystem: npm
     directory: "/"
@@ -22,3 +28,20 @@ updates:
       all-frontend-dependencies:
         patterns:
           - "*"
+
+  - package-ecosystem: docker
+    directory: "/"
+    open-pull-requests-limit: 1
+    pull-request-branch-name:
+      separator: "-"
+    schedule: # defined by pipeline in Hub repo, but a required property for a dependabot config
+      interval: weekly
+    registries:
+      - docker-zvoove
+    groups:
+      all-docker-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "docker.io/library/node"
+        versions: ["23.x"]
