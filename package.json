@@ -68,12 +68,12 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
     "karma-time-stats-reporter": "^0.1.0",
-    "lint-staged": "^15.2.11",
+    "lint-staged": "^15.3.0",
     "ng-packagr": "^18.2.1",
     "prettier": "^3.4.2",
     "ts-node": "~10.9.2",
     "typescript": "~5.5.4",
-    "typescript-eslint": "^8.18.1"
+    "typescript-eslint": "^8.18.2"
   },
   "lint-staged": {
     "*.{ts,json,scss,html}": "prettier --write"

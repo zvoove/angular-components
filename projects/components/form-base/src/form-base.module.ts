@@ -7,6 +7,7 @@ export class ZvFormBaseModule {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   public static forRoot(formsServiceType: Type<ZvFormService>): ModuleWithProviders<ZvFormBaseModule> {
     return {
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       ngModule: ZvFormBaseModule,
       providers: [{ provide: ZvFormService, useClass: formsServiceType }],
     };
