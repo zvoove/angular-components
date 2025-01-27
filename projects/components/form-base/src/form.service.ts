@@ -78,10 +78,7 @@ export abstract class BaseZvFormService extends ZvFormService {
     const errors: IZvFormErrorData[] = [];
 
     if (control instanceof FormGroup || control instanceof FormArray) {
-      for (const childName in control.controls) {
-        if (!Object.prototype.hasOwnProperty.call(control.controls, childName)) {
-          continue;
-        }
+      for (const [childName] of Object.entries(control.controls)) {
         const childControl = (control.controls as Record<string, AbstractControl>)[childName];
         if (!(childControl instanceof FormControl) || includeControls) {
           errors.push(
