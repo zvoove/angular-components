@@ -243,6 +243,7 @@ export class TableDemoComponent {
               isSvgIcon: true,
               icon: 'angular',
               scope: ZvTableActionScope.row,
+              isHiddenFn: () => false,
               routerLink: (items) => ({ path: ['/', 'table', items[0].id] }) as IZvTableActionRouterLink,
             },
             {

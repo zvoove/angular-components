@@ -974,6 +974,7 @@ describe('ZvTable', () => {
                   {
                     label: 'visible',
                     icon: 'check',
+                    isHiddenFn: () => false,
                     scope: ZvTableActionScope.all,
                   },
                 ],
