@@ -234,16 +234,38 @@ export class TableDemoComponent {
           ...actionConfig,
         },
         {
-          label: 'rowAction 2',
+          label: 'rowAction 2 with 2 childs, one hidden',
           icon: 'cancel',
           scope: ZvTableActionScope.row,
-          isHiddenFn: () => Math.random() > 0.5,
           children: [
             {
-              label: 'rowAction 2 child',
+              label: 'rowAction 2 child (visible)',
               isSvgIcon: true,
               icon: 'angular',
               scope: ZvTableActionScope.row,
+              routerLink: (items) => ({ path: ['/', 'table', items[0].id] }) as IZvTableActionRouterLink,
+            },
+            {
+              label: 'rowAction 2 child (hidden)',
+              isSvgIcon: true,
+              icon: 'angular',
+              scope: ZvTableActionScope.row,
+              isHiddenFn: () => true,
+              routerLink: (items) => ({ path: ['/', 'table', items[0].id] }) as IZvTableActionRouterLink,
+            },
+          ],
+        },
+        {
+          label: 'rowAction 3 with hidden childs',
+          icon: 'cancel',
+          scope: ZvTableActionScope.row,
+          children: [
+            {
+              label: 'rowAction 3 child (hidden)',
+              isSvgIcon: true,
+              icon: 'angular',
+              scope: ZvTableActionScope.row,
+              isHiddenFn: () => true,
               routerLink: (items) => ({ path: ['/', 'table', items[0].id] }) as IZvTableActionRouterLink,
             },
           ],

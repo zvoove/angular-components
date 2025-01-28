@@ -33,18 +33,22 @@
         }
         @case ('menu') {
           @if (action.children?.length) {
-            <button
-              type="button"
-              mat-icon-button
-              (click)="onMenuButtonClicked()"
-              [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray())"
-              [matMenuTriggerFor]="iconActions.menu()"
-              [matTooltip]="action.label"
-            >
-              <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
-            </button>
+            @if (action.children! | zvTableActionsToRender: item(); as visibleChildActions) {
+              @if (visibleChildActions.length) {
+                <button
+                  type="button"
+                  mat-icon-button
+                  (click)="onMenuButtonClicked()"
+                  [disabled]="action.isDisabledFn && action.isDisabledFn(itemAsArray())"
+                  [matMenuTriggerFor]="iconActions.menu()"
+                  [matTooltip]="action.label"
+                >
+                  <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
+                </button>
+                <zv-table-actions #iconActions [actions]="visibleChildActions" [items]="itemAsArray()" [root]="false"></zv-table-actions>
+              }
+            }
           }
-          <zv-table-actions #iconActions [actions]="action.children!" [items]="itemAsArray()" [root]="false"></zv-table-actions>
         }
       }
     }

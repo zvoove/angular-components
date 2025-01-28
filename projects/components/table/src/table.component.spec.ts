@@ -961,6 +961,37 @@ describe('ZvTable', () => {
                 ],
               },
               {
+                label: 'custom all action some children hidden',
+                icon: 'cancel',
+                scope: ZvTableActionScope.all,
+                children: [
+                  {
+                    label: 'hidden',
+                    icon: 'check',
+                    isHiddenFn: () => true,
+                    scope: ZvTableActionScope.all,
+                  },
+                  {
+                    label: 'visible',
+                    icon: 'check',
+                    scope: ZvTableActionScope.all,
+                  },
+                ],
+              },
+              {
+                label: 'custom all action all children hidden',
+                icon: 'cancel',
+                scope: ZvTableActionScope.all,
+                children: [
+                  {
+                    label: 'hidden',
+                    icon: 'check',
+                    isHiddenFn: () => true,
+                    scope: ZvTableActionScope.all,
+                  },
+                ],
+              },
+              {
                 label: 'custom list action 1',
                 icon: 'check',
                 scope: ZvTableActionScope.list,
@@ -999,14 +1030,14 @@ describe('ZvTable', () => {
         const listActionsMenu = await table.getListActionsButton();
         await listActionsMenu.open();
         const listActions = await listActionsMenu.getItems();
-        expect(listActions.length).toEqual(5);
+        expect(listActions.length).toEqual(6);
 
         const links = fixture.debugElement.queryAll(By.directive(RouterLink));
         expect(links).toBeTruthy();
         expect(links[0].attributes.href).toEqual('/path/to/something/1?a=item_1');
       });
 
-      it('svg icons should work', async () => {
+      it('svg icons and isHiddenFn should work', async () => {
         const selectBoxes = await table.getSelectCheckboxes();
         expect(selectBoxes.length).toBeTruthy();
         await selectBoxes[1].check();
@@ -1015,37 +1046,63 @@ describe('ZvTable', () => {
         const listActionsMenu = await table.getListActionsButton();
         await listActionsMenu.open();
         const listActions = await listActionsMenu.getItems();
-        expect(listActions.length).toEqual(5);
+        expect(listActions.length).toEqual(6);
 
         // List-Actions - 1. Level
         await checkAction$(listActions[0], 'custom all action 1', 'check', IconType.FONT);
         await checkAction$(listActions[1], 'custom all action 2', 'angular', IconType.SVG);
         await checkAction$(listActions[2], 'custom all action 3', 'cancel', IconType.FONT);
-        await checkAction$(listActions[3], 'custom list action 1', 'check', IconType.FONT);
-        await checkAction$(listActions[4], 'custom list action 2', 'angular', IconType.SVG);
+        await checkAction$(listActions[3], 'custom all action some children hidden', 'cancel', IconType.FONT);
+        await checkAction$(listActions[4], 'custom list action 1', 'check', IconType.FONT);
+        await checkAction$(listActions[5], 'custom list action 2', 'angular', IconType.SVG);
 
         // List-Actions - 2. Level
-        expect(await listActions[0].hasSubmenu()).toBeTrue();
-        const subListActionsMenu = await listActions[0].getSubmenu();
-        expect(subListActionsMenu).toBeTruthy();
-        await subListActionsMenu.open();
-        const subListActions = await subListActionsMenu.getItems();
-        expect(subListActions.length).toEqual(2);
-        await checkAction$(subListActions[0], 'custom all subaction 1', 'check', IconType.FONT);
-        await checkAction$(subListActions[1], 'custom all subaction 2', 'angular', IconType.SVG);
+        {
+          expect(await listActions[0].hasSubmenu()).toBeTrue();
+          const subListActionsMenu = await listActions[0].getSubmenu();
+          expect(subListActionsMenu).toBeTruthy();
+          await subListActionsMenu.open();
+          const subListActions = await subListActionsMenu.getItems();
+          expect(subListActions.length).toEqual(2);
+          await checkAction$(subListActions[0], 'custom all subaction 1', 'check', IconType.FONT);
+          await checkAction$(subListActions[1], 'custom all subaction 2', 'angular', IconType.SVG);
+        }
+
+        // List-Actions - 2. Level - partially hidden
+        {
+          expect(await listActions[3].hasSubmenu()).toBeTrue();
+          const subListActionsMenu = await listActions[3].getSubmenu();
+          expect(subListActionsMenu).toBeTruthy();
+          await subListActionsMenu.open();
+          const subListActions = await subListActionsMenu.getItems();
+          expect(subListActions.length).toEqual(1);
+          await checkAction$(subListActions[0], 'visible', 'check', IconType.FONT);
+        }
 
         // Row-Actions
         const rowActionsMenu = await table.getRowActionsButton(1);
         await rowActionsMenu.open();
         const rowActions = await rowActionsMenu.getItems();
-        expect(rowActions.length).toEqual(5);
+        expect(rowActions.length).toEqual(6);
 
         // Row-Actions - 1. Level
         await checkAction$(rowActions[0], 'custom all action 1', 'check', IconType.FONT);
         await checkAction$(rowActions[1], 'custom all action 2', 'angular', IconType.SVG);
         await checkAction$(rowActions[2], 'custom all action 3', 'cancel', IconType.FONT);
-        await checkAction$(rowActions[3], 'custom row action 1', 'check', IconType.FONT);
-        await checkAction$(rowActions[4], 'custom row action 2', 'angular', IconType.SVG);
+        await checkAction$(rowActions[3], 'custom all action some children hidden', 'cancel', IconType.FONT);
+        await checkAction$(rowActions[4], 'custom row action 1', 'check', IconType.FONT);
+        await checkAction$(rowActions[5], 'custom row action 2', 'angular', IconType.SVG);
+
+        // Row-Actions - 2. Level
+        {
+          expect(await rowActions[3].hasSubmenu()).toBeTrue();
+          const subListActionsMenu = await rowActions[3].getSubmenu();
+          expect(subListActionsMenu).toBeTruthy();
+          await subListActionsMenu.open();
+          const subListActions = await subListActionsMenu.getItems();
+          expect(subListActions.length).toEqual(1);
+          await checkAction$(subListActions[0], 'visible', 'check', IconType.FONT);
+        }
       });
 
       it('nested menus display no icon, if all entries do not specify one', async () => {
@@ -1057,7 +1114,7 @@ describe('ZvTable', () => {
         const listActionsMenu = await table.getListActionsButton();
         await listActionsMenu.open();
         const listActions = await listActionsMenu.getItems();
-        expect(listActions.length).toEqual(5);
+        expect(listActions.length).toEqual(6);
 
         // List-Actions - 2. Level
         expect(await listActions[2].hasSubmenu()).toBeTrue();
@@ -1073,7 +1130,7 @@ describe('ZvTable', () => {
         const rowActionsMenu = await table.getRowActionsButton(1);
         await rowActionsMenu.open();
         const rowActions = await rowActionsMenu.getItems();
-        expect(rowActions.length).toEqual(5);
+        expect(rowActions.length).toEqual(6);
       });
 
       async function checkAction$(

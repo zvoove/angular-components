@@ -5,7 +5,7 @@ https://github.com/angular/components/issues/16457
 <mat-menu #menu>
   <zv-block-ui [blocked]="loading()">
     <ng-template matMenuContent>
-      @for (action of actions(); track action) {
+      @for (action of actions() | zvTableActionsToRender: items(); track action) {
         @switch (action | zvTableActionType) {
           @case ('button') {
             <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items())" (click)="action.actionFn!(items())">
@@ -38,22 +38,27 @@ https://github.com/angular/components/issues/16457
             </a>
           }
           @case ('menu') {
-            <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items())" [matMenuTriggerFor]="innerPanel.menu()">
-              @if (showIcon()) {
-                <ng-container
-                  ngProjectAs="mat-icon"
-                  [ngTemplateOutlet]="actionIcon"
-                  [ngTemplateOutletContext]="{ $implicit: action }"
-                ></ng-container>
+            @if (action.children?.length) {
+              @if (action.children! | zvTableActionsToRender: items(); as visibleChildActions) {
+                @if (visibleChildActions.length) {
+                  <button
+                    mat-menu-item
+                    [disabled]="action.isDisabledFn && action.isDisabledFn(items())"
+                    [matMenuTriggerFor]="innerPanel.menu()"
+                  >
+                    @if (showIcon()) {
+                      <ng-container
+                        ngProjectAs="mat-icon"
+                        [ngTemplateOutlet]="actionIcon"
+                        [ngTemplateOutletContext]="{ $implicit: action }"
+                      ></ng-container>
+                    }
+                    {{ action.label }}
+                  </button>
+                  <zv-table-actions #innerPanel [actions]="visibleChildActions" [items]="items()" [root]="false"></zv-table-actions>
+                }
               }
-              {{ action.label }}
-            </button>
-            <zv-table-actions
-              #innerPanel
-              [actions]="action.children! | zvTableActionsToRender: items()"
-              [items]="items()"
-              [root]="false"
-            ></zv-table-actions>
+            }
           }
         }
       }
