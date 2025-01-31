@@ -1,7 +1,7 @@
 import { isPlatformServer } from '@angular/common';
-import { Injectable, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { inject, Injectable, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { IZvTableSetting, ZvTableSettingsService } from '@zvoove/components/table';
-import { EMPTY, Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable()
 export class DemoTableSettingsService extends ZvTableSettingsService implements OnDestroy {
@@ -16,9 +16,11 @@ export class DemoTableSettingsService extends ZvTableSettingsService implements 
   }
 
   public override save(tableId: string, settings: IZvTableSetting): Observable<void> {
-    this.writeToLocalStorage(tableId, settings);
-    this.settingsUpdater.next(settings);
-    return EMPTY;
+    return new Observable<void>((subscriber) => {
+      this.writeToLocalStorage(tableId, settings);
+      this.settingsUpdater.next(settings);
+      subscriber.next();
+    });
   }
 
   public override getStream(tableId: string): Observable<IZvTableSetting> {

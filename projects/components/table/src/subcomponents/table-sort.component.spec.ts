@@ -43,6 +43,18 @@ describe('ZvTableSortComponent', () => {
     }).compileComponents();
   }));
 
+  it('should select initial sort column', async () => {
+    const fixture = TestBed.createComponent(TestComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+    fixture.detectChanges();
+
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const matSelect = await loader.getHarness(MatSelectHarness);
+    const selectValue = await matSelect.getValueText();
+    expect(selectValue).toBe('Sort Prop');
+  });
+
   it('should emit sortChanged on changes', async () => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
