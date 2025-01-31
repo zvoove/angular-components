@@ -35,23 +35,29 @@ jobs:
 
   - job: Docker
     displayName: "Docker build + push"
+    pool:
+      name: SaaS-dev
     dependsOn: Build
     workspace:
       clean: all
     steps:
-      - powershell: docker login acrzvoovesaasdev.azurecr.io --username "$(ACR Client Id)" --password "$(ACR Client Secret)"
+      - bash: docker login acrzvoovesaasdev.azurecr.io --username "$(ACR Client Id)" --password "$(ACR Client Secret)"
         displayName: "Docker Login to SaaS Dev ACR"
 
-      - powershell: |
+      - bash: |
           docker build --pull . `
-            -t acrzvoovesaasdev.azurecr.io/components:$((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version) `
+            -t acrzvoovesaasdev.azurecr.io/components:$(cat projects/components/package.json | jq -r '.version') \
             -t acrzvoovesaasdev.azurecr.io/components:latest
         displayName: "Docker Build Image"
 
-      - powershell: |
-          docker push acrzvoovesaasdev.azurecr.io/components:$((Get-Content -Raw -Path .\projects\components\package.json | ConvertFrom-JSON).version)
+      - bash: |
+          docker push acrzvoovesaasdev.azurecr.io/components:$(cat projects/components/package.json | jq -r '.version')
           docker push acrzvoovesaasdev.azurecr.io/components:latest
         displayName: "Push docker image to SaaS Dev ACR"
+
+      - bash: docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'components')
+        condition: always()
+        displayName: "Cleanup Images"
 
   - job: Helm
     displayName: "Helm package + push"

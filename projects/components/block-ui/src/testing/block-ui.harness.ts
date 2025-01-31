@@ -1,4 +1,4 @@
-import { ComponentHarness, HarnessPredicate } from '@angular/cdk/testing';
+import { ComponentHarness, HarnessPredicate, TestElement } from '@angular/cdk/testing';
 import { InputHarnessFilters } from '@angular/material/input/testing';
 import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
 
@@ -13,11 +13,16 @@ export class ZvBlockUiHarness extends ComponentHarness {
   private _spinner = this.locatorForOptional(MatProgressSpinnerHarness);
   private _spinnerText = this.locatorForOptional('.zv-block-ui__text');
   private _blockOverlay = this.locatorForOptional('.zv-block-ui__overlay');
+  private _contentDiv = this.locatorForOptional('.zv-block-ui__content');
 
   static with(options: ZvBlockUiHarnessFilters = {}): HarnessPredicate<ZvBlockUiHarness> {
     return new HarnessPredicate(ZvBlockUiHarness, options)
       .addOption('spinnerText', options.spinnerText, async (harness, text) => (await harness.getSpinnerText()) === text)
       .addOption('clickthrough', options.clickthrough, async (harness, clickthrough) => (await harness.isClickthrough()) === clickthrough);
+  }
+
+  public async getContentDiv(): Promise<TestElement | null> {
+    return await this._contentDiv();
   }
 
   public async isBlocked(): Promise<boolean> {

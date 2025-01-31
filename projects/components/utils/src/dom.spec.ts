@@ -2,25 +2,27 @@ import { isInViewport } from './dom';
 
 describe('isInViewport', () => {
   it('should return true if the element is in the viewport', () => {
-    const element = document.createElement('div');
-    element.style.position = 'absolute';
-    element.style.top = '0';
-    element.style.left = '0';
-    element.style.width = '100px';
-    element.style.height = '100px';
-    document.body.appendChild(element);
+    const element = {
+      getBoundingClientRect: () => ({
+        top: 0,
+        left: 0,
+        bottom: 50,
+        right: 50,
+      }),
+    } as unknown as Element;
 
     expect(isInViewport(element)).toBe(true);
   });
 
   it('should return false if the element is not in the viewport', () => {
-    const element = document.createElement('div');
-    element.style.position = 'absolute';
-    element.style.top = '-1000px';
-    element.style.left = '-1000px';
-    element.style.width = '100px';
-    element.style.height = '100px';
-    document.body.appendChild(element);
+    const element = {
+      getBoundingClientRect: () => ({
+        top: -1000,
+        left: -1000,
+        bottom: 100,
+        right: 100,
+      }),
+    } as unknown as Element;
 
     expect(isInViewport(element)).toBe(false);
   });

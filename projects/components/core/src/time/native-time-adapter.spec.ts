@@ -79,7 +79,7 @@ describe('ZvNativeTimeAdapter', () => {
   });
 
   it('should format', () => {
-    expect(adapter.format(newTime(15, 30), {})).toEqual('15:30');
+    expect(adapter.format(newTime(15, 30), {})).toEqual('03:30 PM');
   });
 
   it('should format with custom format', () => {

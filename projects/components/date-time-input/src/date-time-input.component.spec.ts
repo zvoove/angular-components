@@ -2,7 +2,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader, TestKey } from '@angular/cdk/testing';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, LOCALE_ID, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerInput, MatDatepickerModule } from '@angular/material/datepicker';
@@ -31,6 +31,7 @@ describe('ZvDateTimeInput', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         imports: [NoopAnimationsModule],
+        providers: [{ provide: LOCALE_ID, useValue: 'en-US' }],
       });
       fixture = TestBed.createComponent(ValueTestComponent);
       fixture.detectChanges();
@@ -388,6 +389,7 @@ describe('ZvDateTimeInput', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         imports: [NoopAnimationsModule],
+        providers: [{ provide: LOCALE_ID, useValue: 'en-US' }],
       });
       fixture = TestBed.createComponent(InputsTestComponent);
       fixture.detectChanges();
@@ -441,6 +443,7 @@ describe('ZvDateTimeInput', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         imports: [NoopAnimationsModule],
+        providers: [{ provide: LOCALE_ID, useValue: 'en-US' }],
       });
       fixture = TestBed.createComponent(FormTestComponent);
       fixture.detectChanges();

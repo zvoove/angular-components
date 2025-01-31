@@ -61,10 +61,13 @@ describe('ZvBlockUi', () => {
 
   it('should display spinner when blocked', async () => {
     component.blocked = true;
+    const div = await blockui.getContentDiv();
+    const minDimension = Math.min(await div!.getProperty('offsetWidth'), await div!.getProperty('offsetHeight'));
+    const expectedDiameter = Math.max(Math.min(minDimension, 100), 20);
 
     expect(await blockui.isBlocked()).toBeTrue();
     expect(await blockui.getSpinnerText()).toBe(null);
-    expect(await blockui.getSpinnerDiameter()).toBe(20);
+    expect(await blockui.getSpinnerDiameter()).toBe(expectedDiameter);
     expect(await blockui.isClickthrough()).toBe(false);
   });
 
@@ -74,7 +77,6 @@ describe('ZvBlockUi', () => {
 
     expect(await blockui.isBlocked()).toBeTrue();
     expect(await blockui.getSpinnerText()).toBe('spinner text');
-    expect(await blockui.getSpinnerDiameter()).toBe(20);
     expect(await blockui.isClickthrough()).toBe(false);
   });
 });

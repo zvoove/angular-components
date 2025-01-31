@@ -1,39 +1,32 @@
 trigger: none
 
 pool:
-  name: zvoove Regensburg
+  name: SaaS-dev
 
 jobs:
-  - job: Build
+  - job: CI
     displayName: "CI checks"
     workspace:
       clean: all
     steps:
-      - task: Npm@1
-        inputs:
-          command: "ci"
-        displayName: "Npm install dependancies"
+      - bash: docker login acrzvoovesaasdev.azurecr.io --username "$(ACR Pull Client Id)" --password "$(ACR Pull Client Secret)"
+        displayName: acr login
 
-      - task: Npm@1
-        inputs:
-          command: custom
-          customCommand: "run build:components"
-        displayName: "Npm build"
+      - bash: |
+          docker build . --target=test-components -t zvoove-angular-components:test-comp
+          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
+          docker build . --target=linter -t zvoove-angular-components:lint
+        displayName: build ci images
 
-      - task: Npm@1
-        inputs:
-          command: custom
-          customCommand: "run ng -- test components --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox"
-        displayName: "Npm test components"
+      - bash: docker run --rm zvoove-angular-components:lint
+        displayName: run linter
 
-      - task: Npm@1
-        inputs:
-          command: custom
-          customCommand: "run test:schematics"
-        displayName: "Npm test schematics"
+      - bash: docker run --rm zvoove-angular-components:test-comp
+        displayName: test components
 
-      - task: Npm@1
-        inputs:
-          command: custom
-          customCommand: "run lint"
-        displayName: "Npm lint"
+      - bash: docker run --rm zvoove-angular-components:test-schem
+        displayName: test schematics
+
+      - bash: docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'zvoove-angular-components')
+        condition: always()
+        displayName: cleanup images
