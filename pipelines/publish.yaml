@@ -45,7 +45,7 @@ jobs:
         displayName: "Docker Login to SaaS Dev ACR"
 
       - bash: |
-          docker build --pull . `
+          docker build --pull . \
             -t acrzvoovesaasdev.azurecr.io/components:$(cat projects/components/package.json | jq -r '.version') \
             -t acrzvoovesaasdev.azurecr.io/components:latest
         displayName: "Docker Build Image"
