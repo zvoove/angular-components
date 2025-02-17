@@ -51,12 +51,12 @@
     "@angular/language-service": "^18.2.13",
     "@angular/localize": "^18.2.13",
     "@types/express": "^5.0.0",
-    "@types/jasmine": "~5.1.5",
+    "@types/jasmine": "~5.1.6",
     "@types/jasminewd2": "~2.0.13",
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.13.4",
     "angular-eslint": "^18.4.3",
     "copyfiles": "^2.4.1",
-    "eslint": "^9.20.0",
+    "eslint": "^9.20.1",
     "eslint-plugin-jasmine": "^4.2.2",
     "husky": "^9.1.7",
     "jasmine": "^5.6.0",
@@ -70,10 +70,10 @@
     "karma-time-stats-reporter": "^0.1.0",
     "lint-staged": "^15.4.3",
     "ng-packagr": "^18.2.1",
-    "prettier": "^3.5.0",
+    "prettier": "^3.5.1",
     "ts-node": "~10.9.2",
     "typescript": "~5.5.4",
-    "typescript-eslint": "^8.23.0"
+    "typescript-eslint": "^8.24.0"
   },
   "lint-staged": {
     "*.{ts,json,scss,html}": "prettier --write"
