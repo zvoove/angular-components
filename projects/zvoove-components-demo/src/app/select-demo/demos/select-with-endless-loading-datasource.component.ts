@@ -10,7 +10,6 @@ import { NEVER } from 'rxjs';
   selector: 'app-select-with-endless-loading-datasource',
   templateUrl: './select-with-endless-loading-datasource.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithEndlessLoadingDataSourceComponent {

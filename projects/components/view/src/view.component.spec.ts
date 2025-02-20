@@ -18,7 +18,6 @@ import { ZvView } from './view.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [CommonModule, ZvView],
 })
 export class TestDataSourceComponent {

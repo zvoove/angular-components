@@ -60,7 +60,6 @@ const enum ValueChangeSource {
     class: 'zv-select',
   },
   providers: [{ provide: MatFormFieldControl, useExisting: ZvSelect }],
-  standalone: true,
   imports: [
     MatIconButton,
     MatIcon,

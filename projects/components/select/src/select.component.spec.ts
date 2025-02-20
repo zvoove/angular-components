@@ -120,7 +120,6 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect],
 })
 export class TestComponent implements OnDestroy {
@@ -176,7 +175,6 @@ const ITEMS = {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect, ZvSelectTriggerTemplate],
 })
 export class TestMultipleComponent {
@@ -196,7 +194,6 @@ export class TestMultipleComponent {
   template: `<zv-select [(value)]="value" [dataSource]="items"></zv-select>`,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect],
 })
 export class TestValueComponent {
@@ -220,7 +217,6 @@ export class TestValueComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect, ZvSelectTriggerTemplate, ZvSelectOptionTemplate],
 })
 export class TestCustomTemplateComponent {
@@ -238,7 +234,6 @@ export class TestCustomTemplateComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ZvSelect, ZvFormField, MatLabel, FormsModule],
 })
 export class TestWithFormFieldComponent {

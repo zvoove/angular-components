@@ -54,7 +54,6 @@ let nextUniqueId = 0;
   providers: [{ provide: MatFormFieldControl, useExisting: ZvNumberInput }],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatIcon],
 })
 export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<number>, OnChanges, OnDestroy, OnInit, DoCheck {

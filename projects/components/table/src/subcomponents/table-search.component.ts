@@ -12,7 +12,6 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./table-search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatFormField, MatLabel, MatInput, MatIconButton, MatSuffix, MatIcon],
 })
 export class ZvTableSearchComponent implements OnInit, OnDestroy {

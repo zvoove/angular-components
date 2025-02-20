@@ -24,7 +24,6 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatCheckboxModule, ReactiveFormsModule, FormsModule, ZvFlipContainerModule, ZvFormField, MatFormFieldModule, MatInputModule],
   providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })

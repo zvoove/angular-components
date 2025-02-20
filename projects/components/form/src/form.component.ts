@@ -34,7 +34,6 @@ export const dependencies = {
   styleUrls: ['./form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [ReactiveFormsModule, ZvBlockUi, MatCard, MatCardContent, MatIcon, MatProgressBar, ZvFormErrors, ZvButton, ZvErrorMessagePipe],
 })
 export class ZvForm implements AfterViewInit, OnDestroy {

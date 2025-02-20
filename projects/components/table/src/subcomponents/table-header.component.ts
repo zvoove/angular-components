@@ -19,7 +19,6 @@ import { ZvTableSortComponent } from './table-sort.component';
   styleUrls: ['./table-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [NgTemplateOutlet, ZvTableSortComponent, ZvTableSearchComponent],
 })
 export class ZvTableHeaderComponent {

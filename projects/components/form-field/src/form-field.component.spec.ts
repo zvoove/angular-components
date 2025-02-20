@@ -52,7 +52,6 @@ class TestZvFormService extends BaseZvFormService {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [FormsModule, MatInputModule, ZvFormField],
 })
 export class TestNoFormComponent {
@@ -69,7 +68,6 @@ export class TestNoFormComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [FormsModule, MatInputModule, ZvFormField],
 })
 export class TestNgModelComponent {
@@ -92,7 +90,6 @@ export class TestNgModelComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ReactiveFormsModule, MatInputModule, ZvFormField],
 })
 export class TestFormComponent {
@@ -120,7 +117,6 @@ export class TestFormComponent {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ReactiveFormsModule, MatCheckboxModule, ZvFormField, AsyncPipe],
 })
 export class TestCheckboxComponent {

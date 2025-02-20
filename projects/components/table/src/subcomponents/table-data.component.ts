@@ -42,7 +42,6 @@ import type {} from '@angular/localize/init';
   styleUrls: ['./table-data.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [
     MatTable,
     MatColumnDef,

@@ -88,7 +88,6 @@ function generateSampleData(rowCount: number): ISampleData[] {
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     allSharedImports,
     MatCardModule,

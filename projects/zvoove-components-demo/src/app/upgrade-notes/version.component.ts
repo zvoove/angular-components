@@ -22,7 +22,6 @@ import { Change } from './change.component';
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, Change],
 })
 export class Version {

@@ -19,7 +19,6 @@ import { FormDataSource } from './form-data-source';
   styleUrls: ['./form-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [
     MatCardModule,
     MatCheckboxModule,

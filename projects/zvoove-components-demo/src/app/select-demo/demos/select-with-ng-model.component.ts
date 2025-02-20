@@ -10,7 +10,6 @@ import { ZvSelectModule } from '@zvoove/components/select/src/select.module';
   templateUrl: './select-with-ng-model.component.html',
   styleUrls: ['./select-with-ng-model.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatButtonModule, MatFormFieldModule, ZvSelectModule, ReactiveFormsModule, FormsModule, JsonPipe],
 })
 export class SelectWithNgModelComponent {

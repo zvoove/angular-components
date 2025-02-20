@@ -63,7 +63,6 @@ function applyConfigDefaults(config: ZvFormFieldConfig | null): {
   styleUrls: ['./form-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatFormField, MatLabel, MatPrefix, MatSuffix, MatIconButton, MatIcon, MatError, AsyncPipe],
 })
 export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {

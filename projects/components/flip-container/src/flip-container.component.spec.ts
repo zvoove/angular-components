@@ -14,7 +14,6 @@ import { ZvFlipContainerModule } from './flip-container.module';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ZvFlipContainerModule],
 })
 export class TestComponent {

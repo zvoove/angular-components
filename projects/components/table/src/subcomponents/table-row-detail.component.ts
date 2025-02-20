@@ -11,7 +11,6 @@ import { ZvTableRowDetail } from '../directives/table.directives';
   styleUrls: ['./table-row-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [NgTemplateOutlet],
   host: {
     '[class.zv-table-row-detail]': 'true',

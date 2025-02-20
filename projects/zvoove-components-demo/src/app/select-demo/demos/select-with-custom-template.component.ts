@@ -10,7 +10,6 @@ import { ZvSelectModule } from '@zvoove/components/select/src/select.module';
   styleUrls: ['./select-with-custom-template.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatFormFieldModule, ZvSelectModule, ReactiveFormsModule, FormsModule, JsonPipe],
 })
 export class SelectWithCustomTemplateComponent {

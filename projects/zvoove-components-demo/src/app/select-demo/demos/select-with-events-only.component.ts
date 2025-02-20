@@ -8,7 +8,6 @@ import { ZvSelectModule } from '@zvoove/components/select/src/select.module';
   selector: 'app-select-with-events-only',
   templateUrl: './select-with-events-only.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithEventsOnlyComponent {

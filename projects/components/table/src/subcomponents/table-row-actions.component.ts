@@ -18,7 +18,6 @@ import { ZvTableActionsComponent } from './table-actions.component';
   templateUrl: './table-row-actions.component.html',
   styleUrl: './table-row-actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatIconAnchor,
     MatIconButton,

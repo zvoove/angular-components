@@ -6,7 +6,6 @@ import { allSharedImports } from '../common/shared-imports';
   templateUrl: './general-setup.page.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [allSharedImports],
 })
 export class GeneralSetupPage {

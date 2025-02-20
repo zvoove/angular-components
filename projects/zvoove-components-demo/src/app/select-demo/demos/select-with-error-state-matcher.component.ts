@@ -19,7 +19,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './select-with-error-state-matcher.component.html',
   styleUrls: ['./select-with-error-state-matcher.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatButtonModule, ReactiveFormsModule, MatFormFieldModule, ZvSelectModule, AsyncPipe, JsonPipe],
 })
 export class SelectWithErrorStateMatcherComponent {

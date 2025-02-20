@@ -25,7 +25,6 @@ export class CustomZvSelectService extends DefaultZvSelectService {
   templateUrl: './select-with-custom-select-service.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: ZvSelectService, useClass: CustomZvSelectService }],
-  standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithCustomSelectServiceComponent {

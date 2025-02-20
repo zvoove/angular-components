@@ -35,7 +35,6 @@ import { ZvHeaderModule } from '@zvoove/components/header';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [ZvHeaderModule, MatCardModule, MatButtonModule, MatIconModule, MatTabsModule, DatePipe],
 })
 export class HeaderDemoComponent {

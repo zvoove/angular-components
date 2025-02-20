@@ -42,7 +42,6 @@ import { ZvCardHarness } from './testing/card.harness';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ZvCardModule],
 })
 export class TestDataSourceComponent {

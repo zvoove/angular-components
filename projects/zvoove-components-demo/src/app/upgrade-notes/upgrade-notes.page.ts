@@ -15,7 +15,6 @@ import { Version } from './version.component';
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [allSharedImports, RouterLink, Version, Change],
 })
 export class UpgrateNotesPage {}

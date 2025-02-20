@@ -37,7 +37,6 @@ import { InvalidErrorStateMatcher } from '../common/invalid-error-state-matcher'
     </zv-form-field>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule, FormsModule, ZvFormField],
 })
 export class ReferenceColumnComponent {
@@ -54,7 +53,6 @@ export class ReferenceColumnComponent {
   styleUrls: ['./form-field-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [
     ZvFormField,
     MatFormFieldModule,

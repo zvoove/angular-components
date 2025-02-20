@@ -9,7 +9,6 @@ import { ComponentPageContentDirective } from './component-page-content.directiv
   templateUrl: './component-page-wrapper.component.html',
   styleUrls: ['./component-page-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatCardModule, MatTabsModule, ComponentPageContentDirective, NgTemplateOutlet],
 })
 export class AppComponentPageWrapper {

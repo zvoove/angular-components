@@ -17,7 +17,6 @@ import { FlipContainerBack, FlipContainerFront } from './flip-container.directiv
   templateUrl: './flip-container.component.html',
   styleUrls: ['./flip-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [NgTemplateOutlet, FlipContainerFront, FlipContainerBack],
 })
 export class ZvFlipContainer implements AfterViewInit {

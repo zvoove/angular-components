@@ -12,7 +12,6 @@ import { AsyncPipe } from '@angular/common';
   styleUrls: ['./form-errors.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatChipListbox, MatChip, AsyncPipe],
 })
 export class ZvFormErrors implements OnChanges {
