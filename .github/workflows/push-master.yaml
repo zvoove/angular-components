@@ -1,0 +1,47 @@
+name: publish to npm and deploy demo to gh-pages
+on:
+  push:
+    branches:
+      - master
+      - "releases/**"
+
+env:
+  NODE_VERSION_MAJOR: "23"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION_MAJOR }}
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build:components
+          npm run build:components-demo
+          cp dist/prosoft-components-demo/index.html dist/prosoft-components-demo/404.html
+        env:
+          CI: true
+
+      - name: Publish to npm
+        id: publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_AUTH_TOKEN }}
+          package: ./dist/components/package.json
+
+      - if: github.ref == 'refs/heads/master' && steps.publish.type != 'none'
+        name: Deploy demo to gh-pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: dist/prosoft-components-demo # The folder the action should deploy.
+          CLEAN: true

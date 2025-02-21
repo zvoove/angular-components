@@ -1,0 +1,89 @@
+name: pull request ci
+
+on: [pull_request]
+
+env:
+  NODE_VERSION_MAJOR: "23"
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          docker build . --target=test-components -t zvoove-angular-components:test-comp
+          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
+          docker build . --target=linter -t zvoove-angular-components:lint
+        name: build ci images
+
+      - run: docker run --rm zvoove-angular-components:lint
+        name: run linter
+
+      - run: docker run --rm zvoove-angular-components:test-comp
+        name: test components
+
+      - run: docker run --rm zvoove-angular-components:test-schem
+        name: test schematics
+
+  # commitlint:
+  #   name: commit lint
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+  #     - uses: wagoid/commitlint-github-action@v3
+
+  # codelint:
+  #   name: code lint
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION_MAJOR }}
+  #     - name: lint
+  #       run: |
+  #         npm ci
+  #         npm run ng -- lint
+  #       env:
+  #         CI: true
+
+  # test:
+  #   name: test
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION_MAJOR }}
+  #     - name: test
+  #       run: |
+  #         npm ci
+  #         npm run ng -- test components --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+  #         npm run test:schematics
+  #       env:
+  #         CI: true
+
+  # build:
+  #   name: build
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION_MAJOR }}
+  #     - name: build
+  #       run: |
+  #         npm ci
+  #         npm run build:components
+  #         npm run build:components-demo
+  #       env:
+  #         CI: true
