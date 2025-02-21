@@ -17,7 +17,7 @@ import { FlipContainerBack, FlipContainerFront } from './flip-container.directiv
   templateUrl: './flip-container.component.html',
   styleUrls: ['./flip-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgTemplateOutlet, FlipContainerFront, FlipContainerBack],
+  imports: [NgTemplateOutlet],
 })
 export class ZvFlipContainer implements AfterViewInit {
   @Input() public removeHiddenNodes = true;

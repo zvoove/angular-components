@@ -1,5 +1,5 @@
 import { Direction, Directionality } from '@angular/cdk/bidi';
-import { ElementRef, NgZone, EventEmitter } from '@angular/core';
+import { ElementRef, NgZone, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { getControlType, hasRequiredField } from './helpers';
@@ -50,12 +50,19 @@ describe('getControlType', () => {
       change: new EventEmitter<Direction>(),
       ngOnDestroy: () => {},
     };
+    const cd = { markForCheck: () => {} } as ChangeDetectorRef;
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: ChangeDetectorRef, useValue: cd },
+        { provide: ElementRef, useValue: elementRef },
+      ],
+    });
     TestBed.runInInjectionContext(() => {
-      const control = new MatSlider(zone, null, elementRef, dir);
+      const control = new MatSlider(zone, null, null, dir);
       expect(getControlType(control)).toBe('mat-slider');
     });
   });
-  it('should return unknown when not type is found', () => {
+  it('should return unknown when no type is found', () => {
     const control = {};
     expect(getControlType(control)).toBe(null);
   });
