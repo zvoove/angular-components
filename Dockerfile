@@ -22,7 +22,7 @@ ENTRYPOINT ["npm", "run", "lint"]
 FROM build AS build-demo
 RUN npm run build:components-demo -- --output-path=./dist/out
 
-FROM acrzvoovesaasdev.azurecr.io/docker.io/library/node:22.9-alpine
+FROM docker.io/library/node:22.9-alpine
 WORKDIR /usr/app
 COPY --from=build-demo /app/src/dist/out ./
 
