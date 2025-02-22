@@ -1,4 +1,4 @@
-FROM acrzvoovesaasdev.azurecr.io/docker.io/library/node:22.9-alpine AS prepare
+FROM docker.io/library/node:22.9-alpine AS prepare
 
 RUN apk add chromium
 ENV CHROME_BIN=/usr/bin/chromium-browser
