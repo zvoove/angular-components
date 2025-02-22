@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          docker build . --target=test-components -t zvoove-angular-components:test-comp
-          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
-          docker build . --target=linter -t zvoove-angular-components:lint
+          docker build ./../.. --target=test-components -t zvoove-angular-components:test-comp
+          docker build ./../.. --target=test-schematics -t zvoove-angular-components:test-schem
+          docker build ./../.. --target=linter -t zvoove-angular-components:lint
         name: build ci images
 
       - run: docker run --rm zvoove-angular-components:lint
