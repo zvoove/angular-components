@@ -36,7 +36,7 @@ jobs:
         name: build demo
 
       - run: |
-          docker login acrzvoovesaasdev.azurecr.io --username $AZURE_CLIENT_ID_DEV --password $AZURE_CLIENT_SECRET
+          docker login acrzvoovesaasdev.azurecr.io --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET
           docker push acrzvoovesaasdev.azurecr.io/components:$(cat projects/components/package.json | jq -r '.version')
           docker push acrzvoovesaasdev.azurecr.io/components:latest
         name: push demo image to acr
@@ -48,7 +48,7 @@ jobs:
         name: package helm chart
 
       - run: |
-          az login --service-principal -u AZURE_CLIENT_ID_DEV -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+          az login --service-principal -u AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
           $env:HELM_EXPERIMENTAL_OCI=1
           az acr login -n "acrzvoovesaasdev" --expose-token --output tsv --query accessToken |
             helm registry login "acrzvoovesaasdev.azurecr.io" --username "00000000-0000-0000-0000-000000000000" --password-stdin
