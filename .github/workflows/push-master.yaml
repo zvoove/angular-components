@@ -3,45 +3,39 @@ on:
   push:
     branches:
       - master
-      - "releases/**"
-
-env:
-  NODE_VERSION_MAJOR: "23"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION_MAJOR }}
+          node-version: 23
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Build
-        run: |
-          npm ci
-          npm run build:components
-          npm run build:components-demo
-          cp dist/prosoft-components-demo/index.html dist/prosoft-components-demo/404.html
-        env:
-          CI: true
+      - run: |
+          docker build . --target=test-components -t zvoove-angular-components:test-comp
+          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
+          docker build . --target=linter -t zvoove-angular-components:lint
+        name: build ci images
+
+      - run: docker run --rm zvoove-angular-components:lint
+        name: run linter
+
+      - run: docker run --rm zvoove-angular-components:test-comp
+        name: test components
+
+      - run: docker run --rm zvoove-angular-components:test-schem
+        name: test schematics
+      - run: npm ci
+
+      - run: npm run build:components
 
       - name: Publish to npm
         id: publish
-        uses: JS-DevTools/npm-publish@v1
+        uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
           package: ./dist/components/package.json
-
-      - if: github.ref == 'refs/heads/master' && steps.publish.type != 'none'
-        name: Deploy demo to gh-pages
-        uses: JamesIves/github-pages-deploy-action@releases/v3
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: dist/prosoft-components-demo # The folder the action should deploy.
-          CLEAN: true
