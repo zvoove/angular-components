@@ -1,41 +1,59 @@
-name: publish to npm
+name: deploy demo
 on:
   push:
     branches:
       - master
+
+env:
+  AZURE_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+  AZURE_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
+  AZURE_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 23
-          registry-url: 'https://registry.npmjs.org'
-
       - run: |
           docker build . --target=test-components -t zvoove-angular-components:test-comp
-          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
-          docker build . --target=linter -t zvoove-angular-components:lint
-        name: build ci images
+          docker run --rm zvoove-angular-components:test-comp
+        name: component tests
 
-      - run: docker run --rm zvoove-angular-components:lint
+      - run: |
+          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
+          docker run --rm zvoove-angular-components:test-schem
+        name: run schematic tests
+
+      - run: |
+          docker build . --target=linter -t zvoove-angular-components:lint
+          docker run --rm zvoove-angular-components:lint
         name: run linter
 
-      - run: docker run --rm zvoove-angular-components:test-comp
-        name: test components
+      - run: |
+          docker build --pull . \
+            -t acrzvoovesaasdev.azurecr.io/components:$(cat projects/components/package.json | jq -r '.version') \
+            -t acrzvoovesaasdev.azurecr.io/components:latest
+        name: build demo
 
-      - run: docker run --rm zvoove-angular-components:test-schem
-        name: test schematics
-      - run: npm ci
+      - run: |
+          docker login acrzvoovesaasdev.azurecr.io --username $AZURE_CLIENT_ID_DEV --password $AZURE_CLIENT_SECRET
+          docker push acrzvoovesaasdev.azurecr.io/components:$(cat projects/components/package.json | jq -r '.version')
+          docker push acrzvoovesaasdev.azurecr.io/components:latest
+        name: push demo image to acr
 
-      - run: npm run build:components
+      - run: |
+          helm package ./k8s/chart/ --app-version $(cat projects/components/package.json | jq -r '.version') `
+            --version $(cat projects/components/package.json | jq -r '.version')
+        name: package helm chart
 
-      - name: Publish to npm
-        id: publish
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_AUTH_TOKEN }}
-          package: ./dist/components/package.json
+      - run: |
+          az login --service-principal -u AZURE_CLIENT_ID_DEV -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+          $env:HELM_EXPERIMENTAL_OCI=1
+          az acr login -n "acrzvoovesaasdev" --expose-token --output tsv --query accessToken |
+            helm registry login "acrzvoovesaasdev.azurecr.io" --username "00000000-0000-0000-0000-000000000000" --password-stdin
+        name: login azure + arc
+
+      - run: |
+          helm push "components-$(cat projects/components/package.json | jq -r '.version').tgz" "oci://acrzvoovesaasdev.azurecr.io/helm"
+          echo Pushed Chart Version $(cat projects/components/package.json | jq -r '.version')
+        name: push helm chart
