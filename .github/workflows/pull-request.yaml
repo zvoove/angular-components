@@ -1,0 +1,25 @@
+name: pull request ci
+on: [pull_request]
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - run: |
+          docker build . --target=test-components -t zvoove-angular-components:test-comp
+          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
+          docker build . --target=linter -t zvoove-angular-components:lint
+        name: build ci images
+
+      - run: docker run --rm zvoove-angular-components:lint
+        name: run linter
+
+      - run: docker run --rm zvoove-angular-components:test-comp
+        name: test components
+
+      - run: docker run --rm zvoove-angular-components:test-schem
+        name: test schematics

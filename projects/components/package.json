@@ -1,8 +1,12 @@
 {
   "name": "@zvoove/components",
-  "description": "",
+  "description": "A set of angular components compatible with and/or dependent on @angular/material.",
   "version": "19.0.0",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zvoove/angular-components"
+  },
   "dependencies": {
     "tslib": "^2.8.1"
   },
