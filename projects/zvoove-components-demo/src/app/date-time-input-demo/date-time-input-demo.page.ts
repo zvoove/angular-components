@@ -23,7 +23,6 @@ import { allSharedImports } from '../common/shared-imports';
   templateUrl: './date-time-input-demo.page.html',
   styleUrls: ['./date-time-input-demo.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [allSharedImports, MatDatepickerModule, ZvDateTimeInput],
   providers: [
     { provide: ZvFormService, useClass: DemoZvFormsService },

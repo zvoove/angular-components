@@ -16,7 +16,6 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
   templateUrl: './number-input-demo.component.html',
   styleUrls: ['./number-input-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatCardModule,
     MatCheckboxModule,

@@ -13,7 +13,6 @@ import { allSharedImports } from '../common/shared-imports';
   templateUrl: './block-ui-demo.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [
     allSharedImports,
     MatCheckboxModule,

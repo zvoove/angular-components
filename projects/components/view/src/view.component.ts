@@ -12,7 +12,6 @@ import { IZvViewDataSource } from './view-data-source';
   styleUrls: ['./view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [ZvBlockUi, MatCard, MatIcon, ZvErrorMessagePipe],
 })
 export class ZvView implements OnDestroy {

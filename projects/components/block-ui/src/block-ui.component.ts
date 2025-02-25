@@ -12,7 +12,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatProgressSpinner],
 })
 export class ZvBlockUi {

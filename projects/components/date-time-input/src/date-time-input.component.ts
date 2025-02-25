@@ -45,7 +45,6 @@ let nextUniqueId = 0;
   styleUrls: ['./date-time-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatDatepickerModule, ZvTimeInput, ReactiveFormsModule],
   host: {
     '[attr.id]': 'id',

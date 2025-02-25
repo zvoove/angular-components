@@ -11,7 +11,6 @@ import { ZvFileInputHarness } from './testing/file-input.harness';
   template: ` <zv-file-input /> `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ZvFileInput],
 })
 export class TestComponent {

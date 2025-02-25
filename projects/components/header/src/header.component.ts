@@ -8,7 +8,6 @@ import { NgTemplateOutlet } from '@angular/common';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [NgTemplateOutlet],
 })
 export class ZvHeader {

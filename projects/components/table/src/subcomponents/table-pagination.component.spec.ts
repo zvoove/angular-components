@@ -21,7 +21,6 @@ import { ZvTablePaginationComponent } from './table-pagination.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ZvTablePaginationComponent],
 })
 class PaginationTestComponent {

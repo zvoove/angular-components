@@ -12,7 +12,6 @@ import { IZvTableSort, IZvTableSortDefinition } from '../models';
   styleUrls: ['./table-sort.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatFormField, MatLabel, MatSelect, MatOption, MatMiniFabButton, MatIcon],
 })
 export class ZvTableSortComponent {

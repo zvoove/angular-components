@@ -4,7 +4,6 @@ import { HighlightLineNumbers } from 'ngx-highlightjs/line-numbers';
 
 @Component({
   selector: 'app-code',
-  standalone: true,
   imports: [HighlightModule, HighlightLineNumbers],
   templateUrl: './code.component.html',
   styleUrls: ['./code.component.scss'],

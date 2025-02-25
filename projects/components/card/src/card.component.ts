@@ -19,7 +19,6 @@ import {
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatCardModule, ZvHeaderModule, NgTemplateOutlet],
 })
 export class ZvCard {

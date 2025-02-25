@@ -12,7 +12,6 @@ import { delay } from 'rxjs/operators';
   selector: 'app-select-with-other-load-trigger',
   templateUrl: './select-with-other-load-trigger.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatRadioModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithOtherLoadTriggerComponent {

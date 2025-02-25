@@ -88,7 +88,6 @@ function generateSampleData(rowCount: number): ISampleData[] {
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     allSharedImports,
     MatCardModule,
@@ -180,7 +179,7 @@ export class TableDemoComponent {
 
   public rebuildDataSource() {
     const actionConfig = {
-      actionFn: !this.actionsWithLinks ? () => of() : undefined,
+      actionFn: !this.actionsWithLinks ? (items: unknown) => console.log(items) : undefined,
       routerLink: this.actionsWithLinks ? () => ({ path: ['/', 'table'] }) : undefined,
     };
     this.dataSource = new ZvTableDataSource<ISampleData>({

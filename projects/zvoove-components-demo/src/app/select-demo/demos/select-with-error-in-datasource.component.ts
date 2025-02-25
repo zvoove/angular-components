@@ -10,7 +10,6 @@ import { throwError } from 'rxjs';
   selector: 'app-select-with-error-in-datasource',
   templateUrl: './select-with-error-in-datasource.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithErrorInDataSourceComponent {

@@ -16,7 +16,6 @@ import { ZvTableHeaderComponent } from './table-header.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ZvTableHeaderComponent],
 })
 export class TestComponent {

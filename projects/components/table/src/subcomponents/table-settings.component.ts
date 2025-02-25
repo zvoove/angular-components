@@ -37,7 +37,6 @@ import { ZvTableSortComponent } from './table-sort.component';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatCard,
     MatCardHeader,

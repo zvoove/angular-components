@@ -10,7 +10,6 @@ import { ZvButtonColors, ZvButtonTypes } from '@zvoove/components/core';
   templateUrl: './button.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatButtonModule, NgTemplateOutlet, MatIcon],
 })
 export class ZvButton implements OnDestroy {

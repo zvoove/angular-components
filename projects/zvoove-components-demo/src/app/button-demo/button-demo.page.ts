@@ -22,7 +22,6 @@ import { allSharedImports } from '../common/shared-imports';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [allSharedImports, ZvButton, MatIconModule, MatCardModule, FormsModule, MatInputModule, MatSelectModule, MatCheckbox],
 })
 export class ButtonDemoPage {

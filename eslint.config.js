@@ -7,7 +7,6 @@ const jasmine = require("eslint-plugin-jasmine");
 /** @type tseslint.ConfigWithExtends */
 const baseTsLintConfig = {
   rules: {
-    "@angular-eslint/prefer-standalone": "error",
     "@angular-eslint/directive-selector": [
       "error",
       {

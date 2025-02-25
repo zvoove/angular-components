@@ -9,8 +9,7 @@ import { ComponentPageContentDirective } from './component-page-content.directiv
   templateUrl: './component-page-wrapper.component.html',
   styleUrls: ['./component-page-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatCardModule, MatTabsModule, ComponentPageContentDirective, NgTemplateOutlet],
+  imports: [MatCardModule, MatTabsModule, NgTemplateOutlet],
 })
 export class AppComponentPageWrapper {
   componentName = input.required<string>();

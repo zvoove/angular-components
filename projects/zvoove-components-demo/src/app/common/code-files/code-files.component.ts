@@ -10,7 +10,6 @@ export interface CodeFiles {
 
 @Component({
   selector: 'app-code-files',
-  standalone: true,
   imports: [AppCodeComponent, MatTabsModule],
   templateUrl: './code-files.component.html',
   styleUrls: ['./code-files.component.scss'],

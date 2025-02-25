@@ -125,7 +125,6 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [MatIconTestingModule, ZvTableModule],
 })
 export class TestComponent {
@@ -541,10 +540,14 @@ describe('ZvTable', () => {
     let loader: HarnessLoader;
     let table: ZvTableHarness;
 
-    async function initTestComponent(tableDataSource: ZvTableDataSource<any>) {
+    async function initTestComponent(
+      tableDataSource: ZvTableDataSource<any>,
+      modifySettings?: (settingsService: TestSettingsService) => void
+    ) {
       fixture = TestBed.createComponent(TestComponent);
       component = fixture.componentInstance;
       expect(component).toBeDefined();
+      modifySettings?.(component.table._settingsService as TestSettingsService);
       component.dataSource = tableDataSource;
       loader = TestbedHarnessEnvironment.loader(fixture);
       table = await loader.getHarness(ZvTableHarness);
@@ -622,18 +625,19 @@ describe('ZvTable', () => {
                 actionFn: (selection) => component.onListActionExecute(selection),
               },
             ],
-          })
+          }),
+          (settingService) => {
+            settingService.settingsEnabled = true;
+            settingService.settings$.next({
+              [component.tableId]: {
+                pageSize: 2,
+                sortColumn: null,
+                sortDirection: null,
+                columnBlacklist: [],
+              },
+            });
+          }
         );
-
-        component.table._settingsService.settingsEnabled = true;
-        (component.table._settingsService as TestSettingsService).settings$.next({
-          [component.tableId]: {
-            pageSize: 2,
-            sortColumn: null,
-            sortDirection: null,
-            columnBlacklist: [],
-          },
-        });
       });
 
       it('should bind caption', async () => {
@@ -686,11 +690,11 @@ describe('ZvTable', () => {
 
       it('should create data rows', async () => {
         const dataRows = await table.getRows();
-        expect(dataRows.length).toEqual(6); // 3 rows with 3x row detail per row
+        expect(dataRows.length).toEqual(4); // 2 rows with 2x row detail per row - because the 3rd item is on the 2nd page
 
         const data = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('zv-table-data__row'));
 
-        expect(data.length).toEqual(3);
+        expect(data.length).toEqual(2);
 
         const strDataCell = await data[0].getCells({ columnName: 'str' });
         expect(strDataCell.length).toEqual(1);
@@ -785,8 +789,8 @@ describe('ZvTable', () => {
 
         await idSortHeader.click();
         activeHeader = await sort.getActiveHeader();
-        expect(await activeHeader.getLabel()).toEqual('id');
-        expect(await activeHeader.getSortDirection()).toEqual('asc');
+        expect(await activeHeader?.getLabel()).toEqual('id');
+        expect(await activeHeader?.getSortDirection()).toEqual('asc');
         expect(component.table.onSortChanged).toHaveBeenCalledWith({
           sortColumn: 'id',
           sortDirection: 'asc',

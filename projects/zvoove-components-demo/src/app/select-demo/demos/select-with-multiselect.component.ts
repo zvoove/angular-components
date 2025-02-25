@@ -10,7 +10,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   selector: 'app-select-with-multiselect',
   templateUrl: './select-with-multiselect.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatCheckboxModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithMultiselectComponent {

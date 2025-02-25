@@ -15,7 +15,6 @@ import { ZvBlockUiHarness } from './testing/block-ui.harness';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ZvBlockUi],
 })
 export class TestComponent {

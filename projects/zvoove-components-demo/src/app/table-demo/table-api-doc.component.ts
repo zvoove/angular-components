@@ -15,7 +15,6 @@ import { apiDoc } from '../common/shared-imports';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [apiDoc, MatCard, MatCardHeader, MatCardTitle, MatCardContent],
 })
 export class TableApiDocComponent {}

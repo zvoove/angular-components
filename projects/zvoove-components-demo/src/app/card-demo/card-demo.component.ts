@@ -27,7 +27,6 @@ import { ZvCardModule } from '@zvoove/components/card';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [ZvCardModule, MatButtonModule, MatIconModule],
 })
 export class CardDemoComponent {}

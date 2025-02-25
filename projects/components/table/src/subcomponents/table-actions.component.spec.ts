@@ -21,7 +21,6 @@ import { ZvTableActionsComponent } from './table-actions.component';
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  standalone: true,
   imports: [ZvTableActionsComponent, MatIcon, MatIconButton, MatMenuTrigger],
 })
 export class TestComponent {

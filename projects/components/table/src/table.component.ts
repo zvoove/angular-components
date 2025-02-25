@@ -53,7 +53,6 @@ import { ZvTableSettingsComponent } from './subcomponents/table-settings.compone
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [
     ZvFlipContainerModule,
     ZvTableHeaderComponent,

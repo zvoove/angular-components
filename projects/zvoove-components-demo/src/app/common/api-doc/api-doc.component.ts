@@ -7,7 +7,6 @@ import { AppApiDocProperty } from './api-doc-property.component';
 
 @Component({
   selector: 'app-api-doc',
-  standalone: true,
   imports: [MatCardModule],
   templateUrl: './api-doc.component.html',
   styleUrls: ['./api-doc.component.scss'],

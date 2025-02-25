@@ -83,7 +83,6 @@ class DemoZvViewDataSource<TParams, TData> implements IZvViewDataSource {
   templateUrl: './view-demo.component.html',
   styleUrls: ['./view-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatCardModule, MatCheckboxModule, ReactiveFormsModule, FormsModule, MatButtonModule, ZvView, JsonPipe],
 })
 export class ViewDemoComponent {

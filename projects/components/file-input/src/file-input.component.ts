@@ -32,7 +32,6 @@ let nextUniqueId = 0;
   selector: 'zv-file-input',
   templateUrl: './file-input.component.html',
   styleUrls: ['./file-input.component.scss'],
-  standalone: true,
   imports: [MatButtonModule, MatIconModule],
   host: {
     // Native input properties that are overwritten by Angular inputs need to be synced with

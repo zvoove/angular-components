@@ -9,7 +9,6 @@ import { Observable, of } from 'rxjs';
   selector: 'app-select-with-selected-item-not-in-datasource',
   templateUrl: './select-with-selected-item-not-in-datasource.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithSelectedItemNotInDataSourceComponent {

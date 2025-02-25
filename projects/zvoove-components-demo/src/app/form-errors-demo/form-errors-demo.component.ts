@@ -8,7 +8,6 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
   selector: 'app-form-errors-demo',
   templateUrl: './form-errors-demo.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [ReactiveFormsModule, ZvFormErrors],
   providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })

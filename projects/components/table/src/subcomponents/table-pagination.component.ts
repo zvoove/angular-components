@@ -13,7 +13,6 @@ import { debounce } from 'rxjs/operators';
   styleUrls: ['./table-pagination.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatPaginator, MatFormField, MatSelect, MatOption],
 })
 export class ZvTablePaginationComponent implements OnDestroy {

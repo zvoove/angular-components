@@ -14,7 +14,6 @@ import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
   styleUrls: ['./dialog-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [MatDialogTitle, CdkScrollable, MatDialogContent, ZvBlockUi, MatDialogActions, MatProgressBar, ZvButton, ZvErrorMessagePipe],
 })
 export class ZvDialogWrapper implements OnDestroy {

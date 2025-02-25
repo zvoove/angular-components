@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
-import { Change } from './change.component';
 
 @Component({
   selector: 'app-version',
@@ -22,8 +21,7 @@ import { Change } from './change.component';
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, Change],
+  imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent],
 })
 export class Version {
   version = input.required<string>();
