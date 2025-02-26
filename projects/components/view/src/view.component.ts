@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { ZvBlockUi } from '@zvoove/components/block-ui';
-import { IZvException, ZvErrorMessagePipe } from '@zvoove/components/core';
-import { Subscription } from 'rxjs';
+import { ZvErrorMessagePipe } from '@zvoove/components/core';
 import { IZvViewDataSource } from './view-data-source';
 
 @Component({
@@ -18,7 +17,6 @@ export class ZvView implements OnDestroy {
   @Input({ required: true }) public set dataSource(value: IZvViewDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
-      this._dataSourceSub.unsubscribe();
     }
 
     this._dataSource = value;
@@ -32,24 +30,7 @@ export class ZvView implements OnDestroy {
   }
   private _dataSource!: IZvViewDataSource;
 
-  public get contentVisible(): boolean {
-    return this.dataSource.contentVisible;
-  }
-
-  public get contentBlocked(): boolean {
-    return this.dataSource.contentBlocked;
-  }
-
-  public get exception(): IZvException | null {
-    return this.dataSource.exception;
-  }
-
-  private _dataSourceSub = Subscription.EMPTY;
-
-  constructor(private cd: ChangeDetectorRef) {}
-
   public ngOnDestroy() {
-    this._dataSourceSub.unsubscribe();
     if (this._dataSource) {
       this._dataSource.disconnect();
     }
@@ -59,9 +40,6 @@ export class ZvView implements OnDestroy {
     if (!this._dataSource) {
       return;
     }
-
-    this._dataSourceSub = this._dataSource.connect().subscribe(() => {
-      this.cd.markForCheck();
-    });
+    this._dataSource.connect();
   }
 }
