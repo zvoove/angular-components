@@ -1,81 +1,99 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { IZvException } from '@zvoove/components/core';
 import { IZvViewDataSource, ZvView } from '@zvoove/components/view';
-import { BehaviorSubject, Observable, Subject, Subscription, of } from 'rxjs';
-import { delay, map, take } from 'rxjs/operators';
+import { Observable, Subscription, of } from 'rxjs';
+import { delay, first, map } from 'rxjs/operators';
 
-export interface ZvViewDataSourceOptions<TParams, TData> {
+interface ZvViewDataSourceOptions<TParams, TData> {
   loadTrigger$: Observable<TParams>;
   loadFn: (params: TParams) => Observable<TData>;
+  keepLoadStreamOpen?: boolean;
 }
 
 class DemoZvViewDataSource<TParams, TData> implements IZvViewDataSource {
-  public get contentVisible(): boolean {
-    return !this._hasLoadError;
-  }
-  public get contentBlocked(): boolean {
-    return this._loading || this._blockView;
-  }
-  public exception: IZvException;
+  private loading = signal<boolean>(false);
+  private blockView = signal<boolean>(false);
 
-  private _loading = false;
-  private _hasLoadError = false;
-  private _blockView = false;
-  private stateChanges$ = new Subject<void>();
+  private connected = false;
+  private params: TParams | null = null;
+  private loadingSub = Subscription.EMPTY;
+  private connectSub = Subscription.EMPTY;
 
-  private _loadingSub = Subscription.EMPTY;
-  private _connectSub = Subscription.EMPTY;
   constructor(private options: ZvViewDataSourceOptions<TParams, TData>) {}
 
-  public connect(): Observable<void> {
-    this._connectSub = this.options.loadTrigger$.subscribe((params) => {
+  public result = signal<TData | null>(null);
+  public exception = signal<IZvException | null>(null);
+  public contentVisible = signal<boolean>(false);
+  public contentBlocked = computed(() => this.loading() || this.blockView());
+
+  public connect() {
+    if (this.connected) {
+      throw new Error('ViewDataSource is already connected.');
+    }
+    this.connectSub = this.options.loadTrigger$.subscribe((params) => {
+      this.connected = true;
+      this.params = params;
       this.loadData(params);
     });
-    return this.stateChanges$;
+  }
+
+  public updateData() {
+    if (!this.connected) {
+      throw new Error('ViewDataSource is not connected.');
+    }
+    this.loadData(this.params!);
   }
 
   public disconnect(): void {
-    this._connectSub.unsubscribe();
-    this._loadingSub.unsubscribe();
+    this.connectSub.unsubscribe();
+    this.loadingSub.unsubscribe();
   }
 
   public setViewBlocked(value: boolean) {
-    this._blockView = value;
-    this.stateChanges$.next();
+    this.blockView.set(value);
   }
 
   private loadData(params: TParams) {
-    this._loadingSub.unsubscribe();
-    this._loading = true;
-    this._hasLoadError = false;
-    this.exception = null;
-    this.stateChanges$.next();
+    this.loadingSub.unsubscribe();
+    this.loading.set(true);
+    this.contentVisible.set(true);
+    this.exception.set(null);
 
-    this._loadingSub = this.options
-      .loadFn(params)
-      .pipe(take(1))
-      .subscribe({
-        next: () => {
-          this._loading = false;
-          this.stateChanges$.next();
-        },
-        error: (err) => {
-          this._loading = false;
-          this._hasLoadError = true;
-          this.exception = {
-            errorObject: err,
-            alignCenter: true,
-            icon: 'sentiment_very_dissatisfied',
-          };
-          this.stateChanges$.next();
-        },
-      });
+    let load$ = this.options.loadFn(params);
+    if (!this.options.keepLoadStreamOpen) {
+      load$ = load$.pipe(first());
+    }
+    this.loadingSub = load$.subscribe({
+      next: (result) => {
+        this.loading.set(false);
+        this.result.set(result);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.result.set(null);
+        this.contentVisible.set(false);
+        this.exception.set({
+          errorObject: err,
+          alignCenter: true,
+          icon: 'sentiment_very_dissatisfied',
+        });
+      },
+    });
   }
+}
+
+interface ZvViewDemoItemData {
+  loadCount: number;
+  time: Date;
+}
+interface ZvViewDemoLogData {
+  type: string;
+  params: number;
 }
 
 @Component({
@@ -87,27 +105,28 @@ class DemoZvViewDataSource<TParams, TData> implements IZvViewDataSource {
 })
 export class ViewDemoComponent {
   public loadError = false;
-  public counter = 0;
-  public logs: any[] = [];
-  public item: any;
-
-  public loadTrigger$ = new BehaviorSubject(this.counter);
+  public counter = signal(0);
+  public logs = signal<ZvViewDemoLogData[]>([]);
+  public item = signal<ZvViewDemoItemData | null>(null);
 
   public dataSource = new DemoZvViewDataSource({
-    loadTrigger$: this.loadTrigger$, // could be route params in a real application
-    loadFn: (count) => {
-      this.logs.push({ type: 'load', params: count });
+    loadTrigger$: of(null), // could be route params in a real application
+    loadFn: () => {
+      this.logs.update((arr) => {
+        arr.push({ type: 'load', params: this.counter() });
+        return arr;
+      });
       return of({
-        loadCount: count,
+        loadCount: this.counter(),
         time: new Date(),
-      }).pipe(
+      } as ZvViewDemoItemData).pipe(
         delay(1000),
         map((x) => {
           if (this.loadError) {
             throw new Error('this is the server error (loading)');
           }
 
-          this.item = x;
+          this.item.set(x);
           return x;
         })
       );
@@ -115,6 +134,7 @@ export class ViewDemoComponent {
   });
 
   public reload() {
-    this.loadTrigger$.next(++this.counter);
+    this.counter.update((val) => val + 1);
+    this.dataSource.updateData();
   }
 }

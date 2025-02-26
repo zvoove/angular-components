@@ -1,12 +1,20 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
+import { IZvException } from '@zvoove/components/core';
 import { ZvViewHarness } from './testing/view.harness';
 import { IZvViewDataSource } from './view-data-source';
 import { ZvView } from './view.component';
+
+class TestViewDataSource implements IZvViewDataSource {
+  contentBlocked = signal(false);
+  contentVisible = signal(true);
+  exception = signal<IZvException | null>(null);
+  connect = () => {};
+  disconnect = () => {};
+}
 
 @Component({
   selector: 'zv-test-component',
@@ -21,7 +29,7 @@ import { ZvView } from './view.component';
   imports: [CommonModule, ZvView],
 })
 export class TestDataSourceComponent {
-  public dataSource: IZvViewDataSource;
+  public dataSource: TestViewDataSource;
   @ViewChild(ZvView) formComponent: ZvView;
 }
 
@@ -43,60 +51,54 @@ describe('ZvView', () => {
     });
 
     it('should show error view, when exception property is not null', async () => {
-      const dataSource = createDataSource();
+      const dataSource = new TestViewDataSource();
       component.dataSource = dataSource;
 
       expect(await view.isErrorVisible()).toBe(false);
 
-      dataSource.exception = {
+      dataSource.exception.set({
         errorObject: null,
-      };
-      dataSource.cdTrigger$.next();
+      });
 
       expect(await view.isErrorVisible()).toBe(true);
       expect(await view.getErrorText()).toBe('');
       expect(await view.getErrorIconName()).toBe(null);
       expect(await view.isErrorCentered()).toBe(false);
 
-      dataSource.exception.errorObject = new Error('error1');
-      dataSource.cdTrigger$.next();
+      dataSource.exception.update((val) => ({ ...val, errorObject: new Error('error1') }));
 
       expect(await view.isErrorVisible()).toBe(true);
       expect(await view.getErrorText()).toBe('error1');
       expect(await view.getErrorIconName()).toBe(null);
       expect(await view.isErrorCentered()).toBe(false);
 
-      dataSource.exception.alignCenter = true;
-      dataSource.cdTrigger$.next();
+      dataSource.exception.update((val) => ({ ...val, alignCenter: true }) as IZvException);
       expect(await view.isErrorCentered()).toBe(true);
 
-      dataSource.exception.icon = 'asdf-icon';
-      dataSource.cdTrigger$.next();
+      dataSource.exception.update((val) => ({ ...val, icon: 'asdf-icon' }) as IZvException);
       expect(await view.getErrorIconName()).toBe('asdf-icon');
     });
 
     it('should block ui when contentBlocked is true', async () => {
-      const dataSource = createDataSource();
+      const dataSource = new TestViewDataSource();
       component.dataSource = dataSource;
       expect(await view.isContentBlocked()).toBe(false);
 
-      dataSource.contentBlocked = true;
-      dataSource.cdTrigger$.next();
+      dataSource.contentBlocked.set(true);
       expect(await view.isContentBlocked()).toBe(true);
     });
 
     it('should hide content when contentVisible is false', async () => {
-      const dataSource = createDataSource();
+      const dataSource = new TestViewDataSource();
       component.dataSource = dataSource;
       expect(await view.isContentVisible()).toBe(true);
 
-      dataSource.contentVisible = false;
-      dataSource.cdTrigger$.next();
+      dataSource.contentVisible.set(false);
       expect(await view.isContentVisible()).toBe(false);
     });
 
     it("should call dataSource's connect() once per new dataSource", () => {
-      const ds1 = createDataSource();
+      const ds1 = new TestViewDataSource();
       component.dataSource = ds1;
       spyOn(ds1, 'connect').and.callThrough();
 
@@ -104,7 +106,7 @@ describe('ZvView', () => {
 
       expect(ds1.connect).toHaveBeenCalledTimes(1);
 
-      const ds2 = createDataSource();
+      const ds2 = new TestViewDataSource();
       component.dataSource = ds2;
       spyOn(ds1, 'disconnect').and.callThrough();
       spyOn(ds2, 'connect').and.callThrough();
@@ -116,20 +118,3 @@ describe('ZvView', () => {
     });
   });
 });
-
-type ITestZvViewDataSource = {
-  -readonly [K in keyof IZvViewDataSource]: IZvViewDataSource[K];
-};
-
-const createDataSource = (override: Partial<IZvViewDataSource> = {}): ITestZvViewDataSource & { cdTrigger$: Subject<void> } => {
-  const cdTrigger$ = new Subject<void>();
-  return {
-    cdTrigger$: cdTrigger$,
-    contentBlocked: false,
-    contentVisible: true,
-    exception: null,
-    connect: () => cdTrigger$,
-    disconnect: () => {},
-    ...override,
-  };
-};

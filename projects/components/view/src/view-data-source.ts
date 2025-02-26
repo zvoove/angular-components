@@ -1,10 +1,10 @@
+import { Signal } from '@angular/core';
 import { IZvException } from '@zvoove/components/core';
-import { Observable } from 'rxjs';
 
 export interface IZvViewDataSource {
-  readonly contentVisible: boolean;
-  readonly contentBlocked: boolean;
-  readonly exception: IZvException | null;
-  connect(): Observable<void>;
+  readonly contentVisible: Signal<boolean>;
+  readonly contentBlocked: Signal<boolean>;
+  readonly exception: Signal<IZvException | null>;
+  connect(): void;
   disconnect(): void;
 }

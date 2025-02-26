@@ -1,17 +1,17 @@
 @if (dataSource) {
   <div class="zv-view__main-container">
     <div class="zv-view__cards-container">
-      @if (contentVisible) {
-        <zv-block-ui [blocked]="contentBlocked">
+      @if (dataSource.contentVisible()) {
+        <zv-block-ui [blocked]="dataSource.contentBlocked()">
           <ng-content></ng-content>
         </zv-block-ui>
       }
-      @if (exception) {
-        <mat-card class="zv-view__error-container" [class.zv-view__error-container--center]="exception.alignCenter">
-          @if (exception.icon) {
-            <mat-icon class="zv-view__error-icon">{{ exception.icon }}</mat-icon>
+      @if (dataSource.exception()) {
+        <mat-card class="zv-view__error-container" [class.zv-view__error-container--center]="dataSource.exception()?.alignCenter">
+          @if (dataSource.exception()?.icon) {
+            <mat-icon class="zv-view__error-icon">{{ dataSource.exception()?.icon }}</mat-icon>
           }
-          <span>{{ exception.errorObject | zvErrorMessage }}</span>
+          <span>{{ dataSource.exception()?.errorObject | zvErrorMessage }}</span>
         </mat-card>
       }
     </div>
