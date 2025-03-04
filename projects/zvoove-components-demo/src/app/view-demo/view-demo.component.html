@@ -1,17 +1,69 @@
-<mat-card class="app-view-data-source-demo__settings">
-  <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
-  <button mat-flat-button type="button" (click)="reload()">reload</button>
-</mat-card>
-<div class="app-form-data-source-demo__grid">
-  <zv-view [dataSource]="dataSource">
-    <mat-card>
-      <pre>{{ item() | json }}</pre>
+<app-component-page-wrapper [componentName]="'zv-view'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <mat-card class="app-view-data-source-demo__settings">
+      <mat-checkbox [(ngModel)]="loadError">load error</mat-checkbox>
+      <button mat-flat-button type="button" (click)="reload()">reload</button>
     </mat-card>
-    <mat-card style="height: 500px; margin-top: 1em">dummy card</mat-card>
-  </zv-view>
-  <mat-card class="app-view-data-source-demo__logs">
-    @for (log of logs(); track log) {
-      <div class="app-view-data-source-demo__log-item">{{ log | json }}</div>
-    }
-  </mat-card>
-</div>
+    <div>
+      <zv-view [dataSource]="dataSource">
+        <mat-card class="app-view-data-source-demo__view-content">
+          <pre>{{ item() | json }}</pre>
+        </mat-card>
+        <mat-card class="app-view-data-source-demo__dummy-card">dummy card</mat-card>
+      </zv-view>
+      <mat-card class="app-view-data-source-demo__logs">
+        @for (log of logs(); track log) {
+          <div class="app-view-data-source-demo__log-item">{{ log | json }}</div>
+        }
+      </mat-card>
+    </div>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'api'">
+    <app-api-doc [name]="'zv-view'">
+      <app-api-doc-input
+        [name]="'dataSource'"
+        [type]="'IZvViewDataSource'"
+        [desc]="'The IZvViewDataSource implementation (e.g. ZvViewDataSource)'"
+        [required]="true"
+      />
+    </app-api-doc>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>&#64;angular/material card & icon</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          The zv-view uses the
+          <a href="https://material.angular.io/components/card/overview" rel="noopener noreferrer">&#64;angular/material card</a> as well as
+          the <a href="https://material.angular.io/components/icon/overview" rel="noopener noreferrer">&#64;angular/material icon</a> in its
+          view. So &#64;angular/material needs to be installed.
+        </p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Imports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Add the following to your imports, where you want to use the zv-view:</p>
+        <app-code [code]="importsCode" [language]="'typescript'" />
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Usage</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>An example of how to use the ZvViewDataSource:</p>
+        <p>TypeScript</p>
+        <app-code [code]="usageCodeTs" [language]="'typescript'" />
+        <p>HTML</p>
+        <app-code [code]="usageCodeHtml" [language]="'html'" />
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>

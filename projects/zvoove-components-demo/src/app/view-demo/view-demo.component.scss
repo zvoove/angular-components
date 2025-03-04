@@ -1,24 +1,27 @@
-.app-view-data-source-demo__settings {
-  margin-bottom: 1em;
-}
-
 .app-view-data-source-demo__settings mat-checkbox {
   margin: 1em;
 }
 
-.app-view-data-source-demo__grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-gap: 1em;
+.app-view-data-source-demo__view-content {
+  padding: 1em;
+}
+.app-view-data-source-demo__dummy-card {
+  height: 200px;
+  margin-top: 1em;
+  padding: 1em;
 }
 
 .app-view-data-source-demo__logs {
   margin-top: 1em;
+  padding: 0 1em;
 }
 
 .app-view-data-source-demo__log-item {
-  margin-bottom: 0.25em;
-  padding-bottom: 0.25em;
-  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5em;
   font-size: 0.95em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.app-view-data-source-demo__log-item:not(:last-child) {
+  border-bottom: 1px solid #ccc;
 }

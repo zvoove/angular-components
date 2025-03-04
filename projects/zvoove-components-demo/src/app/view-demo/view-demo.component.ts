@@ -1,91 +1,14 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { IZvException } from '@zvoove/components/core';
-import { IZvViewDataSource, ZvView } from '@zvoove/components/view';
-import { Observable, Subscription, of } from 'rxjs';
-import { delay, first, map } from 'rxjs/operators';
-
-interface ZvViewDataSourceOptions<TParams, TData> {
-  loadTrigger$: Observable<TParams>;
-  loadFn: (params: TParams) => Observable<TData>;
-  keepLoadStreamOpen?: boolean;
-}
-
-class DemoZvViewDataSource<TParams, TData> implements IZvViewDataSource {
-  private loading = signal<boolean>(false);
-  private blockView = signal<boolean>(false);
-
-  private connected = false;
-  private params: TParams | null = null;
-  private loadingSub = Subscription.EMPTY;
-  private connectSub = Subscription.EMPTY;
-
-  constructor(private options: ZvViewDataSourceOptions<TParams, TData>) {}
-
-  public result = signal<TData | null>(null);
-  public exception = signal<IZvException | null>(null);
-  public contentVisible = signal<boolean>(false);
-  public contentBlocked = computed(() => this.loading() || this.blockView());
-
-  public connect() {
-    if (this.connected) {
-      throw new Error('ViewDataSource is already connected.');
-    }
-    this.connectSub = this.options.loadTrigger$.subscribe((params) => {
-      this.connected = true;
-      this.params = params;
-      this.loadData(params);
-    });
-  }
-
-  public updateData() {
-    if (!this.connected) {
-      throw new Error('ViewDataSource is not connected.');
-    }
-    this.loadData(this.params!);
-  }
-
-  public disconnect(): void {
-    this.connectSub.unsubscribe();
-    this.loadingSub.unsubscribe();
-  }
-
-  public setViewBlocked(value: boolean) {
-    this.blockView.set(value);
-  }
-
-  private loadData(params: TParams) {
-    this.loadingSub.unsubscribe();
-    this.loading.set(true);
-    this.contentVisible.set(true);
-    this.exception.set(null);
-
-    let load$ = this.options.loadFn(params);
-    if (!this.options.keepLoadStreamOpen) {
-      load$ = load$.pipe(first());
-    }
-    this.loadingSub = load$.subscribe({
-      next: (result) => {
-        this.loading.set(false);
-        this.result.set(result);
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.result.set(null);
-        this.contentVisible.set(false);
-        this.exception.set({
-          errorObject: err,
-          alignCenter: true,
-          icon: 'sentiment_very_dissatisfied',
-        });
-      },
-    });
-  }
-}
+import { ZvView } from '@zvoove/components/view';
+import { ZvViewDataSource } from '@zvoove/components/view/src/view-data-source';
+import { of } from 'rxjs';
+import { delay, map } from 'rxjs/operators';
+import { allSharedImports } from '../common/shared-imports';
 
 interface ZvViewDemoItemData {
   loadCount: number;
@@ -101,7 +24,7 @@ interface ZvViewDemoLogData {
   templateUrl: './view-demo.component.html',
   styleUrls: ['./view-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCardModule, MatCheckboxModule, ReactiveFormsModule, FormsModule, MatButtonModule, ZvView, JsonPipe],
+  imports: [allSharedImports, MatCardModule, MatCheckboxModule, ReactiveFormsModule, FormsModule, MatButtonModule, ZvView, JsonPipe],
 })
 export class ViewDemoComponent {
   public loadError = false;
@@ -109,7 +32,7 @@ export class ViewDemoComponent {
   public logs = signal<ZvViewDemoLogData[]>([]);
   public item = signal<ZvViewDemoItemData | null>(null);
 
-  public dataSource = new DemoZvViewDataSource({
+  public dataSource = new ZvViewDataSource({
     loadTrigger$: of(null), // could be route params in a real application
     loadFn: () => {
       this.logs.update((arr) => {
@@ -137,4 +60,28 @@ export class ViewDemoComponent {
     this.counter.update((val) => val + 1);
     this.dataSource.updateData();
   }
+
+  importsCode = `
+import { ZvView, ZvViewDataSource } from '@zvoove/components/view';
+// ...
+imports: [
+  ZvView,
+],`;
+
+  usageCodeTs = `
+private http = inject(HttpClient);
+viewDataSource = new ZvViewDataSource({
+  loadTrigger$: of(null), // could be route params
+  loadFn: () => this.http.get<any>('https://YOUR.API/GET-ROUTE'),
+});`;
+
+  usageCodeHtml = `
+<zv-view [dataSource]="viewDataSource">
+  <button
+    type="button"
+    (click)="viewDataSource.updateData()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+  <span>{{ viewDataSource.result() }}</span>
+</zv-view>`;
 }
