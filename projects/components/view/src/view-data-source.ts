@@ -1,5 +1,6 @@
 import { computed, Resource, ResourceStatus, signal, Signal } from '@angular/core';
-import { first, Observable, Subscription } from 'rxjs';
+import { IZvException } from '@zvoove/components/core';
+import { first, Observable, of, Subscription } from 'rxjs';
 
 export interface IZvViewDataSource {
   readonly contentVisible: Signal<boolean>;
@@ -10,13 +11,13 @@ export interface IZvViewDataSource {
   disconnect?(): void;
 }
 
-export interface ZvViewDataSourceOptions<TParams, TData> {
-  loadTrigger$: Observable<TParams>;
+export interface ZvViewDataSourceOptions<TData, TParams = null> {
+  loadTrigger$?: Observable<TParams>;
   loadFn: (params: TParams) => Observable<TData>;
   keepLoadStreamOpen?: boolean;
 }
 
-export class ZvViewDataSource<TParams, TData> implements IZvViewDataSource, Resource<TData> {
+export class ZvViewDataSource<TData, TParams = null> implements IZvViewDataSource, Resource<TData> {
   private blockView = signal<boolean>(false);
 
   private connected = false;
@@ -24,7 +25,7 @@ export class ZvViewDataSource<TParams, TData> implements IZvViewDataSource, Reso
   private loadingSub = Subscription.EMPTY;
   private loadtriggerSub = Subscription.EMPTY;
 
-  constructor(private options: ZvViewDataSourceOptions<TParams, TData>) {}
+  constructor(private options: ZvViewDataSourceOptions<TData, TParams>) {}
 
   public status = signal<ResourceStatus>(ResourceStatus.Idle);
   public value = signal<TData>(null!);
@@ -37,11 +38,22 @@ export class ZvViewDataSource<TParams, TData> implements IZvViewDataSource, Reso
     return this.value() !== undefined;
   }
 
+  /** @deprecated Use value() */
+  public result = computed(() => this.value());
+
+  /** @deprecated Use error() */
+  public exception = computed<IZvException | null>(() => (this.error() ? { errorObject: this.error(), icon: this.errorIcon() } : null));
+
+  /** @deprecated Use reload() */
+  public updateData() {
+    this.reload();
+  }
+
   public connect() {
     if (this.connected) {
       throw new Error('ViewDataSource is already connected.');
     }
-    this.loadtriggerSub = this.options.loadTrigger$.subscribe((params) => {
+    this.loadtriggerSub = (this.options.loadTrigger$ ?? of<TParams>(null!)).subscribe((params) => {
       this.connected = true;
       this.params = params;
       this.loadData(params);
@@ -90,10 +102,6 @@ export class ZvViewDataSource<TParams, TData> implements IZvViewDataSource, Reso
   }
 }
 
-export interface SignalZvViewDataSourceOptions<TData> {
-  resource: Resource<TData>;
-}
-
 export class SignalZvViewDataSource<TData> implements IZvViewDataSource, Resource<TData> {
   public readonly resource: Resource<TData>;
   public readonly contentVisible = computed<boolean>(() => this.status() == ResourceStatus.Error);
@@ -110,7 +118,7 @@ export class SignalZvViewDataSource<TData> implements IZvViewDataSource, Resourc
 
   private blockView = signal<boolean>(false);
 
-  constructor(options: SignalZvViewDataSourceOptions<TData>) {
+  constructor(options: { resource: Resource<TData> }) {
     this.resource = options.resource;
     this.value = this.resource.value.bind(this.resource);
     this.status = this.resource.status.bind(this.resource);
