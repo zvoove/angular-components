@@ -6,12 +6,12 @@
           <ng-content></ng-content>
         </zv-block-ui>
       }
-      @if (dataSource.exception()) {
-        <mat-card class="zv-view__error-container" [class.zv-view__error-container--center]="dataSource.exception()?.alignCenter">
-          @if (dataSource.exception()?.icon) {
-            <mat-icon class="zv-view__error-icon">{{ dataSource.exception()?.icon }}</mat-icon>
+      @if (dataSource.error()) {
+        <mat-card class="zv-view__error-container">
+          @if (dataSource.errorIcon()) {
+            <mat-icon class="zv-view__error-icon">{{ dataSource.errorIcon() }}</mat-icon>
           }
-          <span>{{ dataSource.exception()?.errorObject | zvErrorMessage }}</span>
+          <span>{{ dataSource.error() | zvErrorMessage }}</span>
         </mat-card>
       }
     </div>

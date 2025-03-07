@@ -16,7 +16,7 @@ import { IZvViewDataSource } from './view-data-source';
 export class ZvView implements OnDestroy {
   @Input({ required: true }) public set dataSource(value: IZvViewDataSource) {
     if (this._dataSource) {
-      this._dataSource.disconnect();
+      this._dataSource.disconnect?.();
     }
 
     this._dataSource = value;
@@ -32,7 +32,7 @@ export class ZvView implements OnDestroy {
 
   public ngOnDestroy() {
     if (this._dataSource) {
-      this._dataSource.disconnect();
+      this._dataSource.disconnect?.();
     }
   }
 
@@ -40,6 +40,6 @@ export class ZvView implements OnDestroy {
     if (!this._dataSource) {
       return;
     }
-    this._dataSource.connect();
+    this._dataSource.connect?.();
   }
 }

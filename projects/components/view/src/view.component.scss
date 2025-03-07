@@ -9,9 +9,6 @@
 
 mat-card.zv-view__error-container {
   color: var(--zv-components-error);
-}
-
-mat-card.zv-view__error-container--center {
   display: grid;
   justify-items: center;
 }
