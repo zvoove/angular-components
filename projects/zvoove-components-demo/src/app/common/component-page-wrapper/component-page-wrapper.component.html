@@ -3,28 +3,28 @@
   @if (demoContent) {
     <mat-tab label="Demo">
       <div class="app-component-page-wrapper__tab-content">
-        <ng-container [ngTemplateOutlet]="demoContent().templateRef"></ng-container>
+        <ng-container [ngTemplateOutlet]="demoContent().templateRef" />
       </div>
     </mat-tab>
   }
   @if (apiContent) {
     <mat-tab label="API">
       <div class="app-component-page-wrapper__tab-content">
-        <ng-container [ngTemplateOutlet]="apiContent().templateRef"></ng-container>
+        <ng-container [ngTemplateOutlet]="apiContent().templateRef" />
       </div>
     </mat-tab>
   }
   @if (setupContent) {
     <mat-tab label="Setup">
       <div class="app-component-page-wrapper__tab-content">
-        <ng-container [ngTemplateOutlet]="setupContent().templateRef"></ng-container>
+        <ng-container [ngTemplateOutlet]="setupContent().templateRef" />
       </div>
     </mat-tab>
   }
   @for (content of otherContents(); track content) {
     <mat-tab [label]="content.label()">
       <div class="app-component-page-wrapper__tab-content">
-        <ng-container [ngTemplateOutlet]="content.templateRef"></ng-container>
+        <ng-container [ngTemplateOutlet]="content.templateRef" />
       </div>
     </mat-tab>
   }

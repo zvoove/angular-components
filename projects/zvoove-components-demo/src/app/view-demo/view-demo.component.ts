@@ -28,9 +28,9 @@ interface ZvViewDemoLogData {
 })
 export class ViewDemoComponent {
   public loadError = false;
-  public counter = signal(0);
-  public logs = signal<ZvViewDemoLogData[]>([]);
-  public item = signal<ZvViewDemoItemData | null>(null);
+  public readonly counter = signal(0);
+  public readonly logs = signal<ZvViewDemoLogData[]>([]);
+  public readonly item = signal<ZvViewDemoItemData | null>(null);
 
   public dataSource = new ZvViewDataSource({
     loadTrigger$: of(null), // could be route params in a real application

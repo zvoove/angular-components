@@ -31,7 +31,7 @@ export class ButtonDemoPage {
   disabled = false;
   icon = 'add';
   label = 'label';
-  clickCount = signal(0);
+  readonly clickCount = signal(0);
 
   clicked() {
     this.clickCount.set(this.clickCount() + 1);

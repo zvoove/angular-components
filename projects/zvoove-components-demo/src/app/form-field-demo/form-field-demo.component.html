@@ -76,23 +76,13 @@
       <div>
         @for (i of ctrlCountNumbers; track i) {
           <div>
-            <app-reference-column
-              [hint]="hintText"
-              [hintToggle]="hintToggle"
-              [subscriptType]="subscriptType"
-              [required]="required"
-            ></app-reference-column>
+            <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" [required]="required" />
           </div>
         }
       </div>
       <div>
         <div>
-          <app-reference-column
-            [hint]="hintText"
-            [hintToggle]="hintToggle"
-            [subscriptType]="subscriptType"
-            [required]="required"
-          ></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" [required]="required" />
         </div>
         <div>
           <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
@@ -107,7 +97,7 @@
           </zv-form-field>
         </div>
         <div>
-          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
         </div>
         <div>
           <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
@@ -120,7 +110,7 @@
           </zv-form-field>
         </div>
         <div>
-          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
         </div>
         <div>
           <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
@@ -131,32 +121,27 @@
           </zv-form-field>
         </div>
         <div>
-          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
         </div>
       </div>
       <div>
         @for (i of ctrlCountNumbers; track i) {
           <div>
-            <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+            <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
           </div>
         }
       </div>
       <div>
         <div>
-          <app-reference-column
-            [hint]="hintText"
-            [hintToggle]="hintToggle"
-            [subscriptType]="subscriptType"
-            [required]="required"
-          ></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" [required]="required" />
         </div>
         <div>
           <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-            <mat-checkbox formControlName="checkbox"></mat-checkbox>
+            <mat-checkbox formControlName="checkbox" />
           </zv-form-field>
         </div>
         <div>
-          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
         </div>
         <div>
           <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
@@ -164,12 +149,7 @@
           </zv-form-field>
         </div>
         <div>
-          <app-reference-column
-            [hint]="hintText"
-            [hintToggle]="hintToggle"
-            [subscriptType]="subscriptType"
-            [required]="required"
-          ></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" [required]="required" />
         </div>
         <div>
           <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
@@ -191,19 +171,19 @@
           </zv-form-field>
         </div>
         <div>
-          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
         </div>
       </div>
       <div>
         @for (i of ctrlCountNumbers; track i) {
           <div>
-            <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+            <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
           </div>
         }
       </div>
       <div>
         <div>
-          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
         </div>
         <div>
           <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
@@ -214,28 +194,24 @@
               formControlName="zvSelect"
               [dataSource]="{ mode: 'id', idKey: 'key', labelKey: 'label', items: zvSelectData }"
               [required]="required"
-            ></zv-select>
+            />
           </zv-form-field>
         </div>
         <div>
-          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
         </div>
         <div>
           <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
             @if (customLabel) {
               <mat-label>Custom Label</mat-label>
             }
-            <zv-date-time-input
-              formControlName="zvDateTimeInput"
-              [matDatepicker]="datepickerRef"
-              [required]="required"
-            ></zv-date-time-input>
-            <mat-datepicker-toggle matSuffix [for]="datepickerRef"></mat-datepicker-toggle>
-            <mat-datepicker #datepickerRef></mat-datepicker>
+            <zv-date-time-input formControlName="zvDateTimeInput" [matDatepicker]="datepickerRef" [required]="required" />
+            <mat-datepicker-toggle matSuffix [for]="datepickerRef" />
+            <mat-datepicker #datepickerRef />
           </zv-form-field>
         </div>
         <div>
-          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType"></app-reference-column>
+          <app-reference-column [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType" />
         </div>
       </div>
     </div>
