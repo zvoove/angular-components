@@ -8,16 +8,13 @@ import { ZvTableSearchComponent } from './table-search.component';
 
 @Component({
   selector: 'zv-test-component',
-  template: `
-    <zv-table-search [searchText]="searchText" [debounceTime]="debounceTime" (searchChanged)="onSearchChanged($event)"></zv-table-search>
-  `,
+  template: ` <zv-table-search [searchText]="searchText" (searchChanged)="onSearchChanged($event)"></zv-table-search> `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [ZvTableSearchComponent],
 })
 export class TestComponent {
   public searchText = 'search text';
-  public debounceTime = 100;
 
   @ViewChild(ZvTableSearchComponent, { static: true }) tableSearch: ZvTableSearchComponent;
 
@@ -31,13 +28,30 @@ describe('ZvTableSearchComponent', () => {
     }).compileComponents();
   }));
 
+  it('should not emit searchChanged after destroy', fakeAsync(() => {
+    const fixture = TestBed.createComponent(TestComponent);
+    const component = fixture.componentInstance;
+    expect(component).toBeDefined();
+    spyOn(component, 'onSearchChanged');
+    fixture.detectChanges();
+
+    const input = fixture.debugElement.query(By.directive(MatInput));
+    input.nativeElement.value = 'new text';
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
+
+    tick(50);
+    component.tableSearch.ngOnDestroy();
+
+    tick(999);
+    expect(component.onSearchChanged).not.toHaveBeenCalled();
+  }));
+
   it('should emit searchChanged on changes after debounce time', fakeAsync(() => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
     spyOn(component, 'onSearchChanged');
 
-    component.debounceTime = 100;
     component.searchText = 'initial text';
     fixture.detectChanges();
 
@@ -46,7 +60,7 @@ describe('ZvTableSearchComponent', () => {
     input.nativeElement.value = 'new text';
     input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
 
-    tick(99);
+    tick(299);
     expect(component.onSearchChanged).not.toHaveBeenCalled();
     tick(1);
     expect(component.onSearchChanged).toHaveBeenCalledWith('new text');
@@ -58,7 +72,6 @@ describe('ZvTableSearchComponent', () => {
     expect(component).toBeDefined();
     spyOn(component, 'onSearchChanged');
 
-    component.debounceTime = 100;
     component.searchText = 'initial text';
     fixture.detectChanges();
 
@@ -72,7 +85,7 @@ describe('ZvTableSearchComponent', () => {
     input.nativeElement.value = 'initial text';
     input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
 
-    tick(100);
+    tick(250);
 
     expect(component.onSearchChanged).not.toHaveBeenCalled();
   }));
@@ -83,7 +96,6 @@ describe('ZvTableSearchComponent', () => {
     expect(component).toBeDefined();
     spyOn(component, 'onSearchChanged');
 
-    component.debounceTime = 100;
     component.searchText = 'initial text';
     fixture.detectChanges();
 
@@ -106,8 +118,6 @@ describe('ZvTableSearchComponent', () => {
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
     spyOn(component, 'onSearchChanged');
-
-    component.debounceTime = 100;
 
     component.searchText = 'text';
     component.tableSearch.currentSearchText.set('');
@@ -136,7 +146,6 @@ describe('ZvTableSearchComponent', () => {
     expect(component).toBeDefined();
     spyOn(component, 'onSearchChanged');
 
-    component.debounceTime = 100;
     component.searchText = 'initial text';
     fixture.detectChanges();
 
@@ -157,7 +166,6 @@ describe('ZvTableSearchComponent', () => {
     expect(component).toBeDefined();
     spyOn(component, 'onSearchChanged');
 
-    component.debounceTime = 100;
     component.searchText = '';
     fixture.detectChanges();
 
@@ -165,7 +173,7 @@ describe('ZvTableSearchComponent', () => {
 
     input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'Escape' } as any));
 
-    tick(100);
+    tick(300);
 
     expect(component.onSearchChanged).not.toHaveBeenCalled();
   }));
