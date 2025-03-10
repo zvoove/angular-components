@@ -15,7 +15,7 @@ import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { ZV_FORM_FIELD_CONFIG, ZvFormField, ZvFormFieldSubscriptType } from './form-field.component';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 class TestZvFormService extends BaseZvFormService {
   public labelDelay = 0;
   constructor() {

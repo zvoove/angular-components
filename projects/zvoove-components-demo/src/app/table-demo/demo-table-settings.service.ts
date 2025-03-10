@@ -3,7 +3,7 @@ import { inject, Injectable, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { IZvTableSetting, ZvTableSettingsService } from '@zvoove/components/table';
 import { Observable, ReplaySubject } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DemoTableSettingsService extends ZvTableSettingsService implements OnDestroy {
   private settingsUpdater = new ReplaySubject<IZvTableSetting>(1);
   private localStoragePrefix = 'table-settings';

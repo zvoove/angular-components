@@ -26,7 +26,7 @@ import { ZvTableModule } from './table.module';
 import { ZvTableHarness } from './testing/table.harness';
 import { ZvExceptionMessageExtractor } from '@zvoove/components/core';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 class TestSettingsService extends ZvTableSettingsService {
   public settings$ = new BehaviorSubject<Record<string, IZvTableSetting>>({});
   public override pageSizeOptions = [1, 5, 25, 50];

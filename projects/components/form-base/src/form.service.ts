@@ -6,7 +6,7 @@ import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 import { getControlType } from './helpers';
 import { IZvFormError, IZvFormErrorData } from './models';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export abstract class ZvFormService {
   public abstract tryDetectRequired: boolean;
   public abstract getLabel(formControl: FormControl): Observable<string> | null;

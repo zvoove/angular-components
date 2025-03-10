@@ -8,7 +8,7 @@ import { DefaultZvSelectDataSource, isZvSelectOptionsData, ZvSelectDataSourceOpt
 
 export declare type ZvSelectData<T = any> = T[] | Observable<T[]> | ZvSelectDataSource | ZvSelectDataSourceOptions<T>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DefaultZvSelectService extends ZvSelectService {
   public createDataSource<T>(dataSource: ZvSelectData<T>, _: AbstractControl | null): ZvSelectDataSource<T> {
     if (isZvSelectDataSource(dataSource)) {

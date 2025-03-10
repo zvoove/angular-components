@@ -35,7 +35,7 @@ import { provideSelectService } from './select.module';
 import { ZvSelectService } from './services/select.service';
 import { ZvSelectHarness } from './testing/select.harness';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TestZvFormsService extends BaseZvFormService {
   public getLabel(formControl: any): Observable<string> {
     return formControl.zvLabel ? of(formControl.zvLabel) : null;
@@ -242,7 +242,7 @@ export class TestWithFormFieldComponent {
   public clearable = false;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TestZvSelectService extends DefaultZvSelectService {
   static calledwith: { dataSource: any; control: AbstractControl }[] = [];
   public override createDataSource<T>(dataSource: ZvSelectData<T>, control: AbstractControl | null): ZvSelectDataSource<T> {

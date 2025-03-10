@@ -7,13 +7,7 @@ const jasmine = require("eslint-plugin-jasmine");
 /** @type tseslint.ConfigWithExtends */
 const baseTsLintConfig = {
   rules: {
-    "@angular-eslint/directive-selector": [
-      "error",
-      {
-        type: ["attribute", "element"],
-        prefix: "zv",
-      },
-    ],
+    "@angular-eslint/component-class-suffix": "off",
     "@angular-eslint/component-selector": [
       "error",
       {
@@ -22,40 +16,42 @@ const baseTsLintConfig = {
         style: "kebab-case",
       },
     ],
-    "@angular-eslint/component-class-suffix": "off",
     "@angular-eslint/directive-class-suffix": "off",
-    "@angular-eslint/no-input-prefix": [
+    "@angular-eslint/directive-selector": [
       "error",
       {
-        "prefixes": ["on", "can", "is", "should"]
-      }
+        type: ["attribute", "element"],
+        prefix: "zv",
+      },
     ],
+    '@angular-eslint/no-conflicting-lifecycle': 'warn',
+    '@angular-eslint/no-input-prefix': ['error', { prefixes: ['on', 'can', 'is', 'should'] }],
+    '@angular-eslint/no-pipe-impure': 'error',
     "@angular-eslint/prefer-on-push-component-change-detection": "error",
+    '@angular-eslint/prefer-output-readonly': 'error',
+    '@angular-eslint/prefer-standalone': 'error',
+    '@angular-eslint/use-injectable-provided-in': 'error',
+    '@angular-eslint/use-lifecycle-interface': 'error',
+    '@angular-eslint/use-pipe-transform-interface': 'error',
+    '@angular-eslint/prefer-signals': ['warn'],
+
     "@typescript-eslint/naming-convention": [
       "error",
-      {
-        "selector": "default",
-        "format": ["camelCase"],
-        "leadingUnderscore": "allow",
-        "trailingUnderscore": "allow"
-      },
-      {
-        "selector": "variable",
-        "format": ["camelCase", "UPPER_CASE"],
-        "leadingUnderscore": "allow",
-        "trailingUnderscore": "allow"
-      },
-      {
-        "selector": "typeLike",
-        "format": ["PascalCase"]
-      },
-      {
-        "selector": "objectLiteralProperty",
-        "format": null
-      }
+      { "selector": "default", "format": ["camelCase"], "leadingUnderscore": "allow", "trailingUnderscore": "allow" },
+      { "selector": "variable", "format": ["camelCase", "UPPER_CASE"], "leadingUnderscore": "allow", "trailingUnderscore": "allow" },
+      { "selector": "typeLike", "format": ["PascalCase"] },
+      { "selector": "objectLiteralProperty", "format": null }
     ],
     '@typescript-eslint/no-deprecated': 'error',
-    "@typescript-eslint/no-empty-function": "off",
+    '@typescript-eslint/no-empty-function': 'warn',
+    '@typescript-eslint/no-floating-promises': 'warn',
+    '@typescript-eslint/no-misused-promises': 'error',
+    '@typescript-eslint/no-unsafe-argument': 'error',
+    '@typescript-eslint/no-unsafe-assignment': 'error',
+    '@typescript-eslint/no-unsafe-call': 'error',
+    '@typescript-eslint/no-unsafe-member-access': 'error',
+    '@typescript-eslint/no-unsafe-return': 'error',
+    '@typescript-eslint/unbound-method': 'warn',
 
     "no-underscore-dangle": "off",
     "object-shorthand": ["error", "never"],
@@ -138,6 +134,8 @@ module.exports = tseslint.config(
     ],
     rules: {
       "@angular-eslint/template/prefer-control-flow": "error",
+      '@angular-eslint/template/alt-text': 'error',
+      '@angular-eslint/template/prefer-self-closing-tags': 'warn',
     },
   }
 );
