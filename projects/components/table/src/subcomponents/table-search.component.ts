@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation, input, model, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation, model, output, signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
@@ -16,15 +16,15 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class ZvTableSearchComponent implements OnInit, OnDestroy {
   public searchText = model.required<string | null>();
-  public debounceTime = input.required<number>();
   public readonly searchChanged = output<string | null>();
 
   public currentSearchText = signal<string | null>('');
   private _searchValueChanged$ = new Subject<void>();
+  private searchDebounceSub = Subscription.EMPTY;
 
   public ngOnInit() {
     this.currentSearchText.set(this.searchText());
-    this._searchValueChanged$.pipe(debounceTime(this.debounceTime())).subscribe(() => {
+    this.searchDebounceSub = this._searchValueChanged$.pipe(debounceTime(300)).subscribe(() => {
       this.emitChange();
     });
   }
@@ -41,6 +41,10 @@ export class ZvTableSearchComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
+    // The order matters here, we need to unsubscribe before completing the subject.
+    // Because complete() will force the debounceTime operator to emit the last value immediatelly,
+    // but we don't want this last value to be observed.
+    this.searchDebounceSub.unsubscribe();
     this._searchValueChanged$.complete();
   }
 
