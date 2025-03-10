@@ -25,7 +25,7 @@
             [sortDirection]="settings.sortDirection"
             [sortDefinitions]="sortDefinitions"
             (sortChanged)="onSortChanged($event, settings)"
-          ></zv-table-sort>
+          />
         }
         <mat-form-field>
           <mat-label i18n="@@zvc.itemsPerPage">Items per page</mat-label>
@@ -36,7 +36,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <ng-container [ngTemplateOutlet]="customSettings" [ngTemplateOutletContext]="{ $implicit: settings }"></ng-container>
+      <ng-container [ngTemplateOutlet]="customSettings" [ngTemplateOutletContext]="{ $implicit: settings }" />
     </mat-card-content>
     <mat-card-actions class="zv-table-settings__actions">
       <!-- color="primary" from m2 compatibility -->

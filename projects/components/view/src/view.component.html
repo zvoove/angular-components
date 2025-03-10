@@ -3,7 +3,7 @@
     <div class="zv-view__cards-container">
       @if (dataSource.contentVisible()) {
         <zv-block-ui [blocked]="dataSource.contentBlocked()">
-          <ng-content></ng-content>
+          <ng-content />
         </zv-block-ui>
       }
       @if (dataSource.exception()) {

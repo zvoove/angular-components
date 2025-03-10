@@ -22,7 +22,7 @@ import { ZvTableSettingsComponent } from './table-settings.component';
       [pageSizeOptions]="pageSizeOptions"
       (settingsSaved)="onSettingsSaved()"
       (settingsAborted)="onSettingsAborted()"
-    ></zv-table-settings>
+    />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,

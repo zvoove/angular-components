@@ -16,8 +16,7 @@
     @if (!multiple && triggerTemplate && !empty) {
       <mat-select-trigger>
         @if (triggerTemplate) {
-          <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }">
-          </ng-container>
+          <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }" />
         }
       </mat-select-trigger>
     }
@@ -29,8 +28,7 @@
             {{ $selectedItemsTriggerLabel() }}
           }
           @if (triggerTemplate) {
-            <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }">
-            </ng-container>
+            <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }" />
           }
         </div>
         @if ($customTriggerDataArray().length > 1 && selectedLabel) {
@@ -49,7 +47,7 @@
         [toggleAllCheckboxChecked]="toggleAllCheckboxChecked"
         [toggleAllCheckboxIndeterminate]="toggleAllCheckboxIndeterminate"
         (toggleAll)="onToggleAll($event)"
-      ></ngx-mat-select-search>
+      />
     </mat-option>
 
     @if (hasError) {
@@ -73,7 +71,7 @@
           {{ item.label }}
         }
         @if (optionTemplate) {
-          <ng-template [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: item }"> </ng-template>
+          <ng-template [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: item }" />
         }
       </mat-option>
     }

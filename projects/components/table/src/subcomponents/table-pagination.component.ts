@@ -16,15 +16,15 @@ import { debounce } from 'rxjs/operators';
   imports: [MatPaginator, MatFormField, MatSelect, MatOption],
 })
 export class ZvTablePaginationComponent implements OnDestroy {
-  public pageSize = input.required<number>();
-  public dataLength = input.required<number>();
-  public pageIndex = input.required<number>();
-  public pageSizeOptions = input.required<number[]>();
-  public pageDebounce = input.required<number | null>();
+  public readonly pageSize = input.required<number>();
+  public readonly dataLength = input.required<number>();
+  public readonly pageIndex = input.required<number>();
+  public readonly pageSizeOptions = input.required<number[]>();
+  public readonly pageDebounce = input.required<number | null>();
 
   public readonly page = output<PageEvent>();
 
-  public pages = computed(() => {
+  public readonly pages = computed(() => {
     const pageCount = Math.ceil(this.dataLength() / this.pageSize());
     return Array.from({ length: pageCount }, (_, k) => k + 1);
   });

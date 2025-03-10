@@ -687,7 +687,7 @@ function isValidDate(date: unknown) {
   selector: 'zv-value-test-component',
   template: `
     <zv-date-time-input [matDatepicker]="datepicker" [disabled]="disabled" [(value)]="value" />
-    <mat-datepicker #datepicker></mat-datepicker>
+    <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -714,7 +714,7 @@ export class ValueTestComponent {
       [errorStateMatcher]="errorStateMatcher"
       #dateInput
     />
-    <mat-datepicker #datepicker></mat-datepicker>
+    <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
@@ -737,7 +737,7 @@ export class InputsTestComponent {
   selector: 'zv-form-test-component',
   template: `
     <zv-date-time-input [matDatepicker]="datepicker" [formControl]="control" />
-    <mat-datepicker #datepicker></mat-datepicker>
+    <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,

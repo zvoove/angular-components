@@ -17,7 +17,7 @@ import { ZvTableActionsComponent } from './table-actions.component';
     <button mat-icon-button type="button" [matMenuTriggerFor]="comp.menu()">
       <mat-icon>more_vert</mat-icon>
     </button>
-    <zv-table-actions [actions]="actions" [items]="items"> </zv-table-actions>
+    <zv-table-actions [actions]="actions" [items]="items" />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,

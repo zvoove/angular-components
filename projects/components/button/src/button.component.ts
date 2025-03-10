@@ -13,11 +13,11 @@ import { ZvButtonColors, ZvButtonTypes } from '@zvoove/components/core';
   imports: [MatButtonModule, NgTemplateOutlet, MatIcon],
 })
 export class ZvButton implements OnDestroy {
-  type = input<ZvButtonTypes>('default');
-  color = input<ZvButtonColors | null | undefined>(null);
-  icon = input<string | null | undefined>(null);
-  dataCy = input<string | null | undefined>(null);
-  disabled = input<boolean>(false);
+  readonly type = input<ZvButtonTypes>('default');
+  readonly color = input<ZvButtonColors | null | undefined>(null);
+  readonly icon = input<string | null | undefined>(null);
+  readonly dataCy = input<string | null | undefined>(null);
+  readonly disabled = input<boolean>(false);
   // We want to call it like the dom-click event because catching a click event should work as expected for buttons as well
   // eslint-disable-next-line @angular-eslint/no-output-native
   readonly click = output();

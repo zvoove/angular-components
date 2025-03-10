@@ -112,7 +112,7 @@ export class TestFormComponent {
       <mat-checkbox [formControl]="formControl">{{ asyncLabel$ | async }}</mat-checkbox>
     </zv-form-field>
     <zv-form-field #f2 class="no-label">
-      <mat-checkbox [formControl]="formControl"></mat-checkbox>
+      <mat-checkbox [formControl]="formControl" />
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

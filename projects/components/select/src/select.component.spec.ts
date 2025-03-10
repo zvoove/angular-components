@@ -115,7 +115,7 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
         [errorStateMatcher]="errorStateMatcher"
         [panelClass]="panelClass"
         [clearable]="clearable"
-      ></zv-select>
+      />
     </div>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -191,7 +191,7 @@ export class TestMultipleComponent {
 
 @Component({
   selector: 'zv-test-value',
-  template: `<zv-select [(value)]="value" [dataSource]="items"></zv-select>`,
+  template: `<zv-select [(value)]="value" [dataSource]="items" />`,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect],
@@ -229,7 +229,7 @@ export class TestCustomTemplateComponent {
   template: `
     <zv-form-field>
       <mat-label>My Select</mat-label>
-      <zv-select [(ngModel)]="value" [dataSource]="dataSource" [clearable]="clearable"></zv-select>
+      <zv-select [(ngModel)]="value" [dataSource]="dataSource" [clearable]="clearable" />
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

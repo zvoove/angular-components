@@ -17,7 +17,7 @@ import { ZvTablePaginationComponent } from './table-pagination.component';
       [pageSizeOptions]="pageSizeOptions"
       [pageDebounce]="pageDebounce"
       (page)="onPage($event)"
-    ></zv-table-pagination>
+    />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,

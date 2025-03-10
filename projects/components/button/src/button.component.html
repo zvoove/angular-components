@@ -12,7 +12,7 @@
       @if (icon()) {
         <mat-icon>{{ icon() }}</mat-icon>
       }
-      <ng-container [ngTemplateOutlet]="content"></ng-container>
+      <ng-container [ngTemplateOutlet]="content" />
     </button>
   }
   @case ('stroked') {
@@ -27,7 +27,7 @@
       @if (icon()) {
         <mat-icon>{{ icon() }}</mat-icon>
       }
-      <ng-container [ngTemplateOutlet]="content"></ng-container>
+      <ng-container [ngTemplateOutlet]="content" />
     </button>
   }
   @case ('raised') {
@@ -42,7 +42,7 @@
       @if (icon()) {
         <mat-icon>{{ icon() }}</mat-icon>
       }
-      <ng-container [ngTemplateOutlet]="content"></ng-container>
+      <ng-container [ngTemplateOutlet]="content" />
     </button>
   }
   @case ('icon') {
@@ -57,7 +57,7 @@
       @if (icon()) {
         <mat-icon>{{ icon() }}</mat-icon>
       }
-      <ng-container [ngTemplateOutlet]="content"></ng-container>
+      <ng-container [ngTemplateOutlet]="content" />
     </button>
   }
   @default {
@@ -72,11 +72,11 @@
       @if (icon()) {
         <mat-icon>{{ icon() }}</mat-icon>
       }
-      <ng-container [ngTemplateOutlet]="content"></ng-container>
+      <ng-container [ngTemplateOutlet]="content" />
     </button>
   }
 }
 
 <ng-template #content>
-  <ng-content></ng-content>
+  <ng-content />
 </ng-template>

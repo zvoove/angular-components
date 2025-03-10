@@ -3,7 +3,7 @@
 }
 @if (customHeader) {
   <div class="zv-table-header__custom-content">
-    <ng-container [ngTemplateOutlet]="customHeader"></ng-container>
+    <ng-container [ngTemplateOutlet]="customHeader" />
   </div>
 }
 @if (showSorting) {
@@ -13,13 +13,13 @@
     [sortDirection]="sortDirection"
     [sortDefinitions]="sortDefinitions"
     (sortChanged)="sortChanged.emit($event)"
-  ></zv-table-sort>
+  />
 }
 @if (filterable) {
-  <zv-table-search class="zv-table-header__search" [searchText]="searchText" (searchChanged)="searchChanged.emit($event)"></zv-table-search>
+  <zv-table-search class="zv-table-header__search" [searchText]="searchText" (searchChanged)="searchChanged.emit($event)" />
 }
 @if (topButtonSection) {
   <div class="zv-table-header__actions">
-    <ng-container [ngTemplateOutlet]="topButtonSection" [ngTemplateOutletContext]="{ $implicit: selectedRows }"></ng-container>
+    <ng-container [ngTemplateOutlet]="topButtonSection" [ngTemplateOutletContext]="{ $implicit: selectedRows }" />
   </div>
 }

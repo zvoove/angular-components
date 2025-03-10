@@ -23,15 +23,15 @@ import { ZvTableRowDetail } from '../directives/table.directives';
   },
 })
 export class TableRowDetailComponent<T> {
-  public rowDetail = input<ZvTableRowDetail>();
-  public element = input<T>();
-  public show = input<boolean>();
+  public readonly rowDetail = input<ZvTableRowDetail>();
+  public readonly element = input<T>();
+  public readonly show = input<boolean>();
 
   /** Expanded Items, die sichtbar sind (wird beim Start der Aufklapp-Animation und am Ende der Zuklapp-Animation gesetzt) */
-  public renderContent = signal(false);
-  public animInit = signal(false);
-  public animTo = signal(false);
-  public animDone = signal(true);
+  public readonly renderContent = signal(false);
+  public readonly animInit = signal(false);
+  public readonly animTo = signal(false);
+  public readonly animDone = signal(true);
 
   constructor() {
     afterNextRender({ read: () => {} });

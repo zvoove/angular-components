@@ -17,8 +17,8 @@ export interface ZvViewDataSourceOptions<TParams, TData> {
 }
 
 export class ZvViewDataSource<TParams, TData> implements IZvViewDataSource {
-  private loading = signal<boolean>(false);
-  private blockView = signal<boolean>(false);
+  private readonly loading = signal<boolean>(false);
+  private readonly blockView = signal<boolean>(false);
 
   private connected = false;
   private params: TParams | null = null;
@@ -27,10 +27,10 @@ export class ZvViewDataSource<TParams, TData> implements IZvViewDataSource {
 
   constructor(private options: ZvViewDataSourceOptions<TParams, TData>) {}
 
-  public result = signal<TData | null>(null);
-  public exception = signal<IZvException | null>(null);
-  public contentVisible = signal<boolean>(false);
-  public contentBlocked = computed(() => this.loading() || this.blockView());
+  public readonly result = signal<TData | null>(null);
+  public readonly exception = signal<IZvException | null>(null);
+  public readonly contentVisible = signal<boolean>(false);
+  public readonly contentBlocked = computed(() => this.loading() || this.blockView());
 
   public connect() {
     if (this.connected) {

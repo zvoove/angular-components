@@ -28,12 +28,12 @@ import { ZvTableActionTypePipe } from '../pipes/table-actions-type.pipe';
   ],
 })
 export class ZvTableActionsComponent<T> {
-  public root = input<boolean>(true);
-  public actions = input.required<IZvTableAction<T>[]>();
-  public items = input.required<T[]>();
-  public loading = input<boolean>(false);
+  public readonly root = input<boolean>(true);
+  public readonly actions = input.required<IZvTableAction<T>[]>();
+  public readonly items = input.required<T[]>();
+  public readonly loading = input<boolean>(false);
 
-  public showIcon = computed(() => this.root() || this.actions().some((x) => x.icon));
+  public readonly showIcon = computed(() => this.root() || this.actions().some((x) => x.icon));
 
-  public menu = viewChild.required<MatMenu>('menu');
+  public readonly menu = viewChild.required<MatMenu>('menu');
 }
