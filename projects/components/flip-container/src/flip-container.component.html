@@ -2,12 +2,12 @@
   <div class="zv-flip-container__flip-box" [class]="'zv-flip-container__flip-box--active-' + _active">
     <div #frontside class="zv-flip-container__side zv-flip-container__side__front" [attr.inert]="!_attachFront || null">
       @if (_attachFront || !removeHiddenNodes) {
-        <ng-container [ngTemplateOutlet]="_frontTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="_frontTemplate" />
       }
     </div>
     <div #backside class="zv-flip-container__side zv-flip-container__side__back" [attr.inert]="!_attachBack || null">
       @if (_attachBack || !removeHiddenNodes) {
-        <ng-container [ngTemplateOutlet]="_backTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="_backTemplate" />
       }
     </div>
   </div>

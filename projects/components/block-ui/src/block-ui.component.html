@@ -1,11 +1,11 @@
 <div #content class="zv-block-ui__content">
-  <ng-content></ng-content>
+  <ng-content />
 </div>
 @if (blocked()) {
   <div class="zv-block-ui__overlay">
     <div class="zv-block-ui__overlay-content">
       <div class="zv-block-ui__spinner-container">
-        <mat-spinner class="zv-block-ui__spinner" [diameter]="spinnerDiameter()"></mat-spinner>
+        <mat-spinner class="zv-block-ui__spinner" [diameter]="spinnerDiameter()" />
       </div>
       @if (spinnerText()) {
         <div class="zv-block-ui__text">{{ spinnerText() }}</div>

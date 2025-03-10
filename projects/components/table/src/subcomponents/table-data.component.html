@@ -14,11 +14,10 @@
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">
     <th mat-header-cell *matHeaderCellDef>
-      <mat-checkbox (change)="onMasterToggleChange()" [checked]="isMasterToggleChecked()" [indeterminate]="isMasterToggleIndeterminate()">
-      </mat-checkbox>
+      <mat-checkbox (change)="onMasterToggleChange()" [checked]="isMasterToggleChecked()" [indeterminate]="isMasterToggleIndeterminate()" />
     </th>
     <td mat-cell *matCellDef="let row" style="width: 55px">
-      <mat-checkbox (click)="$event.stopPropagation()" (change)="onRowToggleChange(row)" [checked]="isRowSelected(row)"> </mat-checkbox>
+      <mat-checkbox (click)="$event.stopPropagation()" (change)="onRowToggleChange(row)" [checked]="isRowSelected(row)" />
     </td>
   </ng-container>
 
@@ -48,7 +47,7 @@
         @if (!columnDef.headerTemplate) {
           {{ columnDef.header }}
         } @else {
-          <ng-template [ngTemplateOutlet]="columnDef.headerTemplate"></ng-template>
+          <ng-template [ngTemplateOutlet]="columnDef.headerTemplate" />
         }
       </th>
       <td mat-cell *matCellDef="let element" [ngStyle]="columnDef.columnStyles">
@@ -58,8 +57,7 @@
           <ng-template
             [ngTemplateOutlet]="columnDef.columnTemplate"
             [ngTemplateOutletContext]="{ $implicit: element, expanded: rowDetail?.isExpanded(element) || false }"
-          >
-          </ng-template>
+          />
         }
       </td>
     </ng-container>
@@ -72,7 +70,7 @@
         <button mat-icon-button type="button" [matMenuTriggerFor]="listActionsComponent.menu()">
           <mat-icon>more_vert</mat-icon>
         </button>
-        <zv-table-actions #listActionsComponent [actions]="listActions" [items]="getSelectedRows()"> </zv-table-actions>
+        <zv-table-actions #listActionsComponent [actions]="listActions" [items]="getSelectedRows()" />
       }
     </th>
     <td class="zv-table-data__options-column" mat-cell *matCellDef="let element">
@@ -82,8 +80,7 @@
         [openMenuFn]="dataSource.openMenuRowActionFn"
         [item]="element"
         [moreMenuThreshold]="dataSource.moreMenuThreshold"
-      >
-      </zv-table-row-actions>
+      />
     </td>
   </ng-container>
 
@@ -91,7 +88,7 @@
   @if (rowDetail) {
     <ng-container matColumnDef="__rowDetail">
       <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length" class="zv-table-data__detail-cell">
-        <zv-table-row-detail [show]="rowDetail.isExpanded(element)" [element]="element" [rowDetail]="rowDetail"></zv-table-row-detail>
+        <zv-table-row-detail [show]="rowDetail.isExpanded(element)" [element]="element" [rowDetail]="rowDetail" />
       </td>
     </ng-container>
   }

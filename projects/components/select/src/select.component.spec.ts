@@ -35,7 +35,7 @@ import { provideSelectService } from './select.module';
 import { ZvSelectService } from './services/select.service';
 import { ZvSelectHarness } from './testing/select.harness';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TestZvFormsService extends BaseZvFormService {
   public getLabel(formControl: any): Observable<string> {
     return formControl.zvLabel ? of(formControl.zvLabel) : null;
@@ -115,7 +115,7 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
         [errorStateMatcher]="errorStateMatcher"
         [panelClass]="panelClass"
         [clearable]="clearable"
-      ></zv-select>
+      />
     </div>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -191,7 +191,7 @@ export class TestMultipleComponent {
 
 @Component({
   selector: 'zv-test-value',
-  template: `<zv-select [(value)]="value" [dataSource]="items"></zv-select>`,
+  template: `<zv-select [(value)]="value" [dataSource]="items" />`,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect],
@@ -229,7 +229,7 @@ export class TestCustomTemplateComponent {
   template: `
     <zv-form-field>
       <mat-label>My Select</mat-label>
-      <zv-select [(ngModel)]="value" [dataSource]="dataSource" [clearable]="clearable"></zv-select>
+      <zv-select [(ngModel)]="value" [dataSource]="dataSource" [clearable]="clearable" />
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -242,7 +242,7 @@ export class TestWithFormFieldComponent {
   public clearable = false;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TestZvSelectService extends DefaultZvSelectService {
   static calledwith: { dataSource: any; control: AbstractControl }[] = [];
   public override createDataSource<T>(dataSource: ZvSelectData<T>, control: AbstractControl | null): ZvSelectDataSource<T> {

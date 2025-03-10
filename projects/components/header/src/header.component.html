@@ -3,19 +3,19 @@
     @if (caption) {
       {{ caption }}
     } @else {
-      <ng-container [ngTemplateOutlet]="captionSection"></ng-container>
+      <ng-container [ngTemplateOutlet]="captionSection" />
     }
   </div>
   <div class="zv-header__description mat-body">
     @if (description) {
       {{ description }}
     } @else {
-      <ng-container [ngTemplateOutlet]="descriptionSection"></ng-container>
+      <ng-container [ngTemplateOutlet]="descriptionSection" />
     }
   </div>
 </div>
 @if (topButtonSection) {
   <div class="zv-header__actions">
-    <ng-container [ngTemplateOutlet]="topButtonSection"></ng-container>
+    <ng-container [ngTemplateOutlet]="topButtonSection" />
   </div>
 }

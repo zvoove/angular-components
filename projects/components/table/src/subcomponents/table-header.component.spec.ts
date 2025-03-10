@@ -6,13 +6,8 @@ import { ZvTableHeaderComponent } from './table-header.component';
 @Component({
   selector: 'zv-test-component',
   template: `
-    <zv-table-header
-      [caption]="caption"
-      [showSorting]="showSorting"
-      [filterable]="filterable"
-      [topButtonSection]="topButtonSection"
-    ></zv-table-header>
-    <ng-template #tpl></ng-template>
+    <zv-table-header [caption]="caption" [showSorting]="showSorting" [filterable]="filterable" [topButtonSection]="topButtonSection" />
+    <ng-template #tpl />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,

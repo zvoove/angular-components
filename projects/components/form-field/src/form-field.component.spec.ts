@@ -15,7 +15,7 @@ import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { ZV_FORM_FIELD_CONFIG, ZvFormField, ZvFormFieldSubscriptType } from './form-field.component';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 class TestZvFormService extends BaseZvFormService {
   public labelDelay = 0;
   constructor() {
@@ -112,7 +112,7 @@ export class TestFormComponent {
       <mat-checkbox [formControl]="formControl">{{ asyncLabel$ | async }}</mat-checkbox>
     </zv-form-field>
     <zv-form-field #f2 class="no-label">
-      <mat-checkbox [formControl]="formControl"></mat-checkbox>
+      <mat-checkbox [formControl]="formControl" />
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection

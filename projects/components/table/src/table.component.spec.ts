@@ -26,7 +26,7 @@ import { ZvTableModule } from './table.module';
 import { ZvTableHarness } from './testing/table.harness';
 import { ZvExceptionMessageExtractor } from '@zvoove/components/core';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 class TestSettingsService extends ZvTableSettingsService {
   public settings$ = new BehaviorSubject<Record<string, IZvTableSetting>>({});
   public override pageSizeOptions = [1, 5, 25, 50];
@@ -91,14 +91,14 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
       [preferSortDropdown]="preferSortDropdown"
       (page)="onPage($event)"
     >
-      <zv-table-column [header]="'id'" property="id" [sortable]="true"></zv-table-column>
+      <zv-table-column [header]="'id'" property="id" [sortable]="true" />
       <zv-table-column
         [header]="'string'"
         property="str"
         [sortable]="false"
         [headerStyles]="{ color: 'green' }"
         [columnStyles]="{ color: 'blue' }"
-      ></zv-table-column>
+      />
       <zv-table-column property="__virtual" [mandatory]="true" [width]="'100px'">
         <ng-container *zvTableColumnHeaderTemplate>
           <i>custom</i>

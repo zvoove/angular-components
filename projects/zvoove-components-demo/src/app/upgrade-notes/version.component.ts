@@ -24,5 +24,5 @@ import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/m
   imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent],
 })
 export class Version {
-  version = input.required<string>();
+  readonly version = input.required<string>();
 }

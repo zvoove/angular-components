@@ -126,9 +126,9 @@
         [pageDebounce]="pageDebounce"
         (page)="onPage($event)"
       >
-        <zv-table-column [header]="'id'" property="id" [sortable]="!disableAllSortable"></zv-table-column>
-        <zv-table-column [header]="'number'" property="num" [sortable]="!disableAllSortable"></zv-table-column>
-        <zv-table-column [header]="'boolean'" property="bool" [sortable]="!disableAllSortable"></zv-table-column>
+        <zv-table-column [header]="'id'" property="id" [sortable]="!disableAllSortable" />
+        <zv-table-column [header]="'number'" property="num" [sortable]="!disableAllSortable" />
+        <zv-table-column [header]="'boolean'" property="bool" [sortable]="!disableAllSortable" />
         <zv-table-column
           [header]="columnHeader"
           property="date"
@@ -149,7 +149,7 @@
             </ng-container>
           }
         </zv-table-column>
-        <zv-table-column [header]="'string'" property="str" [sortable]="!disableAllSortable"></zv-table-column>
+        <zv-table-column [header]="'string'" property="str" [sortable]="!disableAllSortable" />
         @if (showCustomToggleColumn && expandable) {
           <zv-table-column [header]="'Custom row detail toggle'" property="__custom" [sortable]="false">
             <ng-container *zvTableColumnTemplate="let item; let expanded = expanded">

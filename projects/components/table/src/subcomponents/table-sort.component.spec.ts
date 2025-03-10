@@ -16,7 +16,7 @@ import { ZvTableSortComponent } from './table-sort.component';
       [sortDirection]="sortDirection"
       [sortDefinitions]="sortDefinitions"
       (sortChanged)="onSortChanged($event)"
-    ></zv-table-sort>
+    />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,

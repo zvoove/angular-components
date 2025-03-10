@@ -22,17 +22,17 @@ import {
   imports: [MatCardModule, ZvHeaderModule, NgTemplateOutlet],
 })
 export class ZvCard {
-  public caption = input<string>('');
-  public description = input<string>('');
-  public contentPadding = input<string>('');
+  public readonly caption = input<string>('');
+  public readonly description = input<string>('');
+  public readonly contentPadding = input<string>('');
 
-  public captionSection = contentChild(ZvCardCaptionSection, { read: TemplateRef });
-  public descriptionSection = contentChild(ZvCardDescriptionSection, { read: TemplateRef });
-  public topButtonSection = contentChild(ZvCardTopButtonSection, { read: TemplateRef });
-  public footerSection = contentChild(ZvCardFooterSection, { read: TemplateRef });
-  public actionsSection = contentChild(ZvCardActionsSection, { read: TemplateRef });
+  public readonly captionSection = contentChild(ZvCardCaptionSection, { read: TemplateRef });
+  public readonly descriptionSection = contentChild(ZvCardDescriptionSection, { read: TemplateRef });
+  public readonly topButtonSection = contentChild(ZvCardTopButtonSection, { read: TemplateRef });
+  public readonly footerSection = contentChild(ZvCardFooterSection, { read: TemplateRef });
+  public readonly actionsSection = contentChild(ZvCardActionsSection, { read: TemplateRef });
 
-  public showHeader = computed(
+  public readonly showHeader = computed(
     () => this.caption() || this.captionSection() || this.description() || this.descriptionSection() || this.topButtonSection()
   );
 }

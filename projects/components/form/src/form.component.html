@@ -3,7 +3,7 @@
     <div class="zv-form__cards-container">
       @if (contentVisible) {
         <zv-block-ui [blocked]="contentBlocked">
-          <ng-content></ng-content>
+          <ng-content />
         </zv-block-ui>
       }
       <div #errorCardWrapper [style.display]="exception ? 'block' : 'none'">
@@ -26,17 +26,17 @@
             <div class="zv-form__savebar-border">
               <div class="zv-form__savebar-border-fill" [class.zv-form__savebar-border-fill--accent]="!showProgress">
                 @if (showProgress) {
-                  <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+                  <mat-progress-bar mode="determinate" [value]="progress" />
                 }
               </div>
             </div>
             @if (showProgress) {
               <div class="zv-form__savebar-progress">{{ progress }}%</div>
             }
-            <zv-form-errors [form]="form"></zv-form-errors>
+            <zv-form-errors [form]="form" />
             <div class="zv-form__savebar-spacer"></div>
             <div class="zv-form__buttons">
-              <ng-content select="[zvFormSavebarButtons]"></ng-content>
+              <ng-content select="[zvFormSavebarButtons]" />
               @for (btn of buttons; track btn) {
                 <zv-button
                   [type]="btn.type"

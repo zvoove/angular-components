@@ -6,14 +6,14 @@
 <mat-dialog-content>
   @if (contentVisible) {
     <zv-block-ui [blocked]="contentBlocked">
-      <ng-content></ng-content>
+      <ng-content />
     </zv-block-ui>
   }
 </mat-dialog-content>
 <mat-dialog-actions class="zv-dialog-wrapper__action-bar-container">
   <div class="zv-dialog-wrapper__progress-container">
     @if (showProgress) {
-      <mat-progress-bar mode="determinate" [value]="progress" class="zv-dialog-wrapper__progres-bar"></mat-progress-bar>
+      <mat-progress-bar mode="determinate" [value]="progress" class="zv-dialog-wrapper__progres-bar" />
     }
   </div>
   @if (showProgress) {

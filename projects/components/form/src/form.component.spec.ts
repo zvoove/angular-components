@@ -11,7 +11,7 @@ import { Observable, Subject, Subscription, of } from 'rxjs';
 import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
 import { ZvForm, dependencies } from './form.component';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 class TestZvFormService extends BaseZvFormService {
   constructor() {
     super();

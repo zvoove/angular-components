@@ -10,11 +10,7 @@ https://github.com/angular/components/issues/16457
           @case ('button') {
             <button mat-menu-item [disabled]="action.isDisabledFn && action.isDisabledFn(items())" (click)="action.actionFn!(items())">
               @if (showIcon()) {
-                <ng-container
-                  ngProjectAs="mat-icon"
-                  [ngTemplateOutlet]="actionIcon"
-                  [ngTemplateOutletContext]="{ $implicit: action }"
-                ></ng-container>
+                <ng-container ngProjectAs="mat-icon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }" />
               }
               {{ action.label }}
             </button>
@@ -28,11 +24,7 @@ https://github.com/angular/components/issues/16457
               [class.zv-table-actions__no-pointer-events]="action.isDisabledFn && action.isDisabledFn(items())"
             >
               @if (showIcon()) {
-                <ng-container
-                  ngProjectAs="mat-icon"
-                  [ngTemplateOutlet]="actionIcon"
-                  [ngTemplateOutletContext]="{ $implicit: action }"
-                ></ng-container>
+                <ng-container ngProjectAs="mat-icon" [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }" />
               }
               {{ action.label }}
             </a>
@@ -51,11 +43,11 @@ https://github.com/angular/components/issues/16457
                         ngProjectAs="mat-icon"
                         [ngTemplateOutlet]="actionIcon"
                         [ngTemplateOutletContext]="{ $implicit: action }"
-                      ></ng-container>
+                      />
                     }
                     {{ action.label }}
                   </button>
-                  <zv-table-actions #innerPanel [actions]="visibleChildActions" [items]="items()" [root]="false"></zv-table-actions>
+                  <zv-table-actions #innerPanel [actions]="visibleChildActions" [items]="items()" [root]="false" />
                 }
               }
             }
@@ -71,6 +63,6 @@ https://github.com/angular/components/issues/16457
     <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
   }
   @if (action.isSvgIcon === true) {
-    <mat-icon [style.color]="action.iconColor" [svgIcon]="action.icon"></mat-icon>
+    <mat-icon [style.color]="action.iconColor" [svgIcon]="action.icon" />
   }
 </ng-template>

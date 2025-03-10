@@ -2,22 +2,22 @@
 <div [formGroup]="form">
   <mat-form-field style="display: inline-block">
     <mat-label>lookup (mode: entity)</mat-label>
-    <zv-select formControlName="lookupEntity" [dataSource]="'lookup:country'"></zv-select>
+    <zv-select formControlName="lookupEntity" [dataSource]="'lookup:country'" />
   </mat-form-field>
   value: {{ form.value.lookupEntity | json }}<br />
   <mat-form-field style="display: inline-block">
     <mat-label>lookup (mode: id)</mat-label>
-    <zv-select formControlName="lookupId" [dataSource]="'idlookup:country'"></zv-select>
+    <zv-select formControlName="lookupId" [dataSource]="'idlookup:country'" />
   </mat-form-field>
   value: {{ form.value.lookupId | json }}<br />
   <mat-form-field style="display: inline-block">
     <mat-label>options (mode: entity)</mat-label>
-    <zv-select formControlName="optionsEntity" [dataSource]="{ mode: 'entity', idKey: 'id', labelKey: 'name', items: items$ }"></zv-select>
+    <zv-select formControlName="optionsEntity" [dataSource]="{ mode: 'entity', idKey: 'id', labelKey: 'name', items: items$ }" />
   </mat-form-field>
   value: {{ form.value.optionsEntity | json }}<br />
   <mat-form-field style="display: inline-block">
     <mat-label>options (mode: id)</mat-label>
-    <zv-select formControlName="optionsId" [dataSource]="{ mode: 'id', idKey: 'id', labelKey: 'name', items: items$ }"></zv-select>
+    <zv-select formControlName="optionsId" [dataSource]="{ mode: 'id', idKey: 'id', labelKey: 'name', items: items$ }" />
   </mat-form-field>
   value: {{ form.value.optionsId | json }}<br />
 </div>

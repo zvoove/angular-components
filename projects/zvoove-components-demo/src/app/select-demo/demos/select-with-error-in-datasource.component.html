@@ -2,7 +2,7 @@
 <span [formGroup]="form">
   <mat-form-field style="display: inline-block">
     <mat-label>select</mat-label>
-    <zv-select formControlName="select" [dataSource]="dataSource"></zv-select>
+    <zv-select formControlName="select" [dataSource]="dataSource" />
   </mat-form-field>
 </span>
 value: {{ form.value.select | json }}<br />

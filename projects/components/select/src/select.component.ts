@@ -241,8 +241,8 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     return '';
   }
 
-  $currentSelection = signal([] as MatOption<any>[]);
-  $customTriggerDataArray = computed(() => {
+  readonly $currentSelection = signal([] as MatOption<any>[]);
+  readonly $customTriggerDataArray = computed(() => {
     const selectedOptions = this.$currentSelection().map((option: MatOption): ZvSelectTriggerData => {
       return {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -253,13 +253,13 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     return this._matSelect._isRtl() ? selectedOptions.reverse() : selectedOptions;
   });
   /** The value displayed in the trigger. */
-  $customTriggerData = computed(() => {
+  readonly $customTriggerData = computed(() => {
     if (this.multiple) {
       return this.$customTriggerDataArray();
     }
     return this.$customTriggerDataArray()[0];
   });
-  $selectedItemsTriggerLabel = computed(() => {
+  readonly $selectedItemsTriggerLabel = computed(() => {
     if (this.empty) return '';
     return this.$customTriggerDataArray()
       .map((x) => x.viewValue)

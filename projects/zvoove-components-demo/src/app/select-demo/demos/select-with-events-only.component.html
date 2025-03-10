@@ -1,7 +1,7 @@
 <h2>Event output only (no form)</h2>
 <mat-form-field>
   <mat-label>selectionChange only</mat-label>
-  <zv-select [dataSource]="items" (selectionChange)="onSelectionChange($event)"></zv-select>
+  <zv-select [dataSource]="items" (selectionChange)="onSelectionChange($event)" />
 </mat-form-field>
 change event values: {{ values | json }}
 <ul>

@@ -15,9 +15,9 @@ import { IZvTableSort, IZvTableSortDefinition } from '../models';
   imports: [MatFormField, MatLabel, MatSelect, MatOption, MatMiniFabButton, MatIcon],
 })
 export class ZvTableSortComponent {
-  public sortColumn = model.required<string | null>();
-  public sortDirection = model.required<'asc' | 'desc' | null>();
-  public sortDefinitions = input<IZvTableSortDefinition[]>([]);
+  public readonly sortColumn = model.required<string | null>();
+  public readonly sortDirection = model.required<'asc' | 'desc' | null>();
+  public readonly sortDefinitions = input<IZvTableSortDefinition[]>([]);
   public readonly sortChanged = output<IZvTableSort>();
 
   public onSortColumnChange(event: MatSelectChange) {

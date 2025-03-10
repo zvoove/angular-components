@@ -32,18 +32,19 @@ import { ZvTableActionsComponent } from './table-actions.component';
   ],
 })
 export class ZvTableRowActionsComponent<T> {
-  public root = input<boolean>(true);
-  public item = input.required<T>();
-  public actions = input.required<IZvTableAction<T>[]>();
-  public loadActionsFn = input<(data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]>>();
-  public openMenuFn = input<(data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]> | IZvTableAction<T>[] | null>();
-  public moreMenuThreshold = input<number>();
+  public readonly root = input<boolean>(true);
+  public readonly item = input.required<T>();
+  public readonly actions = input.required<IZvTableAction<T>[]>();
+  public readonly loadActionsFn = input<(data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]>>();
+  public readonly openMenuFn =
+    input<(data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]> | IZvTableAction<T>[] | null>();
+  public readonly moreMenuThreshold = input<number>();
 
-  public loadedActions = signal<IZvTableAction<T>[] | null>(null);
-  public loading = signal<boolean>(false);
+  public readonly loadedActions = signal<IZvTableAction<T>[] | null>(null);
+  public readonly loading = signal<boolean>(false);
 
-  public itemAsArray = computed(() => [this.item()]);
-  public combinedActions = computed(() => this.loadedActions() ?? this.actions());
+  public readonly itemAsArray = computed(() => [this.item()]);
+  public readonly combinedActions = computed(() => this.loadedActions() ?? this.actions());
 
   private _destroyRef = inject(DestroyRef);
 

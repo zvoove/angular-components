@@ -4,7 +4,7 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DummyMatFormFieldControl implements MatFormFieldControl<string>, OnDestroy {
   public id = '';
   public userAriaDescribedBy?: string;

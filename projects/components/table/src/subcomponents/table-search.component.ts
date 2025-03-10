@@ -15,10 +15,10 @@ import { debounceTime } from 'rxjs/operators';
   imports: [MatFormField, MatLabel, MatInput, MatIconButton, MatSuffix, MatIcon],
 })
 export class ZvTableSearchComponent implements OnInit, OnDestroy {
-  public searchText = model.required<string | null>();
+  public readonly searchText = model.required<string | null>();
   public readonly searchChanged = output<string | null>();
 
-  public currentSearchText = signal<string | null>('');
+  public readonly currentSearchText = signal<string | null>('');
   private _searchValueChanged$ = new Subject<void>();
   private searchDebounceSub = Subscription.EMPTY;
 

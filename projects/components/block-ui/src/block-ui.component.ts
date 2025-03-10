@@ -15,13 +15,13 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   imports: [MatProgressSpinner],
 })
 export class ZvBlockUi {
-  public blocked = input.required<boolean>();
-  public spinnerText = input('');
-  public clickthrough = input(false);
+  public readonly blocked = input.required<boolean>();
+  public readonly spinnerText = input('');
+  public readonly clickthrough = input(false);
 
-  public spinnerDiameter = signal(20); // start with min width and then see if we can increase it in updateSpinner
+  public readonly spinnerDiameter = signal(20); // start with min width and then see if we can increase it in updateSpinner
 
-  public contentNode = viewChild<ElementRef<HTMLDivElement>>('content');
+  public readonly contentNode = viewChild<ElementRef<HTMLDivElement>>('content');
 
   constructor() {
     afterNextRender({ read: () => this.updateSpinner() });

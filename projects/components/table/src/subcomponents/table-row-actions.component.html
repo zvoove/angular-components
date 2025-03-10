@@ -3,7 +3,7 @@
     <button mat-icon-button type="button" [matMenuTriggerFor]="rowActionsComponent.menu()" (click)="onMenuButtonClicked()">
       <mat-icon>more_vert</mat-icon>
     </button>
-    <zv-table-actions #rowActionsComponent [actions]="visibleActions" [items]="itemAsArray()" [loading]="loading()"> </zv-table-actions>
+    <zv-table-actions #rowActionsComponent [actions]="visibleActions" [items]="itemAsArray()" [loading]="loading()" />
   } @else {
     @for (action of visibleActions; track action) {
       @switch (action | zvTableActionType) {
@@ -15,7 +15,7 @@
             (click)="action.actionFn!(itemAsArray())"
             [matTooltip]="action.label"
           >
-            <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
+            <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }" />
           </button>
         }
         @case ('link') {
@@ -28,7 +28,7 @@
             [matTooltip]="action.label"
             [class.zv-table-row-actions__no-pointer-events]="action.isDisabledFn && action.isDisabledFn(itemAsArray())"
           >
-            <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
+            <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }" />
           </a>
         }
         @case ('menu') {
@@ -43,9 +43,9 @@
                   [matMenuTriggerFor]="iconActions.menu()"
                   [matTooltip]="action.label"
                 >
-                  <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }"></ng-container>
+                  <ng-container [ngTemplateOutlet]="actionIcon" [ngTemplateOutletContext]="{ $implicit: action }" />
                 </button>
-                <zv-table-actions #iconActions [actions]="visibleChildActions" [items]="itemAsArray()" [root]="false"></zv-table-actions>
+                <zv-table-actions #iconActions [actions]="visibleChildActions" [items]="itemAsArray()" [root]="false" />
               }
             }
           }
@@ -61,6 +61,6 @@
     <mat-icon [style.color]="action.iconColor">{{ action.icon }}</mat-icon>
   }
   @if (action.isSvgIcon === true) {
-    <mat-icon [style.color]="action.iconColor" [svgIcon]="action.icon"></mat-icon>
+    <mat-icon [style.color]="action.iconColor" [svgIcon]="action.icon" />
   }
 </ng-template>

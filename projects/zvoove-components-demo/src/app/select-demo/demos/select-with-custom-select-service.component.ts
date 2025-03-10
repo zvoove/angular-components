@@ -6,7 +6,7 @@ import { DefaultZvSelectService, ZvSelectData, ZvSelectDataSource, ZvSelectLoadT
 import { ZvSelectModule } from '@zvoove/components/select/src/select.module';
 import { Observable, of } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CustomZvSelectService extends DefaultZvSelectService {
   constructor() {
     super();

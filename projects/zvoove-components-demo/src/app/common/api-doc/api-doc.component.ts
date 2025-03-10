@@ -14,9 +14,9 @@ import { AppApiDocProperty } from './api-doc-property.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppApiDoc {
-  name = input.required<string>();
-  inputs = contentChildren(AppApiDocInput);
-  outputs = contentChildren(AppApiDocOutput);
-  properties = contentChildren(AppApiDocProperty);
-  methods = contentChildren(AppApiDocMethod);
+  readonly name = input.required<string>();
+  readonly inputs = contentChildren(AppApiDocInput);
+  readonly outputs = contentChildren(AppApiDocOutput);
+  readonly properties = contentChildren(AppApiDocProperty);
+  readonly methods = contentChildren(AppApiDocMethod);
 }

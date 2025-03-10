@@ -8,7 +8,7 @@
 >
   @if (_labelChild) {
     <mat-label>
-      <ng-content select="mat-label"></ng-content>
+      <ng-content select="mat-label" />
     </mat-label>
   }
   @if (!_labelChild && calculatedLabel) {
@@ -18,13 +18,13 @@
   }
   @if (_prefixChildren.length) {
     <ng-container matPrefix>
-      <ng-content select="[matPrefix]"></ng-content>
+      <ng-content select="[matPrefix]" />
     </ng-container>
   }
-  <ng-content></ng-content>
+  <ng-content />
   @if (_suffixChildren.length) {
     <ng-container matSuffix>
-      <ng-content select="[matSuffix]"></ng-content>
+      <ng-content select="[matSuffix]" />
     </ng-container>
   }
   @if (showHintToggle) {

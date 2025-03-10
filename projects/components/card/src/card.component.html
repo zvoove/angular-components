@@ -4,30 +4,30 @@
   @let topButtonTpl = topButtonSection();
   <zv-header [caption]="caption()" [description]="description()">
     @if (captionTpl) {
-      <ng-container *zvHeaderCaptionSection [ngTemplateOutlet]="captionTpl"></ng-container>
+      <ng-container *zvHeaderCaptionSection [ngTemplateOutlet]="captionTpl" />
     }
     @if (descriptionTpl) {
-      <ng-container *zvHeaderDescriptionSection [ngTemplateOutlet]="descriptionTpl"></ng-container>
+      <ng-container *zvHeaderDescriptionSection [ngTemplateOutlet]="descriptionTpl" />
     }
     @if (topButtonTpl) {
-      <ng-container *zvHeaderTopButtonSection [ngTemplateOutlet]="topButtonTpl"></ng-container>
+      <ng-container *zvHeaderTopButtonSection [ngTemplateOutlet]="topButtonTpl" />
     }
   </zv-header>
 }
 <mat-card class="zv-card__content" [style.padding]="contentPadding()">
   <mat-card-content>
-    <ng-content></ng-content>
+    <ng-content />
   </mat-card-content>
   @let actionsTpl = actionsSection();
   @if (actionsTpl) {
     <mat-card-actions>
-      <ng-container [ngTemplateOutlet]="actionsTpl"></ng-container>
+      <ng-container [ngTemplateOutlet]="actionsTpl" />
     </mat-card-actions>
   }
   @let footerTpl = footerSection();
   @if (footerTpl) {
     <mat-card-footer>
-      <ng-container [ngTemplateOutlet]="footerTpl"></ng-container>
+      <ng-container [ngTemplateOutlet]="footerTpl" />
     </mat-card-footer>
   }
 </mat-card>

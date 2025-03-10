@@ -28,7 +28,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   imports: [MatToolbarModule, MatButtonModule, MatSidenavModule, MatListModule, RouterLink, MatDividerModule, RouterOutlet],
 })
 export class AppComponent {
-  theme = signal('m3');
+  readonly theme = signal('m3');
   supportedLocales = ['de', 'en-US', 'en-GB'];
   injector = inject(Injector);
 

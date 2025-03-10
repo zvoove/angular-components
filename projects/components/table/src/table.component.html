@@ -13,7 +13,7 @@
       [searchText]="filterText"
       (sortChanged)="onSortChanged($event)"
       (searchChanged)="onSearchChanged($event)"
-    ></zv-table-header>
+    />
 
     <zv-block-ui [blocked]="showLoading" [clickthrough]="true">
       <zv-table-data
@@ -31,7 +31,7 @@
         (showSettingsClicked)="flipContainer.showBack()"
         (refreshDataClicked)="onRefreshDataClicked()"
         (sortChanged)="onSortChanged($event)"
-      ></zv-table-data>
+      />
 
       @if (showNoEntriesText) {
         <div class="zv-table__no-entries-text" i18n="@@zvc.noEntries">No entries</div>
@@ -46,7 +46,7 @@
         [pageSizeOptions]="pageSizeOptions"
         [pageDebounce]="pageDebounce"
         (page)="onPage($event)"
-      ></zv-table-pagination>
+      />
     </zv-block-ui>
   </div>
   <div *zvFlipContainerBack>
@@ -59,8 +59,7 @@
         (settingsAborted)="flipContainer.showFront()"
         (settingsSaved)="onSettingsSaved()"
         [customSettings]="customSettings"
-      >
-      </zv-table-settings>
+      />
     }
   </div>
 </zv-flip-container>

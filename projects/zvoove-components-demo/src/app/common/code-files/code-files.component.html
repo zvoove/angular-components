@@ -1,7 +1,7 @@
 <mat-tab-group dynamicHeight>
   @for (file of filesAdjusted(); track $index) {
     <mat-tab [label]="file.filename" [labelClass]="'app-code-files__tab-header'">
-      <app-code class="app-code-files__code" [code]="file.code" [language]="file.language"></app-code>
+      <app-code class="app-code-files__code" [code]="file.code" [language]="file.language" />
     </mat-tab>
   }
 </mat-tab-group>

@@ -18,8 +18,7 @@ import { MatButtonHarness } from '@angular/material/button/testing';
       [openMenuFn]="openMenuFn"
       [item]="item"
       [moreMenuThreshold]="moreMenuThreshold"
-    >
-    </zv-table-row-actions>
+    />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,

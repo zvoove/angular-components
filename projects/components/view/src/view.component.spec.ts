@@ -9,9 +9,9 @@ import { IZvViewDataSource } from './view-data-source';
 import { ZvView } from './view.component';
 
 class TestViewDataSource implements IZvViewDataSource {
-  contentBlocked = signal(false);
-  contentVisible = signal(true);
-  exception = signal<IZvException | null>(null);
+  readonly contentBlocked = signal(false);
+  readonly contentVisible = signal(true);
+  readonly exception = signal<IZvException | null>(null);
   connect = () => {};
   disconnect = () => {};
 }

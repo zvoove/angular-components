@@ -17,8 +17,8 @@ export interface CodeFiles {
   encapsulation: ViewEncapsulation.None,
 })
 export class AppCodeFilesComponent {
-  files = input.required<CodeFiles[]>();
-  filesAdjusted = computed(() =>
+  readonly files = input.required<CodeFiles[]>();
+  readonly filesAdjusted = computed(() =>
     this.files().map((file) => ({
       ...file,
       language: file.language ?? getLanguage(file.filename),
