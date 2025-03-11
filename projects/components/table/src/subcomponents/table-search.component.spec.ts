@@ -3,7 +3,6 @@ import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { MatIconButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvTableSearchComponent } from './table-search.component';
 
 @Component({
@@ -24,7 +23,7 @@ export class TestComponent {
 describe('ZvTableSearchComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, TestComponent],
+      imports: [TestComponent],
     }).compileComponents();
   }));
 

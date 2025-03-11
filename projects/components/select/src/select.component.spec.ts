@@ -17,7 +17,6 @@ import { MatOptionHarness, OptionHarnessFilters } from '@angular/material/core/t
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatLabel, MatSelect } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseZvFormService, IZvFormError, IZvFormErrorData, provideFormService } from '@zvoove/components/form-base';
 import { ZvFormField } from '@zvoove/components/form-field/src/form-field.component';
 import {
@@ -256,7 +255,7 @@ async function initTest<T>(
 ): Promise<{ fixture: ComponentFixture<T>; component: T; loader: HarnessLoader; zvSelect: ZvSelectHarness }> {
   TestZvSelectService.calledwith = [];
   await TestBed.configureTestingModule({
-    imports: [NoopAnimationsModule, type],
+    imports: [type],
     providers: [provideSelectService(TestZvSelectService), provideFormService(TestZvFormsService)],
   }).compileComponents();
   const fixture = TestBed.createComponent(type);

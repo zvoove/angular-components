@@ -8,7 +8,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { ZV_FORM_FIELD_CONFIG } from '@zvoove/components/form-field';
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
@@ -26,7 +25,6 @@ export const appConfig: ApplicationConfig = {
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: '* Required' } },
     { provide: LOCALE_ID, useValue: getUsersLocale(['en', 'de'], 'en-GB') },
-    provideAnimations(),
     provideHttpClient(withInterceptorsFromDi(), withFetch()),
     provideRouter([
       {

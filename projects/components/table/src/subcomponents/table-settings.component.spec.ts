@@ -4,7 +4,6 @@ import { MatButton } from '@angular/material/button';
 import { MatCardActions } from '@angular/material/card';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { ZvTableColumn } from '../directives/table.directives';
@@ -44,7 +43,7 @@ describe('ZvTableSettingsComponent', () => {
   describe('integration', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestComponent],
+        imports: [TestComponent],
       }).compileComponents();
     }));
 

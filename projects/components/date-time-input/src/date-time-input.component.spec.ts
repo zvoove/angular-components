@@ -7,7 +7,6 @@ import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerInput, MatDatepickerModule } from '@angular/material/datepicker';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
   ZV_NATIVE_DATE_FORMATS,
   ZV_NATIVE_TIME_FORMATS,
@@ -30,7 +29,7 @@ describe('ZvDateTimeInput', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule],
+        imports: [],
         providers: [{ provide: LOCALE_ID, useValue: 'en-US' }],
       });
       fixture = TestBed.createComponent(ValueTestComponent);
@@ -388,7 +387,7 @@ describe('ZvDateTimeInput', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule],
+        imports: [],
         providers: [{ provide: LOCALE_ID, useValue: 'en-US' }],
       });
       fixture = TestBed.createComponent(InputsTestComponent);
@@ -442,7 +441,7 @@ describe('ZvDateTimeInput', () => {
 
     beforeEach(async () => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule],
+        imports: [],
         providers: [{ provide: LOCALE_ID, useValue: 'en-US' }],
       });
       fixture = TestBed.createComponent(FormTestComponent);

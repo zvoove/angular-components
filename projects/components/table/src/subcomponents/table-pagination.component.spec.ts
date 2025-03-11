@@ -5,7 +5,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvTablePaginationComponent } from './table-pagination.component';
 
 @Component({
@@ -41,15 +40,7 @@ describe('ZvTablePaginationComponent', () => {
   let debugElement: DebugElement;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        FormsModule,
-        MatPaginatorModule,
-        MatSelectModule,
-        MatCardModule,
-        PaginationTestComponent,
-        ZvTablePaginationComponent,
-      ],
+      imports: [FormsModule, MatPaginatorModule, MatSelectModule, MatCardModule, PaginationTestComponent, ZvTablePaginationComponent],
     });
 
     fixture = TestBed.createComponent(PaginationTestComponent);

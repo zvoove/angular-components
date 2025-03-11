@@ -9,7 +9,6 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BaseZvFormService, IZvFormError, IZvFormErrorData, ZvFormService } from '@zvoove/components/form-base';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
@@ -133,7 +132,7 @@ describe('ZvFormField', () => {
   describe('checkbox', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestCheckboxComponent],
+        imports: [TestCheckboxComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
     }));
@@ -156,7 +155,7 @@ describe('ZvFormField', () => {
   describe('formControl', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestFormComponent],
+        imports: [TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
     }));
@@ -287,7 +286,7 @@ describe('ZvFormField', () => {
     let loader: HarnessLoader;
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestNgModelComponent],
+        imports: [TestNgModelComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
       fixture = TestBed.createComponent(TestNgModelComponent);
@@ -315,7 +314,7 @@ describe('ZvFormField', () => {
     let loader: HarnessLoader;
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestNoFormComponent],
+        imports: [TestNoFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
       fixture = TestBed.createComponent(TestNoFormComponent);
@@ -343,7 +342,7 @@ describe('ZvFormField', () => {
   describe('initialization', () => {
     it('should initialize properly with its own default settings', waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestFormComponent],
+        imports: [TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
 
@@ -356,7 +355,7 @@ describe('ZvFormField', () => {
 
     it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestFormComponent],
+        imports: [TestFormComponent],
         providers: [
           { provide: ZvFormService, useClass: TestZvFormService },
           {
@@ -376,7 +375,7 @@ describe('ZvFormField', () => {
   describe('hint', () => {
     it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is set', waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestFormComponent],
+        imports: [TestFormComponent],
         providers: [
           { provide: ZvFormService, useClass: TestZvFormService },
           { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: 'foo' } },
@@ -418,7 +417,7 @@ describe('ZvFormField', () => {
 
     it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is not set', waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [NoopAnimationsModule, TestFormComponent],
+        imports: [TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
 

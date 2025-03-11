@@ -6,7 +6,6 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatMenuHarness } from '@angular/material/menu/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { IZvTableAction, IZvTableActionRouterLink, ZvTableActionScope } from '../models';
 import { ZvTableActionsComponent } from './table-actions.component';
@@ -33,7 +32,7 @@ export class TestComponent {
 describe('ZvTableActionsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, RouterModule.forRoot([]), TestComponent],
+      imports: [RouterModule.forRoot([]), TestComponent],
     }).compileComponents();
   }));
 
