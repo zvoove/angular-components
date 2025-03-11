@@ -4,7 +4,6 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MatMiniFabButton } from '@angular/material/button';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IZvTableSort, IZvTableSortDefinition } from '../models';
 import { ZvTableSortComponent } from './table-sort.component';
 
@@ -38,7 +37,7 @@ export class TestComponent {
 describe('ZvTableSortComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, TestComponent],
+      imports: [TestComponent],
     }).compileComponents();
   }));
 

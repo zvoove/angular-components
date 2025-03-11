@@ -2,7 +2,6 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs';
 import { IZvTableAction, IZvTableActionRouterLink, ZvTableActionScope } from '../models';
 import { ZvTableRowActionsComponent } from './table-row-actions.component';
@@ -37,7 +36,7 @@ export class TestComponent {
 describe('ZvTableRowActionsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, RouterModule.forRoot([]), TestComponent],
+      imports: [RouterModule.forRoot([]), TestComponent],
     }).compileComponents();
   }));
 

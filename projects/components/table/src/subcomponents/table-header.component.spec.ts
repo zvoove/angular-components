@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZvTableHeaderComponent } from './table-header.component';
 
 @Component({
@@ -28,7 +27,7 @@ export class TestComponent {
 describe('ZvTableHeaderComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, TestComponent],
+      imports: [TestComponent],
     }).compileComponents();
   }));
 
