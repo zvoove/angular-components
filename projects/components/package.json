@@ -1,7 +1,7 @@
 {
   "name": "@zvoove/components",
   "description": "A set of angular components compatible with and/or dependent on @angular/material.",
-  "version": "18.1.4",
+  "version": "18.1.5",
   "license": "MIT",
   "repository": {
     "type": "git",
