@@ -78,8 +78,8 @@ describe('ZvNativeTimeAdapter', () => {
       .toBe(false);
   });
 
-  it('should format', () => {
-    expect(adapter.format(newTime(15, 30), {})).toEqual('03:30 PM');
+  it('should format as 24 hour format', () => {
+    expect(adapter.format(newTime(15, 30), {})).toEqual('15:30');
   });
 
   it('should format with custom format', () => {
@@ -185,6 +185,10 @@ describe('ZvNativeTimeAdapter with LOCALE_ID override', () => {
   beforeEach(inject([ZvTimeAdapter], (timeAdapter: ZvNativeTimeAdapter) => {
     adapter = timeAdapter;
   }));
+
+  it('should format as AM/PM', () => {
+    expect(adapter.format(newTime(15, 30), {})).toEqual('03:30 PM');
+  });
 
   it('should return localized format example for other LOCALE_ID', () => {
     expect(adapter.parseFormatExample()).toEqual('hh:mm AM');
