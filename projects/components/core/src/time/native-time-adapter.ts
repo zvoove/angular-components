@@ -12,7 +12,8 @@ export class ZvNativeTimeAdapter extends ZvTimeAdapter<Time> {
   private _is24HourFormat: boolean | null = null;
   public is24HourFormat(): boolean {
     if (this._is24HourFormat === null) {
-      this._is24HourFormat = new Intl.DateTimeFormat(this.locale, { hour: 'numeric' }).resolvedOptions().hourCycle == 'h24';
+      const hourCycle = new Intl.DateTimeFormat(this.locale, { hour: 'numeric' }).resolvedOptions().hourCycle ?? '';
+      this._is24HourFormat = ['h23', 'h24'].includes(hourCycle);
     }
     return this._is24HourFormat;
   }
