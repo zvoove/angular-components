@@ -78,8 +78,8 @@ describe('ZvNativeTimeAdapter', () => {
       .toBe(false);
   });
 
-  it('should format', () => {
-    expect(adapter.format(newTime(15, 30), {})).toEqual('03:30 PM');
+  it('should format as 24 hour format', () => {
+    expect(adapter.format(newTime(15, 30), {})).toEqual('15:30');
   });
 
   it('should format with custom format', () => {
@@ -164,6 +164,10 @@ describe('ZvNativeTimeAdapter', () => {
   it('should return localized format example', () => {
     expect(adapter.parseFormatExample()).toEqual('hh:mm');
   });
+
+  it('should use 24 hour format for de-DE locale', () => {
+    expect(adapter.is24HourFormat()).toBe(true);
+  });
 });
 
 describe('ZvNativeTimeAdapter with LOCALE_ID override', () => {
@@ -182,7 +186,15 @@ describe('ZvNativeTimeAdapter with LOCALE_ID override', () => {
     adapter = timeAdapter;
   }));
 
+  it('should format as AM/PM', () => {
+    expect(adapter.format(newTime(15, 30), {})).toEqual('03:30 PM');
+  });
+
   it('should return localized format example for other LOCALE_ID', () => {
     expect(adapter.parseFormatExample()).toEqual('hh:mm AM');
+  });
+
+  it('should use 12 hour format for de-DE locale', () => {
+    expect(adapter.is24HourFormat()).toBe(false);
   });
 });
