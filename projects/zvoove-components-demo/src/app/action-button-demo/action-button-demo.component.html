@@ -1,0 +1,75 @@
+<app-component-page-wrapper [componentName]="'zv-action-button'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <mat-card>
+      <mat-card-content>Color input is currently only compatibil with for m2.</mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          <div>Loaded successfully {{ counter() }} times</div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <h4>Settings:</h4>
+          <mat-checkbox [(ngModel)]="loadError">Load Error</mat-checkbox>
+          <mat-checkbox (change)="updateDisabled($event.checked)">Disable Button</mat-checkbox>
+        </div>
+        <div>
+          <h4>Try it:</h4>
+          <div class="app-action-data-source-demo__demo-wrapper">
+            @for (value of themePalletValues; track value) {
+              <zv-action-button [actionDs]="dataSource" [button]="getActionButton(value)" />
+            }
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'api'">
+    <app-api-doc [name]="'zv-action-button'">
+      <app-api-doc-input [name]="'actionDs'" [type]="'ZvActionDataSource'" [desc]="'The ZvActionDataSource reference'" [required]="true" />
+      <app-api-doc-input [name]="'button'" [type]="'IZvActionButton'" [desc]="'The IZvActionButton reference'" [required]="true" />
+    </app-api-doc>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>&#64;angular/material card & icon</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          The zv-action-button uses the
+          <a href="https://material.angular.io/components/button/overview" rel="noopener noreferrer">&#64;angular/material button</a> as
+          well as the
+          <a href="https://material.angular.io/components/icon/overview" rel="noopener noreferrer">&#64;angular/material icon</a> and the
+          <a href="https://material.angular.io/components/input/overview" rel="noopener noreferrer">&#64;angular/material label</a> in its
+          view. So &#64;angular/material needs to be installed.
+        </p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Imports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Add the following to your imports, where you want to use the zv-action-button:</p>
+        <app-code [code]="importsCode" [language]="'typescript'" />
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Usage</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>An example of how to use the IZvActionButton:</p>
+        <p>TypeScript</p>
+        <app-code [code]="usageCodeTs" [language]="'typescript'" />
+        <p>HTML</p>
+        <app-code [code]="usageCodeHtml" [language]="'html'" />
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>
