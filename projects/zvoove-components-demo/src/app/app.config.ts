@@ -28,6 +28,10 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi(), withFetch()),
     provideRouter([
       {
+        path: 'action-button',
+        loadComponent: () => import('./action-button-demo/action-button-demo.component').then((c) => c.ActionButtonDemoComponent),
+      },
+      {
         path: 'button',
         loadComponent: () => import('./button-demo/button-demo.page').then((m) => m.ButtonDemoPage),
       },
