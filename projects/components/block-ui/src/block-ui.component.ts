@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, afterNextRender, effect, input, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, afterRenderEffect, input, signal, viewChild } from '@angular/core';
 
 import type { ElementRef } from '@angular/core';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -24,8 +24,7 @@ export class ZvBlockUi {
   public readonly contentNode = viewChild<ElementRef<HTMLDivElement>>('content');
 
   constructor() {
-    afterNextRender({ read: () => this.updateSpinner() });
-    effect(() => {
+    afterRenderEffect(() => {
       if (this.blocked()) {
         this.updateSpinner();
       }
@@ -37,6 +36,6 @@ export class ZvBlockUi {
     const minDimension = Math.min(nativeEl.offsetWidth, nativeEl.offsetHeight);
     const textSpace = this.spinnerText() ? 20 : 0;
     const newDiameter = Math.max(Math.min(minDimension - textSpace, 100), 20);
-    setTimeout(() => this.spinnerDiameter.set(newDiameter), 0);
+    this.spinnerDiameter.set(newDiameter);
   }
 }
