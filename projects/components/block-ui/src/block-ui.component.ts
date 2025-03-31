@@ -21,7 +21,7 @@ export class ZvBlockUi {
 
   public readonly spinnerDiameter = signal(20); // start with min width and then see if we can increase it in updateSpinner
 
-  public readonly contentNode = viewChild<ElementRef<HTMLDivElement>>('content');
+  public readonly contentNode = viewChild.required<ElementRef<HTMLDivElement>>('content');
 
   constructor() {
     afterRenderEffect(() => {
@@ -32,7 +32,7 @@ export class ZvBlockUi {
   }
 
   private updateSpinner() {
-    const nativeEl = this.contentNode()!.nativeElement;
+    const nativeEl = this.contentNode().nativeElement;
     const minDimension = Math.min(nativeEl.offsetWidth, nativeEl.offsetHeight);
     const textSpace = this.spinnerText() ? 20 : 0;
     const newDiameter = Math.max(Math.min(minDimension - textSpace, 100), 20);
