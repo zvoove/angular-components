@@ -1,11 +1,9 @@
 import { AsyncPipe, isPlatformServer } from '@angular/common';
-import type { QueryList } from '@angular/core';
 import {
   AfterContentChecked,
   ChangeDetectionStrategy,
   Component,
   ContentChild,
-  ContentChildren,
   ElementRef,
   HostBinding,
   InjectionToken,
@@ -16,6 +14,7 @@ import {
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
+  contentChildren,
   inject,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
@@ -96,8 +95,8 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
   }
   public _labelChild: MatLabel | null = null;
 
-  @ContentChildren(MatPrefix) public _prefixChildren!: QueryList<MatPrefix>;
-  @ContentChildren(MatSuffix) public _suffixChildren!: QueryList<MatSuffix>;
+  public readonly _prefixChildren = contentChildren(MatPrefix);
+  public readonly _suffixChildren = contentChildren(MatSuffix);
 
   @HostBinding('class.zv-form-field--subscript-resize') public get autoResizeHintError() {
     return this.subscriptType === 'resize';

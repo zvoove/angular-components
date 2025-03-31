@@ -16,13 +16,13 @@
       <mat-label>{{ calculatedLabel }}</mat-label>
     </mat-label>
   }
-  @if (_prefixChildren.length) {
+  @if (_prefixChildren().length) {
     <ng-container matPrefix>
       <ng-content select="[matPrefix]" />
     </ng-container>
   }
   <ng-content />
-  @if (_suffixChildren.length) {
+  @if (_suffixChildren().length) {
     <ng-container matSuffix>
       <ng-content select="[matSuffix]" />
     </ng-container>
