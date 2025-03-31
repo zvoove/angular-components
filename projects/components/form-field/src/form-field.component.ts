@@ -37,6 +37,7 @@ import { MatIcon } from '@angular/material/icon';
 import { IZvFormError, ZvFormService, hasRequiredField } from '@zvoove/components/form-base';
 import { Observable, Subscription, of } from 'rxjs';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
+import { type MatInput } from '@angular/material/input';
 
 export declare type ZvFormFieldSubscriptType = 'resize' | 'single-line';
 
@@ -140,7 +141,9 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   }
 
   /** Hide the underline for the control */
-  public noUnderline = false;
+  public get noUnderline() {
+    return this.emulated || !!this.realFormControl?.noUnderline || false;
+  }
   public readonly showHint = linkedSignal<boolean>(() => !this.hintToggle());
   public readonly calculatedLabel = signal<string | null>(null);
 
@@ -184,8 +187,7 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     this._matFormField()._control = matFormFieldControl;
 
     // This tells the mat-input that it is inside a mat-form-field
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if ((matFormFieldControl as any)._isInFormField !== undefined) {
+    if ((matFormFieldControl as MatInput)._isInFormField !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (matFormFieldControl as any)._isInFormField = true;
     }
@@ -195,7 +197,6 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     this._elementRef.nativeElement.classList.add(`zv-form-field-type-${this.controlType}`);
 
-    this.noUnderline = this.emulated || !!this.realFormControl.noUnderline;
     if (this.floatLabel() === 'auto' && (this.emulated || this.realFormControl.shouldLabelFloat === undefined)) {
       this.floatLabel.set('always');
     }
