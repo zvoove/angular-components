@@ -8,17 +8,17 @@ import {
   OnDestroy,
   PLATFORM_ID,
   ViewEncapsulation,
+  computed,
+  contentChild,
   contentChildren,
+  effect,
   inject,
   input,
-  model,
-  viewChild,
-  contentChild,
-  effect,
-  computed,
-  signal,
   linkedSignal,
+  model,
+  signal,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -34,10 +34,10 @@ import {
   MatSuffix,
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { type MatInput } from '@angular/material/input';
 import { IZvFormError, ZvFormService, hasRequiredField } from '@zvoove/components/form-base';
 import { Observable, Subscription, of } from 'rxjs';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
-import { type MatInput } from '@angular/material/input';
 
 export declare type ZvFormFieldSubscriptType = 'resize' | 'single-line';
 
@@ -137,7 +137,7 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
 
   /** Indicates if the control is no real MatFormFieldControl */
   public get emulated() {
-    return this.matFormFieldControl instanceof DummyMatFormFieldControl;
+    return this.matFormFieldControl() instanceof DummyMatFormFieldControl;
   }
 
   /** Hide the underline for the control */
