@@ -18,6 +18,7 @@ import {
   computed,
   signal,
   linkedSignal,
+  untracked,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -134,14 +135,16 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   public errors$: Observable<IZvFormError[]> = of([]);
 
   /** Indicates if the control is no real MatFormFieldControl */
-  public emulated = false;
+  public get emulated() {
+    return this.matFormFieldControl instanceof DummyMatFormFieldControl;
+  }
 
   /** Hide the underline for the control */
   public noUnderline = false;
   public readonly showHint = linkedSignal<boolean>(() => !this.hintToggle());
   public readonly calculatedLabel = signal<string | null>(null);
 
-  private formControl: FormControl | null = null;
+  private readonly formControl = computed<FormControl | null>(() => (this._ngControl()?.control as FormControl) ?? null);
 
   /** Either the MatFormFieldControl or a DummyMatFormFieldControl */
   private matFormFieldControl!: MatFormFieldControl<unknown>;
@@ -159,7 +162,7 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   constructor() {
     effect(() => {
       this._labelChild(); // to trigger the effect
-      this.updateLabel();
+      untracked(() => this.updateLabel());
     });
   }
 
@@ -167,25 +170,27 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     if (this.initialized) {
       return;
     }
-    const _ngControl = this._ngControl();
-    this.formControl = _ngControl ? (_ngControl.control as FormControl) : null;
     // Slider is not initialized the first time we enter this method, therefore we need to check if it got initialized already or not
-    if (this.formControl) {
+    const formControl = this.formControl();
+    if (formControl) {
       this.initialized = true;
     }
-    // We hope noone subscribed matFormFieldControl.stateChanges already - 🤞
-    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
-      this.matFormFieldControl.ngOnDestroy();
+    if (!this.matFormFieldControl) {
+      this.matFormFieldControl = this._control() || new DummyMatFormFieldControl(null, null);
     }
-    this.matFormFieldControl = this._control() || new DummyMatFormFieldControl(this._ngControl() ?? null, this.formControl);
+
+    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
+      this.matFormFieldControl.init(this._ngControl() ?? null, formControl);
+    }
     this._matFormField()._control = this.matFormFieldControl;
-    this.emulated = this.matFormFieldControl instanceof DummyMatFormFieldControl;
+
     // This tells the mat-input that it is inside a mat-form-field
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if ((this.matFormFieldControl as any)._isInFormField !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (this.matFormFieldControl as any)._isInFormField = true;
     }
+
     this.realFormControl = getRealFormControl(this._ngControl(), this.matFormFieldControl);
     this.controlType = this.formsService.getControlType(this.realFormControl) || 'unknown';
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -196,13 +201,13 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
       this.floatLabel.set('always');
     }
 
-    if (this.formControl) {
+    if (formControl) {
       if (this.formsService.tryDetectRequired) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (this.matFormFieldControl as any).required = hasRequiredField(this.formControl);
+        (this.matFormFieldControl as any).required = hasRequiredField(formControl);
       }
 
-      this.errors$ = this.formsService.getControlErrors(this.formControl);
+      this.errors$ = this.formsService.getControlErrors(formControl);
 
       this.updateLabel();
     }
@@ -224,15 +229,15 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   }
 
   private updateLabel() {
-    if (this.isServer) {
+    if (this.isServer || !this.initialized) {
       return;
     }
     this.calculatedLabel.set(null);
-    if (!this.createLabel() || this._labelChild() || !this.formControl) {
+    if (!this.createLabel() || this._labelChild() || !this.formControl()) {
       return;
     }
 
-    const labelText$ = this.formsService.getLabel(this.formControl);
+    const labelText$ = this.formsService.getLabel(this.formControl()!);
     if (!labelText$) {
       return;
     }
