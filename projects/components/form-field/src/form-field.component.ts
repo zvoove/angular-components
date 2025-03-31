@@ -147,7 +147,7 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   private readonly formControl = computed<FormControl | null>(() => (this._ngControl()?.control as FormControl) ?? null);
 
   /** Either the MatFormFieldControl or a DummyMatFormFieldControl */
-  private matFormFieldControl!: MatFormFieldControl<unknown>;
+  private matFormFieldControl = computed<MatFormFieldControl<unknown>>(() => this._control() || this.#lazyDummyMatformFieldControl.val);
 
   /** The real control instance (MatSlider, MatSelect, MatCheckbox, ...) */
   private realFormControl!: { noUnderline?: boolean; shouldLabelFloat?: boolean };
@@ -166,6 +166,7 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     });
   }
 
+  #lazyDummyMatformFieldControl = new Lazy<DummyMatFormFieldControl>(() => new DummyMatFormFieldControl(null, null));
   public ngAfterContentChecked(): void {
     if (this.initialized) {
       return;
@@ -175,23 +176,21 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     if (formControl) {
       this.initialized = true;
     }
-    if (!this.matFormFieldControl) {
-      this.matFormFieldControl = this._control() || new DummyMatFormFieldControl(null, null);
-    }
 
-    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
-      this.matFormFieldControl.init(this._ngControl() ?? null, formControl);
+    const matFormFieldControl = this.matFormFieldControl();
+    if (matFormFieldControl instanceof DummyMatFormFieldControl) {
+      matFormFieldControl.init(this._ngControl() ?? null, formControl);
     }
-    this._matFormField()._control = this.matFormFieldControl;
+    this._matFormField()._control = matFormFieldControl;
 
     // This tells the mat-input that it is inside a mat-form-field
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if ((this.matFormFieldControl as any)._isInFormField !== undefined) {
+    if ((matFormFieldControl as any)._isInFormField !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (this.matFormFieldControl as any)._isInFormField = true;
+      (matFormFieldControl as any)._isInFormField = true;
     }
 
-    this.realFormControl = getRealFormControl(this._ngControl(), this.matFormFieldControl);
+    this.realFormControl = getRealFormControl(this._ngControl(), matFormFieldControl);
     this.controlType = this.formsService.getControlType(this.realFormControl) || 'unknown';
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     this._elementRef.nativeElement.classList.add(`zv-form-field-type-${this.controlType}`);
@@ -204,7 +203,7 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     if (formControl) {
       if (this.formsService.tryDetectRequired) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (this.matFormFieldControl as any).required = hasRequiredField(formControl);
+        (matFormFieldControl as any).required = hasRequiredField(formControl);
       }
 
       this.errors$ = this.formsService.getControlErrors(formControl);
@@ -214,8 +213,9 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
-      this.matFormFieldControl.ngOnDestroy();
+    const matFormFieldControl = this.matFormFieldControl();
+    if (matFormFieldControl instanceof DummyMatFormFieldControl) {
+      matFormFieldControl.ngOnDestroy();
     }
 
     if (this.labelTextSubscription) {
@@ -280,4 +280,12 @@ function getRealFormControl(
     return matFormFieldControl;
   }
   return ngControl.valueAccessor as unknown as { noUnderline?: boolean; shouldLabelFloat?: boolean };
+}
+
+class Lazy<T> {
+  #instance: T | undefined;
+  get val(): T {
+    return this.#instance ?? (this.#instance = this.creator());
+  }
+  constructor(private creator: () => T) {}
 }
