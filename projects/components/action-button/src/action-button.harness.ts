@@ -5,7 +5,6 @@ export class ZvActionButtonHarness extends ComponentHarness {
 
   private _button = this.locatorForOptional('button');
   private _buttonIcon = this.locatorForOptional('button mat-icon');
-  private _buttonLabel = this.locatorForOptional('button mat-label');
   private _blockOverlay = this.locatorForOptional('.zv-block-ui__overlay');
   private _successDiv = this.locatorForOptional('.zv-action-button__check');
   private _errorDiv = this.locatorForOptional('.zv-action-button__error');
@@ -18,8 +17,8 @@ export class ZvActionButtonHarness extends ComponentHarness {
     return await this._buttonIcon();
   }
 
-  public async getButtonLabel(): Promise<TestElement | null> {
-    return await this._buttonLabel();
+  public async getButtonContent(): Promise<string | null> {
+    return (await (await this._button())?.text()) ?? null;
   }
 
   public async showsSuccess(): Promise<boolean> {

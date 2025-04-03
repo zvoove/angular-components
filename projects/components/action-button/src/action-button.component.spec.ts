@@ -93,8 +93,8 @@ describe('ZvActionButton', () => {
   });
 
   it('should show label', async () => {
-    const label = await harness.getButtonLabel();
-    expect(await label?.text()).toBe('label');
+    const buttonContent = await harness.getButtonContent();
+    expect(buttonContent).toContain('label');
   });
 
   it('should show success icon', fakeAsync(async () => {

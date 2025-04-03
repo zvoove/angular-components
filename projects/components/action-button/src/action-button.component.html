@@ -1,14 +1,14 @@
 <zv-block-ui [blocked]="actionDs().pending()">
   <button
     type="button"
-    color="{{ button().color }}"
+    [color]="button().color"
     mat-raised-button
     (click)="actionDs().execute()"
     [disabled]="actionDs().pending() || button().isDisabled?.()"
     [attr.data-cy]="button().dataCy"
   >
     <mat-icon>{{ button().icon }}</mat-icon>
-    <mat-label>{{ button().label }}</mat-label>
+    {{ button().label }}
   </button>
   @if (actionDs().succeeded()) {
     <mat-icon class="zv-action-button__check">check_circle</mat-icon>
