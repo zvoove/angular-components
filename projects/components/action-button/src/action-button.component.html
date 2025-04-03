@@ -11,9 +11,9 @@
     <mat-label>{{ button().label }}</mat-label>
   </button>
   @if (actionDs().succeeded()) {
-    <mat-icon class="app-action-button__check">check_circle</mat-icon>
+    <mat-icon class="zv-action-button__check">check_circle</mat-icon>
   }
   @if (actionDs().hasError()) {
-    <div class="app-action-button__error">{{ actionDs().exception().errorObject | zvErrorMessage }}</div>
+    <div class="zv-action-button__error">{{ actionDs().exception() | zvErrorMessage }}</div>
   }
 </zv-block-ui>

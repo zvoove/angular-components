@@ -38,7 +38,7 @@ describe('ActionDataSource', () => {
     expect(dataSource.succeeded()).toBe(false);
 
     tick(1);
-    expect(dataSource.exception()?.errorObject).toBe(error);
+    expect(dataSource.exception()).toBe(error);
     expect(dataSource.pending()).toBe(false);
     expect(dataSource.hasError()).toBe(true);
     expect(dataSource.succeeded()).toBe(false);

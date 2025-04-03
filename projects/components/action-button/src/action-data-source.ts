@@ -1,5 +1,4 @@
 import { signal } from '@angular/core';
-import { IZvException } from '@zvoove/components/core';
 import { Observable, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -8,10 +7,10 @@ export interface ZvActionDataSourceOptions<TData> {
 }
 
 export class ZvActionDataSource<TData> {
-  private _exception = signal<IZvException | null>(null);
-  private _pending = signal(false);
-  private _hasError = signal(false);
-  private _succeeded = signal(false);
+  private readonly _exception = signal<unknown>(null);
+  private readonly _pending = signal(false);
+  private readonly _hasError = signal(false);
+  private readonly _succeeded = signal(false);
 
   private actionSub = Subscription.EMPTY;
 
@@ -40,11 +39,7 @@ export class ZvActionDataSource<TData> {
       error: (err: unknown) => {
         this._pending.set(false);
         this._hasError.set(true);
-        this._exception.set({
-          errorObject: err,
-          alignCenter: true,
-          icon: 'sentiment_very_dissatisfied',
-        });
+        this._exception.set(err);
       },
     });
   }

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, Signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { ThemePalette } from '@angular/material/core';
-import { ZvErrorMessagePipe } from '@zvoove/components/core';
+import { MatIcon } from '@angular/material/icon';
 import { MatLabel } from '@angular/material/input';
 import { ZvBlockUi } from '@zvoove/components/block-ui';
-import { MatIcon } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { ZvErrorMessagePipe } from '@zvoove/components/core';
 import { ZvActionDataSource } from './action-data-source';
 
 export interface IZvActionButton {
@@ -23,6 +23,6 @@ export interface IZvActionButton {
   imports: [MatLabel, ZvErrorMessagePipe, ZvBlockUi, MatIcon, MatButtonModule],
 })
 export class ZvActionButtonComponent<T> {
-  public actionDs = input.required<ZvActionDataSource<T>>();
-  public button = input.required<IZvActionButton>();
+  public readonly actionDs = input.required<ZvActionDataSource<T>>();
+  public readonly button = input.required<IZvActionButton>();
 }
