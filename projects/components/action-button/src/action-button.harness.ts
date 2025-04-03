@@ -9,12 +9,13 @@ export class ZvActionButtonHarness extends ComponentHarness {
   private _successDiv = this.locatorForOptional('.zv-action-button__check');
   private _errorDiv = this.locatorForOptional('.zv-action-button__error');
 
-  public async getButton(): Promise<TestElement | null> {
-    return await this._button();
+  public async click(): Promise<void> {
+    const button = await this._button();
+    return await button?.click();
   }
 
-  public async getButtonIcon(): Promise<TestElement | null> {
-    return await this._buttonIcon();
+  public async getButtonIcon(): Promise<string | undefined> {
+    return await (await this._buttonIcon())?.text();
   }
 
   public async getButtonContent(): Promise<string | null> {
@@ -31,5 +32,17 @@ export class ZvActionButtonHarness extends ComponentHarness {
 
   public async isBlocked(): Promise<boolean> {
     return !!(await this._blockOverlay());
+  }
+
+  public async isDisabled(): Promise<boolean | undefined> {
+    return await (await this._button())?.getProperty('disabled');
+  }
+
+  public async hasClass(className: string): Promise<boolean> {
+    return (await (await this._button())?.hasClass(className)) ?? false;
+  }
+
+  public async getDataCy(): Promise<string> {
+    return (await (await this._button())?.getAttribute('data-cy')) ?? '';
   }
 }

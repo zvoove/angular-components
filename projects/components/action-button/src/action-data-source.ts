@@ -1,15 +1,22 @@
-import { signal } from '@angular/core';
+import { computed, Signal, signal } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
+
+export interface IZvActionDataSource {
+  readonly succeeded: Signal<boolean>;
+  readonly pending: Signal<boolean>;
+  readonly hasError: Signal<boolean>;
+  readonly exception: Signal<unknown>;
+  execute(): void;
+}
 
 export interface ZvActionDataSourceOptions<TData> {
   actionFn: () => Observable<TData>;
 }
 
-export class ZvActionDataSource<TData> {
+export class ZvActionDataSource<TData> implements IZvActionDataSource {
   private readonly _exception = signal<unknown>(null);
   private readonly _pending = signal(false);
-  private readonly _hasError = signal(false);
   private readonly _succeeded = signal(false);
 
   private actionSub = Subscription.EMPTY;
@@ -18,13 +25,12 @@ export class ZvActionDataSource<TData> {
 
   public readonly exception = this._exception.asReadonly();
   public readonly pending = this._pending.asReadonly();
-  public readonly hasError = this._hasError.asReadonly();
+  public readonly hasError = computed(() => this._exception() !== null);
   public readonly succeeded = this._succeeded.asReadonly();
 
   public execute() {
     this.actionSub.unsubscribe();
     this._pending.set(true);
-    this._hasError.set(false);
     this._exception.set(null);
     this._succeeded.set(false);
 
@@ -38,7 +44,6 @@ export class ZvActionDataSource<TData> {
       },
       error: (err: unknown) => {
         this._pending.set(false);
-        this._hasError.set(true);
         this._exception.set(err);
       },
     });
