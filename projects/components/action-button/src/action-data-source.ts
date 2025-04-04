@@ -1,4 +1,5 @@
 import { computed, Signal, signal } from '@angular/core';
+import { IZvException } from '@zvoove/components/core';
 import { Observable, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -6,7 +7,7 @@ export interface IZvActionDataSource {
   readonly succeeded: Signal<boolean>;
   readonly pending: Signal<boolean>;
   readonly hasError: Signal<boolean>;
-  readonly exception: Signal<unknown>;
+  readonly exception: Signal<IZvException | null>;
   execute(): void;
 }
 
@@ -15,7 +16,7 @@ export interface ZvActionDataSourceOptions<TData> {
 }
 
 export class ZvActionDataSource<TData> implements IZvActionDataSource {
-  private readonly _exception = signal<unknown>(null);
+  private readonly _exception = signal<IZvException | null>(null);
   private readonly _pending = signal(false);
   private readonly _succeeded = signal(false);
 
@@ -44,7 +45,10 @@ export class ZvActionDataSource<TData> implements IZvActionDataSource {
       },
       error: (err: unknown) => {
         this._pending.set(false);
-        this._exception.set(err);
+        this._exception.set({
+          errorObject: err,
+          icon: 'cancel',
+        });
       },
     });
   }

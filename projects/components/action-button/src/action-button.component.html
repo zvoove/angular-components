@@ -1,19 +1,21 @@
-<zv-block-ui [blocked]="actionDs().pending()">
-  <button
-    type="button"
-    [color]="button().color"
-    mat-raised-button
-    (click)="actionDs().execute()"
-    [disabled]="actionDs().pending() || button().isDisabled?.()"
-    [attr.data-cy]="button().dataCy"
-  >
-    <mat-icon>{{ button().icon }}</mat-icon>
+<button
+  type="button"
+  [color]="button().color"
+  mat-raised-button
+  (click)="actionDs().execute()"
+  [disabled]="actionDs().pending() || button().isDisabled?.()"
+  [attr.data-cy]="button().dataCy"
+>
+  <div #content class="zv-action-button__button-content">
+    @if (actionDs().hasError()) {
+      <mat-icon [matTooltip]="actionDs().exception()?.errorObject | zvErrorMessage">{{ actionDs().exception()?.icon }}</mat-icon>
+    } @else if (actionDs().pending()) {
+      <mat-spinner [diameter]="spinnerDiameter()" />
+    } @else if (showSuccessIcon()) {
+      <mat-icon>check_circle</mat-icon>
+    } @else if (!actionDs().pending() && !showSuccessIcon()) {
+      <mat-icon>{{ button().icon }}</mat-icon>
+    }
     {{ button().label }}
-  </button>
-  @if (actionDs().succeeded()) {
-    <mat-icon class="zv-action-button__check">check_circle</mat-icon>
-  }
-  @if (actionDs().hasError()) {
-    <div class="zv-action-button__error">{{ actionDs().exception() | zvErrorMessage }}</div>
-  }
-</zv-block-ui>
+  </div>
+</button>

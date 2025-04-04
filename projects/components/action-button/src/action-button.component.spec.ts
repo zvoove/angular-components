@@ -102,7 +102,7 @@ describe('ZvActionButton', () => {
     tick(1);
     expect(component.dataSource.pending()).toBeFalse();
     expect(component.dataSource.succeeded()).toBeTrue();
-    expect(await harness.showsSuccess()).toBeTrue();
+    expect(await harness.getButtonIcon()).toBe('check_circle');
   }));
 
   it('should show error message', fakeAsync(async () => {
@@ -110,7 +110,7 @@ describe('ZvActionButton', () => {
     component.dataSource = new ZvActionDataSource({ actionFn: () => timer(1).pipe(switchMap(() => throwError(() => error))) });
     await harness.click();
     tick(1);
-    expect(await harness.showsSuccess()).toBeFalse();
-    expect(await (await harness.getError())?.text()).toBe(error.message);
+    expect(await harness.getButtonIcon()).toBe('cancel');
+    expect(await harness.getExceptionMessage()).toBe(error.message);
   }));
 });

@@ -1,8 +1,5 @@
-.zv-action-button__check {
-  color: green;
-  vertical-align: middle;
-}
-
-.zv-action-button__error {
-  color: var(--zv-components-error);
+.zv-action-button__button-content {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
 }
