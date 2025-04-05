@@ -1,22 +1,24 @@
 import { AsyncPipe, isPlatformServer } from '@angular/common';
-import type { QueryList } from '@angular/core';
 import {
   AfterContentChecked,
   ChangeDetectionStrategy,
   Component,
-  ContentChild,
-  ContentChildren,
   ElementRef,
-  HostBinding,
   InjectionToken,
-  Input,
-  OnChanges,
   OnDestroy,
   PLATFORM_ID,
-  SimpleChanges,
-  ViewChild,
   ViewEncapsulation,
+  computed,
+  contentChild,
+  contentChildren,
+  effect,
   inject,
+  input,
+  linkedSignal,
+  model,
+  signal,
+  untracked,
+  viewChild,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -26,11 +28,13 @@ import {
   MatError,
   MatFormField,
   MatFormFieldControl,
+  MatFormFieldDefaultOptions,
   MatLabel,
   MatPrefix,
   MatSuffix,
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { type MatInput } from '@angular/material/input';
 import { IZvFormError, ZvFormService, hasRequiredField } from '@zvoove/components/form-base';
 import { Observable, Subscription, of } from 'rxjs';
 import { DummyMatFormFieldControl } from './dummy-mat-form-field-control';
@@ -45,15 +49,20 @@ export interface ZvFormFieldConfig {
 
 export const ZV_FORM_FIELD_CONFIG = new InjectionToken<ZvFormFieldConfig>('ZV_FORM_FIELD_CONFIG');
 
-function applyConfigDefaults(config: ZvFormFieldConfig | null): {
+function applyConfigDefaults(
+  config: ZvFormFieldConfig | null,
+  matConfig: MatFormFieldDefaultOptions | null
+): {
   subscriptType: ZvFormFieldSubscriptType;
   hintToggle: boolean;
   requiredText: string | null;
+  floatLabel: FloatLabelType;
 } {
   return {
     hintToggle: config?.hintToggle ?? false,
     subscriptType: config?.subscriptType ?? 'resize',
     requiredText: config?.requiredText ?? null,
+    floatLabel: matConfig?.floatLabel ?? 'auto',
   };
 }
 
@@ -61,93 +70,87 @@ function applyConfigDefaults(config: ZvFormFieldConfig | null): {
   selector: 'zv-form-field',
   templateUrl: './form-field.component.html',
   styleUrls: ['./form-field.component.scss'],
+  host: {
+    '[class.zv-form-field--subscript-resize]': 'subscriptType() === "resize"',
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [MatFormField, MatLabel, MatPrefix, MatSuffix, MatIconButton, MatIcon, MatError, AsyncPipe],
 })
-export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
+export class ZvFormField implements AfterContentChecked, OnDestroy {
+  private isServer = isPlatformServer(inject(PLATFORM_ID));
   private _elementRef = inject(ElementRef);
   private formsService = inject(ZvFormService);
-  private defaults = applyConfigDefaults(inject(ZV_FORM_FIELD_CONFIG, { optional: true }));
-  private matDefaults = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
+  private defaults = applyConfigDefaults(
+    inject(ZV_FORM_FIELD_CONFIG, { optional: true }),
+    inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true })
+  );
 
-  @Input() public createLabel = true;
-  @Input() public hint = '';
-  @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
-  @Input() public subscriptType: ZvFormFieldSubscriptType = (this.defaults ? this.defaults.subscriptType : null) ?? 'resize';
-  @Input() public hintToggle: boolean | null = null;
+  public readonly createLabel = input(true);
+  public readonly hint = input('');
+  public readonly floatLabel = model<FloatLabelType>(this.defaults.floatLabel);
+  public readonly subscriptType = input<ZvFormFieldSubscriptType>(this.defaults.subscriptType);
+  public readonly hintToggle = input<boolean>(this.defaults.hintToggle);
 
-  @ViewChild(MatFormField, { static: true }) public _matFormField!: MatFormField;
+  readonly _matFormField = viewChild.required(MatFormField);
 
   /** We can get the FromControl from this */
-  @ContentChild(NgControl) public _ngControl: NgControl | null = null;
+  readonly _ngControl = contentChild(NgControl);
 
   /** The MatFormFieldControl or null, if it is no MatFormFieldControl */
-  @ContentChild(MatFormFieldControl) public _control: MatFormFieldControl<unknown> | null = null;
+  readonly _control = contentChild(MatFormFieldControl);
 
   /** The MatLabel, if it is set or null */
-  @ContentChild(MatLabel) public set labelChild(value: MatLabel) {
-    this._labelChild = value;
-    this.updateLabel();
-    if (this._matFormField) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      (this._matFormField as any)._changeDetectorRef.markForCheck();
-    }
-  }
-  public _labelChild: MatLabel | null = null;
+  readonly _labelChild = contentChild(MatLabel);
 
-  @ContentChildren(MatPrefix) public _prefixChildren!: QueryList<MatPrefix>;
-  @ContentChildren(MatSuffix) public _suffixChildren!: QueryList<MatSuffix>;
-
-  @HostBinding('class.zv-form-field--subscript-resize') public get autoResizeHintError() {
-    return this.subscriptType === 'resize';
-  }
+  public readonly _prefixChildren = contentChildren(MatPrefix);
+  public readonly _suffixChildren = contentChildren(MatSuffix);
 
   // mat-form-field childs, that we dont support:
   // @ContentChild(MatPlaceholder) _placeholderChild: MatPlaceholder; // Deprecated, placeholder attribute of the form field control should be used instead!
   // @ContentChildren(MatError) public _errorChildren: QueryList<MatError>; // Will be created automatically
   // @ContentChildren(MatHint) public _hintChildren: QueryList<MatHint>; // No idea how to make this work...
 
-  public get hintToggleOptionActive(): boolean {
-    return typeof this.hintToggle === 'boolean' ? this.hintToggle : this.defaults.hintToggle;
-  }
+  public readonly showHintToggle = computed(() => !!this.hint() && this.hintToggle());
 
-  public get showHintToggle(): boolean {
-    return !!this.hint && this.hintToggleOptionActive;
-  }
-
+  // No computed, because it wouldn't detect control.required/disabled changes anymore
   public get hintText(): string {
-    const hintShouldBeShown = this.showHint || !this.hintToggleOptionActive;
+    const hintShouldBeShown = this.showHint() || !this.hintToggle();
 
     if (!hintShouldBeShown) {
       return '';
     }
 
-    const isRequired = this._control?.required;
-    const isDisabled = this._control?.disabled;
+    const _control = this._control();
+    const isRequired = _control?.required;
+    const isDisabled = _control?.disabled;
     if (!isRequired || isDisabled) {
-      return this.hint;
+      return this.hint();
     }
 
-    const requiredText = this.defaults?.requiredText;
-    return [requiredText, this.hint].filter((s) => !!s).join('. ');
+    const requiredText = this.defaults.requiredText;
+    return [requiredText, this.hint()].filter((s) => !!s).join('. ');
   }
 
   /** The error messages to show */
   public errors$: Observable<IZvFormError[]> = of([]);
 
   /** Indicates if the control is no real MatFormFieldControl */
-  public emulated = false;
+  public get emulated() {
+    return this.matFormFieldControl() instanceof DummyMatFormFieldControl;
+  }
 
   /** Hide the underline for the control */
-  public noUnderline = false;
-  public showHint = false;
-  public calculatedLabel: string | null = null;
+  public get noUnderline() {
+    return this.emulated || !!this.realFormControl?.noUnderline || false;
+  }
+  public readonly showHint = linkedSignal<boolean>(() => !this.hintToggle());
+  public readonly calculatedLabel = signal<string | null>(null);
 
-  private formControl: FormControl | null = null;
+  private readonly formControl = computed<FormControl | null>(() => (this._ngControl()?.control as FormControl) ?? null);
 
   /** Either the MatFormFieldControl or a DummyMatFormFieldControl */
-  private matFormFieldControl!: MatFormFieldControl<unknown>;
+  private matFormFieldControl = computed<MatFormFieldControl<unknown>>(() => this._control() || this.#lazyDummyMatformFieldControl.val);
 
   /** The real control instance (MatSlider, MatSelect, MatCheckbox, ...) */
   private realFormControl!: { noUnderline?: boolean; shouldLabelFloat?: boolean };
@@ -159,61 +162,61 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
 
   private initialized = false;
 
-  private isServer = isPlatformServer(inject(PLATFORM_ID));
-
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes.hintToggle) {
-      this.showHint = !this.hintToggleOptionActive;
-    }
+  constructor() {
+    effect(() => {
+      this._labelChild(); // to trigger the effect
+      untracked(() => this.updateLabel());
+    });
   }
 
+  #lazyDummyMatformFieldControl = new Lazy<DummyMatFormFieldControl>(() => new DummyMatFormFieldControl(null, null));
   public ngAfterContentChecked(): void {
     if (this.initialized) {
       return;
     }
-    this.formControl = this._ngControl && (this._ngControl.control as FormControl);
     // Slider is not initialized the first time we enter this method, therefore we need to check if it got initialized already or not
-    if (this.formControl) {
+    const formControl = this.formControl();
+    if (formControl) {
       this.initialized = true;
     }
-    // We hope noone subscribed matFormFieldControl.stateChanges already - 🤞
-    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
-      this.matFormFieldControl.ngOnDestroy();
+
+    const matFormFieldControl = this.matFormFieldControl();
+    if (matFormFieldControl instanceof DummyMatFormFieldControl) {
+      matFormFieldControl.init(this._ngControl() ?? null, formControl);
     }
-    this.matFormFieldControl = this._control || new DummyMatFormFieldControl(this._ngControl, this.formControl);
-    this._matFormField._control = this.matFormFieldControl;
-    this.emulated = this.matFormFieldControl instanceof DummyMatFormFieldControl;
+    this._matFormField()._control = matFormFieldControl;
+
     // This tells the mat-input that it is inside a mat-form-field
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if ((this.matFormFieldControl as any)._isInFormField !== undefined) {
+    if ((matFormFieldControl as MatInput)._isInFormField !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (this.matFormFieldControl as any)._isInFormField = true;
+      (matFormFieldControl as any)._isInFormField = true;
     }
-    this.realFormControl = getRealFormControl(this._ngControl, this.matFormFieldControl);
+
+    this.realFormControl = getRealFormControl(this._ngControl(), matFormFieldControl);
     this.controlType = this.formsService.getControlType(this.realFormControl) || 'unknown';
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     this._elementRef.nativeElement.classList.add(`zv-form-field-type-${this.controlType}`);
 
-    this.noUnderline = this.emulated || !!this.realFormControl.noUnderline;
-    if (this.floatLabel === 'auto' && (this.emulated || this.realFormControl.shouldLabelFloat === undefined)) {
-      this.floatLabel = 'always';
+    if (this.floatLabel() === 'auto' && (this.emulated || this.realFormControl.shouldLabelFloat === undefined)) {
+      this.floatLabel.set('always');
     }
 
-    if (this.formControl) {
+    if (formControl) {
       if (this.formsService.tryDetectRequired) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (this.matFormFieldControl as any).required = hasRequiredField(this.formControl);
+        (matFormFieldControl as any).required = hasRequiredField(formControl);
       }
 
-      this.errors$ = this.formsService.getControlErrors(this.formControl);
+      this.errors$ = this.formsService.getControlErrors(formControl);
 
       this.updateLabel();
     }
   }
 
   public ngOnDestroy(): void {
-    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
-      this.matFormFieldControl.ngOnDestroy();
+    const matFormFieldControl = this.matFormFieldControl();
+    if (matFormFieldControl instanceof DummyMatFormFieldControl) {
+      matFormFieldControl.ngOnDestroy();
     }
 
     if (this.labelTextSubscription) {
@@ -222,20 +225,20 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
   }
 
   public toggleHint(event: MouseEvent) {
-    this.showHint = !this.showHint;
+    this.showHint.set(!this.showHint());
     event.stopPropagation();
   }
 
   private updateLabel() {
-    if (this.isServer) {
+    if (this.isServer || !this.initialized) {
       return;
     }
-    this.calculatedLabel = null;
-    if (!this.createLabel || this._labelChild || !this.formControl) {
+    this.calculatedLabel.set(null);
+    if (!this.createLabel() || this._labelChild() || !this.formControl()) {
       return;
     }
 
-    const labelText$ = this.formsService.getLabel(this.formControl);
+    const labelText$ = this.formsService.getLabel(this.formControl()!);
     if (!labelText$) {
       return;
     }
@@ -259,23 +262,31 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
           }
         }
       } else {
-        this.calculatedLabel = label;
+        this.calculatedLabel.set(label);
       }
 
       // when only our own component is marked for check, then the label will not be shown
       // when labelText$ didn't run synchronously
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      (this._matFormField as any)._changeDetectorRef.markForCheck();
+      (this._matFormField() as any)._changeDetectorRef.markForCheck();
     });
   }
 }
 
 function getRealFormControl(
-  ngControl: NgControl | null,
+  ngControl: NgControl | null | undefined,
   matFormFieldControl: MatFormFieldControl<unknown>
 ): { noUnderline?: boolean; shouldLabelFloat?: boolean } {
   if (!(matFormFieldControl instanceof DummyMatFormFieldControl) || !ngControl) {
     return matFormFieldControl;
   }
   return ngControl.valueAccessor as unknown as { noUnderline?: boolean; shouldLabelFloat?: boolean };
+}
+
+class Lazy<T> {
+  #instance: T | undefined;
+  get val(): T {
+    return this.#instance ?? (this.#instance = this.creator());
+  }
+  constructor(private creator: () => T) {}
 }

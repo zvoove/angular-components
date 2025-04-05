@@ -195,8 +195,8 @@ describe('ZvFormField', () => {
       component.formControl.markAsTouched();
       fixture.detectChanges();
 
-      expect(component.formField._ngControl.invalid).toBe(true);
-      expect(component.formField._matFormField._control.errorState).toBe(true);
+      expect(component.formField._ngControl().invalid).toBe(true);
+      expect(component.formField._matFormField()._control.errorState).toBe(true);
 
       let errorsChecked = false;
       component.formField.errors$.subscribe((e) => {
@@ -350,7 +350,7 @@ describe('ZvFormField', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      expect(component.formField.floatLabel).toEqual('auto');
+      expect(component.formField.floatLabel()).toEqual('auto');
     }));
 
     it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', waitForAsync(() => {
@@ -368,7 +368,7 @@ describe('ZvFormField', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-      expect(component.formField.floatLabel).toEqual('always');
+      expect(component.formField.floatLabel()).toEqual('always');
     }));
   });
 
