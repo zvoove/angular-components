@@ -17,7 +17,6 @@ export interface IZvActionButton {
 @Component({
   selector: 'zv-action-button',
   templateUrl: './action-button.component.html',
-  styleUrl: './action-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIcon, MatButtonModule, MatProgressSpinner, MatTooltip],
 })
