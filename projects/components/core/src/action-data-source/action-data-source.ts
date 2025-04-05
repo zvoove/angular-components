@@ -15,7 +15,7 @@ export interface ZvActionDataSourceOptions {
 }
 
 export class ZvActionDataSource implements IZvActionDataSource {
-  readonly #state = signal<{ state: 'idle' | 'loading' | 'success' | 'error'; error: unknown | null }>({
+  readonly #state = signal<{ state: 'idle' | 'loading' | 'success' | 'error'; error: unknown }>({
     state: 'idle',
     error: null,
   });
