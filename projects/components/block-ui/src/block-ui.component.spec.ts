@@ -19,7 +19,7 @@ import { ZvBlockUiHarness } from './testing/block-ui.harness';
 })
 export class TestComponent {
   public blocked = false;
-  public spinnerText: string = null;
+  public spinnerText = '';
 }
 
 describe('ZvBlockUi', () => {

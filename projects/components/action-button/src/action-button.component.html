@@ -1,0 +1,19 @@
+<button
+  type="button"
+  [color]="color()"
+  mat-raised-button
+  (click)="dataSource().execute()"
+  [disabled]="dataSource().disabled() || disabled()"
+  [matTooltip]="dataSource().errorMessage()"
+>
+  @if (dataSource().showError()) {
+    <mat-icon [color]="'warn'">error</mat-icon>
+  } @else if (dataSource().showLoading()) {
+    <mat-icon><mat-spinner [diameter]="18" /></mat-icon>
+  } @else if (dataSource().showSuccess()) {
+    <mat-icon [color]="'success'">check_circle</mat-icon>
+  } @else if (icon()) {
+    <mat-icon>{{ icon() }}</mat-icon>
+  }
+  <ng-content />
+</button>

@@ -73,6 +73,7 @@ $theme: mat.define-theme(
   // that you are using.
   @include mat.all-component-themes($theme);
   @include comp.zvoove-components-theme($theme);
+  @include mat.color-variants-backwards-compatibility($theme);
 }
 
 html,
