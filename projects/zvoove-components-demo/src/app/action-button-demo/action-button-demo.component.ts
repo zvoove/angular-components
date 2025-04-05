@@ -51,11 +51,11 @@ private http = inject(HttpClient);
 actionDataSource = new ZvActionButtonDataSource({
   actionFn: () => this.http.post<any>('https://YOUR.API/POST-ROUTE', {}),
 });
+public readonly isDisabled = signal(false);
+public readonly color() = signal('primary');
 `;
 
   usageCodeHtml = `
-<zv-action-button [dataSource]="actionDataSource" [icon]="'home'">
-  button label
-</zv-action-button>
+<zv-action-button [dataSource]="actionDataSource" [color]="color()" [icon]="'home'" [disabled]="isDisabled()">label</zv-action-button>
 `;
 }

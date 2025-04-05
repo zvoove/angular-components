@@ -6,6 +6,7 @@ import { tap, timer } from 'rxjs';
 import { ZvActionButtonDataSource } from './action-button-data-source';
 import { ZvActionButtonComponent } from './action-button.component';
 import { ZvActionButtonHarness } from './action-button.harness';
+import { ZvButtonColors } from '@zvoove/components/core';
 
 @Component({
   selector: 'zv-test-component',
@@ -18,7 +19,7 @@ import { ZvActionButtonHarness } from './action-button.harness';
 })
 export class TestComponent {
   public readonly isDisabled = signal<boolean>(false);
-  public readonly color = signal<string | null>('primary');
+  public readonly color = signal<ZvButtonColors | null>('primary');
   public actionFnCalled = false;
   public throwError: Error | null = null;
   dataSource = new ZvActionButtonDataSource({
