@@ -4,6 +4,7 @@ import { ThemePalette } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTooltip } from '@angular/material/tooltip';
+import { ZvButtonColors } from '@zvoove/components/core';
 import { IZvActionButtonDataSource } from './action-button-data-source';
 
 export interface IZvActionButton {
@@ -23,15 +24,14 @@ export interface IZvActionButton {
 export class ZvActionButtonComponent {
   public readonly dataSource = input.required<IZvActionButtonDataSource>();
   public readonly icon = input<string | null>(null);
-  public readonly color = input<string | null | undefined>(null);
+  public readonly color = input<ZvButtonColors | null | undefined>(null);
   public readonly disabled = input<boolean>(false);
 
-  private _tooltip = viewChild(MatTooltip);
+  private readonly _tooltip = viewChild(MatTooltip);
 
   constructor() {
     afterRenderEffect(() => {
       if (this.dataSource().showError()) {
-        console.log(this._tooltip());
         this._tooltip()?.show(0);
       }
     });

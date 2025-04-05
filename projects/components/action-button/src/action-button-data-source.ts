@@ -11,7 +11,7 @@ export interface IZvActionButtonDataSource {
   execute(): void;
 }
 
-export interface IZvActionButtonDataSourceOptions extends ZvActionDataSourceOptions {}
+export declare type IZvActionButtonDataSourceOptions = ZvActionDataSourceOptions;
 
 export class ZvActionButtonDataSource extends ZvActionDataSource implements IZvActionButtonDataSource {
   readonly #destroyRef = inject(DestroyRef);
@@ -27,11 +27,10 @@ export class ZvActionButtonDataSource extends ZvActionDataSource implements IZvA
   constructor(options: IZvActionButtonDataSourceOptions) {
     super(options);
 
-    let timeoutRef: NodeJS.Timeout;
     effect(() => {
       if (this.showSuccess()) {
-        clearTimeout(timeoutRef);
-        timeoutRef = setTimeout(() => {
+        clearTimeout(this.#timeoutRef);
+        this.#timeoutRef = setTimeout(() => {
           this.showSuccess.set(false);
         }, 2000);
       }

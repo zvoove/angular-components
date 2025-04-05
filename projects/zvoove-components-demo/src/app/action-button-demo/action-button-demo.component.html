@@ -19,7 +19,7 @@
           <h4>Try it:</h4>
           <div class="app-action-data-source-demo__demo-wrapper">
             @for (value of themePalletValues; track value) {
-              <zv-action-button [dataSource]="dataSource" [icon]="'home'" [color]="color" [disabled]="isDisabled()">
+              <zv-action-button [dataSource]="dataSource" [icon]="'home'" [color]="value" [disabled]="isDisabled()">
                 {{ value }} example
               </zv-action-button>
             }

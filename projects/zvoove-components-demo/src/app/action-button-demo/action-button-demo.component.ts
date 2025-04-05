@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ThemePalette } from '@angular/material/core';
 import { ZvActionButtonComponent, ZvActionButtonDataSource } from '@zvoove/components/action-button';
+import { ZvButtonColors } from '@zvoove/components/core';
 import { of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { allSharedImports } from '../common/shared-imports';
@@ -16,7 +16,6 @@ import { allSharedImports } from '../common/shared-imports';
 })
 export class ActionButtonDemoComponent {
   public loadError = false;
-  public color: ThemePalette | null = null;
   public readonly counter = signal(0);
   public readonly isDisabled = signal(false);
 
@@ -35,7 +34,7 @@ export class ActionButtonDemoComponent {
     },
   });
 
-  public themePalletValues: (ThemePalette | null)[] = [null, 'primary', 'accent', 'warn'];
+  public themePalletValues: (ZvButtonColors | null)[] = [null, 'primary', 'accent', 'warn'];
   updateDisabled(isChecked: boolean) {
     this.isDisabled.set(isChecked);
   }
