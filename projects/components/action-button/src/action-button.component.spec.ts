@@ -2,32 +2,36 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { switchMap, tap, throwError, timer } from 'rxjs';
-import { IZvActionButton, ZvActionButtonComponent } from './action-button.component';
+import { tap, timer } from 'rxjs';
+import { ZvActionButtonDataSource } from './action-button-data-source';
+import { ZvActionButtonComponent } from './action-button.component';
 import { ZvActionButtonHarness } from './action-button.harness';
-import { ZvActionDataSource } from './action-data-source';
 
 @Component({
   selector: 'zv-test-component',
-  template: `<zv-action-button [actionDs]="dataSource" [button]="actionButton" />`,
+  template: `
+    <zv-action-button [dataSource]="dataSource" [color]="color()" [icon]="'home'" [disabled]="isDisabled()"> label </zv-action-button>
+  `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
   imports: [ZvActionButtonComponent],
 })
 export class TestComponent {
   public readonly isDisabled = signal<boolean>(false);
+  public readonly color = signal<string | null>('primary');
   public actionFnCalled = false;
-  dataSource = new ZvActionDataSource({
-    actionFn: () => timer(1).pipe(tap(() => (this.actionFnCalled = true))),
+  public throwError: Error | null = null;
+  dataSource = new ZvActionButtonDataSource({
+    actionFn: () =>
+      timer(100).pipe(
+        tap(() => {
+          this.actionFnCalled = true;
+          if (this.throwError) {
+            throw this.throwError;
+          }
+        })
+      ),
   });
-
-  actionButton: IZvActionButton = {
-    label: `label`,
-    color: 'primary',
-    icon: 'home',
-    dataCy: 'dataCyTest',
-    isDisabled: this.isDisabled,
-  };
 }
 describe('ZvActionButton', () => {
   let fixture: ComponentFixture<TestComponent>;
@@ -56,61 +60,62 @@ describe('ZvActionButton', () => {
     expect(component.actionFnCalled).toBeTrue();
   });
 
-  it('should be blocked while pending', async () => {
-    component.dataSource.execute();
-    expect(component.dataSource.pending()).toBeTrue();
-    expect(await harness.isBlocked()).toBeTrue();
-  });
+  it('should be blocked while loading', fakeAsync(async () => {
+    await harness.click();
+    tick(1);
+    expect(component.dataSource.showLoading()).toBeTrue();
+    expect(await harness.isLoading()).toBeTrue();
+  }));
 
-  it('should be disabled while pending', async () => {
-    component.dataSource.execute();
-    expect(component.dataSource.pending()).toBeTrue();
+  it('should be disabled while loading', fakeAsync(async () => {
+    await harness.click();
+    tick(1);
+    expect(component.dataSource.showLoading()).toBeTrue();
     expect(await harness.isDisabled()).toBeTrue();
-  });
+  }));
 
   it('should respect disabled property', async () => {
-    expect(await harness?.isDisabled()).toBeFalse();
+    expect(await harness.isDisabled()).toBeFalse();
     component.isDisabled.set(true);
-    expect(await harness?.isDisabled()).toBeTrue();
+    expect(await harness.isDisabled()).toBeTrue();
     component.isDisabled.set(false);
-    expect(await harness?.isDisabled()).toBeFalse();
+    expect(await harness.isDisabled()).toBeFalse();
   });
 
   it('should respect color property', async () => {
     expect(await harness.hasClass('mat-primary')).toBeTrue();
-    component.actionButton = { ...component.actionButton, color: 'accent' };
+    component.color.set('accent');
     expect(await harness.hasClass('mat-accent')).toBeTrue();
-    component.actionButton = { ...component.actionButton, color: 'warn' };
+    component.color.set('warn');
     expect(await harness.hasClass('mat-warn')).toBeTrue();
   });
 
-  it('should have dataCy attribute', async () => {
-    expect(await harness.getDataCy()).toBe('dataCyTest');
-  });
-
   it('should show icon', async () => {
-    expect(await harness.getButtonIcon()).toBe('home');
+    expect(await harness.getIcon()).toBe('home');
   });
 
   it('should show label', async () => {
-    const buttonContent = await harness.getButtonContent();
+    const buttonContent = await harness.getLabel();
     expect(buttonContent).toContain('label');
   });
 
-  it('should show success icon', fakeAsync(async () => {
+  it('should show success icon for 2 seconds', fakeAsync(async () => {
     await harness.click();
-    tick(1);
-    expect(component.dataSource.pending()).toBeFalse();
-    expect(component.dataSource.succeeded()).toBeTrue();
-    expect(await harness.getButtonIcon()).toBe('check_circle');
+    tick(100);
+    expect(component.dataSource.showLoading()).toBeFalse();
+    expect(component.dataSource.showSuccess()).toBeTrue();
+    expect(await harness.getIcon()).toBe('check_circle');
+
+    tick(2000);
+    expect(component.dataSource.showSuccess()).toBeFalse();
+    expect(await harness.getIcon()).toBe('home');
   }));
 
   it('should show error message', fakeAsync(async () => {
-    const error = new Error('action failed');
-    component.dataSource = new ZvActionDataSource({ actionFn: () => timer(1).pipe(switchMap(() => throwError(() => error))) });
+    component.throwError = new Error('action failed');
     await harness.click();
-    tick(1);
-    expect(await harness.getButtonIcon()).toBe('cancel');
-    expect(await harness.getExceptionMessage()).toBe(error.message);
+    tick(100);
+    expect(await harness.getIcon()).toBe('error');
+    expect(await harness.getErrorMessage()).toBe(component.throwError.message);
   }));
 });

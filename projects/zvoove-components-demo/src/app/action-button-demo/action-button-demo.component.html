@@ -19,7 +19,9 @@
           <h4>Try it:</h4>
           <div class="app-action-data-source-demo__demo-wrapper">
             @for (value of themePalletValues; track value) {
-              <zv-action-button [actionDs]="dataSource" [button]="getActionButton(value)" />
+              <zv-action-button [dataSource]="dataSource" [icon]="'home'" [color]="color" [disabled]="isDisabled()">
+                {{ value }} example
+              </zv-action-button>
             }
           </div>
         </div>
@@ -29,8 +31,15 @@
 
   <ng-template appComponentPageContent [type]="'api'">
     <app-api-doc [name]="'zv-action-button'">
-      <app-api-doc-input [name]="'actionDs'" [type]="'ZvActionDataSource'" [desc]="'The ZvActionDataSource reference'" [required]="true" />
-      <app-api-doc-input [name]="'button'" [type]="'IZvActionButton'" [desc]="'The IZvActionButton reference'" [required]="true" />
+      <app-api-doc-input
+        [name]="'dataSource'"
+        [type]="'ZvActionButtonDataSource'"
+        [desc]="'The ZvActionButtonDataSource reference'"
+        [required]="true"
+      />
+      <app-api-doc-input [name]="'icon'" [type]="'string'" [desc]="'The button icon to use'" [required]="false" />
+      <app-api-doc-input [name]="'color'" [type]="'ThemePalette | null'" [desc]="'The color to use'" [required]="false" />
+      <app-api-doc-input [name]="'disabled'" [type]="'boolean'" [desc]="'Can be used to disable the button'" [required]="false" />
     </app-api-doc>
   </ng-template>
 
@@ -45,8 +54,10 @@
           <a href="https://material.angular.io/components/button/overview" rel="noopener noreferrer">&#64;angular/material button</a> as
           well as the
           <a href="https://material.angular.io/components/icon/overview" rel="noopener noreferrer">&#64;angular/material icon</a> and the
-          <a href="https://material.angular.io/components/input/overview" rel="noopener noreferrer">&#64;angular/material label</a> in its
-          view. So &#64;angular/material needs to be installed.
+          <a href="https://material.angular.io/components/progress-spinner/overview" rel="noopener noreferrer"
+            >&#64;angular/material progress-spinner</a
+          >
+          in its view. So &#64;angular/material needs to be installed.
         </p>
       </mat-card-content>
     </mat-card>
@@ -64,7 +75,7 @@
         <mat-card-title>Usage</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>An example of how to use the IZvActionButton:</p>
+        <p>An example of how to use the zv-action-button:</p>
         <p>TypeScript</p>
         <app-code [code]="usageCodeTs" [language]="'typescript'" />
         <p>HTML</p>

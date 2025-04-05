@@ -15,3 +15,5 @@ export { provideDateTimeAdapters, provideDateTimeFormats } from './src/date-time
 export { ZvDateTimeAdapter, type ZvDateTimeParts } from './src/date-time/date-time-adapter';
 export { type ZvDateTimeFormats } from './src/date-time/date-time-formats';
 export { ZvNativeDateTimeAdapter } from './src/date-time/native-date-time-adapter';
+
+export { ZvActionDataSource, type IZvActionDataSource, type ZvActionDataSourceOptions } from './src/action-data-source/action-data-source';

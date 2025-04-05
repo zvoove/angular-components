@@ -1,11 +1,10 @@
-import { afterRenderEffect, ChangeDetectionStrategy, Component, effect, ElementRef, input, signal, Signal, viewChild } from '@angular/core';
+import { afterRenderEffect, ChangeDetectionStrategy, Component, input, Signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ThemePalette } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { ZvErrorMessagePipe } from '@zvoove/components/core';
-import { IZvActionDataSource } from './action-data-source';
 import { MatTooltip } from '@angular/material/tooltip';
+import { IZvActionButtonDataSource } from './action-button-data-source';
 
 export interface IZvActionButton {
   label: string;
@@ -20,27 +19,21 @@ export interface IZvActionButton {
   templateUrl: './action-button.component.html',
   styleUrl: './action-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ZvErrorMessagePipe, MatIcon, MatButtonModule, MatProgressSpinner, MatTooltip],
+  imports: [MatIcon, MatButtonModule, MatProgressSpinner, MatTooltip],
 })
 export class ZvActionButtonComponent {
-  public readonly actionDs = input.required<IZvActionDataSource>();
-  public readonly button = input.required<IZvActionButton>();
-  public readonly contentNode = viewChild.required<ElementRef<HTMLDivElement>>('content');
-  public readonly spinnerDiameter = signal(20);
-  public readonly showSuccessIcon = signal(false);
+  public readonly dataSource = input.required<IZvActionButtonDataSource>();
+  public readonly icon = input<string | null>(null);
+  public readonly color = input<string | null | undefined>(null);
+  public readonly disabled = input<boolean>(false);
+
+  private _tooltip = viewChild(MatTooltip);
 
   constructor() {
     afterRenderEffect(() => {
-      if (this.actionDs().pending()) {
-        this.spinnerDiameter.set(this.contentNode().nativeElement.offsetHeight);
-      }
-    });
-    effect(() => {
-      if (this.actionDs().succeeded()) {
-        this.showSuccessIcon.set(true);
-        setTimeout(() => {
-          this.showSuccessIcon.set(false);
-        }, 2000);
+      if (this.dataSource().showError()) {
+        console.log(this._tooltip());
+        this._tooltip()?.show(0);
       }
     });
   }

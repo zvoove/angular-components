@@ -1,21 +1,19 @@
 <button
   type="button"
-  [color]="button().color"
+  [color]="color()"
   mat-raised-button
-  (click)="actionDs().execute()"
-  [disabled]="actionDs().pending() || button().isDisabled?.()"
-  [attr.data-cy]="button().dataCy"
+  (click)="dataSource().execute()"
+  [disabled]="dataSource().disabled() || disabled()"
+  [matTooltip]="dataSource().errorMessage()"
 >
-  <div #content class="zv-action-button__button-content">
-    @if (actionDs().hasError()) {
-      <mat-icon [matTooltip]="actionDs().exception()?.errorObject | zvErrorMessage">{{ actionDs().exception()?.icon }}</mat-icon>
-    } @else if (actionDs().pending()) {
-      <mat-spinner [diameter]="spinnerDiameter()" />
-    } @else if (showSuccessIcon()) {
-      <mat-icon>check_circle</mat-icon>
-    } @else if (!actionDs().pending() && !showSuccessIcon()) {
-      <mat-icon>{{ button().icon }}</mat-icon>
-    }
-    {{ button().label }}
-  </div>
+  @if (dataSource().showError()) {
+    <mat-icon [color]="'warn'">error</mat-icon>
+  } @else if (dataSource().showLoading()) {
+    <mat-icon><mat-spinner [diameter]="18" /></mat-icon>
+  } @else if (dataSource().showSuccess()) {
+    <mat-icon [color]="'success'">check_circle</mat-icon>
+  } @else if (icon()) {
+    <mat-icon>{{ icon() }}</mat-icon>
+  }
+  <ng-content></ng-content>
 </button>

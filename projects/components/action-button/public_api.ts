@@ -1,2 +1,6 @@
 export { ZvActionButtonComponent, type IZvActionButton } from './src/action-button.component';
-export { ZvActionDataSource, type IZvActionDataSource, type ZvActionDataSourceOptions } from './src/action-data-source';
+export {
+  ZvActionButtonDataSource,
+  type IZvActionButtonDataSource,
+  type IZvActionButtonDataSourceOptions,
+} from './src/action-button-data-source';

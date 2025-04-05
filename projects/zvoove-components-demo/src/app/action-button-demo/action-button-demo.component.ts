@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ThemePalette } from '@angular/material/core';
-import { IZvActionButton, ZvActionButtonComponent, ZvActionDataSource } from '@zvoove/components/action-button';
+import { ZvActionButtonComponent, ZvActionButtonDataSource } from '@zvoove/components/action-button';
 import { of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { allSharedImports } from '../common/shared-imports';
@@ -20,7 +20,7 @@ export class ActionButtonDemoComponent {
   public readonly counter = signal(0);
   public readonly isDisabled = signal(false);
 
-  public dataSource = new ZvActionDataSource({
+  public dataSource = new ZvActionButtonDataSource({
     actionFn: () => {
       return of('foo').pipe(
         delay(1000),
@@ -40,18 +40,8 @@ export class ActionButtonDemoComponent {
     this.isDisabled.set(isChecked);
   }
 
-  getActionButton(color: ThemePalette | null): IZvActionButton {
-    return {
-      label: `I am an IZvActionButton (color: ${color})`,
-      color: color,
-      icon: 'home',
-      dataCy: 'test',
-      isDisabled: this.isDisabled,
-    };
-  }
-
   importsCode = `
-import { IZvActionButton, ZvActionButtonComponent, ZvActionDataSource } from '@zvoove/components/action-button';
+import { ZvActionButtonComponent, ZvActionButtonDataSource } from '@zvoove/components/action-button';
 // ...
 imports: [
   ZvActionButtonComponent,
@@ -59,20 +49,14 @@ imports: [
 
   usageCodeTs = `
 private http = inject(HttpClient);
-actionDataSource = new ZvActionDataSource({
+actionDataSource = new ZvActionButtonDataSource({
   actionFn: () => this.http.post<any>('https://YOUR.API/POST-ROUTE', {}),
 });
-
-public actionButton: IZvActionButton = {
-  label: '',
-  color: null,
-  icon: 'home',
-  dataCy: 'testsWillFindMe',
-  isDisabled: this.isDisabled,
-};
 `;
 
   usageCodeHtml = `
-<app-action-button [actionDs]="actionDataSource" [button]="actionButton" />
+<zv-action-button [dataSource]="actionDataSource" [icon]="'home'">
+  button label
+</zv-action-button>
 `;
 }
