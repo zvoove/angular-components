@@ -5,7 +5,7 @@
     "declarationMap": true,
     "declaration": true,
     "inlineSources": true,
-    "types": [],
+    "types": ["node"],
     "lib": ["dom", "es2022"]
   },
   "angularCompilerOptions": {
