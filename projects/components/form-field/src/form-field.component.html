@@ -3,31 +3,30 @@
   style="width: 100%"
   [class.mat-form-field--emulated]="emulated"
   [class.mat-form-field--no-underline]="noUnderline"
-  [floatLabel]="floatLabel"
+  [floatLabel]="floatLabel()"
   [hintLabel]="hintText"
 >
-  @if (_labelChild) {
+  @if (_labelChild()) {
     <mat-label>
       <ng-content select="mat-label" />
     </mat-label>
-  }
-  @if (!_labelChild && calculatedLabel) {
+  } @else if (calculatedLabel()) {
     <mat-label>
-      <mat-label>{{ calculatedLabel }}</mat-label>
+      <mat-label>{{ calculatedLabel() }}</mat-label>
     </mat-label>
   }
-  @if (_prefixChildren.length) {
+  @if (_prefixChildren().length) {
     <ng-container matPrefix>
       <ng-content select="[matPrefix]" />
     </ng-container>
   }
   <ng-content />
-  @if (_suffixChildren.length) {
+  @if (_suffixChildren().length) {
     <ng-container matSuffix>
       <ng-content select="[matSuffix]" />
     </ng-container>
   }
-  @if (showHintToggle) {
+  @if (showHintToggle()) {
     <button type="button" mat-icon-button matSuffix (click)="toggleHint($event)">
       <mat-icon>info_outline</mat-icon>
     </button>

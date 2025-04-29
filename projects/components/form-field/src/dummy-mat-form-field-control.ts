@@ -52,16 +52,23 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
 
   public autofilled?: boolean;
 
+  public ngControl: NgControl | null = null;
+
   private _value: string | null = null;
   private _required = false;
   private _disabled = false;
   private _valueSubscription: Subscription | null = null;
   private _statusSubscription: Subscription | null = null;
 
-  constructor(
-    public ngControl: NgControl | null,
-    formControl: AbstractControl | null
-  ) {
+  constructor(ngControl: NgControl | null, formControl: AbstractControl | null) {
+    this.init(ngControl, formControl);
+  }
+
+  public init(ngControl: NgControl | null, formControl: AbstractControl | null) {
+    this.ngControl = ngControl;
+
+    this._valueSubscription?.unsubscribe();
+    this._statusSubscription?.unsubscribe();
     if (formControl) {
       this._valueSubscription = formControl.valueChanges.pipe(startWith(formControl.value)).subscribe((value) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
