@@ -470,10 +470,21 @@ describe('ZvTable', () => {
     it('should update state when filter changes', fakeAsync(() => {
       const table = createTableInstance(true);
       spyOn(table as any, 'requestUpdate').and.callThrough();
+
+      // Set initial page to verify it gets reset
+      table.pageIndex = 5;
+
       table.onSearchChanged('test');
+
       expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
+      expect((table as any).requestUpdate).toHaveBeenCalledWith({
+        searchText: 'test',
+        currentPage: 0,
+      });
+
       tick(1);
       expect(table.filterText).toEqual('test');
+      expect(table.pageIndex).toEqual(0);
     }));
 
     it('should update state when page changes and emit output', fakeAsync(() => {
@@ -725,6 +736,40 @@ describe('ZvTable', () => {
         await searchInput.setValue('asdf');
         expect(component.table.onSearchChanged).toHaveBeenCalledTimes(1);
         expect(component.table.onSearchChanged).toHaveBeenCalledWith('asdf');
+      });
+
+      it('should reset page to 0 when filtering', async () => {
+        // Initialize with a data source that has enough data for multiple pages
+        await initTestComponent(
+          new ZvTableDataSource({
+            loadDataFn: () => of(Array.from({ length: 10 }, (_, i: number) => ({ id: i, str: `item ${i}` }))),
+            mode: 'client',
+          }),
+          (settingService) => {
+            settingService.settings$.next({
+              [component.tableId]: {
+                pageSize: 3, // This will create multiple pages
+                sortColumn: null,
+                sortDirection: null,
+                columnBlacklist: [],
+              },
+            });
+          }
+        );
+
+        // Set the page to 2 manually to simulate navigation
+        component.table.pageIndex = 1;
+        fixture.detectChanges();
+
+        // Verify we're on page 2
+        expect(component.table.pageIndex).toEqual(1);
+
+        // Apply a filter
+        const searchInput = await table.getSearchInput();
+        await searchInput.setValue('item');
+
+        // Verify that the page index is reset to 0
+        expect(component.table.pageIndex).toEqual(0);
       });
 
       it('should sort via dropdown', async () => {

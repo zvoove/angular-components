@@ -274,6 +274,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   public onSearchChanged(value: string | null) {
     this.requestUpdate({
       searchText: value,
+      currentPage: 0,
     });
   }
 
