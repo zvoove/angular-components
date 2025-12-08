@@ -57,11 +57,11 @@ mat-card.zv-form__savebar--sticky {
   top: 0;
   left: 0;
   right: 0;
-  border-radius: var(--mdc-elevated-card-container-shape, var(--mdc-shape-medium, 4px));
+  border-radius: var(--mat-card-elevated-container-shape, var(--mat-shape-medium, 4px));
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   overflow: hidden;
-  min-height: var(--mdc-elevated-card-container-shape, var(--mdc-shape-medium, 4px));
+  min-height: var(--mat-card-elevated-container-shape, var(--mat-shape-medium, 4px));
 }
 
 .zv-form__savebar-border-fill {

@@ -1,23 +1,23 @@
 <h1>{{ componentName() }}</h1>
 <mat-tab-group ngSkipHydration [selectedIndex]="selectedIndex" (selectedIndexChange)="onSelectedIndexChange($event)">
-  @if (demoContent) {
+  @if (demoContent()) {
     <mat-tab label="Demo">
       <div class="app-component-page-wrapper__tab-content">
-        <ng-container [ngTemplateOutlet]="demoContent().templateRef" />
+        <ng-container [ngTemplateOutlet]="demoContent()!.templateRef" />
       </div>
     </mat-tab>
   }
-  @if (apiContent) {
+  @if (apiContent()) {
     <mat-tab label="API">
       <div class="app-component-page-wrapper__tab-content">
-        <ng-container [ngTemplateOutlet]="apiContent().templateRef" />
+        <ng-container [ngTemplateOutlet]="apiContent()!.templateRef" />
       </div>
     </mat-tab>
   }
-  @if (setupContent) {
+  @if (setupContent()) {
     <mat-tab label="Setup">
       <div class="app-component-page-wrapper__tab-content">
-        <ng-container [ngTemplateOutlet]="setupContent().templateRef" />
+        <ng-container [ngTemplateOutlet]="setupContent()!.templateRef" />
       </div>
     </mat-tab>
   }
