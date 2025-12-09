@@ -6,9 +6,10 @@ import {
   Component,
   ContentChild,
   ElementRef,
-  Input,
   TemplateRef,
-  ViewChild,
+  inject,
+  input,
+  viewChild,
 } from '@angular/core';
 import { FlipContainerBack, FlipContainerFront } from './flip-container.directives';
 
@@ -20,8 +21,10 @@ import { FlipContainerBack, FlipContainerFront } from './flip-container.directiv
   imports: [NgTemplateOutlet],
 })
 export class ZvFlipContainer implements AfterViewInit {
-  @Input() public removeHiddenNodes = true;
-  @Input() public animation: 'flip' | 'fade' = 'flip';
+  private readonly cd = inject(ChangeDetectorRef);
+
+  public readonly removeHiddenNodes = input(true);
+  public readonly animation = input<'flip' | 'fade'>('flip');
 
   public get active(): 'back' | 'front' {
     return this._active;
@@ -33,20 +36,18 @@ export class ZvFlipContainer implements AfterViewInit {
   @ContentChild(FlipContainerBack, { read: TemplateRef })
   public _backTemplate: TemplateRef<unknown> | null = null;
 
-  @ViewChild('frontside', { static: true }) public _frontside!: ElementRef<HTMLDivElement>;
-  @ViewChild('backside', { static: true }) public _backside!: ElementRef<HTMLDivElement>;
+  public readonly _frontside = viewChild.required<ElementRef<HTMLDivElement>>('frontside');
+  public readonly _backside = viewChild.required<ElementRef<HTMLDivElement>>('backside');
 
   public get _activeState(): string {
-    return this.animation + '_' + this.active;
+    return this.animation() + '_' + this.active;
   }
   public _active: 'back' | 'front' = 'front';
   public _attachFront = true;
   public _attachBack = false;
 
-  constructor(private cd: ChangeDetectorRef) {}
-
   public ngAfterViewInit() {
-    this._backside.nativeElement.hidden = true;
+    this._backside().nativeElement.hidden = true;
   }
 
   public showFront() {
@@ -77,10 +78,10 @@ export class ZvFlipContainer implements AfterViewInit {
 
   public _flipStart() {
     if (this._active === 'back') {
-      this._backside.nativeElement.hidden = false;
+      this._backside().nativeElement.hidden = false;
       this._attachBack = true;
     } else {
-      this._frontside.nativeElement.hidden = false;
+      this._frontside().nativeElement.hidden = false;
       this._attachFront = true;
     }
     this.cd.markForCheck();
@@ -88,10 +89,10 @@ export class ZvFlipContainer implements AfterViewInit {
 
   public _flipDone() {
     if (this._active === 'back') {
-      this._frontside.nativeElement.hidden = true;
+      this._frontside().nativeElement.hidden = true;
       this._attachFront = false;
     } else {
-      this._backside.nativeElement.hidden = true;
+      this._backside().nativeElement.hidden = true;
       this._attachBack = false;
     }
     this.cd.markForCheck();
