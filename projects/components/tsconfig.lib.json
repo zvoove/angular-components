@@ -5,7 +5,7 @@
     "declarationMap": true,
     "declaration": true,
     "inlineSources": true,
-    "types": ["node"],
+    "types": ["node", "@angular/localize"],
     "lib": ["dom", "es2022"]
   },
   "angularCompilerOptions": {
