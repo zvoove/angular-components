@@ -1,11 +1,11 @@
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef, inject } from '@angular/core';
 
 @Directive({
   selector: '[zvFlipContainerFront]',
   standalone: true,
 })
 export class FlipContainerFront {
-  constructor(public el: ElementRef) {}
+  public readonly el = inject(ElementRef);
 }
 
 @Directive({
@@ -13,5 +13,5 @@ export class FlipContainerFront {
   standalone: true,
 })
 export class FlipContainerBack {
-  constructor(public el: ElementRef) {}
+  public readonly el = inject(ElementRef);
 }

@@ -4,7 +4,6 @@ import {
   Component,
   effect,
   inject,
-  Inject,
   Injector,
   LOCALE_ID,
   signal,
@@ -28,15 +27,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   imports: [MatToolbarModule, MatButtonModule, MatSidenavModule, MatListModule, RouterLink, MatDividerModule, RouterOutlet],
 })
 export class AppComponent {
+  public readonly localeId = inject(LOCALE_ID);
+
   readonly theme = signal('m3');
   supportedLocales = ['de', 'en-US', 'en-GB'];
   injector = inject(Injector);
 
-  constructor(
-    matIconRegistry: MatIconRegistry,
-    domSanitizer: DomSanitizer,
-    @Inject(LOCALE_ID) public localeId: string
-  ) {
+  constructor() {
+    const matIconRegistry = inject(MatIconRegistry);
+    const domSanitizer = inject(DomSanitizer);
+
     matIconRegistry.addSvgIcon('angular', domSanitizer.bypassSecurityTrustResourceUrl('../assets/angular.svg'));
     afterNextRender(() => {
       effect(

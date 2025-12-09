@@ -59,7 +59,9 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
   private _statusSubscription: Subscription | null = null;
 
   constructor(
+    // eslint-disable-next-line @angular-eslint/prefer-inject
     public ngControl: NgControl | null,
+    // eslint-disable-next-line @angular-eslint/prefer-inject
     formControl: AbstractControl | null
   ) {
     if (formControl) {

@@ -1,5 +1,5 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, ViewEncapsulation, inject } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { ZvBlockUi } from '@zvoove/components/block-ui';
@@ -17,6 +17,8 @@ import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
   imports: [MatDialogTitle, CdkScrollable, MatDialogContent, ZvBlockUi, MatDialogActions, MatProgressBar, ZvButton, ZvErrorMessagePipe],
 })
 export class ZvDialogWrapper implements OnDestroy {
+  private cd = inject(ChangeDetectorRef);
+
   public get dialogTitle(): string | null {
     return this.dataSource.dialogTitle;
   }
@@ -58,7 +60,6 @@ export class ZvDialogWrapper implements OnDestroy {
   private _dataSource!: IZvDialogWrapperDataSource;
 
   private _dataSourceSubscription = Subscription.EMPTY;
-  constructor(private cd: ChangeDetectorRef) {}
 
   public ngOnDestroy() {
     this._dataSourceSubscription.unsubscribe();

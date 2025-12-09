@@ -1,5 +1,5 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -70,10 +70,11 @@ interface DemoLogs extends Record<string, string | number> {
   providers: [
     { provide: ZvSelectService, useClass: DefaultZvSelectService },
     { provide: ZvFormService, useClass: DemoZvFormsService },
-    // { provide: ErrorStateMatcher, useClass: InvalidErrorStateMatcher },
   ],
 })
 export class SelectDemoComponent implements OnInit {
+  private readonly cd = inject(ChangeDetectorRef);
+
   public visible = true;
   public ngModel: any = null;
   public value: any = null;
@@ -126,8 +127,6 @@ export class SelectDemoComponent implements OnInit {
   public ngModelLogs: DemoLogs = { loadCount: 0 };
   public formLogs: DemoLogs = { loadCount: 0 };
   public valueLogs: DemoLogs = { loadCount: 0 };
-
-  constructor(private cd: ChangeDetectorRef) {}
 
   public ngOnInit() {
     this.resetDataSource();

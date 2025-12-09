@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, input, OnDestroy, output, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, input, OnDestroy, output, ViewEncapsulation, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { ZvButtonColors, ZvButtonTypes } from '@zvoove/components/core';
@@ -13,6 +13,8 @@ import { ZvButtonColors, ZvButtonTypes } from '@zvoove/components/core';
   imports: [MatButtonModule, NgTemplateOutlet, MatIcon],
 })
 export class ZvButton implements OnDestroy {
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+
   readonly type = input<ZvButtonTypes>('default');
   readonly color = input<ZvButtonColors | null | undefined>(null);
   readonly icon = input<string | null | undefined>(null);
@@ -22,7 +24,7 @@ export class ZvButton implements OnDestroy {
   // eslint-disable-next-line @angular-eslint/no-output-native
   readonly click = output();
 
-  constructor(private elementRef: ElementRef<HTMLElement>) {
+  constructor() {
     this.elementRef.nativeElement.addEventListener('click', this.captureClick, true);
   }
 

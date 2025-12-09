@@ -1,9 +1,9 @@
-import { Directive, TemplateRef } from '@angular/core';
+import { Directive, TemplateRef, inject } from '@angular/core';
 
 @Directive({
   selector: '[zvSelectTriggerTemplate]',
   standalone: true,
 })
 export class ZvSelectTriggerTemplate {
-  constructor(public templateRef: TemplateRef<unknown>) {}
+  public readonly templateRef = inject<TemplateRef<unknown>>(TemplateRef);
 }

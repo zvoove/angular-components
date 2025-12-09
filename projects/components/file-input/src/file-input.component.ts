@@ -11,11 +11,10 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
-  Self,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,8 +22,6 @@ import { ErrorStateMatcher, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject } from 'rxjs';
-
-import type {} from '@angular/localize/init';
 
 let nextUniqueId = 0;
 
@@ -50,6 +47,9 @@ let nextUniqueId = 0;
   encapsulation: ViewEncapsulation.None,
 })
 export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<File>, OnChanges, OnDestroy, OnInit, DoCheck {
+  public readonly ngControl = inject(NgControl, { optional: true, self: true });
+  public readonly _cd = inject(ChangeDetectorRef);
+
   fileSelectText = $localize`:@@zvc.chooseFile:Please choose a file.`;
 
   @Input() accept: string[] = [];
@@ -212,14 +212,12 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
   _onModelChange: (val: unknown) => void = () => {};
   _onModelTouched = () => {};
 
-  constructor(
-    /** @docs-private */
-    @Optional() @Self() public ngControl: NgControl,
-    @Optional() _parentForm: NgForm,
-    @Optional() _parentFormGroup: FormGroupDirective,
-    _defaultErrorStateMatcher: ErrorStateMatcher,
-    public _cd: ChangeDetectorRef
-  ) {
+  constructor() {
+    const ngControl = this.ngControl;
+    const _parentForm = inject(NgForm, { optional: true });
+    const _parentFormGroup = inject(FormGroupDirective, { optional: true });
+    const _defaultErrorStateMatcher = inject(ErrorStateMatcher);
+
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

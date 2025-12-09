@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -81,6 +81,8 @@ export class ReferenceColumnComponent {
   ],
 })
 export class FormFieldDemoComponent {
+  private readonly cd = inject(ChangeDetectorRef);
+
   public subscriptType: ZvFormFieldSubscriptType = 'single-line';
   public hintToggle = false;
   public hintText = 'hint text';
@@ -153,7 +155,7 @@ export class FormFieldDemoComponent {
   private _disabled = false;
   private _error = false;
 
-  constructor(private cd: ChangeDetectorRef) {
+  constructor() {
     for (const ctrlName in this.form.controls) {
       if (!Object.prototype.hasOwnProperty.call(this.form.controls, ctrlName)) {
         continue;
