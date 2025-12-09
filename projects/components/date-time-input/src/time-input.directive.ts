@@ -4,14 +4,13 @@ import {
   Directive,
   ElementRef,
   EventEmitter,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
-  Optional,
   Output,
   SimpleChanges,
   forwardRef,
+  inject,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -74,6 +73,10 @@ export const ZV_TIME_VALIDATORS: any = {
   exportAs: 'matTimeInput',
 })
 export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, OnChanges, OnDestroy, Validator {
+  private readonly _elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
+  private readonly _timeAdapter = inject<ZvTimeAdapter<TTime>>(ZvTimeAdapter, { optional: true });
+  private readonly _timeFormats = inject<ZvTimeFormats>(ZV_TIME_FORMATS, { optional: true });
+
   /** Whether the component has been initialized. */
   private _isInitialized = false;
 
@@ -146,11 +149,7 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
   /** Whether the last value set on the input was valid. */
   protected _lastValueValid = false;
 
-  constructor(
-    private _elementRef: ElementRef<HTMLInputElement>,
-    @Optional() private _timeAdapter: ZvTimeAdapter<TTime>,
-    @Optional() @Inject(ZV_TIME_FORMATS) private _timeFormats: ZvTimeFormats
-  ) {
+  constructor() {
     this._validator = Validators.compose(this._getValidators());
   }
 
@@ -159,7 +158,7 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (timeInputsHaveChanged(changes, this._timeAdapter)) {
+    if (!!this._timeAdapter && timeInputsHaveChanged(changes, this._timeAdapter)) {
       this.stateChanges.next();
     }
   }
@@ -201,10 +200,10 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
 
   _onInput(value: string) {
     const lastValueWasValid = this._lastValueValid;
-    let time = this._timeAdapter.parse(value, this._timeFormats.parse.timeInput);
+    let time = this._timeAdapter?.parse(value, this._timeFormats?.parse.timeInput) ?? null;
     this._lastValueValid = this._isValidValue(time);
-    time = this._timeAdapter.getValidTimeOrNull(time);
-    const hasChanged = !this._timeAdapter.sameTime(time, this.value);
+    time = this._timeAdapter?.getValidTimeOrNull(time) ?? null;
+    const hasChanged = !(this._timeAdapter?.sameTime(time, this.value) ?? false);
 
     // We need to fire the CVA change event for all
     // nulls, otherwise the validators won't run.
@@ -245,7 +244,7 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
   /** Formats a value and sets it on the input element. */
   protected _formatValue(value: TTime | null) {
     this._elementRef.nativeElement.value =
-      value != null ? (this._timeAdapter.format(value, this._timeFormats.display.timeInput) ?? '') : '';
+      value != null ? (this._timeAdapter?.format(value, this._timeFormats?.display.timeInput) ?? '') : '';
   }
 
   /** Assigns a value to the model. */
@@ -255,16 +254,16 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
 
   /** Programmatically assigns a value to the input. */
   protected _assignValueProgrammatically(value: TTime | null) {
-    value = this._timeAdapter.deserialize(value);
+    value = this._timeAdapter?.deserialize(value) ?? null;
     this._lastValueValid = this._isValidValue(value);
-    value = this._timeAdapter.getValidTimeOrNull(value);
+    value = this._timeAdapter?.getValidTimeOrNull(value) ?? null;
     this._assignValue(value);
     this._formatValue(value);
   }
 
   /** Whether a value is considered valid. */
   private _isValidValue(value: TTime | null): boolean {
-    return !value || !!this._timeAdapter.isValid(value);
+    return !value || !!this._timeAdapter?.isValid(value);
   }
 }
 

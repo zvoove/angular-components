@@ -71,7 +71,7 @@ module.exports = tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: './',
+        tsconfigRootDir: __dirname
       },
     },
     processor: angular.processInlineTemplates,
@@ -90,7 +90,7 @@ module.exports = tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: './',
+        tsconfigRootDir: __dirname
       },
     },
     plugins: {

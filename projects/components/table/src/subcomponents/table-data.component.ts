@@ -9,6 +9,7 @@ import {
   Output,
   SimpleChanges,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -33,8 +34,6 @@ import { ITableDataSource, IZvTableAction, IZvTableSort, ZvTableActionScope } fr
 import { ZvTableActionsComponent } from './table-actions.component';
 import { ZvTableRowActionsComponent } from './table-row-actions.component';
 import { TableRowDetailComponent } from './table-row-detail.component';
-
-import type {} from '@angular/localize/init';
 
 @Component({
   selector: 'zv-table-data',
@@ -68,6 +67,8 @@ import type {} from '@angular/localize/init';
   ],
 })
 export class ZvTableDataComponent<TData = unknown> implements OnChanges {
+  private readonly cd = inject(ChangeDetectorRef);
+
   @Input() public dataSource!: ITableDataSource<TData>;
   @Input() public tableId!: string;
   @Input() public rowDetail!: ZvTableRowDetail | null;
@@ -107,8 +108,6 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
   }
 
   private _dataSourceChangesSub = Subscription.EMPTY;
-
-  constructor(private cd: ChangeDetectorRef) {}
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes.dataSource) {

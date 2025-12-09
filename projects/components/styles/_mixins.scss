@@ -19,22 +19,22 @@
 
   .zv-btn-primary {
     @include mat.button-color($theme, $color-variant: primary);
-    --mdc-icon-button-icon-color: var(--mdc-text-button-label-text-color);
+    --mat-icon-button-icon-color: var(--mat-button-text-label-text-color);
   }
 
   .zv-btn-secondary {
     @include mat.button-color($theme, $color-variant: secondary);
-    --mdc-icon-button-icon-color: var(--mdc-text-button-label-text-color);
+    --mat-icon-button-icon-color: var(--mat-button-text-label-text-color);
   }
 
   .zv-btn-tertiary {
     @include mat.button-color($theme, $color-variant: tertiary);
-    --mdc-icon-button-icon-color: var(--mdc-text-button-label-text-color);
+    --mat-icon-button-icon-color: var(--mat-button-text-label-text-color);
   }
 
   .zv-btn-error {
     @include mat.button-color($theme, $color-variant: error);
-    --mdc-icon-button-icon-color: var(--mdc-text-button-label-text-color);
+    --mat-icon-button-icon-color: var(--mat-button-text-label-text-color);
   }
 }
 

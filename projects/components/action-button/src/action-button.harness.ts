@@ -33,6 +33,8 @@ export class ZvActionButtonHarness extends ComponentHarness {
   }
 
   public async getErrorMessage(): Promise<string> {
-    return (await (await this._button())?.getAttribute('ng-reflect-message')) ?? '';
+    const ariaDescribedBy = (await (await this._button())?.getAttribute('aria-describedby')) ?? '';
+    const description = document.getElementById(ariaDescribedBy);
+    return description?.textContent?.trim() ?? '';
   }
 }

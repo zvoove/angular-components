@@ -37,6 +37,8 @@ export const dependencies = {
   imports: [ReactiveFormsModule, ZvBlockUi, MatCard, MatCardContent, MatIcon, MatProgressBar, ZvFormErrors, ZvButton, ZvErrorMessagePipe],
 })
 export class ZvForm implements AfterViewInit, OnDestroy {
+  private readonly cd = inject(ChangeDetectorRef);
+
   @Input({ required: true }) public set dataSource(value: IZvFormDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();
@@ -110,8 +112,6 @@ export class ZvForm implements AfterViewInit, OnDestroy {
   private _viewReady = false;
   private _errrorInView$ = new BehaviorSubject<boolean>(false);
   private isServer = isPlatformServer(inject(PLATFORM_ID));
-
-  constructor(private cd: ChangeDetectorRef) {}
 
   public ngAfterViewInit() {
     this._viewReady = true;

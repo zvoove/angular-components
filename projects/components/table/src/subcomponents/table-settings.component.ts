@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef, inject } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { Observable, Subscription } from 'rxjs';
 import { first, map } from 'rxjs/operators';
@@ -55,6 +55,8 @@ import { ZvTableSortComponent } from './table-sort.component';
   ],
 })
 export class ZvTableSettingsComponent implements OnInit {
+  public readonly settingsService = inject(ZvTableSettingsService);
+
   @Input() public tableId!: string;
   @Input() public columnDefinitions: ZvTableColumn[] = [];
   @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
@@ -68,8 +70,6 @@ export class ZvTableSettingsComponent implements OnInit {
 
   private _settingSaveSub!: Subscription;
 
-  constructor(public settingsService: ZvTableSettingsService) {}
-
   public ngOnInit(): void {
     this.settings$ = this.settingsService.getStream(this.tableId, true).pipe(
       map((settings) => {
@@ -79,6 +79,7 @@ export class ZvTableSettingsComponent implements OnInit {
           columnBlacklist: settings.columnBlacklist || [],
           pageSize: settings.pageSize || 15,
           sortDirection: settings.sortDirection || 'asc',
+          sortColumn: settings.sortColumn || null,
         } as IZvTableSetting;
       })
     );

@@ -1,13 +1,11 @@
-import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { Injectable, LOCALE_ID, inject } from '@angular/core';
 import { Time } from '../time/time';
 import { parseHumanTimeInput } from './parse-human-time-input';
 import { ZvTimeAdapter } from './time-adapter';
 
 @Injectable({ providedIn: 'root' })
 export class ZvNativeTimeAdapter extends ZvTimeAdapter<Time> {
-  constructor(@Inject(LOCALE_ID) public locale: string) {
-    super();
-  }
+  public readonly locale = inject(LOCALE_ID);
 
   private _is24HourFormat: boolean | null = null;
   public is24HourFormat(): boolean {

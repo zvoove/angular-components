@@ -1,5 +1,5 @@
 import { getLocaleFirstDayOfWeek } from '@angular/common';
-import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { Injectable, LOCALE_ID, inject } from '@angular/core';
 import { NativeDateAdapter } from '@angular/material/core';
 import { ZvDateAdapter } from './date-adapter';
 import { detectDmyOrder, parseHumanDateInput } from './parse-human-date-input';
@@ -11,7 +11,8 @@ export class ZvNativeDateAdapter extends NativeDateAdapter implements ZvDateAdap
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   private _dmyOrder = detectDmyOrder(this.locale);
 
-  constructor(@Inject(LOCALE_ID) _locale: string) {
+  constructor() {
+    const _locale = inject(LOCALE_ID);
     super(_locale);
   }
 

@@ -1,7 +1,7 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { IZvButton, IZvException } from '@zvoove/components/core';
@@ -77,6 +77,8 @@ export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
   imports: [ZvDialogWrapper],
 })
 export class ZvDialogWrapperTestDialog {
+  public readonly dialogRef = inject<MatDialogRef<ZvDialogWrapperTestDialog>>(MatDialogRef);
+
   dataSource = new TestDialogWrapperDataSource({
     dialogTitle: 'MyDialogTitle',
     actionFn: () => this.actionFunction(),
@@ -84,8 +86,6 @@ export class ZvDialogWrapperTestDialog {
   });
 
   private _cancelFunctionCalled: number;
-
-  constructor(public dialogRef: MatDialogRef<ZvDialogWrapperTestDialog>) {}
 
   public actionFunction() {
     return of();
@@ -105,7 +105,7 @@ export class ZvDialogWrapperTestDialog {
   imports: [ZvDialogWrapper],
 })
 export class ZvDialogWrapperTestComponent {
-  constructor(public dialog: MatDialog) {}
+  public readonly dialog = inject(MatDialog);
 
   public openDialog() {
     return this.dialog.open(ZvDialogWrapperTestDialog);

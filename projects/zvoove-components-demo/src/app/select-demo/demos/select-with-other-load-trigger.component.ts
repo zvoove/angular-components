@@ -1,5 +1,5 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatRadioModule } from '@angular/material/radio';
@@ -15,6 +15,8 @@ import { delay } from 'rxjs/operators';
   imports: [MatRadioModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, ZvSelectModule, JsonPipe],
 })
 export class SelectWithOtherLoadTriggerComponent {
+  private readonly cd = inject(ChangeDetectorRef);
+
   public dataSource: ZvSelectDataSource;
   public currentLoadTrigger = 'initial';
   public loadCount = 0;
@@ -22,7 +24,7 @@ export class SelectWithOtherLoadTriggerComponent {
     select: new FormControl('idx'),
   });
 
-  constructor(private cd: ChangeDetectorRef) {
+  constructor() {
     this.onTriggerChanged(this.currentLoadTrigger);
   }
 

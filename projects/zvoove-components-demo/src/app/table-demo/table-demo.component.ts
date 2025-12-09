@@ -1,5 +1,5 @@
 import { DatePipe, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -106,6 +106,8 @@ function generateSampleData(rowCount: number): ISampleData[] {
   providers: [{ provide: ZvTableSettingsService, useClass: DemoTableSettingsService }],
 })
 export class TableDemoComponent {
+  private readonly cd = inject(ChangeDetectorRef);
+
   public show = true;
   @ViewChild(ZvTable) public table: ZvTable;
 
@@ -148,7 +150,7 @@ export class TableDemoComponent {
 
   public disableAllSortable = false;
 
-  constructor(private cd: ChangeDetectorRef) {
+  constructor() {
     this.rebuildDataSource();
   }
 

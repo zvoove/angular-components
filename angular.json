@@ -15,7 +15,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/zvoove-components-demo",
             "index": "projects/zvoove-components-demo/src/index.html",
@@ -64,7 +64,7 @@
           "defaultConfiguration": ""
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "port": 4500,
             "buildTarget": "zvoove-components-demo:build"
@@ -76,16 +76,16 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "zvoove-components-demo:build"
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "main": "projects/zvoove-components-demo/src/test.ts",
-            "polyfills": "projects/zvoove-components-demo/src/polyfills.ts",
+            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts"],
             "tsConfig": "projects/zvoove-components-demo/tsconfig.spec.json",
             "karmaConfig": "projects/zvoove-components-demo/karma.conf.js",
             "assets": ["projects/zvoove-components-demo/src/favicon.ico", "projects/zvoove-components-demo/src/assets"],
@@ -109,7 +109,7 @@
       "prefix": "zv",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "tsConfig": "projects/components/tsconfig.lib.json",
             "project": "projects/components/ng-package.json"
@@ -121,7 +121,7 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "polyfills": ["zone.js", "zone.js/testing", "projects/components/polyfills-test.ts"],
             "tsConfig": "projects/components/tsconfig.spec.json",
@@ -141,5 +141,31 @@
   "cli": {
     "analytics": false,
     "schematicCollections": ["@angular-eslint/schematics"]
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
+    }
   }
 }

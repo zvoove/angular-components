@@ -1,6 +1,16 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, OnDestroy, QueryList, Type, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Injectable,
+  OnDestroy,
+  QueryList,
+  Type,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import {
   AbstractControl,
@@ -98,7 +108,18 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
   const matSelect = createFakeMatSelect();
   const dataSource = options && 'dataSource' in options ? options.dataSource : createFakeDataSource();
   const service = options && 'service' in options ? options.service : createFakeSelectService();
-  const component = new ZvSelect(null, { markForCheck: () => {} } as any, service, null, null, { control: null } as any);
+  const fakeCd: Partial<ChangeDetectorRef> = { markForCheck: () => {} };
+
+  TestBed.configureTestingModule({
+    imports: [ZvSelect],
+    providers: [
+      { provide: ChangeDetectorRef, useValue: fakeCd },
+      { provide: ZvSelectService, useValue: service },
+    ],
+  });
+
+  const fixture = TestBed.createComponent(ZvSelect);
+  const component = fixture.componentInstance;
   component.setMatSelect = matSelect;
   component.dataSource = dataSource;
   return { component: component, matSelect: matSelect, service: service, dataSource: dataSource, focused: component.focused };
@@ -177,6 +198,8 @@ const ITEMS = {
   imports: [FormsModule, ReactiveFormsModule, ZvSelect, ZvSelectTriggerTemplate],
 })
 export class TestMultipleComponent {
+  public readonly cd = inject(ChangeDetectorRef);
+
   showToggleAll = true;
   dataSource: any = [ITEMS.red, ITEMS.green, ITEMS.blue];
   value: any = null;
@@ -184,8 +207,6 @@ export class TestMultipleComponent {
   customTemplate = false;
 
   @ViewChild(ZvSelect, { static: true }) select: ZvSelect;
-
-  constructor(public cd: ChangeDetectorRef) {}
 }
 
 @Component({
@@ -381,14 +402,15 @@ describe('ZvSelect', () => {
     const ds = createFakeDataSource(items);
     spyOn(service, 'createDataSource').and.returnValue(ds);
 
-    component.dataSource = 'a';
+    component.dataSource = { lookup: 'a' } as any;
     component.ngOnInit();
     expect(service.createDataSource).toHaveBeenCalledTimes(1);
 
-    component.dataSource = 'lookup';
+    const fakeDataSource = { lookup: 'lookup' } as any;
+    component.dataSource = fakeDataSource;
     expect(service.createDataSource).toHaveBeenCalledTimes(2);
 
-    component.dataSource = 'lookup';
+    component.dataSource = fakeDataSource;
     expect(service.createDataSource).toHaveBeenCalledTimes(2);
 
     expect(component.items).toEqual(items);

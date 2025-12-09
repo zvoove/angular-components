@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { IZvButton, IZvException } from '@zvoove/components/core';
@@ -67,7 +67,8 @@ export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
   imports: [MatButtonModule, MatDialogModule],
 })
 export class DialogWrapperDemoComponent {
-  constructor(public dialog: MatDialog) {}
+  public readonly dialog = inject(MatDialog);
+
   public openDialog() {
     this.dialog.open(DialogWrapperDemoDialog);
   }
@@ -80,14 +81,14 @@ export class DialogWrapperDemoComponent {
   imports: [ZvDialogWrapper, MatButtonModule],
 })
 export class DialogWrapperDemoDialog {
+  public readonly dialogRef = inject<MatDialogRef<DialogWrapperDemoDialog>>(MatDialogRef);
+
   public actionFunctionCalled = 0;
   public dataSource = new DemoDialogWrapperDataSource({
     dialogTitle: 'My Dialog Title',
     actionFn: () => this.actionFunction(),
     cancelFn: () => this.cancelFunction(),
   });
-
-  constructor(public dialogRef: MatDialogRef<DialogWrapperDemoDialog>) {}
 
   public actionFunction() {
     this.actionFunctionCalled = this.actionFunctionCalled + 1;

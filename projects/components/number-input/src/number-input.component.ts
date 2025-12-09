@@ -6,17 +6,15 @@ import {
   Component,
   DoCheck,
   EventEmitter,
-  Inject,
   Input,
   LOCALE_ID,
   OnChanges,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
-  Self,
   ViewChild,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { _ErrorStateTracker, ErrorStateMatcher } from '@angular/material/core';
@@ -50,6 +48,10 @@ let nextUniqueId = 0;
   imports: [MatIcon],
 })
 export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<number>, OnChanges, OnDestroy, OnInit, DoCheck {
+  public readonly ngControl = inject(NgControl, { optional: true, self: true });
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly localeId = inject(LOCALE_ID);
+
   /** Mininum boundary value. */
   @Input() min: number | null = null;
 
@@ -243,15 +245,12 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   _onModelChange = (_val: any) => {};
   _onModelTouched = () => {};
 
-  constructor(
-    /** @docs-private */
-    @Optional() @Self() public ngControl: NgControl,
-    @Optional() _parentForm: NgForm,
-    @Optional() _parentFormGroup: FormGroupDirective,
-    _defaultErrorStateMatcher: ErrorStateMatcher,
-    private cd: ChangeDetectorRef,
-    @Inject(LOCALE_ID) private localeId: string
-  ) {
+  constructor() {
+    const ngControl = this.ngControl;
+    const _parentForm = inject(NgForm, { optional: true });
+    const _parentFormGroup = inject(FormGroupDirective, { optional: true });
+    const _defaultErrorStateMatcher = inject(ErrorStateMatcher);
+
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }

@@ -10,15 +10,14 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
-  Self,
   TemplateRef,
   ViewChild,
   ViewEncapsulation,
   booleanAttribute,
   computed,
   signal,
+  inject,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroupDirective, FormsModule, NgControl, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -75,6 +74,10 @@ const enum ValueChangeSource {
   ],
 })
 export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy {
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly selectService = inject(ZvSelectService, { optional: true });
+  public readonly ngControl = inject(NgControl, { optional: true, self: true });
+
   public static nextId = 0;
   @HostBinding() public id = `zv-select-${ZvSelect.nextId++}`;
 
@@ -283,14 +286,12 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   /** View -> model callback called when value changes */
   private _onChange: (value: any) => void = () => {};
 
-  constructor(
-    defaultErrorStateMatcher: ErrorStateMatcher,
-    private cd: ChangeDetectorRef,
-    @Optional() private selectService: ZvSelectService,
-    @Optional() parentForm: NgForm,
-    @Optional() parentFormGroup: FormGroupDirective,
-    @Optional() @Self() public ngControl: NgControl
-  ) {
+  constructor() {
+    const defaultErrorStateMatcher = inject(ErrorStateMatcher);
+    const parentForm = inject(NgForm, { optional: true });
+    const parentFormGroup = inject(FormGroupDirective, { optional: true });
+    const ngControl = this.ngControl;
+
     if (this.ngControl) {
       // Note: we provide the value accessor through here, instead of
       // the `providers` to avoid running into a circular import.
@@ -315,6 +316,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._onInitCalled = true;
 
     // before oninit ngControl.control isn't set, but it is needed for datasource creation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this._switchDataSource(this._dataSourceInput);
 
     this.filterCtrl.valueChanges
@@ -442,7 +444,8 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._dataSourceInstance?.disconnect();
     this._renderChangeSubscription.unsubscribe();
 
-    this._dataSourceInstance = this.selectService?.createDataSource(dataSource, this.ngControl?.control) ?? dataSource;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    this._dataSourceInstance = this.selectService?.createDataSource(dataSource, this.ngControl?.control ?? null) ?? dataSource;
     if (!isZvSelectDataSource(this._dataSourceInstance)) {
       throw getSelectUnknownDataSourceError();
     }

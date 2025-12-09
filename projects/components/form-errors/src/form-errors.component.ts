@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnChanges, ViewEncapsulation, inject, input } from '@angular/core';
 import { IZvFormError, ZvFormService } from '@zvoove/components/form-base';
 import { Observable } from 'rxjs';
 
@@ -15,14 +15,14 @@ import { AsyncPipe } from '@angular/common';
   imports: [MatChipListbox, MatChip, AsyncPipe],
 })
 export class ZvFormErrors implements OnChanges {
-  @Input({ required: true }) public form!: FormGroup;
-  @Input() public includeControls = false;
+  private readonly formErrorsService = inject(ZvFormService);
+
+  public readonly form = input.required<FormGroup>();
+  public readonly includeControls = input(false);
 
   public errors$!: Observable<IZvFormError[]>;
 
-  constructor(private formErrorsService: ZvFormService) {}
-
   public ngOnChanges() {
-    this.errors$ = this.formErrorsService.getFormErrors(this.form, this.includeControls);
+    this.errors$ = this.formErrorsService.getFormErrors(this.form(), this.includeControls());
   }
 }

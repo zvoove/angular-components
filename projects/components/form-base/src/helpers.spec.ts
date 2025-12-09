@@ -1,5 +1,5 @@
 import { Direction, Directionality } from '@angular/cdk/bidi';
-import { ElementRef, NgZone, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { ElementRef, NgZone, EventEmitter, ChangeDetectorRef, signal } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { getControlType, hasRequiredField } from './helpers';
@@ -48,6 +48,7 @@ describe('getControlType', () => {
     const dir: Directionality = {
       value: 'ltr',
       change: new EventEmitter<Direction>(),
+      valueSignal: signal('ltr'),
       ngOnDestroy: () => {},
     };
     const cd = { markForCheck: () => {} } as ChangeDetectorRef;

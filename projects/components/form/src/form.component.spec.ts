@@ -95,7 +95,8 @@ describe('ZvForm', () => {
       {
         const btn1Button = await loader.getHarness(MatButtonHarness.with({ text: 'btn1' }));
         expect(btn1Button).toBeTruthy();
-        expect(await btn1Button.getVariant()).toBe('stroked');
+        expect(await btn1Button.getVariant()).toBe('basic');
+        expect(await btn1Button.getAppearance()).toBe('outlined');
         expect(await btn1Button.isDisabled()).toBeTrue();
         const host = await btn1Button.host();
         expect(await host.hasClass('mat-primary')).toBeTrue();
@@ -105,7 +106,8 @@ describe('ZvForm', () => {
       {
         const btn2Button = await loader.getHarness(MatButtonHarness.with({ text: 'btn2' }));
         expect(btn2Button).toBeTruthy();
-        expect(await btn2Button.getVariant()).toBe('raised');
+        expect(await btn2Button.getVariant()).toBe('basic');
+        expect(await btn2Button.getAppearance()).toBe('elevated');
         expect(await btn2Button.isDisabled()).toBeFalse();
         const host = await btn2Button.host();
         expect(await host.hasClass('mat-accent')).toBeTrue();

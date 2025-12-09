@@ -1,10 +1,16 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import { TestBed } from '@angular/core/testing';
 import { ZvTableDataSource } from '../data/table-data-source';
 import { ZvTableDataComponent } from './table-data.component';
 
 describe('ZvTableDataComponent', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [],
+    });
+  });
   it('onSortChanged should emit sortChanged', () => {
-    const component = new ZvTableDataComponent(null);
+    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
 
     spyOn(component.sortChanged, 'emit');
     component.onSortChanged({ active: 'test', direction: 'asc' });
@@ -20,7 +26,7 @@ describe('ZvTableDataComponent', () => {
   });
 
   it('isMasterToggleChecked should only return true when there are visible rows and they are all selected', () => {
-    const component = new ZvTableDataComponent(null);
+    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
     component.dataSource = createDataSourceMock();
 
     (component.dataSource as any).allVisibleRowsSelected = false;
@@ -37,7 +43,7 @@ describe('ZvTableDataComponent', () => {
   });
 
   it('isMasterToggleIndeterminate should only return true when some but not all rows are selected', () => {
-    const component = new ZvTableDataComponent(null);
+    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
     component.dataSource = createDataSourceMock();
 
     (component.dataSource as any).allVisibleRowsSelected = false;
@@ -54,8 +60,13 @@ describe('ZvTableDataComponent', () => {
   });
 
   it('toggleRowDetail should toggle the row detail and trigger change detection', () => {
-    const cd: any = { markForCheck: () => {} };
-    const component = new ZvTableDataComponent(cd);
+    const fixture = TestBed.createComponent(ZvTableDataComponent);
+    const component = fixture.componentInstance;
+
+    // overwrite the component's cd as testbed provider is ignored
+    const cdSpy = { markForCheck: jasmine.createSpy('markForCheck') };
+    (component as any).cd = cdSpy;
+
     let toggledRow: any = null;
     component.rowDetail = {
       toggle: (x: any) => {
@@ -63,17 +74,15 @@ describe('ZvTableDataComponent', () => {
       },
     } as any;
 
-    spyOn(cd, 'markForCheck');
-
     const row = { a: 'b' };
     component.toggleRowDetail(row);
 
     expect(toggledRow).toBe(row);
-    expect(cd.markForCheck).toHaveBeenCalled();
+    expect(cdSpy.markForCheck).toHaveBeenCalled();
   });
 
   it('onMasterToggleChange should call toggleVisibleRowSelection on data source', () => {
-    const component = new ZvTableDataComponent(null);
+    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
     component.dataSource = createDataSourceMock();
 
     spyOn(component.dataSource, 'toggleVisibleRowSelection');
@@ -82,7 +91,7 @@ describe('ZvTableDataComponent', () => {
   });
 
   it('onRowToggleChange should toggle row', () => {
-    const component = new ZvTableDataComponent(null);
+    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
     component.dataSource = createDataSourceMock();
 
     const row = { a: 'b' };
@@ -93,7 +102,7 @@ describe('ZvTableDataComponent', () => {
   });
 
   it('isRowSelected should only return true if row is selected', () => {
-    const component = new ZvTableDataComponent(null);
+    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
     component.dataSource = createDataSourceMock();
 
     const row = { a: 'b' };
@@ -104,7 +113,7 @@ describe('ZvTableDataComponent', () => {
   });
 
   it('getSelectedRows should return selected rows', () => {
-    const component = new ZvTableDataComponent(null);
+    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
     component.dataSource = createDataSourceMock();
 
     const row1 = { a: 'b' };
