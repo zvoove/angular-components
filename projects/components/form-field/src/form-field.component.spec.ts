@@ -1,7 +1,16 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DebugElement, Injectable, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DebugElement,
+  Injectable,
+  ViewChild,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -54,7 +63,7 @@ class TestZvFormService extends BaseZvFormService {
   imports: [FormsModule, MatInputModule, ZvFormField],
 })
 export class TestNoFormComponent {
-  @ViewChild('f1', { static: true }) formField: ZvFormField;
+  readonly formField = viewChild<ZvFormField>('f1');
 }
 
 @Component({
@@ -70,11 +79,11 @@ export class TestNoFormComponent {
   imports: [FormsModule, MatInputModule, ZvFormField],
 })
 export class TestNgModelComponent {
+  public readonly cd = inject(ChangeDetectorRef);
+
   value: any = null;
 
-  @ViewChild(ZvFormField, { static: true }) formField: ZvFormField;
-
-  constructor(public cd: ChangeDetectorRef) {}
+  readonly formField = viewChild(ZvFormField);
 }
 
 @Component({
@@ -92,16 +101,16 @@ export class TestNgModelComponent {
   imports: [ReactiveFormsModule, MatInputModule, ZvFormField],
 })
 export class TestFormComponent {
+  public readonly cd = inject(ChangeDetectorRef);
+
   formControl = new FormControl('', [Validators.pattern('pattern'), Validators.minLength(5)]);
-  customLabel: string = null;
-  hint: string = null;
-  subscriptType: ZvFormFieldSubscriptType = null;
+  customLabel: string | null = null;
+  hint: string | null = null;
+  subscriptType: ZvFormFieldSubscriptType | null = null;
   hintToggle = false;
   required = false;
 
-  @ViewChild(ZvFormField, { static: true }) formField: ZvFormField;
-
-  constructor(public cd: ChangeDetectorRef) {}
+  readonly formField = viewChild(ZvFormField);
 }
 
 @Component({
@@ -119,13 +128,13 @@ export class TestFormComponent {
   imports: [ReactiveFormsModule, MatCheckboxModule, ZvFormField, AsyncPipe],
 })
 export class TestCheckboxComponent {
+  public readonly cd = inject(ChangeDetectorRef);
+
   public asyncLabel$ = of('async label');
   formControl = new FormControl('');
 
   @ViewChild('f1', { static: true }) formFieldTemplateLabel: ZvFormField;
   @ViewChild('f2', { static: true }) formFieldNoLabel: ZvFormField;
-
-  constructor(public cd: ChangeDetectorRef) {}
 }
 
 describe('ZvFormField', () => {
@@ -195,11 +204,11 @@ describe('ZvFormField', () => {
       component.formControl.markAsTouched();
       fixture.detectChanges();
 
-      expect(component.formField._ngControl.invalid).toBe(true);
-      expect(component.formField._matFormField._control.errorState).toBe(true);
+      expect(component.formField()._ngControl.invalid).toBe(true);
+      expect(component.formField()._matFormField._control.errorState).toBe(true);
 
       let errorsChecked = false;
-      component.formField.errors$.subscribe((e) => {
+      component.formField().errors$.subscribe((e) => {
         expect(e.map((x) => x.errorText)).toEqual(['pattern', 'minlength']);
         errorsChecked = true;
       });
@@ -299,8 +308,8 @@ describe('ZvFormField', () => {
 
       const formFieldHarness = await loader.getHarness(MatFormFieldHarness);
 
-      expect(component.formField.emulated).toBe(false);
-      expect(component.formField.noUnderline).toBe(false);
+      expect(component.formField().emulated).toBe(false);
+      expect(component.formField().noUnderline).toBe(false);
       expect(await formFieldHarness.isLabelFloating()).toBe(false);
 
       component.value = 'test';
@@ -327,8 +336,8 @@ describe('ZvFormField', () => {
 
       const formFieldHarness = await loader.getHarness(MatFormFieldHarness);
 
-      expect(component.formField.emulated).toBe(false);
-      expect(component.formField.noUnderline).toBe(false);
+      expect(component.formField().emulated).toBe(false);
+      expect(component.formField().noUnderline).toBe(false);
       expect(await formFieldHarness.isLabelFloating()).toBe(false);
 
       const el = fixture.debugElement.query(By.css('input')).nativeElement;
@@ -350,7 +359,7 @@ describe('ZvFormField', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      expect(component.formField.floatLabel).toEqual('auto');
+      expect(component.formField().floatLabel).toEqual('auto');
     }));
 
     it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', waitForAsync(() => {
@@ -368,7 +377,7 @@ describe('ZvFormField', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-      expect(component.formField.floatLabel).toEqual('always');
+      expect(component.formField().floatLabel).toEqual('always');
     }));
   });
 

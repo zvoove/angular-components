@@ -28,7 +28,7 @@ import { ZvTableSettingsComponent } from './table-settings.component';
   imports: [ZvTableSettingsComponent],
 })
 export class TestComponent {
-  public tableId: string;
+  public tableId = '';
   public columnDefinitions: ZvTableColumn[] = [];
   public sortDefinitions: IZvTableSortDefinition[] = [];
   public pageSizeOptions: number[] = [1, 3, 7];
@@ -113,6 +113,16 @@ describe('ZvTableSettingsComponent', () => {
   });
 
   describe('isolated', () => {
+    let settingsService: ZvTableSettingsService;
+
+    beforeEach(() => {
+      settingsService = new ZvTableSettingsService();
+      TestBed.configureTestingModule({
+        imports: [ZvTableSettingsComponent],
+        providers: [{ provide: ZvTableSettingsService, useValue: settingsService }],
+      });
+    });
+
     it('should get settings from the service by tableId', fakeAsync(() => {
       const tableSetting: IZvTableSetting = {
         columnBlacklist: ['prop_b'],
@@ -120,11 +130,13 @@ describe('ZvTableSettingsComponent', () => {
         sortColumn: 'prop_a',
         sortDirection: 'desc',
       };
-      const settingsService = new ZvTableSettingsService();
-      const component = new ZvTableSettingsComponent(settingsService);
-      component.tableId = 'table.1';
       spyOn(settingsService, 'getStream').and.returnValue(of(tableSetting));
-      component.ngOnInit();
+
+      const fixture = TestBed.createComponent(ZvTableSettingsComponent);
+      const component = fixture.componentInstance;
+      component.tableId = 'table.1';
+
+      fixture.detectChanges();
 
       let asyncSettings: IZvTableSetting;
       component.settings$.subscribe((settings) => {
@@ -136,10 +148,12 @@ describe('ZvTableSettingsComponent', () => {
     }));
 
     it("should use default settings if service doesn't return settings", fakeAsync(() => {
-      const settingsService = new ZvTableSettingsService();
-      const component = new ZvTableSettingsComponent(settingsService);
+      spyOn(settingsService, 'getStream').and.returnValue(of(null));
+
+      const fixture = TestBed.createComponent(ZvTableSettingsComponent);
+      const component = fixture.componentInstance;
       component.tableId = 'table.1';
-      component.ngOnInit();
+      fixture.detectChanges();
 
       let asyncSettings: IZvTableSetting;
       component.settings$.subscribe((settings) => {
@@ -155,8 +169,8 @@ describe('ZvTableSettingsComponent', () => {
     }));
 
     it('columnVisible should return false for blacklisted columns', fakeAsync(() => {
-      const settingsService = new ZvTableSettingsService();
-      const component = new ZvTableSettingsComponent(settingsService);
+      const fixture = TestBed.createComponent(ZvTableSettingsComponent);
+      const component = fixture.componentInstance;
       function createSettings(blacklist: string[]): IZvTableSetting {
         return {
           columnBlacklist: blacklist,
@@ -173,8 +187,13 @@ describe('ZvTableSettingsComponent', () => {
     }));
 
     describe('onSortChanged', () => {
-      const settingsService = new ZvTableSettingsService();
-      const component = new ZvTableSettingsComponent(settingsService);
+      let component: ZvTableSettingsComponent;
+
+      beforeEach(() => {
+        const fixture = TestBed.createComponent(ZvTableSettingsComponent);
+        component = fixture.componentInstance;
+      });
+
       function createSettings(blacklist: string[], sortColumn: string, sortDirection: 'asc' | 'desc'): IZvTableSetting {
         return {
           columnBlacklist: blacklist,
@@ -208,8 +227,8 @@ describe('ZvTableSettingsComponent', () => {
     });
 
     it('onColumnVisibilityChange should toggle column in blacklist', fakeAsync(() => {
-      const settingsService = new ZvTableSettingsService();
-      const component = new ZvTableSettingsComponent(settingsService);
+      const fixture = TestBed.createComponent(ZvTableSettingsComponent);
+      const component = fixture.componentInstance;
 
       const settings: IZvTableSetting = {
         columnBlacklist: [],
