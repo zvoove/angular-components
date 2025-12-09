@@ -17,7 +17,7 @@ import { IZvDialogWrapperDataSource } from './dialog-wrapper.models';
   imports: [MatDialogTitle, CdkScrollable, MatDialogContent, ZvBlockUi, MatDialogActions, MatProgressBar, ZvButton, ZvErrorMessagePipe],
 })
 export class ZvDialogWrapper implements OnDestroy {
-  private cd = inject(ChangeDetectorRef);
+  private readonly cd = inject(ChangeDetectorRef);
 
   public get dialogTitle(): string | null {
     return this.dataSource.dialogTitle;
