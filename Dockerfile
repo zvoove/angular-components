@@ -1,4 +1,4 @@
-FROM docker.io/library/node:25.2-alpine AS prepare
+FROM docker.io/library/node:25.6-alpine AS prepare
 
 RUN apk add chromium
 ENV CHROME_BIN=/usr/bin/chromium-browser
@@ -22,7 +22,7 @@ ENTRYPOINT ["npm", "run", "lint"]
 FROM build AS build-demo
 RUN npm run build:components-demo -- --output-path=./dist/out
 
-FROM docker.io/library/node:25.2-alpine
+FROM docker.io/library/node:25.6-alpine
 WORKDIR /usr/app
 COPY --from=build-demo /app/src/dist/out ./
 
