@@ -117,6 +117,11 @@
             "tsConfig": "projects/components/tsconfig.spec.json",
             "buildTarget": "components:build",
             "setupFiles": ["projects/components/test-setup.ts"]
+          },
+          "configurations": {
+            "browser": {
+              "browsers": ["chromium"]
+            }
           }
         },
         "lint": {

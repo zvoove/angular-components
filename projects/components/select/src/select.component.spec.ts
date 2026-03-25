@@ -369,9 +369,10 @@ describe('ZvSelect', () => {
 
     const matFormField = await loader.getHarness(MatFormFieldHarness);
 
-    component.value.set(ITEMS.red);
+    component.value.set(ITEMS.red.value);
     component.clearable.set(true);
 
+    await flushMicrotasks();
     await zvSelect.open();
     expect(await zvSelect.isEmpty()).toBe(false);
     expect(await matFormField.isLabelFloating()).toBe(true);
@@ -767,6 +768,8 @@ describe('ZvSelect', () => {
 
     {
       await selectSearch.setFilter('2');
+      // Wait for search debounce (300ms default) + render
+      await new Promise((resolve) => setTimeout(resolve, 350));
 
       const options1 = await zvSelect.getOptions({ text: '1' });
       expect(await (await options1[0].host()).hasClass('zv-select__option--hidden')).toBe(true); // filter got applied
@@ -789,6 +792,8 @@ describe('ZvSelect', () => {
       );
       fixture.detectChanges();
       await flushMicrotasks();
+      // Wait for search debounce to apply filter to new dataSource
+      await new Promise((resolve) => setTimeout(resolve, 350));
       fixture.detectChanges();
       expect(TestZvSelectService.calledwith.length).toBe(2);
       expect(TestZvSelectService.calledwith[1].dataSource).toBe(component.dataSource());
@@ -844,6 +849,11 @@ describe('ZvSelect', () => {
     expect(await options[2].isSelected()).toBe(true);
 
     await options[1].click();
+    // Wait for async datasource pipeline (debounceTime + sort trigger) to settle
+    await flushMicrotasks();
+    fixture.detectChanges();
+    await flushMicrotasks();
+    fixture.detectChanges();
     await zvSelect.open();
 
     options = await zvSelect.getOptions();

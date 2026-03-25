@@ -29,10 +29,14 @@ export class ZvTableSearchComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onSearch(key: string, value: string | null) {
-    if (key.startsWith('Esc')) {
+  public onSearch(key: string | null, value: string | null) {
+    if (key?.startsWith('Esc')) {
       this.searchText.set('');
       this.emitChange();
+      return;
+    }
+
+    if (this.searchText() === value) {
       return;
     }
 

@@ -1,6 +1,6 @@
 import '@angular/localize/init';
 
-// jsdom doesn't provide IntersectionObserver
+// Polyfill IntersectionObserver for jsdom (not needed in browser mode)
 if (typeof globalThis.IntersectionObserver === 'undefined') {
   globalThis.IntersectionObserver = class IntersectionObserver {
     constructor(_callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {}

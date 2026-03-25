@@ -306,6 +306,7 @@ describe('ZvForm', () => {
       });
       expect(getErrorContainer(fixture)).not.toBe(null);
       expect(observedEl).toBe(component.formComponent.errorCardWrapper.nativeElement);
+      component.formComponent.errorCardWrapper.nativeElement.scrollIntoView ??= () => {};
       vi.spyOn(component.formComponent.errorCardWrapper.nativeElement, 'scrollIntoView');
 
       opts.scrollToError();

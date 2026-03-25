@@ -153,8 +153,7 @@ describe('ZvFormField', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      fixture.detectChanges();
-
+      // Set zvLabel before first detectChanges so it's picked up during initialization
       (component.formControl as any).zvLabel = 'service label';
       fixture.detectChanges();
       // Allow async label resolution to settle (multiple cycles for RxJS operators)
@@ -187,9 +186,8 @@ describe('ZvFormField', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-      fixture.detectChanges();
 
-      // Label calculated from the service
+      // Set zvLabel before first detectChanges so it's picked up during initialization
       (component.formControl as any).zvLabel = 'service label';
       fixture.detectChanges();
       await vi.advanceTimersByTimeAsync(0);
@@ -202,9 +200,10 @@ describe('ZvFormField', () => {
       expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('custom label');
 
       // Label calculated from the service with delay
-      component.customLabel.set(null);
       (component.formControl as any).zvLabel = 'async label';
       (TestBed.inject(ZvFormService) as TestZvFormService).labelDelay = 10;
+      // Setting customLabel to null removes the labelChild, which triggers updateLabel()
+      component.customLabel.set(null);
       fixture.detectChanges();
       await vi.advanceTimersByTimeAsync(10);
       fixture.detectChanges();

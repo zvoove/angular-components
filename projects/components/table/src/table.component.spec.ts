@@ -53,18 +53,31 @@ const router: any = {
 
 const queryParams$ = new BehaviorSubject<ParamMap>(convertToParamMap({ other: 'value' }));
 
+const routeSnapshot: any = {
+  queryParamMap: null as any,
+  routeConfig: { path: '', component: null },
+  params: {},
+  queryParams: {},
+  data: {},
+  fragment: null,
+  url: [],
+  children: [],
+  pathFromRoot: [],
+  outlet: 'primary',
+  title: '',
+  parent: null,
+  firstChild: null,
+  root: null,
+  component: null,
+  paramMap: null,
+};
+// Keep queryParamMap in sync with the BehaviorSubject
+Object.defineProperty(routeSnapshot, 'queryParamMap', {
+  get: () => queryParams$.value,
+});
+
 const route: ActivatedRoute = {
-  snapshot: new Proxy(queryParams$, {
-    get: (obj, prop) => {
-      if (prop === 'queryParamMap') {
-        return obj.value;
-      }
-      if (prop === 'routeConfig') {
-        return { name: undefined, component: undefined };
-      }
-      return undefined;
-    },
-  }),
+  snapshot: routeSnapshot,
   queryParamMap: queryParams$,
 } as any;
 
@@ -199,6 +212,7 @@ describe('ZvTable', () => {
 
     it('should update table state from the settings service and the query params', async () => {
       const table = createTableInstance();
+      table.stateManager = new ZvTableUrlStateManager(router as any, route);
       settingsService.settings$.next({});
       vi.spyOn(settingsService, 'getStream');
       table.columnDefs = [createColDef({ property: 'prop1' }), createColDef({ property: 'prop2' })];
@@ -759,6 +773,8 @@ describe('ZvTable', () => {
 
         vi.spyOn(component.table, 'onSearchChanged');
         await searchInput.setValue('asdf');
+        // Wait for search debounce (300ms)
+        await new Promise((resolve) => setTimeout(resolve, 350));
         expect(component.table.onSearchChanged).toHaveBeenCalledTimes(1);
         expect(component.table.onSearchChanged).toHaveBeenCalledWith('asdf');
       });
@@ -792,6 +808,8 @@ describe('ZvTable', () => {
         // Apply a filter
         const searchInput = await table.getSearchInput();
         await searchInput.setValue('item');
+        // Wait for search debounce (300ms)
+        await new Promise((resolve) => setTimeout(resolve, 350));
 
         // Verify that the page index is reset to 0
         expect(component.table.pageIndex).toEqual(0);
@@ -972,6 +990,9 @@ describe('ZvTable', () => {
       const gotoPageSelect = await table.getGotoPageSelect();
       await gotoPageSelect.open();
       await gotoPageSelect.clickOptions({ text: '2' });
+      // Wait for debounced state update to propagate
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      fixture.detectChanges();
 
       const firstRowSecondPage = (await table.getRows())[0];
       expect(await (await firstRowSecondPage.getCells({ columnName: 'str' }))[0].getText()).toEqual('item 15');
