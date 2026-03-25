@@ -1,6 +1,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IZvException } from '@zvoove/components/core';
@@ -26,7 +26,7 @@ class TestViewDataSource implements IZvViewDataSource {
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Default,
-  imports: [CommonModule, ZvView],
+  imports: [ZvView],
 })
 export class TestDataSourceComponent {
   public dataSource: TestViewDataSource;
