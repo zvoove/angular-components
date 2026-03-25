@@ -1,6 +1,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { ZvHeaderHarness } from '@zvoove/components/header/src/testing/header.harness';
@@ -11,29 +11,29 @@ import { ZvCardHarness } from './testing/card.harness';
 @Component({
   selector: 'zv-test-component',
   template: `
-    <zv-card [caption]="caption" [description]="description">
+    <zv-card [caption]="caption()" [description]="description()">
       <ng-container *zvCardCaptionSection>
-        @if (addCaptionTemplate) {
+        @if (addCaptionTemplate()) {
           <h1>customCaption</h1>
         }
       </ng-container>
       <ng-container *zvCardDescriptionSection>
-        @if (addDescriptionTemplate) {
+        @if (addDescriptionTemplate()) {
           <span>customDescription</span>
         }
       </ng-container>
       <ng-container *zvCardTopButtonSection>
-        @if (addTopButton) {
+        @if (addTopButton()) {
           <button mat-button>testTopButton</button>
         }
       </ng-container>
       <ng-container *zvCardFooterSection>
-        @if (addFooterTemplate) {
+        @if (addFooterTemplate()) {
           <span>testFooter</span>
         }
       </ng-container>
       <ng-container *zvCardActionsSection>
-        @if (addCardActionButton) {
+        @if (addCardActionButton()) {
           <button mat-button>testActionButton</button>
         }
       </ng-container>
@@ -45,13 +45,13 @@ import { ZvCardHarness } from './testing/card.harness';
   imports: [ZvCardModule],
 })
 export class TestDataSourceComponent {
-  public caption: string;
-  public description: string;
-  public addTopButton = false;
-  public addCardActionButton = false;
-  public addCaptionTemplate = false;
-  public addDescriptionTemplate = false;
-  public addFooterTemplate = false;
+  public caption = signal<string>(undefined);
+  public description = signal<string>(undefined);
+  public addTopButton = signal(false);
+  public addCardActionButton = signal(false);
+  public addCaptionTemplate = signal(false);
+  public addDescriptionTemplate = signal(false);
+  public addFooterTemplate = signal(false);
   @ViewChild(ZvCard) headerComponent: ZvCard;
 }
 
@@ -67,6 +67,7 @@ describe('ZvCard', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(TestDataSourceComponent);
     component = fixture.componentInstance;
+    fixture.autoDetectChanges();
 
     loader = TestbedHarnessEnvironment.loader(fixture);
     card = await loader.getHarness(ZvCardHarness);
@@ -76,14 +77,16 @@ describe('ZvCard', () => {
   it('should show caption text', async () => {
     expect(await header.getCaptionText()).toBeFalsy();
 
-    component.caption = 'foo';
+    component.caption.set('foo');
+    fixture.detectChanges();
     expect(await header.getCaptionText()).toBe('foo');
   });
 
   it('should show caption template', async () => {
     expect(await header.getCaptionText()).toBeFalsy();
 
-    component.addCaptionTemplate = true;
+    component.addCaptionTemplate.set(true);
+    fixture.detectChanges();
     const nodes = await header.getCaptionTemplateNodes();
     expect(nodes.length).toEqual(1);
 
@@ -94,10 +97,12 @@ describe('ZvCard', () => {
 
   it('should show caption text when input and template are set at the same time', async () => {
     expect(await header.getCaptionText()).toBeFalsy();
-    component.caption = 'foo';
+    component.caption.set('foo');
+    fixture.detectChanges();
     expect(await header.getCaptionText()).toBeTruthy();
 
-    component.addCaptionTemplate = true;
+    component.addCaptionTemplate.set(true);
+    fixture.detectChanges();
     expect(await header.getCaptionText()).toBeTruthy();
     const nodes = await header.getCaptionTemplateNodes();
     expect(nodes.length).toEqual(0);
@@ -106,14 +111,16 @@ describe('ZvCard', () => {
   it('should show description text', async () => {
     expect(await header.getDescriptionText()).toBeFalsy();
 
-    component.description = 'bar';
+    component.description.set('bar');
+    fixture.detectChanges();
     expect(await header.getDescriptionText()).toBe('bar');
   });
 
   it('should show description template', async () => {
     expect(await header.getDescriptionText()).toBeFalsy();
 
-    component.addDescriptionTemplate = true;
+    component.addDescriptionTemplate.set(true);
+    fixture.detectChanges();
     const nodes = await header.getDescriptionTemplateNodes();
     expect(nodes.length).toEqual(1);
 
@@ -124,10 +131,12 @@ describe('ZvCard', () => {
 
   it('should show description text when input and template are set at the same time', async () => {
     expect(await header.getDescriptionText()).toBeFalsy();
-    component.description = 'foo';
+    component.description.set('foo');
+    fixture.detectChanges();
     expect(await header.getDescriptionText()).toBeTruthy();
 
-    component.addDescriptionTemplate = true;
+    component.addDescriptionTemplate.set(true);
+    fixture.detectChanges();
     expect(await header.getDescriptionText()).toBeTruthy();
     const nodes = await header.getDescriptionTemplateNodes();
     expect(nodes.length).toEqual(0);
@@ -137,7 +146,8 @@ describe('ZvCard', () => {
     let nodes = await header.getActionTemplateNodes();
     expect(nodes.length).toBe(0);
 
-    component.addTopButton = true;
+    component.addTopButton.set(true);
+    fixture.detectChanges();
     nodes = await header.getActionTemplateNodes();
     expect(nodes.length).toBe(1);
 
@@ -150,7 +160,8 @@ describe('ZvCard', () => {
     let nodes = await card.getActionTemplateNodes();
     expect(nodes.length).toBe(0);
 
-    component.addCardActionButton = true;
+    component.addCardActionButton.set(true);
+    fixture.detectChanges();
     nodes = await card.getActionTemplateNodes();
     expect(nodes.length).toBe(1);
     expect(await nodes[0].text()).toEqual('testActionButton');
@@ -160,7 +171,8 @@ describe('ZvCard', () => {
     let nodes = await card.getFooterTemplateNodes();
     expect(nodes.length).toBe(0);
 
-    component.addFooterTemplate = true;
+    component.addFooterTemplate.set(true);
+    fixture.detectChanges();
     nodes = await card.getFooterTemplateNodes();
     expect(nodes.length).toBe(1);
     expect(await nodes[0].text()).toEqual('testFooter');

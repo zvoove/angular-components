@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { MatButton } from '@angular/material/button';
 import { MatCardActions } from '@angular/material/card';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -33,7 +34,8 @@ export class TestComponent {
   public sortDefinitions: IZvTableSortDefinition[] = [];
   public pageSizeOptions: number[] = [1, 3, 7];
 
-  @ViewChild(ZvTableSettingsComponent, { static: true }) tableSearch: ZvTableSettingsComponent;
+  @ViewChild(ZvTableSettingsComponent, { static: true })
+  tableSearch: ZvTableSettingsComponent;
 
   public onSettingsSaved() {}
   public onSettingsAborted() {}
@@ -41,54 +43,59 @@ export class TestComponent {
 
 describe('ZvTableSettingsComponent', () => {
   describe('integration', () => {
-    beforeEach(waitForAsync(() => {
-      TestBed.configureTestingModule({
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({
         imports: [TestComponent],
       }).compileComponents();
-    }));
+    });
 
-    it('should emit settingsAborted on cancel click', fakeAsync(() => {
+    it('should emit settingsAborted on cancel click', () => {
       const fixture = TestBed.createComponent(TestComponent);
       const component = fixture.componentInstance;
       fixture.detectChanges();
-      spyOn(component, 'onSettingsAborted');
+      vi.spyOn(component, 'onSettingsAborted');
 
       const [, cancelBtn] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
 
       cancelBtn.triggerEventHandler('click', null);
 
       expect(component.onSettingsAborted).toHaveBeenCalled();
-    }));
+    });
 
-    it('should call service save and emit settingsSaved on save click', fakeAsync(() => {
-      const fixture = TestBed.createComponent(TestComponent);
-      const component = fixture.componentInstance;
+    it('should call service save and emit settingsSaved on save click', async () => {
+      vi.useFakeTimers();
+      try {
+        const fixture = TestBed.createComponent(TestComponent);
+        const component = fixture.componentInstance;
 
-      const settings: IZvTableSetting = {
-        columnBlacklist: ['prop_b'],
-        pageSize: 11,
-        sortColumn: 'prop_a',
-        sortDirection: 'desc',
-      };
-      component.tableId = 'tableA';
-      component.tableSearch.settingsService.getStream = () => of(settings);
-      fixture.detectChanges();
+        const settings: IZvTableSetting = {
+          columnBlacklist: ['prop_b'],
+          pageSize: 11,
+          sortColumn: 'prop_a',
+          sortDirection: 'desc',
+        };
+        component.tableId = 'tableA';
+        component.tableSearch.settingsService.getStream = () => of(settings);
+        fixture.detectChanges();
 
-      spyOn(component, 'onSettingsSaved');
-      spyOn(component.tableSearch.settingsService, 'save').and.returnValue(of(null).pipe(delay(10)));
+        vi.spyOn(component, 'onSettingsSaved');
+        vi.spyOn(component.tableSearch.settingsService, 'save').mockReturnValue(of(null).pipe(delay(10)));
 
-      const [saveButton] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
+        const [saveButton] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
 
-      saveButton.triggerEventHandler('click', null);
+        saveButton.triggerEventHandler('click', null);
 
-      expect(component.tableSearch.settingsService.save).toHaveBeenCalledWith('tableA', settings);
+        expect(component.tableSearch.settingsService.save).toHaveBeenCalledWith('tableA', settings);
 
-      tick(10);
+        await vi.advanceTimersByTimeAsync(10);
 
-      expect(component.onSettingsSaved).toHaveBeenCalled();
-    }));
+        expect(component.onSettingsSaved).toHaveBeenCalled();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
 
-    it('should not loose custom setting properties', fakeAsync(() => {
+    it('should not loose custom setting properties', () => {
       const fixture = TestBed.createComponent(TestComponent);
       const component = fixture.componentInstance;
 
@@ -103,13 +110,13 @@ describe('ZvTableSettingsComponent', () => {
       component.tableSearch.settingsService.getStream = () => of(settings);
       fixture.detectChanges();
 
-      spyOn(component.tableSearch.settingsService, 'save').and.returnValue(of(null));
+      vi.spyOn(component.tableSearch.settingsService, 'save').mockReturnValue(of(null));
 
       const [saveButton] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
       saveButton.triggerEventHandler('click', null);
 
       expect(component.tableSearch.settingsService.save).toHaveBeenCalledWith('tableA', settings);
-    }));
+    });
   });
 
   describe('isolated', () => {
@@ -123,14 +130,14 @@ describe('ZvTableSettingsComponent', () => {
       });
     });
 
-    it('should get settings from the service by tableId', fakeAsync(() => {
+    it('should get settings from the service by tableId', () => {
       const tableSetting: IZvTableSetting = {
         columnBlacklist: ['prop_b'],
         pageSize: 10,
         sortColumn: 'prop_a',
         sortDirection: 'desc',
       };
-      spyOn(settingsService, 'getStream').and.returnValue(of(tableSetting));
+      vi.spyOn(settingsService, 'getStream').mockReturnValue(of(tableSetting));
 
       const fixture = TestBed.createComponent(ZvTableSettingsComponent);
       const component = fixture.componentInstance;
@@ -145,10 +152,10 @@ describe('ZvTableSettingsComponent', () => {
 
       expect(asyncSettings).toEqual(tableSetting);
       expect(settingsService.getStream).toHaveBeenCalledWith('table.1', true);
-    }));
+    });
 
-    it("should use default settings if service doesn't return settings", fakeAsync(() => {
-      spyOn(settingsService, 'getStream').and.returnValue(of(null));
+    it("should use default settings if service doesn't return settings", () => {
+      vi.spyOn(settingsService, 'getStream').mockReturnValue(of(null));
 
       const fixture = TestBed.createComponent(ZvTableSettingsComponent);
       const component = fixture.componentInstance;
@@ -166,9 +173,9 @@ describe('ZvTableSettingsComponent', () => {
         sortColumn: null,
         sortDirection: 'asc',
       });
-    }));
+    });
 
-    it('columnVisible should return false for blacklisted columns', fakeAsync(() => {
+    it('columnVisible should return false for blacklisted columns', () => {
       const fixture = TestBed.createComponent(ZvTableSettingsComponent);
       const component = fixture.componentInstance;
       function createSettings(blacklist: string[]): IZvTableSetting {
@@ -184,7 +191,7 @@ describe('ZvTableSettingsComponent', () => {
       expect(component.columnVisible(createSettings(['prop']), createColumnDef('prop'))).toEqual(false);
       expect(component.columnVisible(createSettings(['a']), createColumnDef('prop'))).toEqual(true);
       expect(component.columnVisible(createSettings([]), createColumnDef('prop'))).toEqual(true);
-    }));
+    });
 
     describe('onSortChanged', () => {
       let component: ZvTableSettingsComponent;
@@ -205,7 +212,7 @@ describe('ZvTableSettingsComponent', () => {
         return { sortColumn: sortColumn, sortDirection: sortDirection };
       }
 
-      it('should remove sort column from blacklist', fakeAsync(() => {
+      it('should remove sort column from blacklist', () => {
         const settings = createSettings(['prop_1', 'prop_2'], 'prop', 'desc');
         component.onSortChanged(createColumnDef('prop_2', 'desc'), settings);
         expect(settings as any).toEqual({
@@ -213,9 +220,9 @@ describe('ZvTableSettingsComponent', () => {
           sortColumn: 'prop_2',
           sortDirection: 'desc',
         });
-      }));
+      });
 
-      it('should set sortColumn and sortDirection', fakeAsync(() => {
+      it('should set sortColumn and sortDirection', () => {
         const settings = createSettings([], 'prop', 'desc');
         component.onSortChanged(createColumnDef('prop_2', 'asc'), settings);
         expect(settings as any).toEqual({
@@ -223,10 +230,10 @@ describe('ZvTableSettingsComponent', () => {
           sortColumn: 'prop_2',
           sortDirection: 'asc',
         });
-      }));
+      });
     });
 
-    it('onColumnVisibilityChange should toggle column in blacklist', fakeAsync(() => {
+    it('onColumnVisibilityChange should toggle column in blacklist', () => {
       const fixture = TestBed.createComponent(ZvTableSettingsComponent);
       const component = fixture.componentInstance;
 
@@ -257,6 +264,6 @@ describe('ZvTableSettingsComponent', () => {
       event.checked = true;
       component.onColumnVisibilityChange(event, settings, columnDef);
       expect(settings.columnBlacklist).toEqual(['prop2']);
-    }));
+    });
   });
 });

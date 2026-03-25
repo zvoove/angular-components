@@ -1,16 +1,16 @@
 import { LOCALE_ID } from '@angular/core';
-import { TestBed, inject, waitForAsync } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 import { ZvDateAdapter } from './date-adapter';
 import { ZvNativeDateAdapter } from './native-date-adapter';
 
 describe('ZvNativeDateAdapter', () => {
   let adapter: ZvNativeDateAdapter;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [{ provide: ZvDateAdapter, useClass: ZvNativeDateAdapter }],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(inject([ZvDateAdapter], (dateAdapter: ZvNativeDateAdapter) => {
     adapter = dateAdapter;
@@ -38,10 +38,8 @@ describe('ZvNativeDateAdapter', () => {
   it('should parse invalid value as invalid', () => {
     const d = adapter.parse('hello');
     expect(d).not.toBeNull();
-    expect(adapter.isDateInstance(d)).withContext('Expected string to have been fed through Date.parse').toBe(true);
-    expect(adapter.isValid(d as Date))
-      .withContext('Expected to parse as "invalid date" object')
-      .toBe(false);
+    expect(adapter.isDateInstance(d), 'Expected string to have been fed through Date.parse').toBe(true);
+    expect(adapter.isValid(d as Date), 'Expected to parse as "invalid date" object').toBe(false);
   });
 
   it('should return localized format example', () => {
@@ -52,14 +50,14 @@ describe('ZvNativeDateAdapter', () => {
 describe('ZvNativeDateAdapter with LOCALE_ID override', () => {
   let adapter: ZvNativeDateAdapter;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: ZvDateAdapter, useClass: ZvNativeDateAdapter },
         { provide: LOCALE_ID, useValue: 'da-DK' },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(inject([ZvDateAdapter], (dateAdapter: ZvNativeDateAdapter) => {
     adapter = dateAdapter;

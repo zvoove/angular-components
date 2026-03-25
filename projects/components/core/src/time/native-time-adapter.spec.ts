@@ -1,5 +1,5 @@
 import { LOCALE_ID } from '@angular/core';
-import { inject, TestBed, waitForAsync } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { Time } from '../time/time';
 import { ZvNativeTimeAdapter } from './native-time-adapter';
 import { ZvTimeAdapter } from './time-adapter';
@@ -12,24 +12,25 @@ describe('ZvNativeTimeAdapter', () => {
   let adapter: ZvNativeTimeAdapter;
   let assertValidTime: (d: Time | null, valid: boolean) => void;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: ZvTimeAdapter, useClass: ZvNativeTimeAdapter },
         { provide: LOCALE_ID, useValue: 'de-DE' },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(inject([ZvTimeAdapter], (timeAdapter: ZvNativeTimeAdapter) => {
     adapter = timeAdapter;
 
     assertValidTime = (t: Time | null, valid: boolean) => {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
-      expect(adapter.isTimeInstance(t)).not.withContext(`Expected ${t} to be a time instance`).toBeNull();
-      expect(adapter.isValid(t!))
-        .withContext(`Expected ${JSON.stringify(t)} to be ${valid ? 'valid' : 'invalid'}, but ` + `was ${valid ? 'invalid' : 'valid'}`)
-        .toBe(valid);
+      expect(adapter.isTimeInstance(t), `Expected ${t} to be a time instance`).not.toBeNull();
+      expect(
+        adapter.isValid(t!),
+        `Expected ${JSON.stringify(t)} to be ${valid ? 'valid' : 'invalid'}, but ` + `was ${valid ? 'invalid' : 'valid'}`
+      ).toBe(valid);
     };
   }));
 
@@ -72,10 +73,8 @@ describe('ZvNativeTimeAdapter', () => {
   it('should parse invalid value as invalid', () => {
     const t = adapter.parse('hello');
     expect(t).not.toBeNull();
-    expect(adapter.isTimeInstance(t)).withContext('Expected string to have been fed through Time.parse').toBe(true);
-    expect(adapter.isValid(t as Time))
-      .withContext('Expected to parse as "invalid Time" object')
-      .toBe(false);
+    expect(adapter.isTimeInstance(t), 'Expected string to have been fed through Time.parse').toBe(true);
+    expect(adapter.isValid(t as Time), 'Expected to parse as "invalid Time" object').toBe(false);
   });
 
   it('should format as 24 hour format', () => {
@@ -173,14 +172,14 @@ describe('ZvNativeTimeAdapter', () => {
 describe('ZvNativeTimeAdapter with LOCALE_ID override', () => {
   let adapter: ZvNativeTimeAdapter;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: ZvTimeAdapter, useClass: ZvNativeTimeAdapter },
         { provide: LOCALE_ID, useValue: 'en-US' },
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(inject([ZvTimeAdapter], (timeAdapter: ZvNativeTimeAdapter) => {
     adapter = timeAdapter;

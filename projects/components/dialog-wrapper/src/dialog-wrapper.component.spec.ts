@@ -146,8 +146,8 @@ describe('DialogUnitTestComponent', () => {
   });
 
   it('should call actionFunction on ok click', async () => {
-    spyOn(dialogRef.componentInstance, 'actionFunction').and.callThrough();
-    spyOn(dialogRef.componentInstance.dataSource, 'confirm').and.callThrough();
+    vi.spyOn(dialogRef.componentInstance, 'actionFunction');
+    vi.spyOn(dialogRef.componentInstance.dataSource, 'confirm');
 
     const btns = await dialogWrapper.getActionButtons({ text: 'Ok' });
     expect(btns.length).toEqual(1);
@@ -158,15 +158,19 @@ describe('DialogUnitTestComponent', () => {
   });
 
   it('should call cancelFunction and then close on cancel click', async () => {
-    const cancelSpy = spyOn(dialogRef.componentInstance, 'cancelFunction').and.callThrough();
-    const closeSpy = spyOn(dialogRef.componentInstance.dataSource, 'close').and.callThrough();
+    const cancelSpy = vi.spyOn(dialogRef.componentInstance, 'cancelFunction');
+    const closeSpy = vi.spyOn(dialogRef.componentInstance.dataSource, 'close');
 
     const btns = await dialogWrapper.getActionButtons({ text: 'Cancel' });
     expect(btns.length).toEqual(1);
     await btns[0].click();
+    fixture.detectChanges();
 
     expect(cancelSpy).toHaveBeenCalledTimes(1);
     expect(closeSpy).toHaveBeenCalledTimes(1);
+    // Wait for dialog close animation to complete
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    fixture.detectChanges();
     expect((await rootLoader.getAllHarnesses(ZvDialogWrapperHarness)).length).toEqual(0);
   });
 

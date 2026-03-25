@@ -1,11 +1,11 @@
-import { fakeAsync, tick } from '@angular/core/testing';
 import { NEVER, of, Subject, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
+import { vi } from 'vitest';
 
 import { ZvTableDataSource, ZvTableDataSourceOptions, IExtendedZvTableUpdateDataInfo } from '../data/table-data-source';
 
 describe('ZvTableDataSource', () => {
-  it('should have sensible default values', fakeAsync(() => {
+  it('should have sensible default values', () => {
     const loadedData = [{ prop: 'x' }];
     const dataSource = new ZvTableDataSource<any>(() => of(loadedData).pipe(delay(500)));
     dataSource.tableReady = true;
@@ -23,9 +23,9 @@ describe('ZvTableDataSource', () => {
     expect(dataSource.dataLength).toEqual(0);
     expect(dataSource.selectionModel.isMultipleSelection()).toEqual(true);
     expect(dataSource.selectionModel.selected).toEqual([]);
-  }));
+  });
 
-  it('should return empty array on connect, even if data is not loaded yet', fakeAsync(() => {
+  it('should return empty array on connect, even if data is not loaded yet', () => {
     const dataSource = new ZvTableDataSource<any>(() => NEVER as any);
     dataSource.tableReady = true;
 
@@ -38,21 +38,21 @@ describe('ZvTableDataSource', () => {
 
     dataSource.disconnect();
     sub.unsubscribe();
-  }));
+  });
 
-  it('should not start loading data on connect (the table has to triggers this)', fakeAsync(() => {
+  it('should not start loading data on connect (the table has to triggers this)', () => {
     const dataSource = new ZvTableDataSource<any>(() => NEVER as any);
     dataSource.tableReady = true;
 
-    spyOn(dataSource, 'updateData');
+    vi.spyOn(dataSource, 'updateData');
     const sub = dataSource.connect().subscribe();
     dataSource.disconnect();
     sub.unsubscribe();
 
     expect(dataSource.updateData).not.toHaveBeenCalled();
-  }));
+  });
 
-  it('should not load data until the table is ready', fakeAsync(() => {
+  it('should not load data until the table is ready', () => {
     let dataLoadCalled = false;
     const dataSource = new ZvTableDataSource<any>(() => {
       dataLoadCalled = true;
@@ -71,13 +71,13 @@ describe('ZvTableDataSource', () => {
     dataSource.updateData(false);
 
     expect(dataLoadCalled).toBeTruthy();
-  }));
+  });
 
-  it('should work with minimal options object and set default values', fakeAsync(() => {
+  it('should work with minimal options object and set default values', () => {
     const options: ZvTableDataSourceOptions<any> = {
       loadDataFn: () => of([]),
     };
-    spyOn(options, 'loadDataFn').and.callThrough();
+    vi.spyOn(options, 'loadDataFn');
 
     const dataSource = new ZvTableDataSource<any>(options);
     dataSource.tableReady = true;
@@ -92,16 +92,16 @@ describe('ZvTableDataSource', () => {
     sub.unsubscribe();
 
     expect(options.loadDataFn).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should work with complete options object', fakeAsync(() => {
+  it('should work with complete options object', () => {
     const trigger$ = new Subject<void>();
     const options: ZvTableDataSourceOptions<any> = {
       loadTrigger$: trigger$,
       loadDataFn: () => of([]),
       mode: 'server',
     };
-    spyOn(options, 'loadDataFn').and.callThrough();
+    vi.spyOn(options, 'loadDataFn');
 
     const dataSource = new ZvTableDataSource<any>(options);
     dataSource.tableReady = true;
@@ -118,9 +118,10 @@ describe('ZvTableDataSource', () => {
     sub.unsubscribe();
 
     expect(options.loadDataFn).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should reset error/loading/data/selection before updateData and after', fakeAsync(() => {
+  it('should reset error/loading/data/selection before updateData and after', async () => {
+    vi.useFakeTimers();
     let doThrowError: Error = null;
     let beforeVisibleRows: any[] = [];
     const beforeDataItem = {};
@@ -148,7 +149,7 @@ describe('ZvTableDataSource', () => {
     initDirtyState([beforeDataItem]);
     dataSource.updateData(false);
     expectAsyncLoadingState();
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     expectErrorState();
 
     // as long as no data is successfullyloaded, it should load data from the server
@@ -156,7 +157,7 @@ describe('ZvTableDataSource', () => {
     initDirtyState([beforeDataItem]);
     dataSource.updateData(false);
     expectAsyncLoadingState();
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     expectLoadedState(loadedData, loadedData.length, loadedData);
 
     // when data is already loaded, just update the visible items and clear the selection model
@@ -219,7 +220,7 @@ describe('ZvTableDataSource', () => {
     initDirtyState([beforeDataItem]);
     dataSource.updateData(true);
     expectAsyncLoadingState();
-    tick(500);
+    await vi.advanceTimersByTimeAsync(500);
     expectLoadedState(loadedData, loadedData.length, loadedData);
 
     function initDirtyState(data: any[]) {
@@ -268,7 +269,9 @@ describe('ZvTableDataSource', () => {
       expect(renderDataUpdates.length).toEqual(1);
       expect(renderDataUpdates.pop()).toEqual([]);
     }
-  }));
+
+    vi.useRealTimers();
+  });
 
   it('should not sort/filter/page, but provide info to loadData when mode is server', () => {
     const loadedData = Array.from(new Array(20).keys()).map((x) => ({ prop: x }));
@@ -279,11 +282,11 @@ describe('ZvTableDataSource', () => {
     }, 'server');
     dataSource.tableReady = true;
 
-    spyOn(dataSource, 'filterProperties');
-    spyOn(dataSource, 'filterValues');
-    spyOn(dataSource, 'filterPredicate');
-    spyOn(dataSource, 'sortingDataAccessor');
-    spyOn(dataSource, 'sortData');
+    vi.spyOn(dataSource, 'filterProperties');
+    vi.spyOn(dataSource, 'filterValues');
+    vi.spyOn(dataSource, 'filterPredicate');
+    vi.spyOn(dataSource, 'sortingDataAccessor');
+    vi.spyOn(dataSource, 'sortData');
 
     let renderData: any[] = [];
     const sub = dataSource.connect().subscribe((data) => {
@@ -316,12 +319,12 @@ describe('ZvTableDataSource', () => {
     sub.unsubscribe();
   });
 
-  it('should call sortData with the right parameters when mode is client', fakeAsync(() => {
+  it('should call sortData with the right parameters when mode is client', () => {
     const loadedData = [{ prop: 'a' }];
     const dataSource = new ZvTableDataSource<any>(() => of(loadedData), 'client');
     dataSource.tableReady = true;
 
-    spyOn(dataSource, 'sortData').and.returnValue([{ x: 'sorted' }]);
+    vi.spyOn(dataSource, 'sortData').mockReturnValue([{ x: 'sorted' }]);
 
     let renderData: any[] = [];
     const sub = dataSource.connect().subscribe((data) => {
@@ -343,9 +346,9 @@ describe('ZvTableDataSource', () => {
     expect(renderData).toEqual([{ x: 'sorted' }]);
 
     sub.unsubscribe();
-  }));
+  });
 
-  it('should use cached data if loading is not neccessary in client mode', fakeAsync(() => {
+  it('should use cached data if loading is not neccessary in client mode', () => {
     let counter = 0;
     let throwErr = false;
     const dataProvider = {
@@ -380,14 +383,14 @@ describe('ZvTableDataSource', () => {
     expect(renderData).toEqual([{ a: 3 }]);
 
     sub.unsubscribe();
-  }));
+  });
 
-  it('should never cache data for server mode', fakeAsync(() => {
+  it('should never cache data for server mode', () => {
     let counter = 0;
     const dataProvider = {
       loadData: () => of([{ a: ++counter }]),
     };
-    spyOn(dataProvider, 'loadData').and.callThrough();
+    vi.spyOn(dataProvider, 'loadData');
 
     const serverDataSource = new ZvTableDataSource<any>(() => dataProvider.loadData(), 'server');
     serverDataSource.tableReady = true;
@@ -396,7 +399,7 @@ describe('ZvTableDataSource', () => {
     serverDataSource.updateData(true);
     serverDataSource.updateData(false);
     expect(dataProvider.loadData).toHaveBeenCalledTimes(4);
-  }));
+  });
 
   describe('sortingDataAccessor', () => {
     it('should return the requested property value', () => {
@@ -449,7 +452,7 @@ describe('ZvTableDataSource', () => {
     it('should use sortingDataAccessor to get the sort property', () => {
       const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
-      spyOn(dataSource, 'sortingDataAccessor').and.callThrough();
+      vi.spyOn(dataSource, 'sortingDataAccessor');
 
       const data = [{ prop: 'b' }, { prop: 'a' }];
       dataSource.sortData(data, { sortColumn: 'prop', sortDirection: 'asc' });
@@ -458,12 +461,12 @@ describe('ZvTableDataSource', () => {
     });
   });
 
-  it('should call filterPredicate with the right parameters when mode is client', fakeAsync(() => {
+  it('should call filterPredicate with the right parameters when mode is client', () => {
     const loadedData = [{ prop: 'a' }];
     const dataSource = new ZvTableDataSource<any>(() => of(loadedData), 'client');
     dataSource.tableReady = true;
 
-    spyOn(dataSource, 'filterPredicate').and.callThrough();
+    vi.spyOn(dataSource, 'filterPredicate');
 
     let renderData: any[] = [];
     const sub = dataSource.connect().subscribe((data) => {
@@ -483,7 +486,7 @@ describe('ZvTableDataSource', () => {
     expect(renderData).toEqual([{ prop: 'a' }]);
 
     sub.unsubscribe();
-  }));
+  });
 
   describe('filterProperties', () => {
     it('should return all object keys, but no nested keys', () => {
@@ -498,7 +501,7 @@ describe('ZvTableDataSource', () => {
     it('should call filterProperties and return the values of the given properties', () => {
       const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
-      spyOn(dataSource, 'filterProperties').and.returnValue(['a', 'c c']);
+      vi.spyOn(dataSource, 'filterProperties').mockReturnValue(['a', 'c c']);
 
       const obj = { a: 1, b: { b_a: 2 }, 'c c': 3, invisible: 5 };
       expect(dataSource.filterValues(obj)).toEqual([1, 3]);
@@ -510,7 +513,7 @@ describe('ZvTableDataSource', () => {
     it('should call filterValues and search for the filter text on the values', () => {
       const dataSource = new ZvTableDataSource<any>(() => of([]), 'client');
       dataSource.tableReady = true;
-      spyOn(dataSource, 'filterValues').and.returnValue(['value 1', 'value 2']);
+      vi.spyOn(dataSource, 'filterValues').mockReturnValue(['value 1', 'value 2']);
 
       const obj = { a: 1, b: { b_a: 2 }, 'c c': 3 };
       expect(dataSource.filterPredicate(obj, '1')).toBe(true);

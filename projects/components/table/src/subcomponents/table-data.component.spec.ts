@@ -12,7 +12,7 @@ describe('ZvTableDataComponent', () => {
   it('onSortChanged should emit sortChanged', () => {
     const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
 
-    spyOn(component.sortChanged, 'emit');
+    vi.spyOn(component.sortChanged, 'emit');
     component.onSortChanged({ active: 'test', direction: 'asc' });
     expect(component.sortChanged.emit).toHaveBeenCalledWith({ sortColumn: 'test', sortDirection: 'asc' });
 
@@ -64,7 +64,7 @@ describe('ZvTableDataComponent', () => {
     const component = fixture.componentInstance;
 
     // overwrite the component's cd as testbed provider is ignored
-    const cdSpy = { markForCheck: jasmine.createSpy('markForCheck') };
+    const cdSpy = { markForCheck: vi.fn() };
     (component as any).cd = cdSpy;
 
     let toggledRow: any = null;
@@ -85,7 +85,7 @@ describe('ZvTableDataComponent', () => {
     const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
     component.dataSource = createDataSourceMock();
 
-    spyOn(component.dataSource, 'toggleVisibleRowSelection');
+    vi.spyOn(component.dataSource, 'toggleVisibleRowSelection');
     component.onMasterToggleChange();
     expect(component.dataSource.toggleVisibleRowSelection).toHaveBeenCalled();
   });

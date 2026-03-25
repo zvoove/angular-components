@@ -19,7 +19,7 @@ class TestViewDataSource implements IZvViewDataSource {
 @Component({
   selector: 'zv-test-component',
   template: `
-    <zv-view [dataSource]="dataSource">
+    <zv-view [dataSource]="dataSource()">
       <div id="content">content text</div>
       <div id="hight-strech" style="height: 2000px;">hight strech</div>
     </zv-view>
@@ -29,8 +29,9 @@ class TestViewDataSource implements IZvViewDataSource {
   imports: [ZvView],
 })
 export class TestDataSourceComponent {
-  public dataSource: TestViewDataSource;
-  @ViewChild(ZvView) formComponent: ZvView;
+  public dataSource = signal<TestViewDataSource>(undefined);
+  @ViewChild(ZvView)
+  formComponent: ZvView;
 }
 
 describe('ZvView', () => {
@@ -45,6 +46,7 @@ describe('ZvView', () => {
       }).compileComponents();
       fixture = TestBed.createComponent(TestDataSourceComponent);
       component = fixture.componentInstance;
+      fixture.detectChanges();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
       view = await loader.getHarness(ZvViewHarness);
@@ -52,13 +54,15 @@ describe('ZvView', () => {
 
     it('should show error view, when exception property is not null', async () => {
       const dataSource = new TestViewDataSource();
-      component.dataSource = dataSource;
+      component.dataSource.set(dataSource);
+      fixture.detectChanges();
 
       expect(await view.isErrorVisible()).toBe(false);
 
       dataSource.exception.set({
         errorObject: null,
       });
+      fixture.detectChanges();
 
       expect(await view.isErrorVisible()).toBe(true);
       expect(await view.getErrorText()).toBe('');
@@ -66,6 +70,7 @@ describe('ZvView', () => {
       expect(await view.isErrorCentered()).toBe(false);
 
       dataSource.exception.update((val) => ({ ...val, errorObject: new Error('error1') }));
+      fixture.detectChanges();
 
       expect(await view.isErrorVisible()).toBe(true);
       expect(await view.getErrorText()).toBe('error1');
@@ -73,43 +78,49 @@ describe('ZvView', () => {
       expect(await view.isErrorCentered()).toBe(false);
 
       dataSource.exception.update((val) => ({ ...val, alignCenter: true }) as IZvException);
+      fixture.detectChanges();
       expect(await view.isErrorCentered()).toBe(true);
 
       dataSource.exception.update((val) => ({ ...val, icon: 'asdf-icon' }) as IZvException);
+      fixture.detectChanges();
       expect(await view.getErrorIconName()).toBe('asdf-icon');
     });
 
     it('should block ui when contentBlocked is true', async () => {
       const dataSource = new TestViewDataSource();
-      component.dataSource = dataSource;
+      component.dataSource.set(dataSource);
+      fixture.detectChanges();
       expect(await view.isContentBlocked()).toBe(false);
 
       dataSource.contentBlocked.set(true);
+      fixture.detectChanges();
       expect(await view.isContentBlocked()).toBe(true);
     });
 
     it('should hide content when contentVisible is false', async () => {
       const dataSource = new TestViewDataSource();
-      component.dataSource = dataSource;
+      component.dataSource.set(dataSource);
+      fixture.detectChanges();
       expect(await view.isContentVisible()).toBe(true);
 
       dataSource.contentVisible.set(false);
+      fixture.detectChanges();
       expect(await view.isContentVisible()).toBe(false);
     });
 
-    it("should call dataSource's connect() once per new dataSource", () => {
+    it("should call dataSource's connect() once per new dataSource", async () => {
       const ds1 = new TestViewDataSource();
-      component.dataSource = ds1;
-      spyOn(ds1, 'connect').and.callThrough();
+      vi.spyOn(ds1, 'connect');
+      component.dataSource.set(ds1);
 
       fixture.detectChanges();
 
       expect(ds1.connect).toHaveBeenCalledTimes(1);
 
       const ds2 = new TestViewDataSource();
-      component.dataSource = ds2;
-      spyOn(ds1, 'disconnect').and.callThrough();
-      spyOn(ds2, 'connect').and.callThrough();
+      vi.spyOn(ds1, 'disconnect');
+      vi.spyOn(ds2, 'connect');
+      component.dataSource.set(ds2);
 
       fixture.detectChanges();
 

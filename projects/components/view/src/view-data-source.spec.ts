@@ -1,4 +1,4 @@
-import { fakeAsync, tick } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { of, tap, throwError, timer } from 'rxjs';
 import { ZvViewDataSource } from './view-data-source';
 
@@ -18,9 +18,9 @@ describe('ViewDataSource', () => {
         loadFn: () => of({}),
       });
 
-      expect(vds.contentBlocked()).toBeFalse();
+      expect(vds.contentBlocked()).toBe(false);
       vds.setViewBlocked(true);
-      expect(vds.contentBlocked()).toBeTrue();
+      expect(vds.contentBlocked()).toBe(true);
     });
   });
 
@@ -77,7 +77,7 @@ describe('ViewDataSource', () => {
         loadFn: () => throwError(() => new Error('oops')),
       });
       vds.connect();
-      expect(vds.contentVisible()).toBeFalse();
+      expect(vds.contentVisible()).toBe(false);
     });
 
     it('should return true if there is no error', () => {
@@ -86,7 +86,7 @@ describe('ViewDataSource', () => {
         loadFn: () => of({}),
       });
       vds.connect();
-      expect(vds.contentVisible()).toBeTrue();
+      expect(vds.contentVisible()).toBe(true);
     });
   });
 
@@ -99,7 +99,7 @@ describe('ViewDataSource', () => {
       });
       vds.connect();
       expect(vds.exception()?.errorObject).toEqual(error);
-      expect(vds.exception()?.alignCenter).toBeTrue();
+      expect(vds.exception()?.alignCenter).toBe(true);
       expect(vds.exception()?.icon).toBe('sentiment_very_dissatisfied');
       expect(vds.result()).toBeNull();
     });
@@ -126,27 +126,35 @@ describe('ViewDataSource', () => {
       loadFn = throwError(() => error);
       vds.updateData();
       expect(vds.exception()?.errorObject).toEqual(error);
-      expect(vds.exception()?.alignCenter).toBeTrue();
+      expect(vds.exception()?.alignCenter).toBe(true);
       expect(vds.exception()?.icon).toBe('sentiment_very_dissatisfied');
       expect(vds.result()).toBeNull();
     });
   });
 
   describe('disconnect', () => {
-    it('this just shows, that the timer is actually respected', fakeAsync(() => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('this just shows, that the timer is actually respected', async () => {
       let loadFnCalled = false;
       const vds = new ZvViewDataSource({
         loadTrigger$: of({}),
         loadFn: () => timer(1000).pipe(tap(() => (loadFnCalled = true))),
       });
       vds.connect();
-      expect(loadFnCalled).toBeFalse();
-      tick(1000);
-      expect(loadFnCalled).toBeTrue();
+      expect(loadFnCalled).toBe(false);
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(loadFnCalled).toBe(true);
       vds.disconnect();
-    }));
+    });
 
-    it('should cancel connectSub', fakeAsync(() => {
+    it('should cancel connectSub', async () => {
       let loadFnCalled;
       const vds = new ZvViewDataSource({
         loadTrigger$: of({}),
@@ -155,12 +163,12 @@ describe('ViewDataSource', () => {
       vds.connect();
       expect(loadFnCalled).toBeUndefined();
       vds.disconnect();
-      tick(1000);
+      await vi.advanceTimersByTimeAsync(1000);
       expect(loadFnCalled).toBeUndefined();
       expect(vds.result()).toBeNull();
-    }));
+    });
 
-    it('should cancel loadingSub', fakeAsync(() => {
+    it('should cancel loadingSub', async () => {
       let loadFnCalled;
       const vds = new ZvViewDataSource({
         loadTrigger$: of({}),
@@ -170,8 +178,8 @@ describe('ViewDataSource', () => {
       expect(loadFnCalled).toBeUndefined();
       vds.updateData();
       vds.disconnect();
-      tick(1000);
+      await vi.advanceTimersByTimeAsync(1000);
       expect(loadFnCalled).toBeUndefined();
-    }));
+    });
   });
 });

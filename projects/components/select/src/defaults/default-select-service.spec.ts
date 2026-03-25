@@ -1,4 +1,3 @@
-import { fakeAsync } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { ZvSelectDataSource } from '../data/select-data-source';
 import { ZvSelectItem } from '../models';
@@ -6,7 +5,7 @@ import { ZvSelectLoadTrigger } from './default-select-data-source';
 import { DefaultZvSelectService } from './default-select-service';
 
 describe('DefaultZvSelectService', () => {
-  it('should work with custom DataSource', fakeAsync(() => {
+  it('should work with custom DataSource', () => {
     class TestDataSource implements ZvSelectDataSource {
       public loading: boolean;
       public error: any;
@@ -37,9 +36,9 @@ describe('DefaultZvSelectService', () => {
 
     const renderOptions = getRenderData(dataSource);
     expect(renderOptions).toEqual([{ value: 42, label: 'test', hidden: true }]);
-  }));
+  });
 
-  it('should work with data object in entity mode', fakeAsync(() => {
+  it('should work with data object in entity mode', () => {
     const service = new DefaultZvSelectService();
 
     const item = { a: 1, b: 'item 1' };
@@ -51,9 +50,9 @@ describe('DefaultZvSelectService', () => {
 
     const renderOptions = getRenderData(dataSource);
     expect(renderOptions).toEqual([createOption('item 1', item, item)]);
-  }));
+  });
 
-  it('should work with data object in id mode', fakeAsync(() => {
+  it('should work with data object in id mode', () => {
     const service = new DefaultZvSelectService();
 
     const item = { a: 1, b: 'item 1' };
@@ -65,9 +64,9 @@ describe('DefaultZvSelectService', () => {
 
     const renderOptions = getRenderData(dataSource);
     expect(renderOptions).toEqual([createOption('item 1', 1, item)]);
-  }));
+  });
 
-  it('should work with data observable and custom options', fakeAsync(() => {
+  it('should work with data observable and custom options', () => {
     const service = new DefaultZvSelectService();
 
     const item = { x: 1, y: 'item 1' };
@@ -89,9 +88,9 @@ describe('DefaultZvSelectService', () => {
 
     const renderOptions = getRenderData(dataSource);
     expect(renderOptions).toEqual([createOption('item 1', item, item)]);
-  }));
+  });
 
-  it('should work with data array', fakeAsync(() => {
+  it('should work with data array', () => {
     const service = new DefaultZvSelectService();
 
     const item = { value: 1, label: 'item 1' };
@@ -103,9 +102,9 @@ describe('DefaultZvSelectService', () => {
 
     const renderOptions = getRenderData(dataSource);
     expect(renderOptions).toEqual([createOption('item 1', 1, item)]);
-  }));
+  });
 
-  it('should work with observable array', fakeAsync(() => {
+  it('should work with observable array', () => {
     const service = new DefaultZvSelectService();
 
     const item = { value: 1, label: 'item 1' };
@@ -117,9 +116,9 @@ describe('DefaultZvSelectService', () => {
 
     const renderOptions = getRenderData(dataSource);
     expect(renderOptions).toEqual([createOption('item 1', 1, item)]);
-  }));
+  });
 
-  it('should set disabled to value of item[disabledKey]', fakeAsync(() => {
+  it('should set disabled to value of item[disabledKey]', () => {
     const service = new DefaultZvSelectService();
 
     const item = { a: 1, b: 'item 1', d: true };
@@ -127,7 +126,7 @@ describe('DefaultZvSelectService', () => {
 
     const renderOptions = getRenderData(dataSource);
     expect(renderOptions).toEqual([createOption('item 1', item, item, false, true)]);
-  }));
+  });
 });
 
 function getRenderData(dataSource: ZvSelectDataSource) {

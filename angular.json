@@ -82,16 +82,7 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
-          "options": {
-            "main": "projects/zvoove-components-demo/src/test.ts",
-            "polyfills": ["projects/zvoove-components-demo/src/polyfills.ts"],
-            "tsConfig": "projects/zvoove-components-demo/tsconfig.spec.json",
-            "karmaConfig": "projects/zvoove-components-demo/karma.conf.js",
-            "assets": ["projects/zvoove-components-demo/src/favicon.ico", "projects/zvoove-components-demo/src/assets"],
-            "styles": ["projects/zvoove-components-demo/src/styles.scss"],
-            "scripts": []
-          }
+          "builder": "@angular/build:unit-test"
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
@@ -121,11 +112,11 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing", "projects/components/polyfills-test.ts"],
             "tsConfig": "projects/components/tsconfig.spec.json",
-            "karmaConfig": "projects/components/karma.conf.js"
+            "buildTarget": "components:build",
+            "setupFiles": ["projects/components/test-setup.ts"]
           }
         },
         "lint": {

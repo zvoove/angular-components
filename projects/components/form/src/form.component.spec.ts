@@ -1,6 +1,6 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, DebugElement, Injectable, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component, DebugElement, Injectable, ViewChild, signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIcon } from '@angular/material/icon';
@@ -18,7 +18,11 @@ class TestZvFormService extends BaseZvFormService {
     this.options.debounceTime = null;
   }
 
-  public getLabel(formControl: FormControl & { zvLabel: string }): Observable<string> | null {
+  public getLabel(
+    formControl: FormControl & {
+      zvLabel: string;
+    }
+  ): Observable<string> | null {
     return formControl.zvLabel ? of(formControl.zvLabel) : null;
   }
   protected mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]> {
@@ -34,7 +38,7 @@ class TestZvFormService extends BaseZvFormService {
 @Component({
   selector: 'zv-test-component',
   template: `
-    <zv-form [dataSource]="dataSource">
+    <zv-form [dataSource]="dataSource()">
       <div id="content">content text</div>
       <div id="hight-strech" style="height: 2000px;">hight strech</div>
       <ng-container zvFormSavebarButtons>
@@ -47,41 +51,45 @@ class TestZvFormService extends BaseZvFormService {
   imports: [ZvForm],
 })
 export class TestDataSourceComponent {
-  public dataSource: IZvFormDataSource;
-  @ViewChild(ZvForm) formComponent: ZvForm;
+  public dataSource = signal<IZvFormDataSource>(undefined);
+  @ViewChild(ZvForm)
+  formComponent: ZvForm;
 }
 
 describe('ZvForm', () => {
   describe('integration with dataSource', () => {
-    beforeEach(waitForAsync(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         imports: [TestDataSourceComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
-    }));
+    });
 
     it('should render buttons correctly', async () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
       const loader = TestbedHarnessEnvironment.loader(fixture);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
       let btn2Clicked = false;
-      component.dataSource = createDataSource({
-        buttons: [
-          { type: 'stroked', label: 'btn1', color: 'primary', disabled: () => true, click: () => {} },
-          {
-            type: 'raised',
-            label: 'btn2',
-            dataCy: 'btn2',
-            color: 'accent',
-            disabled: () => false,
-            click: () => {
-              btn2Clicked = true;
+      component.dataSource.set(
+        createDataSource({
+          buttons: [
+            { type: 'stroked', label: 'btn1', color: 'primary', disabled: () => true, click: () => {} },
+            {
+              type: 'raised',
+              label: 'btn2',
+              dataCy: 'btn2',
+              color: 'accent',
+              disabled: () => false,
+              click: () => {
+                btn2Clicked = true;
+              },
             },
-          },
-        ],
-      });
+          ],
+        })
+      );
       fixture.detectChanges();
 
       const buttons = await loader.getAllHarnesses(MatButtonHarness);
@@ -97,10 +105,10 @@ describe('ZvForm', () => {
         expect(btn1Button).toBeTruthy();
         expect(await btn1Button.getVariant()).toBe('basic');
         expect(await btn1Button.getAppearance()).toBe('outlined');
-        expect(await btn1Button.isDisabled()).toBeTrue();
+        expect(await btn1Button.isDisabled()).toBe(true);
         const host = await btn1Button.host();
-        expect(await host.hasClass('mat-primary')).toBeTrue();
-        expect(await host.hasClass('zv-btn-primary')).toBeTrue();
+        expect(await host.hasClass('mat-primary')).toBe(true);
+        expect(await host.hasClass('zv-btn-primary')).toBe(true);
       }
 
       {
@@ -108,10 +116,10 @@ describe('ZvForm', () => {
         expect(btn2Button).toBeTruthy();
         expect(await btn2Button.getVariant()).toBe('basic');
         expect(await btn2Button.getAppearance()).toBe('elevated');
-        expect(await btn2Button.isDisabled()).toBeFalse();
+        expect(await btn2Button.isDisabled()).toBe(false);
         const host = await btn2Button.host();
-        expect(await host.hasClass('mat-accent')).toBeTrue();
-        expect(await host.hasClass('zv-btn-accent')).toBeTrue();
+        expect(await host.hasClass('mat-accent')).toBe(true);
+        expect(await host.hasClass('zv-btn-accent')).toBe(true);
         expect(await host.getAttribute('data-cy')).toEqual('btn2');
         await btn2Button.click();
         expect(btn2Clicked).toBeTruthy();
@@ -122,14 +130,15 @@ describe('ZvForm', () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
-      component.dataSource = createDataSource({ progress: null });
+      component.dataSource.set(createDataSource({ progress: null }));
       fixture.detectChanges();
 
       expect(getProgress(fixture)).toBe(null);
       expect(isProgressBarVisible(fixture)).toBe(false);
 
-      component.dataSource = createDataSource({ progress: 50 });
+      component.dataSource.set(createDataSource({ progress: 50 }));
       fixture.detectChanges();
 
       expect(getProgress(fixture)).toBe('50%');
@@ -140,9 +149,10 @@ describe('ZvForm', () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
       const dataSource = createDataSource();
-      component.dataSource = dataSource;
+      component.dataSource.set(dataSource);
       fixture.detectChanges();
 
       expect(getErrorContainer(fixture)).toBe(null);
@@ -186,9 +196,10 @@ describe('ZvForm', () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
       const dataSource = createDataSource();
-      component.dataSource = dataSource;
+      component.dataSource.set(dataSource);
       fixture.detectChanges();
 
       const blockUi = getBlockUi(fixture);
@@ -206,9 +217,10 @@ describe('ZvForm', () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
       const dataSource = createDataSource();
-      component.dataSource = dataSource;
+      component.dataSource.set(dataSource);
       fixture.detectChanges();
 
       let contentNode = fixture.debugElement.query(By.css('#content'));
@@ -222,23 +234,24 @@ describe('ZvForm', () => {
       expect(contentNode).toBeFalsy();
     });
 
-    it("should call dataSource's connect() once per new dataSource", () => {
+    it("should call dataSource's connect() once per new dataSource", async () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
       const ds1 = createDataSource();
-      component.dataSource = ds1;
-      spyOn(ds1, 'connect').and.callThrough();
+      vi.spyOn(ds1, 'connect');
+      component.dataSource.set(ds1);
 
       fixture.detectChanges();
 
       expect(ds1.connect).toHaveBeenCalledTimes(1);
 
       const ds2 = createDataSource();
-      component.dataSource = ds2;
-      spyOn(ds1, 'disconnect').and.callThrough();
-      spyOn(ds2, 'connect').and.callThrough();
+      vi.spyOn(ds1, 'disconnect');
+      vi.spyOn(ds2, 'connect');
+      component.dataSource.set(ds2);
 
       fixture.detectChanges();
 
@@ -266,6 +279,7 @@ describe('ZvForm', () => {
       const fixture = TestBed.createComponent(TestDataSourceComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
       const ds = createDataSource();
       const errorInViewValues: boolean[] = [];
@@ -279,7 +293,9 @@ describe('ZvForm', () => {
       };
       ds.exception = { errorObject: new Error('asdf') };
 
-      component.dataSource = ds;
+      component.dataSource.set(ds);
+      fixture.detectChanges();
+      // Allow the data source connect and error card to render
       fixture.detectChanges();
 
       expect(opts).toBeDefined();
@@ -290,7 +306,7 @@ describe('ZvForm', () => {
       });
       expect(getErrorContainer(fixture)).not.toBe(null);
       expect(observedEl).toBe(component.formComponent.errorCardWrapper.nativeElement);
-      spyOn(component.formComponent.errorCardWrapper.nativeElement, 'scrollIntoView').and.callThrough();
+      vi.spyOn(component.formComponent.errorCardWrapper.nativeElement, 'scrollIntoView');
 
       opts.scrollToError();
       expect(component.formComponent.errorCardWrapper.nativeElement.scrollIntoView).toHaveBeenCalledTimes(1);
@@ -308,7 +324,9 @@ describe('ZvForm', () => {
 type ITestZvFormDataSource = {
   -readonly [K in keyof IZvFormDataSource]: IZvFormDataSource[K];
 };
-function createDataSource(override: Partial<IZvFormDataSource> = {}): ITestZvFormDataSource & { cdTrigger$: Subject<void> } {
+function createDataSource(override: Partial<IZvFormDataSource> = {}): ITestZvFormDataSource & {
+  cdTrigger$: Subject<void>;
+} {
   const cdTrigger$ = new Subject<void>();
   return {
     autocomplete: 'off',

@@ -2,8 +2,9 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, LOCALE_ID, QueryList, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, LOCALE_ID, QueryList, ViewChild, signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { IconType, MatIconHarness, MatIconTestingModule } from '@angular/material/icon/testing';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { MatSortHarness } from '@angular/material/sort/testing';
@@ -16,7 +17,7 @@ import { map } from 'rxjs/operators';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { ZvTableDataSource } from './data/table-data-source';
 import { ZvTableColumn } from './directives/table.directives';
-import { ZvTableMemoryStateManager } from './helper/state-manager';
+import { ZvTableMemoryStateManager, ZvTableUrlStateManager } from './helper/state-manager';
 import { IZvTableSortDefinition, ZvTableActionScope } from './models';
 import { IZvTableSetting, ZvTableSettingsService } from './services/table-settings.service';
 import { ZvTablePaginationComponent } from './subcomponents/table-pagination.component';
@@ -58,7 +59,10 @@ const route: ActivatedRoute = {
       if (prop === 'queryParamMap') {
         return obj.value;
       }
-      return null;
+      if (prop === 'routeConfig') {
+        return { name: undefined, component: undefined };
+      }
+      return undefined;
     },
   }),
   queryParamMap: queryParams$,
@@ -77,17 +81,17 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
   template: `
     <zv-table
       #table
-      [caption]="caption"
-      [dataSource]="dataSource"
-      [tableId]="tableId"
-      [refreshable]="refreshable"
-      [filterable]="filterable"
-      [showSettings]="showSettings"
-      [layout]="layout"
-      [striped]="striped"
-      [sortDefinitions]="sortDefinitions"
-      [stateManager]="stateManager"
-      [preferSortDropdown]="preferSortDropdown"
+      [caption]="caption()"
+      [dataSource]="dataSource()"
+      [tableId]="tableId()"
+      [refreshable]="refreshable()"
+      [filterable]="filterable()"
+      [showSettings]="showSettings()"
+      [layout]="layout()"
+      [striped]="striped()"
+      [sortDefinitions]="sortDefinitions()"
+      [stateManager]="stateManager()"
+      [preferSortDropdown]="preferSortDropdown()"
       (page)="onPage($event)"
     >
       <zv-table-column [header]="'id'" property="id" [sortable]="true" />
@@ -117,7 +121,7 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
 
       <div *zvTableTopButtonSection>custom button section</div>
 
-      <zv-table-row-detail [expanded]="expanded" [showToggleColumn]="showToggleColumn">
+      <zv-table-row-detail [expanded]="expanded()" [showToggleColumn]="showToggleColumn()">
         <ng-container *zvTableRowDetailTemplate="let item">item: {{ item.id }}</ng-container>
       </zv-table-row-detail>
     </zv-table>
@@ -127,25 +131,27 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
   imports: [MatIconTestingModule, ZvTableModule],
 })
 export class TestComponent {
-  public caption = 'title';
-  public dataSource: ZvTableDataSource<any>;
-  public tableId = 'tableId';
-  public refreshable = true;
-  public filterable = true;
-  public showSettings = true;
-  public layout: 'card' | 'border' | 'flat' = 'card';
-  public striped = true;
-  public sortDefinitions: IZvTableSortDefinition[] = [{ prop: '__customSort', displayName: 'Custom Sort' }];
-  public preferSortDropdown = true;
+  public caption = signal('title');
+  public dataSource = signal<ZvTableDataSource<any>>(undefined);
+  public tableId = signal('tableId');
+  public refreshable = signal(true);
+  public filterable = signal(true);
+  public showSettings = signal(true);
+  public layout = signal<'card' | 'border' | 'flat'>('card');
+  public striped = signal(true);
+  public sortDefinitions = signal<IZvTableSortDefinition[]>([{ prop: '__customSort', displayName: 'Custom Sort' }]);
+  public preferSortDropdown = signal(true);
 
   /** Karma doesn't recognize url changes from code. */
-  public stateManager = new ZvTableMemoryStateManager();
+  public stateManager = signal(new ZvTableMemoryStateManager());
 
-  public expanded = false;
-  public showToggleColumn = true;
+  public expanded = signal(false);
+  public showToggleColumn = signal(true);
 
-  @ViewChild(ZvTable, { static: true }) table: ZvTable;
-  @ViewChild(ZvTablePaginationComponent, { static: true }) paginator: ZvTablePaginationComponent;
+  @ViewChild(ZvTable, { static: true })
+  table: ZvTable;
+  @ViewChild(ZvTablePaginationComponent, { static: true })
+  paginator: ZvTablePaginationComponent;
 
   public onPage(_event: unknown) {}
   public onListActionExecute(_selection: unknown[]) {}
@@ -170,6 +176,8 @@ describe('ZvTable', () => {
         ],
       });
       const table = TestBed.inject(ZvTable);
+      // Override default URL state manager to avoid router mock issues in Angular 21
+      table.stateManager = new ZvTableMemoryStateManager();
       table.tableId = 'tableid';
       table.dataSource = new ZvTableDataSource(() => of([{ a: 'asdfg' }, { a: 'gasdf' }, { a: 'asdas' }, { a: '32424rw' }]));
       if (hooks) {
@@ -182,12 +190,17 @@ describe('ZvTable', () => {
 
     beforeEach(() => {
       queryParams$.next(convertToParamMap({ other: 'value' }));
+      vi.useFakeTimers();
     });
 
-    it('should update table state from the settings service and the query params', fakeAsync(() => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should update table state from the settings service and the query params', async () => {
       const table = createTableInstance();
       settingsService.settings$.next({});
-      spyOn(settingsService, 'getStream').and.callThrough();
+      vi.spyOn(settingsService, 'getStream');
       table.columnDefs = [createColDef({ property: 'prop1' }), createColDef({ property: 'prop2' })];
       table.rowDetail = { showToggleColumn: true } as any;
       table.dataSource.listActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.list });
@@ -195,7 +208,7 @@ describe('ZvTable', () => {
 
       table.ngOnInit();
       table.ngAfterContentInit();
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
 
       expect(table.pageSize).toEqual(15);
       expect(table.pageIndex).toEqual(0);
@@ -213,7 +226,7 @@ describe('ZvTable', () => {
           sortDirection: 'desc',
         } as IZvTableSetting,
       });
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
 
       expect(table.pageSize).toEqual(22);
       expect(table.pageIndex).toEqual(0);
@@ -227,7 +240,7 @@ describe('ZvTable', () => {
           tableid: '1◬1◬asdf◬Column1◬asc',
         } as Params)
       );
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
 
       expect(table.pageSize).toEqual(1);
       expect(table.pageIndex).toEqual(1);
@@ -238,35 +251,35 @@ describe('ZvTable', () => {
 
       table.rowDetail = { showToggleColumn: false } as any;
       queryParams$.next(convertToParamMap({ tableid: '1◬1◬asdf◬Column1◬desc' } as Params));
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
       table.rowDetail = null;
       queryParams$.next(convertToParamMap({ tableid: '1◬2◬asdf◬Column1◬desc' } as Params));
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
       table.dataSource.listActions.length = 0;
       queryParams$.next(convertToParamMap({ tableid: '1◬3◬asdf◬Column1◬desc' } as Params));
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
       expect(table.displayedColumns).toEqual(['prop1', 'options']);
 
       table.dataSource.rowActions.length = 0;
       table.showSettings = false;
       table.refreshable = false;
       queryParams$.next(convertToParamMap({ tableid: '1◬4◬asdf◬Column1◬desc' } as Params));
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
       expect(table.displayedColumns).toEqual(['prop1']);
-    }));
+    });
 
-    it('should initialize page size options from the service', fakeAsync(() => {
+    it('should initialize page size options from the service', () => {
       const table = createTableInstance();
       settingsService.pageSizeOptions = [3, 7, 9];
       table.ngOnInit();
       expect(table.pageSizeOptions).toBe(settingsService.pageSizeOptions);
-    }));
+    });
 
-    it('should show right content depending on the datatable state', fakeAsync(() => {
+    it('should show right content depending on the datatable state', () => {
       const table = createTableInstance();
 
       table.dataSource = { loading: false, error: null, visibleRows: [] } as any;
@@ -283,9 +296,9 @@ describe('ZvTable', () => {
       expect(table.showNoEntriesText).toBe(false);
       expect(table.showError).toBe(true);
       expect(table.showLoading).toBe(false);
-    }));
+    });
 
-    it('should only enable settings if all prerequisites are met', fakeAsync(() => {
+    it('should only enable settings if all prerequisites are met', () => {
       const table = createTableInstance();
 
       table.tableId = 'test';
@@ -303,9 +316,9 @@ describe('ZvTable', () => {
 
       table.tableId = null;
       expect(table.settingsEnabled).toBe(false);
-    }));
+    });
 
-    it('should only show list actions if there are any menu items', fakeAsync(() => {
+    it('should only show list actions if there are any menu items', () => {
       const table = createTableInstance();
       table.tableId = 'test';
       table.showSettings = true;
@@ -320,9 +333,9 @@ describe('ZvTable', () => {
       table.refreshable = true;
       expect(table.showListActions).toBe(true);
       table.refreshable = false;
-    }));
+    });
 
-    it('should merge sort definitions and only show sort dropdown when there are custom definitions when preferSortDropdown input is false', fakeAsync(() => {
+    it('should merge sort definitions and only show sort dropdown when there are custom definitions when preferSortDropdown input is false', () => {
       const table = createTableInstance();
       table.preferSortDropdown = false;
       const customSortDef = { prop: 'custom', displayName: 'Custom' };
@@ -369,9 +382,9 @@ describe('ZvTable', () => {
       expect(table.useSortDropdown).toBe(false);
       expect(table.showDropdownSorting).toBe(false);
       expect(table.sortDefinitions).toEqual([]);
-    }));
+    });
 
-    it('should always show sort dropdown when preferSortDropdown input is true and there are things to sort', fakeAsync(() => {
+    it('should always show sort dropdown when preferSortDropdown input is true and there are things to sort', () => {
       const table = createTableInstance();
       table.preferSortDropdown = true;
       const customSortDef = { prop: 'custom', displayName: 'Custom' };
@@ -417,13 +430,15 @@ describe('ZvTable', () => {
       expect(table.useSortDropdown).toBe(true);
       expect(table.showDropdownSorting).toBe(false);
       expect(table.sortDefinitions).toEqual([]);
-    }));
+    });
 
     it('requestUpdate should update query params without overriding deleting other query params', () => {
       queryParams$.next(convertToParamMap({ existingParam: '0815' }));
-      spyOn(router, 'navigate');
+      const localRouter = { navigate: vi.fn() };
+      const stateManager = new ZvTableUrlStateManager(localRouter as any, route);
 
       const table = createTableInstance();
+      table.stateManager = stateManager;
       table.pageIndex = 3;
       table.pageSize = 12;
       table.filterText = 'Blubb';
@@ -438,38 +453,38 @@ describe('ZvTable', () => {
         requestUpdate: '12◬3◬Blubb◬col◬desc',
       };
 
-      expect(router.navigate).toHaveBeenCalledWith([], { queryParams: expectedQueryParams, relativeTo: route });
+      expect(localRouter.navigate).toHaveBeenCalledWith([], { queryParams: expectedQueryParams, relativeTo: route });
     });
 
-    it('should set locale on the data source', fakeAsync(() => {
+    it('should set locale on the data source', async () => {
       const initialDataSource = new ZvTableDataSource(() => of([]), 'client');
-      spyOn(initialDataSource, 'updateData');
+      vi.spyOn(initialDataSource, 'updateData');
       const newDataSource = new ZvTableDataSource(() => of([]), 'client');
-      spyOn(newDataSource, 'updateData');
+      vi.spyOn(newDataSource, 'updateData');
 
       const table = createTableInstance();
       table.dataSource = initialDataSource;
       table.ngOnInit();
       table.ngAfterContentInit();
 
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
 
       expect(initialDataSource.locale).toBe('de');
-    }));
+    });
 
-    it('should update state when sort changes', fakeAsync(() => {
+    it('should update state when sort changes', async () => {
       const table = createTableInstance(true);
-      spyOn(table as any, 'requestUpdate').and.callThrough();
+      vi.spyOn(table as any, 'requestUpdate');
       table.onSortChanged({ sortColumn: 'col', sortDirection: 'desc' });
       expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
       expect(table.sortColumn).toEqual('col');
       expect(table.sortDirection).toEqual('desc');
-    }));
+    });
 
-    it('should update state when filter changes', fakeAsync(() => {
+    it('should update state when filter changes', async () => {
       const table = createTableInstance(true);
-      spyOn(table as any, 'requestUpdate').and.callThrough();
+      vi.spyOn(table as any, 'requestUpdate');
 
       // Set initial page to verify it gets reset
       table.pageIndex = 5;
@@ -482,33 +497,35 @@ describe('ZvTable', () => {
         currentPage: 0,
       });
 
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
       expect(table.filterText).toEqual('test');
       expect(table.pageIndex).toEqual(0);
-    }));
+    });
 
-    it('should update state when page changes and emit output', fakeAsync(() => {
+    it('should update state when page changes and emit output', async () => {
       const table = createTableInstance(true);
       // eslint-disable-next-line @typescript-eslint/no-deprecated
-      spyOn(table.page, 'emit');
-      spyOn(table as any, 'requestUpdate').and.callThrough();
+      vi.spyOn(table.page, 'emit');
+      vi.spyOn(table as any, 'requestUpdate');
       table.onPage({ pageIndex: 5, pageSize: 3, length: 20, previousPageIndex: 4 });
       expect((table as any).requestUpdate).toHaveBeenCalledTimes(1);
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       expect(table.page.emit).toHaveBeenCalledTimes(1);
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
       expect(table.pageIndex).toEqual(5);
       expect(table.pageSize).toEqual(3);
-    }));
+    });
 
-    it('should delete own query params and flip to front when settings are saved', fakeAsync(() => {
+    it('should delete own query params and flip to front when settings are saved', async () => {
       queryParams$.next(convertToParamMap({ existingParam: '0815', tableId: '12◬3◬Blubb◬col◬desc' }));
-      spyOn(router, 'navigate');
+      const localRouter = { navigate: vi.fn() };
+      const stateManager = new ZvTableUrlStateManager(localRouter as any, route);
 
       const table = createTableInstance();
+      table.stateManager = stateManager;
       table.tableId = 'tableId';
       table.flipContainer = { showFront: () => {} } as any;
-      spyOn(table.flipContainer, 'showFront');
+      vi.spyOn(table.flipContainer, 'showFront');
 
       table.onSettingsSaved();
 
@@ -516,14 +533,14 @@ describe('ZvTable', () => {
       const expectedQueryParams = {
         existingParam: '0815',
       };
-      expect(router.navigate).toHaveBeenCalledWith([], { queryParams: expectedQueryParams, relativeTo: route });
-      tick(1);
-    }));
+      expect(localRouter.navigate).toHaveBeenCalledWith([], { queryParams: expectedQueryParams, relativeTo: route });
+      await vi.advanceTimersByTimeAsync(1);
+    });
 
-    it('should update view when view/content children change', fakeAsync(() => {
-      spyOn(cd, 'markForCheck');
+    it('should update view when view/content children change', () => {
+      vi.spyOn(cd, 'markForCheck');
       const table = createTableInstance();
-      spyOn(table as any, 'updateTableState').and.callThrough();
+      vi.spyOn(table as any, 'updateTableState');
 
       table.customHeader = null;
       expect(cd.markForCheck).toHaveBeenCalledTimes(1);
@@ -541,7 +558,7 @@ describe('ZvTable', () => {
       table.rowDetail = null;
       expect((table as any).updateTableState).toHaveBeenCalledTimes(2);
       expect(cd.markForCheck).toHaveBeenCalledTimes(5);
-    }));
+    });
   });
 
   describe('intgration', () => {
@@ -558,7 +575,11 @@ describe('ZvTable', () => {
       component = fixture.componentInstance;
       expect(component).toBeDefined();
       modifySettings?.(component.table._settingsService as TestSettingsService);
-      component.dataSource = tableDataSource;
+      component.dataSource.set(tableDataSource);
+      fixture.detectChanges();
+      // Allow async data source subscriptions to settle
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      fixture.detectChanges();
       loader = TestbedHarnessEnvironment.loader(fixture);
       table = await loader.getHarness(ZvTableHarness);
     }
@@ -639,7 +660,7 @@ describe('ZvTable', () => {
           (settingService) => {
             settingService.settingsEnabled = true;
             settingService.settings$.next({
-              [component.tableId]: {
+              [component.tableId()]: {
                 pageSize: 2,
                 sortColumn: null,
                 sortDirection: null,
@@ -652,23 +673,27 @@ describe('ZvTable', () => {
 
       it('should bind caption', async () => {
         expect(await table.getCaption()).toEqual('title');
-        component.caption = 'foo';
+        component.caption.set('foo');
+        fixture.detectChanges();
         expect(await table.getCaption()).toEqual('foo');
       });
 
       it('should set layout', async () => {
         expect(await table.getIsLayout('card')).toBeTruthy();
 
-        component.table.layout = 'border';
+        component.layout.set('border');
+        fixture.detectChanges();
         expect(await table.getIsLayout('border')).toBeTruthy();
 
-        component.table.layout = 'flat';
+        component.layout.set('flat');
+        fixture.detectChanges();
         expect(await table.getIsLayout('flat')).toBeTruthy();
       });
 
       it('should set striped', async () => {
         expect(await table.getIsStriped()).toBeTruthy();
-        component.striped = false;
+        component.striped.set(false);
+        fixture.detectChanges();
         expect(await table.getIsStriped()).toBeFalsy();
       });
 
@@ -732,7 +757,7 @@ describe('ZvTable', () => {
         const searchInput = await table.getSearchInput();
         expect(await searchInput.getValue()).toEqual('');
 
-        spyOn(component.table, 'onSearchChanged');
+        vi.spyOn(component.table, 'onSearchChanged');
         await searchInput.setValue('asdf');
         expect(component.table.onSearchChanged).toHaveBeenCalledTimes(1);
         expect(component.table.onSearchChanged).toHaveBeenCalledWith('asdf');
@@ -747,7 +772,7 @@ describe('ZvTable', () => {
           }),
           (settingService) => {
             settingService.settings$.next({
-              [component.tableId]: {
+              [component.tableId()]: {
                 pageSize: 3, // This will create multiple pages
                 sortColumn: null,
                 sortDirection: null,
@@ -783,7 +808,7 @@ describe('ZvTable', () => {
         const optionTexts = await Promise.all((await sortSelect.getOptions()).map(async (o) => await o.getText()));
         expect(optionTexts).toEqual(['', 'Custom Sort', 'id']);
 
-        spyOn(component.table, 'onSortChanged');
+        vi.spyOn(component.table, 'onSortChanged');
         await sortSelect.clickOptions({ text: 'id' });
         expect(component.table.onSortChanged).toHaveBeenCalledWith({
           sortColumn: 'id',
@@ -801,8 +826,8 @@ describe('ZvTable', () => {
       });
 
       it('should sort via header', async () => {
-        component.preferSortDropdown = false;
-        component.sortDefinitions = [];
+        component.preferSortDropdown.set(false);
+        component.sortDefinitions.set([]);
         fixture.detectChanges();
 
         const sort = await loader.getHarness(MatSortHarness);
@@ -812,7 +837,7 @@ describe('ZvTable', () => {
 
         const idSortHeader = (await sort.getSortHeaders({ label: 'id' }))[0];
 
-        spyOn(component.table, 'onSortChanged');
+        vi.spyOn(component.table, 'onSortChanged');
         await idSortHeader.click();
         let activeHeader = await sort.getActiveHeader();
         expect(await activeHeader.getLabel()).toEqual('id');
@@ -849,13 +874,14 @@ describe('ZvTable', () => {
         const listActions = await listActionsMenu.getItems();
         expect(listActions.length).toEqual(3);
 
-        spyOn(component.table.dataSource, 'updateData');
+        vi.spyOn(component.table.dataSource, 'updateData');
         await listActionsMenu.clickItem({ text: 'refresh Refresh list' });
         expect(component.table.dataSource.updateData).toHaveBeenCalled();
       });
 
       it('should hide refresh button', async () => {
-        component.refreshable = false;
+        component.refreshable.set(false);
+        fixture.detectChanges();
 
         const listActionsMenu = await table.getListActionsButton();
         await listActionsMenu.open();
@@ -877,7 +903,8 @@ describe('ZvTable', () => {
       });
 
       it('should hide settings button', async () => {
-        component.showSettings = false;
+        component.showSettings.set(false);
+        fixture.detectChanges();
 
         const listActionsMenu = await table.getListActionsButton();
         await listActionsMenu.open();
@@ -893,14 +920,14 @@ describe('ZvTable', () => {
 
         const listActionsMenu = await table.getListActionsButton();
         await listActionsMenu.open();
-        spyOn(component, 'onListActionExecute');
+        vi.spyOn(component, 'onListActionExecute');
         await listActionsMenu.clickItem({ text: 'check custom action' });
         expect(component.onListActionExecute).toHaveBeenCalledWith([{ id: 1, str: 'item 1' }]);
       });
 
       it('should call customRowAction', async () => {
         const actions = await table.getRowActions(0);
-        spyOn(component, 'onListActionExecute');
+        vi.spyOn(component, 'onListActionExecute');
         const actionsButtons = await actions.getActionButtons();
         await actionsButtons[0].click();
         expect(component.onListActionExecute).toHaveBeenCalledWith([{ id: 1, str: 'item 1' }]);
@@ -1066,9 +1093,10 @@ describe('ZvTable', () => {
           })
         );
 
-        component.filterable = false;
-        component.refreshable = false;
-        component.showSettings = false;
+        component.filterable.set(false);
+        component.refreshable.set(false);
+        component.showSettings.set(false);
+        fixture.detectChanges();
       });
 
       it('routerlink should work', async () => {
@@ -1107,7 +1135,7 @@ describe('ZvTable', () => {
 
         // List-Actions - 2. Level
         {
-          expect(await listActions[0].hasSubmenu()).toBeTrue();
+          expect(await listActions[0].hasSubmenu()).toBe(true);
           const subListActionsMenu = await listActions[0].getSubmenu();
           expect(subListActionsMenu).toBeTruthy();
           await subListActionsMenu.open();
@@ -1119,7 +1147,7 @@ describe('ZvTable', () => {
 
         // List-Actions - 2. Level - partially hidden
         {
-          expect(await listActions[3].hasSubmenu()).toBeTrue();
+          expect(await listActions[3].hasSubmenu()).toBe(true);
           const subListActionsMenu = await listActions[3].getSubmenu();
           expect(subListActionsMenu).toBeTruthy();
           await subListActionsMenu.open();
@@ -1144,7 +1172,7 @@ describe('ZvTable', () => {
 
         // Row-Actions - 2. Level
         {
-          expect(await rowActions[3].hasSubmenu()).toBeTrue();
+          expect(await rowActions[3].hasSubmenu()).toBe(true);
           const subListActionsMenu = await rowActions[3].getSubmenu();
           expect(subListActionsMenu).toBeTruthy();
           await subListActionsMenu.open();
@@ -1166,7 +1194,7 @@ describe('ZvTable', () => {
         expect(listActions.length).toEqual(6);
 
         // List-Actions - 2. Level
-        expect(await listActions[2].hasSubmenu()).toBeTrue();
+        expect(await listActions[2].hasSubmenu()).toBe(true);
         const subListActionsMenu = await listActions[2].getSubmenu();
         expect(subListActionsMenu).toBeTruthy();
         await subListActionsMenu.open();
@@ -1202,7 +1230,7 @@ describe('ZvTable', () => {
         } else {
           // getHarness() throws an error, if nothing was found
           const matIconHarnesses = await matMenuItemHarness.getAllHarnesses(MatIconHarness);
-          expect(matIconHarnesses).toHaveSize(0);
+          expect(matIconHarnesses).toHaveLength(0);
         }
       }
     });

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, DebugElement, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component, DebugElement, signal, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -10,11 +11,11 @@ import { ZvTablePaginationComponent } from './table-pagination.component';
 @Component({
   template: `
     <zv-table-pagination
-      [pageSize]="pageSize"
-      [dataLength]="dataLength"
-      [pageIndex]="pageIndex"
+      [pageSize]="pageSize()"
+      [dataLength]="dataLength()"
+      [pageIndex]="pageIndex()"
       [pageSizeOptions]="pageSizeOptions"
-      [pageDebounce]="pageDebounce"
+      [pageDebounce]="pageDebounce()"
       (page)="onPage($event)"
     />
   `,
@@ -23,10 +24,11 @@ import { ZvTablePaginationComponent } from './table-pagination.component';
   imports: [ZvTablePaginationComponent],
 })
 class PaginationTestComponent {
-  public pageSize = 5;
-  public dataLength = 15;
-  public pageIndex = 0;
-  public pageDebounce: number;
+  public pageSize = signal(5);
+  public dataLength = signal(15);
+  public pageIndex = signal(0);
+  public pageSizeOptions: number[] = [5, 10, 25];
+  public pageDebounce = signal<number>(undefined);
 
   @ViewChild(ZvTablePaginationComponent)
   public pagination: ZvTablePaginationComponent;
@@ -47,56 +49,62 @@ describe('ZvTablePaginationComponent', () => {
     component = fixture.componentInstance;
     debugElement = fixture.debugElement.query(By.directive(ZvTablePaginationComponent));
 
-    fixture.detectChanges();
+    fixture.autoDetectChanges();
   });
 
-  it('should debounce pageEvent, if pageDebounce-Property is set', fakeAsync(() => {
-    const onPageSpy = spyOn(component, 'onPage');
-    component.pageDebounce = 300;
-    fixture.detectChanges();
+  it('should debounce pageEvent, if pageDebounce-Property is set', async () => {
+    vi.useFakeTimers();
+    try {
+      const onPageSpy = vi.spyOn(component, 'onPage');
+      component.pageDebounce.set(300);
+      await fixture.whenStable();
+
+      const paginatorNextButtonEl = debugElement.nativeElement
+        .querySelectorAll('.mat-mdc-paginator-navigation-next')
+        .item(0) as HTMLButtonElement;
+      paginatorNextButtonEl.dispatchEvent(new MouseEvent('click'));
+
+      await vi.advanceTimersByTimeAsync(299);
+      expect(onPageSpy).not.toHaveBeenCalled();
+
+      await vi.advanceTimersByTimeAsync(2);
+      expect(onPageSpy).toHaveBeenCalledTimes(1);
+      expect(onPageSpy).toHaveBeenCalledWith({ previousPageIndex: 0, pageIndex: 1, pageSize: 5, length: 15 });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('should bind the page events correctly', () => {
+    const onPageSpy = vi.spyOn(component, 'onPage');
 
     const paginatorNextButtonEl = debugElement.nativeElement
       .querySelectorAll('.mat-mdc-paginator-navigation-next')
       .item(0) as HTMLButtonElement;
     paginatorNextButtonEl.dispatchEvent(new MouseEvent('click'));
 
-    tick(299);
-    expect(onPageSpy).not.toHaveBeenCalled();
-
-    tick(2);
-    expect(onPageSpy).toHaveBeenCalledTimes(1);
     expect(onPageSpy).toHaveBeenCalledWith({ previousPageIndex: 0, pageIndex: 1, pageSize: 5, length: 15 });
-  }));
+  });
 
-  it('should bind the page events correctly', fakeAsync(() => {
-    const onPageSpy = spyOn(component, 'onPage');
-
-    const paginatorNextButtonEl = debugElement.nativeElement
-      .querySelectorAll('.mat-mdc-paginator-navigation-next')
-      .item(0) as HTMLButtonElement;
-    paginatorNextButtonEl.dispatchEvent(new MouseEvent('click'));
-
-    expect(onPageSpy).toHaveBeenCalledWith({ previousPageIndex: 0, pageIndex: 1, pageSize: 5, length: 15 });
-  }));
-
-  it('should calculate pages correctly', () => {
+  it('should calculate pages correctly', async () => {
     for (const data of [
       [15, 5, 3],
       [11, 5, 3],
       [15, 10, 2],
     ]) {
-      component.dataLength = data[0];
-      component.pageSize = data[1];
-      fixture.detectChanges();
+      component.dataLength.set(data[0]);
+      component.pageSize.set(data[1]);
+      component.pageIndex.set(0);
+      await fixture.whenStable();
 
       expect(component.pagination.pages().length).toEqual(data[2]);
     }
   });
 
-  it('should update pages correctly', () => {
-    component.dataLength = 15;
-    component.pageSize = 5;
-    fixture.detectChanges();
+  it('should update pages correctly', async () => {
+    component.dataLength.set(15);
+    component.pageSize.set(5);
+    await fixture.whenStable();
     expect(component.pagination.pages().length).toEqual(3);
   });
 });

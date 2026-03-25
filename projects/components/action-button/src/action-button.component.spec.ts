@@ -1,7 +1,8 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { tap, timer } from 'rxjs';
 import { ZvActionButtonDataSource } from './action-button-data-source';
 import { ZvActionButtonComponent } from './action-button.component';
@@ -41,6 +42,7 @@ describe('ZvActionButton', () => {
   let harness: ZvActionButtonHarness;
 
   beforeEach(async () => {
+    vi.useFakeTimers();
     TestBed.configureTestingModule({
       imports: [TestComponent],
     }).compileComponents();
@@ -51,44 +53,49 @@ describe('ZvActionButton', () => {
     harness = await loader.getHarness(ZvActionButtonHarness);
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should create', () => {
     expect(component).toBeDefined();
   });
 
   it('should call dataSource.execute() on click', async () => {
-    expect(component.actionFnCalled).toBeFalse();
+    expect(component.actionFnCalled).toBe(false);
     await harness.click();
-    expect(component.actionFnCalled).toBeTrue();
+    await vi.advanceTimersByTimeAsync(100);
+    expect(component.actionFnCalled).toBe(true);
   });
 
-  it('should be blocked while loading', fakeAsync(async () => {
+  it('should be blocked while loading', async () => {
     await harness.click();
-    tick(1);
-    expect(component.dataSource.showLoading()).toBeTrue();
-    expect(await harness.isLoading()).toBeTrue();
-  }));
+    await vi.advanceTimersByTimeAsync(1);
+    expect(component.dataSource.showLoading()).toBe(true);
+    expect(await harness.isLoading()).toBe(true);
+  });
 
-  it('should be disabled while loading', fakeAsync(async () => {
+  it('should be disabled while loading', async () => {
     await harness.click();
-    tick(1);
-    expect(component.dataSource.showLoading()).toBeTrue();
-    expect(await harness.isDisabled()).toBeTrue();
-  }));
+    await vi.advanceTimersByTimeAsync(1);
+    expect(component.dataSource.showLoading()).toBe(true);
+    expect(await harness.isDisabled()).toBe(true);
+  });
 
   it('should respect disabled property', async () => {
-    expect(await harness.isDisabled()).toBeFalse();
+    expect(await harness.isDisabled()).toBe(false);
     component.isDisabled.set(true);
-    expect(await harness.isDisabled()).toBeTrue();
+    expect(await harness.isDisabled()).toBe(true);
     component.isDisabled.set(false);
-    expect(await harness.isDisabled()).toBeFalse();
+    expect(await harness.isDisabled()).toBe(false);
   });
 
   it('should respect color property', async () => {
-    expect(await harness.hasClass('mat-primary')).toBeTrue();
+    expect(await harness.hasClass('mat-primary')).toBe(true);
     component.color.set('accent');
-    expect(await harness.hasClass('mat-accent')).toBeTrue();
+    expect(await harness.hasClass('mat-accent')).toBe(true);
     component.color.set('warn');
-    expect(await harness.hasClass('mat-warn')).toBeTrue();
+    expect(await harness.hasClass('mat-warn')).toBe(true);
   });
 
   it('should show icon', async () => {
@@ -100,23 +107,23 @@ describe('ZvActionButton', () => {
     expect(buttonContent).toContain('label');
   });
 
-  it('should show success icon for 2 seconds', fakeAsync(async () => {
+  it('should show success icon for 2 seconds', async () => {
     await harness.click();
-    tick(100);
-    expect(component.dataSource.showLoading()).toBeFalse();
-    expect(component.dataSource.showSuccess()).toBeTrue();
+    await vi.advanceTimersByTimeAsync(100);
+    expect(component.dataSource.showLoading()).toBe(false);
+    expect(component.dataSource.showSuccess()).toBe(true);
     expect(await harness.getIcon()).toBe('check_circle');
 
-    tick(2000);
-    expect(component.dataSource.showSuccess()).toBeFalse();
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(component.dataSource.showSuccess()).toBe(false);
     expect(await harness.getIcon()).toBe('home');
-  }));
+  });
 
-  it('should show error message', fakeAsync(async () => {
+  it('should show error message', async () => {
     component.throwError = new Error('action failed');
     await harness.click();
-    tick(100);
+    await vi.advanceTimersByTimeAsync(100);
     expect(await harness.getIcon()).toBe('error');
     expect(await harness.getErrorMessage()).toBe(component.throwError.message);
-  }));
+  });
 });

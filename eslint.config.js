@@ -2,7 +2,6 @@
 const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
-const jasmine = require("eslint-plugin-jasmine");
 
 /** @type tseslint.ConfigWithExtends */
 const baseTsLintConfig = {
@@ -94,9 +93,6 @@ module.exports = tseslint.config(
         tsconfigRootDir: __dirname
       },
     },
-    plugins: {
-      jasmine: jasmine,
-    },
     processor: angular.processInlineTemplates,
     rules: {
       ...baseTsLintConfig.rules,
@@ -112,19 +108,6 @@ module.exports = tseslint.config(
       '@typescript-eslint/no-unsafe-return': 'off', // useful, but some false positives
       '@typescript-eslint/unbound-method': 'off', // would warn on form validators
       '@typescript-eslint/require-await': 'off',
-
-      "jasmine/expect-single-argument": "error",
-      "jasmine/missing-expect": "error",
-      "jasmine/no-disabled-tests": "error",
-      "jasmine/no-focused-tests": "error",
-      "jasmine/no-pending-tests": "error",
-      "jasmine/no-promise-without-done-fail": "error",
-      "jasmine/no-spec-dupes": "error",
-      "jasmine/no-suite-callback-args": "error",
-      "jasmine/no-suite-dupes": "error",
-      "jasmine/no-unsafe-spy": "error",
-      "jasmine/prefer-jasmine-matcher": "error",
-      "jasmine/prefer-promise-strategies": "error",
     },
   },
   {

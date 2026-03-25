@@ -1,11 +1,16 @@
-import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component, signal, TemplateRef, ViewChild } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { ZvTableHeaderComponent } from './table-header.component';
 
 @Component({
   selector: 'zv-test-component',
   template: `
-    <zv-table-header [caption]="caption" [showSorting]="showSorting" [filterable]="filterable" [topButtonSection]="topButtonSection" />
+    <zv-table-header
+      [caption]="caption()"
+      [showSorting]="showSorting()"
+      [filterable]="filterable()"
+      [topButtonSection]="topButtonSection()"
+    />
     <ng-template #tpl />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
@@ -13,10 +18,10 @@ import { ZvTableHeaderComponent } from './table-header.component';
   imports: [ZvTableHeaderComponent],
 })
 export class TestComponent {
-  public caption = 'caption';
-  public showSorting = true;
-  public filterable = true;
-  public topButtonSection: TemplateRef<any> | null = null;
+  public caption = signal('caption');
+  public showSorting = signal(true);
+  public filterable = signal(true);
+  public topButtonSection = signal<TemplateRef<any> | null>(null);
 
   @ViewChild(ZvTableHeaderComponent, { static: true }) cmp: ZvTableHeaderComponent;
 
@@ -25,57 +30,58 @@ export class TestComponent {
 }
 
 describe('ZvTableHeaderComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [TestComponent],
     }).compileComponents();
-  }));
+  });
 
-  it('should only add top padding if sort, search or action buttons are visible without a caption', () => {
+  it('should only add top padding if sort, search or action buttons are visible without a caption', async () => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
+    fixture.autoDetectChanges();
 
-    component.caption = '';
-    component.showSorting = false;
-    component.filterable = false;
-    component.topButtonSection = null;
-    fixture.detectChanges();
+    component.caption.set('');
+    component.showSorting.set(false);
+    component.filterable.set(false);
+    component.topButtonSection.set(null);
+    await fixture.whenStable();
     expect(component.cmp.paddingTop).toBe('0');
 
-    component.caption = 'test';
-    component.showSorting = false;
-    component.filterable = false;
-    component.topButtonSection = null;
-    fixture.detectChanges();
+    component.caption.set('test');
+    component.showSorting.set(false);
+    component.filterable.set(false);
+    component.topButtonSection.set(null);
+    await fixture.whenStable();
     expect(component.cmp.paddingTop).toBe('0');
 
-    component.caption = 'test';
-    component.showSorting = true;
-    component.filterable = true;
-    component.topButtonSection = component.dummyTpl;
-    fixture.detectChanges();
+    component.caption.set('test');
+    component.showSorting.set(true);
+    component.filterable.set(true);
+    component.topButtonSection.set(component.dummyTpl);
+    await fixture.whenStable();
     expect(component.cmp.paddingTop).toBe('0');
 
-    component.caption = '';
-    component.showSorting = true;
-    component.filterable = false;
-    component.topButtonSection = null;
-    fixture.detectChanges();
+    component.caption.set('');
+    component.showSorting.set(true);
+    component.filterable.set(false);
+    component.topButtonSection.set(null);
+    await fixture.whenStable();
     expect(component.cmp.paddingTop).toBe('1em');
 
-    component.caption = '';
-    component.showSorting = false;
-    component.filterable = true;
-    component.topButtonSection = null;
-    fixture.detectChanges();
+    component.caption.set('');
+    component.showSorting.set(false);
+    component.filterable.set(true);
+    component.topButtonSection.set(null);
+    await fixture.whenStable();
     expect(component.cmp.paddingTop).toBe('1em');
 
-    component.caption = '';
-    component.showSorting = false;
-    component.filterable = false;
-    component.topButtonSection = component.dummyTpl;
-    fixture.detectChanges();
+    component.caption.set('');
+    component.showSorting.set(false);
+    component.filterable.set(false);
+    component.topButtonSection.set(component.dummyTpl);
+    await fixture.whenStable();
     expect(component.cmp.paddingTop).toBe('1em');
   });
 });

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { interval, takeUntil } from 'rxjs';
 import { injectDestroy } from './inject-destroy';
 
@@ -22,23 +23,28 @@ describe(injectDestroy.name, () => {
     let fixture: ComponentFixture<TestComponent>;
 
     beforeEach(() => {
+      vi.useFakeTimers();
       fixture = TestBed.createComponent(TestComponent);
       component = fixture.componentInstance;
     });
 
-    it('should handle async stuff', fakeAsync(() => {
-      component.ngOnInit();
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should handle async stuff', async () => {
+      fixture.detectChanges();
 
       expect(component.count).toBe(0);
-      tick(1000);
+      await vi.advanceTimersByTimeAsync(1000);
       expect(component.count).toBe(1);
-      tick(1000);
+      await vi.advanceTimersByTimeAsync(1000);
       expect(component.count).toBe(2);
 
       fixture.destroy(); // destroy the component here
 
-      tick(1000);
+      await vi.advanceTimersByTimeAsync(1000);
       expect(component.count).toBe(2);
-    }));
+    });
   });
 });
