@@ -43,7 +43,7 @@ class TestZvFormService extends BaseZvFormService {
     </zv-form>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvForm],
 })
 export class TestDataSourceComponent {

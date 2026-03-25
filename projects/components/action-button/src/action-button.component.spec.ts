@@ -14,7 +14,7 @@ import { ZvButtonColors } from '@zvoove/components/core';
     <zv-action-button [dataSource]="dataSource" [color]="color()" [icon]="'home'" [disabled]="isDisabled()"> label </zv-action-button>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvActionButtonComponent],
 })
 export class TestComponent {

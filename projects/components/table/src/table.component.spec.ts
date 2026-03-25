@@ -123,7 +123,7 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
     </zv-table>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconTestingModule, ZvTableModule],
 })
 export class TestComponent {

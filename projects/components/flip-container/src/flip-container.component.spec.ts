@@ -13,7 +13,7 @@ import { ZvFlipContainerModule } from './flip-container.module';
     </zv-flip-container>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvFlipContainerModule],
 })
 export class TestComponent {

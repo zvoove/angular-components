@@ -28,7 +28,7 @@ import { ZvHeaderHarness } from './testing/header.harness';
     </zv-header>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvHeaderModule, MatButtonModule],
 })
 export class TestDataSourceComponent {

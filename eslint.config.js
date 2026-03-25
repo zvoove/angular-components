@@ -22,6 +22,7 @@ const baseTsLintConfig = {
       {
         type: ["attribute", "element"],
         prefix: "zv",
+        style: "camelCase",
       },
     ],
     '@angular-eslint/no-conflicting-lifecycle': 'warn',

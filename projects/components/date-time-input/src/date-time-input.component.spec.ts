@@ -689,7 +689,7 @@ function isValidDate(date: unknown) {
     <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDateTimeInput, MatDatepickerModule],
   providers: [
     provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
@@ -716,7 +716,7 @@ export class ValueTestComponent {
     <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDateTimeInput, MatDatepickerModule, FormsModule],
   providers: [
     provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
@@ -739,7 +739,7 @@ export class InputsTestComponent {
     <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDateTimeInput, MatDatepickerModule, ReactiveFormsModule],
   providers: [
     provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),

@@ -13,6 +13,7 @@ export class ZvTableColumnTemplate {}
 export class ZvTableColumnHeaderTemplate {}
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'zv-table-column',
   standalone: true,
 })
@@ -55,6 +56,7 @@ export class ZvTableCustomSettingsTemplate {}
 export class ZvTableRowDetailTemplate {}
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: 'zv-table-row-detail',
   standalone: true,
 })

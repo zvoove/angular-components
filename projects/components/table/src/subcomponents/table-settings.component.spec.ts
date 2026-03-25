@@ -24,7 +24,7 @@ import { ZvTableSettingsComponent } from './table-settings.component';
     />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvTableSettingsComponent],
 })
 export class TestComponent {

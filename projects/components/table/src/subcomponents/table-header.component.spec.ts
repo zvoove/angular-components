@@ -9,7 +9,7 @@ import { ZvTableHeaderComponent } from './table-header.component';
     <ng-template #tpl />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvTableHeaderComponent],
 })
 export class TestComponent {

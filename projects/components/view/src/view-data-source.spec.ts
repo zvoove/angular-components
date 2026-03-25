@@ -162,14 +162,12 @@ describe('ViewDataSource', () => {
 
     it('should cancel loadingSub', fakeAsync(() => {
       let loadFnCalled;
-      let loadingFn = () => of({});
       const vds = new ZvViewDataSource({
         loadTrigger$: of({}),
-        loadFn: loadingFn,
+        loadFn: () => timer(1000).pipe(tap(() => (loadFnCalled = false))),
       });
       vds.connect();
       expect(loadFnCalled).toBeUndefined();
-      loadingFn = () => timer(1000).pipe(tap(() => (loadFnCalled = false)));
       vds.updateData();
       vds.disconnect();
       tick(1000);

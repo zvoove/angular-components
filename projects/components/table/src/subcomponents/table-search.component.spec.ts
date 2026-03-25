@@ -9,7 +9,7 @@ import { ZvTableSearchComponent } from './table-search.component';
   selector: 'zv-test-component',
   template: ` <zv-table-search [searchText]="searchText" (searchChanged)="onSearchChanged($event)" /> `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvTableSearchComponent],
 })
 export class TestComponent {

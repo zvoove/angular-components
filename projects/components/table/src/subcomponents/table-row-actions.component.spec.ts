@@ -20,7 +20,7 @@ import { MatButtonHarness } from '@angular/material/button/testing';
     />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvTableRowActionsComponent],
 })
 export class TestComponent {

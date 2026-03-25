@@ -25,7 +25,7 @@ class TestViewDataSource implements IZvViewDataSource {
     </zv-view>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvView],
 })
 export class TestDataSourceComponent {

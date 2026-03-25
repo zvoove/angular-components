@@ -18,7 +18,7 @@ import { ZvTableSortComponent } from './table-sort.component';
     />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvTableSortComponent],
 })
 export class TestComponent {

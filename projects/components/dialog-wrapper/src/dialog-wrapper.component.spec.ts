@@ -73,7 +73,7 @@ export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
     </zv-dialog-wrapper>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDialogWrapper],
 })
 export class ZvDialogWrapperTestDialog {
@@ -101,7 +101,7 @@ export class ZvDialogWrapperTestDialog {
   selector: 'zv-dialog-wrapper-test',
   template: ``,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDialogWrapper],
 })
 export class ZvDialogWrapperTestComponent {

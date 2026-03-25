@@ -139,7 +139,7 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
     </div>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect],
 })
 export class TestComponent implements OnDestroy {
@@ -194,7 +194,7 @@ const ITEMS = {
     </zv-select>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect, ZvSelectTriggerTemplate],
 })
 export class TestMultipleComponent {
@@ -213,7 +213,7 @@ export class TestMultipleComponent {
   selector: 'zv-test-value',
   template: `<zv-select [(value)]="value" [dataSource]="items" />`,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect],
 })
 export class TestValueComponent {
@@ -236,7 +236,7 @@ export class TestValueComponent {
     </zv-select>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, ReactiveFormsModule, ZvSelect, ZvSelectTriggerTemplate, ZvSelectOptionTemplate],
 })
 export class TestCustomTemplateComponent {
@@ -253,7 +253,7 @@ export class TestCustomTemplateComponent {
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvSelect, ZvFormField, MatLabel, FormsModule],
 })
 export class TestWithFormFieldComponent {
