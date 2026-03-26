@@ -1,3 +1,9 @@
+/* eslint-disable @angular-eslint/no-conflicting-lifecycle --
+   Both DoCheck and OnChanges are required: OnChanges notifies MatFormField
+   of input changes via stateChanges.next(), while DoCheck runs
+   updateErrorState() which depends on parent form submission state that
+   cannot be observed reactively. This follows Angular Material's own
+   MatInput implementation. */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import type { ElementRef } from '@angular/core';
 import {

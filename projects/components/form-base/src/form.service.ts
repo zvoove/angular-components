@@ -46,9 +46,7 @@ export abstract class BaseZvFormService extends ZvFormService {
    */
   public filterErrors(
     errorData: IZvFormErrorData[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _includeControls: boolean,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _source: 'form' | 'control'
   ): Observable<IZvFormErrorData[]> {
     return of(errorData);

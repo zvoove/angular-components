@@ -1,3 +1,9 @@
+/* eslint-disable @angular-eslint/no-conflicting-lifecycle --
+   Both DoCheck and OnChanges are required: OnChanges notifies MatFormField
+   of input changes via stateChanges.next(), while DoCheck runs
+   updateErrorState() which depends on parent form submission state that
+   cannot be observed reactively. This follows Angular Material's own
+   MatInput implementation. */
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import {
@@ -356,7 +362,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
    * Calls the touched callback only if the panel is closed. Otherwise, the trigger will
    * "blur" to the panel when it opens, causing a false positive.
    */
-  _onBlur(_formatTime = false) {
+  _onBlur() {
     this._focused = false;
 
     if (!this.disabled) {

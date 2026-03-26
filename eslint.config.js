@@ -43,9 +43,14 @@ const baseTsLintConfig = {
       { "selector": "objectLiteralProperty", "format": null }
     ],
     '@typescript-eslint/no-deprecated': 'error',
-    '@typescript-eslint/no-empty-function': 'warn',
+    '@typescript-eslint/no-empty-function': ['warn', {
+      allow: ['arrowFunctions'],
+    }],
     '@typescript-eslint/no-floating-promises': 'warn',
-    '@typescript-eslint/no-misused-promises': 'error',
+    '@typescript-eslint/no-misused-promises': ['error', {
+      checksVoidReturn: { arguments: false },
+      checksConditionals: true,
+    }],
     '@typescript-eslint/no-unsafe-argument': 'error',
     '@typescript-eslint/no-unsafe-assignment': 'error',
     '@typescript-eslint/no-unsafe-call': 'error',
@@ -100,7 +105,10 @@ module.exports = tseslint.config(
       '@typescript-eslint/no-empty-function': 'off', // sometimes necessary, otherwise not that harmful
       '@typescript-eslint/no-explicit-any': 'off', // to much noise :(
       '@typescript-eslint/no-floating-promises': 'off', // to much noise :(
-      '@typescript-eslint/no-misused-promises': 'warn',
+      '@typescript-eslint/no-misused-promises': ['warn', {
+        checksVoidReturn: { arguments: false },
+        checksConditionals: true,
+      }],
       '@typescript-eslint/no-unsafe-argument': 'off', // useful, but some false positives
       '@typescript-eslint/no-unsafe-assignment': 'off', // to many errors in existing code, some because @zvoove/components or @angular/components typing is bad
       '@typescript-eslint/no-unsafe-call': 'off', // useful, but some false positives

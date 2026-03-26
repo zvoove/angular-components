@@ -4,10 +4,18 @@ import '@angular/localize/init';
 if (typeof globalThis.IntersectionObserver === 'undefined') {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   globalThis.IntersectionObserver = class IntersectionObserver {
-    constructor(_callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {}
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    constructor(_callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {
+      /* noop */
+    }
+    observe() {
+      /* noop */
+    }
+    unobserve() {
+      /* noop */
+    }
+    disconnect() {
+      /* noop */
+    }
     takeRecords(): IntersectionObserverEntry[] {
       return [];
     }
