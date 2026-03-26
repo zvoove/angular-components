@@ -1,8 +1,26 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, input, OnDestroy, output, ViewEncapsulation, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  OnDestroy,
+  output,
+  ViewEncapsulation,
+} from '@angular/core';
+import { MatButton, MatButtonAppearance, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { ZvButtonColors, ZvButtonTypes } from '@zvoove/components/core';
+
+const APPEARANCE_MAP: Record<ZvButtonTypes, MatButtonAppearance | ''> = {
+  default: '',
+  flat: 'filled',
+  stroked: 'outlined',
+  raised: 'elevated',
+  icon: '',
+};
 
 /** Only use this component when you absolutely need to dynamically switch the type. Otherwise just use the material buttons directly */
 @Component({
@@ -10,12 +28,13 @@ import { ZvButtonColors, ZvButtonTypes } from '@zvoove/components/core';
   templateUrl: './button.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  imports: [MatButtonModule, NgTemplateOutlet, MatIcon],
+  imports: [MatButton, MatIconButton, MatIcon, NgTemplateOutlet],
 })
 export class ZvButton implements OnDestroy {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly type = input<ZvButtonTypes>('default');
+  readonly appearance = computed(() => APPEARANCE_MAP[this.type()]);
   readonly color = input<ZvButtonColors | null | undefined>(null);
   readonly icon = input<string | null | undefined>(null);
   readonly dataCy = input<string | null | undefined>(null);
