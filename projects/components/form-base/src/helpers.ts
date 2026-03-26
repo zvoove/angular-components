@@ -26,13 +26,9 @@ export function hasRequiredField(abstractControl: AbstractControl): boolean {
  *
  * @param control The control class (MatSlider, MatSelect, ...)
  */
-export function getControlType(control: {
-  id?: string;
-  name?: string;
-  _slider?: unknown;
-  _knobRadius?: unknown;
-  _step?: unknown;
-}): string | null {
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment --
+   duck-typing against Angular Material internals with private fields (MatSlider._slider, _knobRadius, _step) */
+export function getControlType(control: any): string | null {
   const controlId: string = control.id /* MatFormFieldControl, z.B. checkbox */ || control.name /* mat-radio-group */ || '';
   if (controlId) {
     const parts = controlId.split('-');
@@ -48,3 +44,4 @@ export function getControlType(control: {
 
   return null;
 }
+/* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */

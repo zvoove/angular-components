@@ -705,7 +705,7 @@ describe('ZvTableDataSource', () => {
   it('should pass last loadTrigger$ value to loadDataFn', () => {
     const loadTrigger$ = new Subject<string>();
     const loadTriggerValues: string[] = [];
-    const dataSource = new ZvTableDataSource<any>({
+    const dataSource = new ZvTableDataSource<string, string>({
       loadTrigger$: loadTrigger$,
       loadDataFn: (filter) => {
         loadTriggerValues.push(filter.triggerData);
