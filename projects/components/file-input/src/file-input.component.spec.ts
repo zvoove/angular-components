@@ -10,11 +10,12 @@ import { ZvFileInputHarness } from './testing/file-input.harness';
   selector: 'zv-test-component',
   template: ` <zv-file-input /> `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvFileInput],
 })
 export class TestComponent {
-  @ViewChild(ZvFileInput) fileInputCmp!: ZvFileInput;
+  @ViewChild(ZvFileInput)
+  fileInputCmp!: ZvFileInput;
 }
 
 describe('ZvFileInput', () => {
@@ -68,30 +69,30 @@ describe('ZvFileInput', () => {
     cmp.value = null;
     detectChanges();
 
-    expect(cmp.empty).toBeTrue();
+    expect(cmp.empty).toBe(true);
     expect(await harness.getText()).toEqual(cmp.fileSelectText);
 
     cmp.value = new File([], 'test.png');
     detectChanges();
 
-    expect(cmp.empty).toBeFalse();
+    expect(cmp.empty).toBe(false);
     expect(await harness.getText()).toEqual('test.png');
 
     await harness.clickRemove();
 
-    expect(cmp.empty).toBeTrue();
+    expect(cmp.empty).toBe(true);
     expect(await harness.getText()).toEqual(cmp.fileSelectText);
 
     cmp.writeValue(new File([], 'test2.png'));
     detectChanges();
 
-    expect(cmp.empty).toBeFalse();
+    expect(cmp.empty).toBe(false);
     expect(await harness.getText()).toEqual('test2.png');
 
     cmp.onFileSelected({ target: { files: [new File([], 'test3.png')] } as unknown as HTMLInputElement } as unknown as Event);
     detectChanges();
 
-    expect(cmp.empty).toBeFalse();
+    expect(cmp.empty).toBe(false);
     expect(await harness.getText()).toEqual('test3.png');
   });
 });

@@ -1,12 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ZvSelectModule } from './select.module';
 
 describe('SelectModule', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [ZvSelectModule],
     }).compileComponents();
-  }));
+  });
 
   it('should create', () => {
     expect(ZvSelectModule).toBeDefined();

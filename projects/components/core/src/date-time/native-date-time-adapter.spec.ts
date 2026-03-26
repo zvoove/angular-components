@@ -1,4 +1,4 @@
-import { TestBed, inject, waitForAsync } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 import { ZvNativeDateAdapter } from '../date/native-date-adapter';
 import { ZV_NATIVE_DATE_FORMATS } from '../date/native-date-formats';
 import { provideDateTimeFormats, provideDateTimeAdapters } from '../date-time-providers';
@@ -10,14 +10,14 @@ import { ZvNativeDateTimeAdapter } from './native-date-time-adapter';
 describe('ZvNativeDateTimeAdapter', () => {
   let adapter: ZvNativeDateTimeAdapter;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
         provideDateTimeFormats(ZV_NATIVE_DATE_FORMATS, ZV_NATIVE_TIME_FORMATS),
         provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
       ],
     }).compileComponents();
-  }));
+  });
 
   beforeEach(inject([ZvDateTimeAdapter], (dateAdapter: ZvNativeDateTimeAdapter) => {
     adapter = dateAdapter;

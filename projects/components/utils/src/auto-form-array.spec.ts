@@ -59,7 +59,7 @@ describe('AutoFormArray', () => {
   });
   it('should adjust number of subforms when patchValue is called', () => {
     const array = new AutoFormArray(() => new FormControl<string | number>(''));
-    spyOn(array, 'resizeTo').and.callThrough();
+    vi.spyOn(array, 'resizeTo');
 
     array.patchValue([0, 1, 2, 3]);
 
@@ -69,7 +69,7 @@ describe('AutoFormArray', () => {
   });
   it('should adjust number of subforms when reset is called', () => {
     const array = new AutoFormArray(() => new FormControl<string | number>(''));
-    spyOn(array, 'resizeTo').and.callThrough();
+    vi.spyOn(array, 'resizeTo');
 
     array.reset([0, 1, 2, 3]);
 
@@ -79,7 +79,7 @@ describe('AutoFormArray', () => {
   });
   it('should NOT adjust number of subforms when setValue is called', () => {
     const array = new AutoFormArray(() => new FormControl<string | number>(''));
-    spyOn(array, 'resizeTo').and.callThrough();
+    vi.spyOn(array, 'resizeTo');
 
     expect(() => array.setValue([0, 1, 2, 3])).toThrow();
     expect(array.resizeTo).not.toHaveBeenCalled();

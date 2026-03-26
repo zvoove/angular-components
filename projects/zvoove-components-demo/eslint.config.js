@@ -12,6 +12,7 @@ module.exports = tseslint.config(
         {
           type: ["element", "attribute"],
           prefix: "app",
+          style: "camelCase",
         },
       ],
       "@angular-eslint/component-selector": [

@@ -2,7 +2,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader, TestKey } from '@angular/cdk/testing';
-import { ChangeDetectionStrategy, Component, LOCALE_ID, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, LOCALE_ID, signal, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerInput, MatDatepickerModule } from '@angular/material/datepicker';
@@ -57,13 +57,15 @@ describe('ZvDateTimeInput', () => {
       expect(await timeInput.isDisabled()).toEqual(false);
       expect(await host.getAttribute('aria-disabled')).toBe('false');
 
-      fixture.componentInstance.disabled = true;
+      fixture.componentInstance.disabled.set(true);
+      fixture.detectChanges();
 
       expect(await dateInput.isDisabled()).toEqual(true);
       expect(await timeInput.isDisabled()).toEqual(true);
       expect(await host.getAttribute('aria-disabled')).toBe('true');
 
-      fixture.componentInstance.disabled = false;
+      fixture.componentInstance.disabled.set(false);
+      fixture.detectChanges();
 
       expect(await dateInput.isDisabled()).toEqual(false);
       expect(await timeInput.isDisabled()).toEqual(false);
@@ -79,6 +81,7 @@ describe('ZvDateTimeInput', () => {
       expect(await host.getAttribute('aria-disabled')).toBe('false');
 
       cmp.setDisabledState(true);
+      fixture.detectChanges();
 
       expect(cmp.disabled).toBe(true);
       expect(await dateInput.isDisabled()).toEqual(true);
@@ -86,6 +89,7 @@ describe('ZvDateTimeInput', () => {
       expect(await host.getAttribute('aria-disabled')).toBe('true');
 
       cmp.setDisabledState(false);
+      fixture.detectChanges();
 
       expect(cmp.disabled).toBe(false);
       expect(await dateInput.isDisabled()).toEqual(false);
@@ -122,9 +126,12 @@ describe('ZvDateTimeInput', () => {
 
     it('should respect id input', async () => {
       const defaultId = await harness.getId();
-      expect(defaultId.startsWith('zv-date-time-input-')).toBeTrue();
+      expect(defaultId.startsWith('zv-date-time-input-')).toBe(true);
 
       cmp.id = 'my-id';
+      cmp._changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+      fixture.detectChanges();
 
       expect(await harness.getId()).toBe('my-id');
     });
@@ -138,6 +145,9 @@ describe('ZvDateTimeInput', () => {
       expect(await host.getAttribute('aria-describedby')).toBe(null);
 
       cmp.setDescribedByIds(['a', 'b']);
+      cmp._changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+      fixture.detectChanges();
 
       expect(await host.getAttribute('aria-describedby')).toBe('a b');
     });
@@ -151,8 +161,8 @@ describe('ZvDateTimeInput', () => {
       await dateInput.openCalendar();
       const calendar = await dateInput.getCalendar();
 
-      spyOn(cmp._changeDetectorRef, 'markForCheck');
-      spyOn(cmp.stateChanges, 'next');
+      vi.spyOn(cmp._changeDetectorRef, 'markForCheck');
+      vi.spyOn(cmp.stateChanges, 'next');
 
       await calendar.selectCell({ today: true });
 
@@ -170,18 +180,18 @@ describe('ZvDateTimeInput', () => {
       now.setMilliseconds(0);
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      expect(fixture.componentInstance.value).toEqual(null);
+      expect(fixture.componentInstance.value()).toEqual(null);
 
       await dateInput.openCalendar();
       const calendar = await dateInput.getCalendar();
       await calendar.selectCell({ today: true });
-      expect(fixture.componentInstance.value).toEqual(today);
+      expect(fixture.componentInstance.value()).toEqual(today);
 
       await timeInput.setValue(now.getHours() + ':' + now.getMinutes());
-      expect(fixture.componentInstance.value).toEqual(now);
+      expect(fixture.componentInstance.value()).toEqual(now);
 
       await dateInput.setValue('');
-      expect(isValidDate(fixture.componentInstance.value)).toEqual(false);
+      expect(isValidDate(fixture.componentInstance.value())).toEqual(false);
     });
 
     it('should format values on blur', async () => {
@@ -407,13 +417,15 @@ describe('ZvDateTimeInput', () => {
       expect(await timeInput.isRequired()).toEqual(false);
       expect(await host.getAttribute('aria-required')).toBe('false');
 
-      fixture.componentInstance.required = true;
+      fixture.componentInstance.required.set(true);
+      fixture.detectChanges();
 
       expect(await dateInput.isRequired()).toEqual(true);
       expect(await timeInput.isRequired()).toEqual(true);
       expect(await host.getAttribute('aria-required')).toBe('true');
 
-      fixture.componentInstance.required = false;
+      fixture.componentInstance.required.set(false);
+      fixture.detectChanges();
 
       expect(await dateInput.isRequired()).toEqual(false);
       expect(await timeInput.isRequired()).toEqual(false);
@@ -425,7 +437,7 @@ describe('ZvDateTimeInput', () => {
       expect(cmp.errorState).toEqual(false);
       expect(await host.getAttribute('aria-invalid')).toBe('false');
 
-      fixture.componentInstance.errorStateMatcher = { isErrorState: () => true };
+      fixture.componentInstance.errorStateMatcher.set({ isErrorState: () => true });
       fixture.detectChanges();
       expect(cmp.errorState).toEqual(true);
       expect(await host.getAttribute('aria-invalid')).toBe('true');
@@ -463,12 +475,14 @@ describe('ZvDateTimeInput', () => {
       expect(await host.getAttribute('aria-disabled')).toBe('false');
 
       formControl.disable();
+      fixture.detectChanges();
 
       expect(await dateInput.isDisabled()).toEqual(true);
       expect(await timeInput.isDisabled()).toEqual(true);
       expect(await host.getAttribute('aria-disabled')).toBe('true');
 
       formControl.enable();
+      fixture.detectChanges();
 
       expect(await dateInput.isDisabled()).toEqual(false);
       expect(await timeInput.isDisabled()).toEqual(false);
@@ -515,6 +529,7 @@ describe('ZvDateTimeInput', () => {
       const [dateInput, timeInput] = await harness.getInputs();
 
       formControl.setValue(new Date(2000, 5, 7, 9, 45));
+      fixture.detectChanges();
 
       expect(await dateInput.getValue()).toEqual('06/07/2000');
       expect(await timeInput.getValue()).toEqual('09:45 AM');
@@ -685,11 +700,11 @@ function isValidDate(date: unknown) {
 @Component({
   selector: 'zv-value-test-component',
   template: `
-    <zv-date-time-input [matDatepicker]="datepicker" [disabled]="disabled" [(value)]="value" />
+    <zv-date-time-input [matDatepicker]="datepicker" [disabled]="disabled()" [value]="value()" (valueChange)="value.set($event)" />
     <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDateTimeInput, MatDatepickerModule],
   providers: [
     provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
@@ -697,9 +712,10 @@ function isValidDate(date: unknown) {
   ],
 })
 export class ValueTestComponent {
-  @ViewChild(ZvDateTimeInput) dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
-  disabled = false;
-  value: Date | null = null;
+  @ViewChild(ZvDateTimeInput)
+  dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
+  readonly disabled = signal(false);
+  readonly value = signal<Date | null>(null);
 }
 
 @Component({
@@ -707,16 +723,17 @@ export class ValueTestComponent {
   template: `
     <zv-date-time-input
       [matDatepicker]="datepicker"
-      [disabled]="disabled"
-      [(ngModel)]="value"
-      [required]="required"
-      [errorStateMatcher]="errorStateMatcher"
+      [disabled]="disabled()"
+      [ngModel]="value()"
+      (ngModelChange)="value.set($event)"
+      [required]="required()"
+      [errorStateMatcher]="errorStateMatcher()"
       #dateInput
     />
     <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDateTimeInput, MatDatepickerModule, FormsModule],
   providers: [
     provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
@@ -724,12 +741,14 @@ export class ValueTestComponent {
   ],
 })
 export class InputsTestComponent {
-  @ViewChild(ZvDateTimeInput) dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
-  @ViewChild('dateInput', { read: NgModel }) ngModel: NgModel;
-  disabled = false;
-  value: Date | null = null;
-  required = false;
-  errorStateMatcher: ErrorStateMatcher = null;
+  @ViewChild(ZvDateTimeInput)
+  dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
+  @ViewChild('dateInput', { read: NgModel })
+  ngModel: NgModel;
+  readonly disabled = signal(false);
+  readonly value = signal<Date | null>(null);
+  readonly required = signal(false);
+  readonly errorStateMatcher = signal<ErrorStateMatcher>(null);
 }
 
 @Component({
@@ -739,7 +758,7 @@ export class InputsTestComponent {
     <mat-datepicker #datepicker />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDateTimeInput, MatDatepickerModule, ReactiveFormsModule],
   providers: [
     provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
@@ -747,6 +766,7 @@ export class InputsTestComponent {
   ],
 })
 export class FormTestComponent {
-  @ViewChild(ZvDateTimeInput) dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
+  @ViewChild(ZvDateTimeInput)
+  dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
   control = new FormControl<Date | null>(null);
 }

@@ -5,8 +5,7 @@
     "declarationMap": true,
     "declaration": true,
     "inlineSources": true,
-    "types": ["node", "@angular/localize"],
-    "lib": ["dom", "es2022"]
+    "types": ["node", "@angular/localize"]
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,

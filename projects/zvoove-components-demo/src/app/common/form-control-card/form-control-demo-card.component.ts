@@ -10,7 +10,7 @@ import { AppCodeFilesComponent, CodeFiles } from '../code-files/code-files.compo
   templateUrl: './form-control-demo-card.component.html',
   styleUrls: ['./form-control-demo-card.component.scss'],
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [KeyValuePipe, MatCardModule, MatIconModule, JsonPipe, AppCodeFilesComponent],
 })
 export class FormControlDemoCard {

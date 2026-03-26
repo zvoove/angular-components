@@ -1,3 +1,5 @@
+@use 'highlight.js/styles/github';
+
 app-code {
   display: block;
   border: 1px solid #ccc;
@@ -45,5 +47,3 @@ app-code {
     }
   }
 }
-
-@import 'highlight.js/styles/github';

@@ -1,6 +1,6 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { MatMiniFabButton } from '@angular/material/button';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { By } from '@angular/platform-browser';
@@ -18,7 +18,7 @@ import { ZvTableSortComponent } from './table-sort.component';
     />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvTableSortComponent],
 })
 export class TestComponent {
@@ -29,17 +29,18 @@ export class TestComponent {
     { prop: 'prop2', displayName: 'Sort Prop' },
   ];
 
-  @ViewChild(ZvTableSortComponent, { static: true }) tableSort: ZvTableSortComponent;
+  @ViewChild(ZvTableSortComponent, { static: true })
+  tableSort: ZvTableSortComponent;
 
   public onSortChanged(_event: IZvTableSort) {}
 }
 
 describe('ZvTableSortComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [TestComponent],
     }).compileComponents();
-  }));
+  });
 
   it('should select initial sort column', async () => {
     const fixture = TestBed.createComponent(TestComponent);
@@ -57,7 +58,7 @@ describe('ZvTableSortComponent', () => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
-    spyOn(component, 'onSortChanged');
+    vi.spyOn(component, 'onSortChanged');
 
     component.sortColumn = 'prop';
     component.sortDirection = 'asc';
@@ -100,7 +101,7 @@ describe('ZvTableSortComponent', () => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
-    spyOn(component, 'onSortChanged');
+    vi.spyOn(component, 'onSortChanged');
 
     component.sortColumn = 'prop';
     component.sortDirection = 'asc';

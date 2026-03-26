@@ -248,11 +248,11 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         const labelNode = this._elementRef.nativeElement.querySelectorAll('label')[0];
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        if (!labelNode.innerText.trim()) {
+        if (!labelNode.textContent.trim()) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          if (labelNode.childNodes.length === 1) {
+          if (labelNode.childNodes.length === 1 && labelNode.childNodes[0].nodeType === Node.TEXT_NODE) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            labelNode.childNodes.nodeValue = label;
+            labelNode.childNodes[0].nodeValue = label;
           } else {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             labelNode.appendChild(document.createTextNode(label));

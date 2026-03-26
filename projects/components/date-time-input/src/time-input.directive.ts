@@ -66,7 +66,7 @@ export const ZV_TIME_VALIDATORS: any = {
   host: {
     class: 'zv-time-input',
     '[disabled]': 'disabled',
-    '(input)': '_onInput($event.target.value)',
+    '(input)': '_onInput($any($event.target).value)',
     '(change)': '_onChange()',
     '(blur)': '_onBlur()',
   },

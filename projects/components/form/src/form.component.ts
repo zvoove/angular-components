@@ -1,6 +1,7 @@
 import { isPlatformServer } from '@angular/common';
 import type { ElementRef } from '@angular/core';
 import {
+  AfterViewChecked,
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -36,7 +37,7 @@ export const dependencies = {
   encapsulation: ViewEncapsulation.None,
   imports: [ReactiveFormsModule, ZvBlockUi, MatCard, MatCardContent, MatIcon, MatProgressBar, ZvFormErrors, ZvButton, ZvErrorMessagePipe],
 })
-export class ZvForm implements AfterViewInit, OnDestroy {
+export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
   private readonly cd = inject(ChangeDetectorRef);
 
   @Input({ required: true }) public set dataSource(value: IZvFormDataSource) {
@@ -119,6 +120,10 @@ export class ZvForm implements AfterViewInit, OnDestroy {
     this.activateDataSource();
   }
 
+  public ngAfterViewChecked() {
+    this.updateErrorCardObserver();
+  }
+
   public ngOnDestroy() {
     if (this._errorCardObserver) {
       this._errorCardObserver.disconnect();
@@ -155,7 +160,7 @@ export class ZvForm implements AfterViewInit, OnDestroy {
     if (this.isServer) {
       return;
     }
-    if (!this._errorCardObserver && this._dataSource && this._viewReady) {
+    if (!this._errorCardObserver && this._dataSource && this._viewReady && this.errorCardWrapper) {
       const options = {
         root: null, // relative to document viewport
         rootMargin: '-100px', // margin around root. Values are similar to css property. Unitless values not allowed
@@ -170,7 +175,7 @@ export class ZvForm implements AfterViewInit, OnDestroy {
       }, options);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this._errorCardObserver.observe(this.errorCardWrapper?.nativeElement);
+      this._errorCardObserver.observe(this.errorCardWrapper.nativeElement);
     } else if (this._errorCardObserver && !this._dataSource) {
       this._errorCardObserver.disconnect();
       this._errorCardObserver = null;

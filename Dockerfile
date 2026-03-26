@@ -2,6 +2,7 @@ FROM docker.io/library/node:25.6-alpine AS prepare
 
 RUN apk add chromium
 ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CI=true
 
 FROM prepare AS build
 WORKDIR /app/src

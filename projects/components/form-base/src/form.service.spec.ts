@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fakeAsync, tick } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
@@ -34,32 +34,37 @@ describe('BaseZvFormService', () => {
   describe('filterErrors', () => {
     let service: TestZvFormService;
     beforeEach(() => {
+      vi.useFakeTimers();
       service = new TestZvFormService();
     });
 
-    it('should call filterErrors for getFormErrors', fakeAsync(() => {
-      spyOn(service, 'filterErrors').and.callThrough();
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should call filterErrors for getFormErrors', async () => {
+      vi.spyOn(service, 'filterErrors');
       const form = new FormGroup({});
 
       service.getFormErrors(form, false).subscribe();
 
-      tick(100);
+      await vi.advanceTimersByTimeAsync(100);
 
       expect(service.filterErrors).toHaveBeenCalledWith([], false, 'form');
-    }));
+    });
 
-    it('should call filterErrors for getControlErrors', fakeAsync(() => {
-      spyOn(service, 'filterErrors').and.callThrough();
+    it('should call filterErrors for getControlErrors', async () => {
+      vi.spyOn(service, 'filterErrors');
       const form = new FormControl({});
 
       service.getControlErrors(form).subscribe();
 
-      tick(100);
+      await vi.advanceTimersByTimeAsync(100);
 
       expect(service.filterErrors).toHaveBeenCalledWith([], true, 'control');
-    }));
+    });
 
-    it('result should be used', fakeAsync(() => {
+    it('result should be used', async () => {
       const expected = {
         errorKey: 'key',
         controlPath: null,
@@ -76,19 +81,24 @@ describe('BaseZvFormService', () => {
         result = errors;
       });
 
-      tick(100);
+      await vi.advanceTimersByTimeAsync(100);
       expect(result.length).toBe(1);
       expect(result[0].data).toBe(expected);
-    }));
+    });
   });
 
   describe('getControlErrors', () => {
     let service: TestZvFormService;
     beforeEach(() => {
+      vi.useFakeTimers();
       service = new TestZvFormService();
     });
 
-    it('should return errors in the right order (control)', fakeAsync(() => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should return errors in the right order (control)', async () => {
       const control = new FormControl('a', [Validators.minLength(2), Validators.pattern('test')]);
 
       let resultChecked = false;
@@ -99,12 +109,12 @@ describe('BaseZvFormService', () => {
         resultChecked = true;
       });
 
-      tick(100);
+      await vi.advanceTimersByTimeAsync(100);
 
       expect(resultChecked).toBeTruthy();
-    }));
+    });
 
-    it('should set data property with right values (control)', fakeAsync(() => {
+    it('should set data property with right values (control)', async () => {
       const control = new FormControl('', [Validators.required]);
 
       let resultChecked = false;
@@ -118,20 +128,24 @@ describe('BaseZvFormService', () => {
         resultChecked = true;
       });
 
-      tick(100);
+      await vi.advanceTimersByTimeAsync(100);
 
       expect(resultChecked).toBeTruthy();
-    }));
+    });
   });
 
   describe('getFormErrors', () => {
     let service: TestZvFormService;
     beforeEach(() => {
+      vi.useFakeTimers();
       service = new TestZvFormService();
     });
 
-    // eslint-disable-next-line jasmine/missing-expect
-    it('should return errors in the right order (group)', fakeAsync(() =>
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should return errors in the right order (group)', async () =>
       validateGetFormErrors(true, [
         'array.0.nested1:required',
         'array.0.nested2:minlength',
@@ -139,19 +153,17 @@ describe('BaseZvFormService', () => {
         'array.0:pattern',
         'array:maxlength',
         ':pattern',
-      ])));
+      ]));
 
-    // eslint-disable-next-line jasmine/missing-expect
-    it('shouldnt return control errors if includeControls is false', fakeAsync(() =>
-      validateGetFormErrors(false, ['array.0:pattern', 'array:maxlength', ':pattern'])));
+    it('shouldnt return control errors if includeControls is false', async () =>
+      validateGetFormErrors(false, ['array.0:pattern', 'array:maxlength', ':pattern']));
 
-    // eslint-disable-next-line jasmine/missing-expect
-    it('should fall back to options.includeControlsDefault if includeControls is null', fakeAsync(() => {
+    it('should fall back to options.includeControlsDefault if includeControls is null', async () => {
       service.options.includeControlsDefault = false;
-      validateGetFormErrors(null, ['array.0:pattern', 'array:maxlength', ':pattern']);
-    }));
+      await validateGetFormErrors(null, ['array.0:pattern', 'array:maxlength', ':pattern']);
+    });
 
-    it('should set data property with right values (group)', fakeAsync(() => {
+    it('should set data property with right values (group)', async () => {
       const form = new FormGroup({
         array: new FormArray(
           [
@@ -189,12 +201,12 @@ describe('BaseZvFormService', () => {
         resultChecked = true;
       });
 
-      tick(100);
+      await vi.advanceTimersByTimeAsync(100);
 
       expect(resultChecked).toBeTruthy();
-    }));
+    });
 
-    function validateGetFormErrors(includeControls: boolean | null, expected: string[]) {
+    async function validateGetFormErrors(includeControls: boolean | null, expected: string[]) {
       const form = new FormGroup(
         {
           array: new FormArray(
@@ -223,7 +235,7 @@ describe('BaseZvFormService', () => {
         resultChecked = true;
       });
 
-      tick(100);
+      await vi.advanceTimersByTimeAsync(100);
 
       expect(resultChecked).toBeTruthy();
     }

@@ -27,7 +27,7 @@ describe('ZvNumberInput', () => {
     fixture.detectChanges();
 
     const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
-    const clearTimerSpy = spyOn(spinner, '_clearTimer').and.callThrough();
+    const clearTimerSpy = vi.spyOn(spinner, '_clearTimer');
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mouseup');
     triggerEvent(spinnerUp, 'mousedown');
@@ -45,7 +45,7 @@ describe('ZvNumberInput', () => {
     fixture.detectChanges();
 
     const spinnerDown = fixture.nativeElement.querySelector('.zv-number-input__button-down');
-    const clearTimerSpy = spyOn(spinner, '_clearTimer').and.callThrough();
+    const clearTimerSpy = vi.spyOn(spinner, '_clearTimer');
     triggerEvent(spinnerDown, 'mousedown');
     triggerEvent(spinnerDown, 'mouseup');
     triggerEvent(spinnerDown, 'mousedown');

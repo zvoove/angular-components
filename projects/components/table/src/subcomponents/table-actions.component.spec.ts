@@ -1,6 +1,6 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { MatIconButton } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIcon } from '@angular/material/icon';
@@ -19,7 +19,7 @@ import { ZvTableActionsComponent } from './table-actions.component';
     <zv-table-actions [actions]="actions" [items]="items" />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvTableActionsComponent, MatIcon, MatIconButton, MatMenuTrigger],
 })
 export class TestComponent {
@@ -30,11 +30,11 @@ export class TestComponent {
 }
 
 describe('ZvTableActionsComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [RouterModule.forRoot([]), TestComponent],
     }).compileComponents();
-  }));
+  });
 
   const disabledFnTestCases: {
     isDisabledFn?: () => boolean;

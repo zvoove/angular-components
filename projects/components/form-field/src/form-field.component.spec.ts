@@ -9,9 +9,11 @@ import {
   Injectable,
   ViewChild,
   inject,
+  signal,
   viewChild,
 } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
@@ -59,7 +61,7 @@ class TestZvFormService extends BaseZvFormService {
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, MatInputModule, ZvFormField],
 })
 export class TestNoFormComponent {
@@ -70,18 +72,18 @@ export class TestNoFormComponent {
   selector: 'zv-test-component',
   template: `
     <zv-form-field>
-      <input type="text" [(ngModel)]="value" matInput />
+      <input type="text" [ngModel]="value()" (ngModelChange)="value.set($event)" matInput />
       <mat-label>test</mat-label>
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, MatInputModule, ZvFormField],
 })
 export class TestNgModelComponent {
   public readonly cd = inject(ChangeDetectorRef);
 
-  value: any = null;
+  readonly value = signal<any>(null);
 
   readonly formField = viewChild(ZvFormField);
 }
@@ -89,26 +91,26 @@ export class TestNgModelComponent {
 @Component({
   selector: 'zv-test-component',
   template: `
-    <zv-form-field [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
-      @if (customLabel) {
-        <mat-label>{{ customLabel }}</mat-label>
+    <zv-form-field [hint]="hint()" [hintToggle]="hintToggle()" [subscriptType]="subscriptType()">
+      @if (customLabel()) {
+        <mat-label>{{ customLabel() }}</mat-label>
       }
-      <input type="text" [formControl]="formControl" matInput [required]="required" />
+      <input type="text" [formControl]="formControl" matInput [required]="required()" />
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule, MatInputModule, ZvFormField],
 })
 export class TestFormComponent {
   public readonly cd = inject(ChangeDetectorRef);
 
   formControl = new FormControl('', [Validators.pattern('pattern'), Validators.minLength(5)]);
-  customLabel: string | null = null;
-  hint: string | null = null;
-  subscriptType: ZvFormFieldSubscriptType | null = null;
-  hintToggle = false;
-  required = false;
+  readonly customLabel = signal<string | null>(null);
+  readonly hint = signal<string | null>(null);
+  readonly subscriptType = signal<ZvFormFieldSubscriptType | null>(null);
+  readonly hintToggle = signal(false);
+  readonly required = signal(false);
 
   readonly formField = viewChild(ZvFormField);
 }
@@ -124,7 +126,7 @@ export class TestFormComponent {
     </zv-form-field>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule, MatCheckboxModule, ZvFormField, AsyncPipe],
 })
 export class TestCheckboxComponent {
@@ -139,66 +141,80 @@ export class TestCheckboxComponent {
 
 describe('ZvFormField', () => {
   describe('checkbox', () => {
-    beforeEach(waitForAsync(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         imports: [TestCheckboxComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
-    }));
+    });
 
-    it('should set checkbox label if no label is set in the template', waitForAsync(() => {
+    it('should set checkbox label if no label is set in the template', async () => {
       const fixture = TestBed.createComponent(TestCheckboxComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
+      // Set zvLabel before first detectChanges so it's picked up during initialization
       (component.formControl as any).zvLabel = 'service label';
+      fixture.detectChanges();
+      // Allow async label resolution to settle (multiple cycles for RxJS operators)
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      fixture.detectChanges();
+      await new Promise((resolve) => setTimeout(resolve, 10));
       fixture.detectChanges();
 
       expect(fixture.debugElement.query(By.css('.template-label')).query(By.css('label')).nativeElement.textContent.trim()).toBe(
         'async label'
       );
       expect(fixture.debugElement.query(By.css('.no-label')).query(By.css('label')).nativeElement.textContent.trim()).toBe('service label');
-    }));
+    });
   });
 
   describe('formControl', () => {
-    beforeEach(waitForAsync(() => {
+    beforeEach(async () => {
+      vi.useFakeTimers();
       TestBed.configureTestingModule({
         imports: [TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
-    }));
+    });
 
-    it('should set label', fakeAsync(() => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should set label', async () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      // Label calculated from the service
+      // Set zvLabel before first detectChanges so it's picked up during initialization
       (component.formControl as any).zvLabel = 'service label';
+      fixture.detectChanges();
+      await vi.advanceTimersByTimeAsync(0);
       fixture.detectChanges();
       expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('service label');
 
       // label defined with <mat-label>
-      component.customLabel = 'custom label';
+      component.customLabel.set('custom label');
       fixture.detectChanges();
       expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('custom label');
 
       // Label calculated from the service with delay
-      component.customLabel = null;
       (component.formControl as any).zvLabel = 'async label';
       (TestBed.inject(ZvFormService) as TestZvFormService).labelDelay = 10;
+      // Setting customLabel to null removes the labelChild, which triggers updateLabel()
+      component.customLabel.set(null);
       fixture.detectChanges();
-      tick(10);
+      await vi.advanceTimersByTimeAsync(10);
       fixture.detectChanges();
       expect(fixture.debugElement.query(By.css('mat-label')).nativeElement.textContent.trim()).toBe('async label');
-    }));
+    });
 
-    it('should show errors', fakeAsync(() => {
+    it('should show errors', async () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-      fixture.autoDetectChanges();
+      fixture.detectChanges();
 
       component.formControl.setValue('a');
       component.formControl.markAsTouched();
@@ -212,23 +228,24 @@ describe('ZvFormField', () => {
         expect(e.map((x) => x.errorText)).toEqual(['pattern', 'minlength']);
         errorsChecked = true;
       });
-      tick(1);
+      await vi.advanceTimersByTimeAsync(1);
       expect(errorsChecked).toBeTruthy();
-    }));
+    });
 
-    it('should work with hint toggle button', () => {
+    it('should work with hint toggle button', async () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-      component.hintToggle = true;
+      fixture.detectChanges();
+      component.hintToggle.set(true);
       fixture.detectChanges();
 
       // no hint -> no hint button
       expect(getHelpButton(fixture)).toBeFalsy();
 
       // hint -> hint button but initially no hint text
-      component.hint = 'myhint';
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      component.hint.set('myhint');
+      fixture.detectChanges();
 
       const helpButton = getHelpButton(fixture);
       expect(helpButton).toBeTruthy();
@@ -236,55 +253,57 @@ describe('ZvFormField', () => {
 
       // 1. hint button click -> hint text
       helpButton.triggerEventHandler('click', new Event('click'));
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      fixture.detectChanges();
       expect(getShownHelpText(fixture)).toEqual('myhint');
 
       // 2. hint button click -> no hint text
       helpButton.triggerEventHandler('click', new Event('click'));
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      fixture.detectChanges();
       expect(getShownHelpText(fixture)).toBeFalsy();
 
       // no hint -> no hint button/text
-      component.hint = null;
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      component.hint.set(null);
+      fixture.detectChanges();
       expect(getHelpButton(fixture)).toBeFalsy();
       expect(getShownHelpText(fixture)).toBeFalsy();
     });
 
-    it('should work without hint toggle button', () => {
+    it('should work without hint toggle button', async () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-      component.hintToggle = false;
+      fixture.detectChanges();
+      component.hintToggle.set(false);
       fixture.detectChanges();
 
       // no hint -> no hint button
       expect(getHelpButton(fixture)).toBeFalsy();
 
       // hint -> hint text but still no hint button
-      component.hint = 'myhint';
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      component.hint.set('myhint');
+      fixture.detectChanges();
 
       const helpButton = getHelpButton(fixture);
       expect(helpButton).toBeFalsy();
       expect(getShownHelpText(fixture)).toEqual('myhint');
     });
 
-    it('should set correct classes for subscriptType', () => {
+    it('should set correct classes for subscriptType', async () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
-      component.hintToggle = false;
-      component.hint = 'hint';
-      component.subscriptType = 'single-line';
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      component.hintToggle.set(false);
+      component.hint.set('hint');
+      component.subscriptType.set('single-line');
+      fixture.detectChanges();
 
       let classes = getFormFieldClasses(fixture);
       expect(classes.contains('zv-form-field--subscript-resize')).toBeFalsy();
 
-      component.subscriptType = 'resize';
-      detectChangesAndIgnoreChangeAfterChecked(fixture);
+      component.subscriptType.set('resize');
+      fixture.detectChanges();
       classes = getFormFieldClasses(fixture);
       expect(classes.contains('zv-form-field--subscript-resize')).toBeTruthy();
     });
@@ -293,18 +312,19 @@ describe('ZvFormField', () => {
   describe('ngModel', () => {
     let fixture: ComponentFixture<TestNgModelComponent>;
     let loader: HarnessLoader;
-    beforeEach(waitForAsync(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         imports: [TestNgModelComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
       fixture = TestBed.createComponent(TestNgModelComponent);
       loader = TestbedHarnessEnvironment.loader(fixture);
-    }));
+    });
 
     it('should work with ngModel', async () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
       const formFieldHarness = await loader.getHarness(MatFormFieldHarness);
 
@@ -312,7 +332,8 @@ describe('ZvFormField', () => {
       expect(component.formField().noUnderline).toBe(false);
       expect(await formFieldHarness.isLabelFloating()).toBe(false);
 
-      component.value = 'test';
+      component.value.set('test');
+      fixture.detectChanges();
 
       expect(await formFieldHarness.isLabelFloating()).toBe(true);
     });
@@ -321,14 +342,14 @@ describe('ZvFormField', () => {
   describe('no form', () => {
     let fixture: ComponentFixture<TestNoFormComponent>;
     let loader: HarnessLoader;
-    beforeEach(waitForAsync(() => {
+    beforeEach(async () => {
       TestBed.configureTestingModule({
         imports: [TestNoFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
       }).compileComponents();
       fixture = TestBed.createComponent(TestNoFormComponent);
       loader = TestbedHarnessEnvironment.loader(fixture);
-    }));
+    });
 
     it('should work without form binding on matInput', async () => {
       const component = fixture.componentInstance;
@@ -349,7 +370,7 @@ describe('ZvFormField', () => {
   });
 
   describe('initialization', () => {
-    it('should initialize properly with its own default settings', waitForAsync(() => {
+    it('should initialize properly with its own default settings', async () => {
       TestBed.configureTestingModule({
         imports: [TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
@@ -360,9 +381,9 @@ describe('ZvFormField', () => {
       expect(component).toBeDefined();
 
       expect(component.formField().floatLabel).toEqual('auto');
-    }));
+    });
 
-    it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', waitForAsync(() => {
+    it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', async () => {
       TestBed.configureTestingModule({
         imports: [TestFormComponent],
         providers: [
@@ -378,11 +399,11 @@ describe('ZvFormField', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
       expect(component.formField().floatLabel).toEqual('always');
-    }));
+    });
   });
 
   describe('hint', () => {
-    it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is set', waitForAsync(() => {
+    it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is set', async () => {
       TestBed.configureTestingModule({
         imports: [TestFormComponent],
         providers: [
@@ -391,40 +412,41 @@ describe('ZvFormField', () => {
         ],
       }).compileComponents();
 
-      const assertHintEquals = (text: string) => {
+      const fixture = TestBed.createComponent(TestFormComponent);
+      const component = fixture.componentInstance;
+      expect(component).toBeDefined();
+      fixture.detectChanges();
+
+      const assertHintEquals = async (text: string) => {
         fixture.detectChanges();
         expect(getShownHelpText(fixture)).toEqual(text);
       };
 
-      const fixture = TestBed.createComponent(TestFormComponent);
-      const component = fixture.componentInstance;
-      expect(component).toBeDefined();
-
       // not required & no hint -> no hint
-      assertHintEquals('');
+      await assertHintEquals('');
 
       // required & no hint & not disabled -> required text in hint
-      component.required = true;
-      assertHintEquals('foo');
+      component.required.set(true);
+      await assertHintEquals('foo');
 
       // required & no hint & disabled -> no hint
       component.formControl.disable();
-      assertHintEquals('');
+      await assertHintEquals('');
 
-      component.hint = 'bar';
+      component.hint.set('bar');
       // required & hint & disabled -> hint
-      assertHintEquals('bar');
+      await assertHintEquals('bar');
 
       component.formControl.enable();
       // required & hint & not disabled -> required text and the hint separated by ". "
-      assertHintEquals('foo. bar');
+      await assertHintEquals('foo. bar');
 
       // not required & hint & not disabled -> only the hint
-      component.required = false;
-      assertHintEquals('bar');
-    }));
+      component.required.set(false);
+      await assertHintEquals('bar');
+    });
 
-    it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is not set', waitForAsync(() => {
+    it('should show the right supporting text when ZV_FORM_FIELD_CONFIG.requiredText is not set', async () => {
       TestBed.configureTestingModule({
         imports: [TestFormComponent],
         providers: [{ provide: ZvFormService, useClass: TestZvFormService }],
@@ -433,25 +455,26 @@ describe('ZvFormField', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
+      fixture.detectChanges();
 
       // not required & no hint -> no hint
-      expect(getShownHelpText(fixture)).toEqual(null);
+      expect(getShownHelpText(fixture)).toBeFalsy();
 
       // required & no hint -> no hint
-      component.required = true;
+      component.required.set(true);
       fixture.detectChanges();
-      expect(getShownHelpText(fixture)).toEqual('');
+      expect(getShownHelpText(fixture)).toBeFalsy();
 
       // required & hint -> only the hint
-      component.hint = 'dummy';
+      component.hint.set('dummy');
       fixture.detectChanges();
       expect(getShownHelpText(fixture)).toEqual('dummy');
 
       // not required & hint -> only the hint
-      component.required = false;
+      component.required.set(false);
       fixture.detectChanges();
       expect(getShownHelpText(fixture)).toEqual('dummy');
-    }));
+    });
   });
 });
 
@@ -474,16 +497,4 @@ function getFormFieldClasses<T>(fixture: ComponentFixture<T>): DOMTokenList {
     return node.nativeElement.classList;
   }
   return null;
-}
-
-function detectChangesAndIgnoreChangeAfterChecked<T>(fixture: ComponentFixture<T>) {
-  try {
-    fixture.detectChanges();
-  } catch (e) {
-    // Expression has changed after it was checked. Previous value: 'aria-describedby: null'. Current value: 'aria-describedby: mat-hint-0'.
-    if (e instanceof Error && e.message.indexOf('Expression has changed after it was checked') === -1) {
-      throw e;
-    }
-  }
-  fixture.detectChanges();
 }

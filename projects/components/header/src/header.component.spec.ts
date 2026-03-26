@@ -1,6 +1,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { ZvHeader, ZvHeaderModule } from '..';
@@ -9,34 +9,34 @@ import { ZvHeaderHarness } from './testing/header.harness';
 @Component({
   selector: 'zv-test-component',
   template: `
-    <zv-header [caption]="caption" [description]="description">
+    <zv-header [caption]="caption()" [description]="description()">
       <ng-container *zvHeaderTopButtonSection>
-        @if (addButtons) {
+        @if (addButtons()) {
           <button mat-button>testButton</button>
         }
       </ng-container>
       <ng-container *zvHeaderCaptionSection>
-        @if (addCaptionTemplate) {
+        @if (addCaptionTemplate()) {
           <h1 style="background-color: cyan;">caption text</h1>
         }
       </ng-container>
       <ng-container *zvHeaderDescriptionSection>
-        @if (addDescriptionTemplate) {
+        @if (addDescriptionTemplate()) {
           <span style="background-color: lightblue;">description text</span>
         }
       </ng-container>
     </zv-header>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvHeaderModule, MatButtonModule],
 })
 export class TestDataSourceComponent {
-  public caption: string;
-  public description: string;
-  public addButtons = false;
-  public addCaptionTemplate = false;
-  public addDescriptionTemplate = false;
+  public readonly caption = signal<string>(undefined);
+  public readonly description = signal<string>(undefined);
+  public readonly addButtons = signal(false);
+  public readonly addCaptionTemplate = signal(false);
+  public readonly addDescriptionTemplate = signal(false);
   @ViewChild(ZvHeader) headerComponent: ZvHeader;
 }
 
@@ -51,6 +51,7 @@ describe('ZvHeader', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(TestDataSourceComponent);
     component = fixture.componentInstance;
+    fixture.autoDetectChanges();
 
     loader = TestbedHarnessEnvironment.loader(fixture);
     header = await loader.getHarness(ZvHeaderHarness);
@@ -59,14 +60,16 @@ describe('ZvHeader', () => {
   it('should show caption text', async () => {
     expect(await header.getCaptionText()).toBeFalsy();
 
-    component.caption = 'foo';
+    component.caption.set('foo');
+    fixture.detectChanges();
     expect(await header.getCaptionText()).toBe('foo');
   });
 
   it('should show caption template', async () => {
     expect(await header.getCaptionText()).toBeFalsy();
 
-    component.addCaptionTemplate = true;
+    component.addCaptionTemplate.set(true);
+    fixture.detectChanges();
     const nodes = await header.getCaptionTemplateNodes();
     expect(nodes.length).toEqual(1);
 
@@ -77,10 +80,12 @@ describe('ZvHeader', () => {
 
   it('should show caption text when input and template are set at the same time', async () => {
     expect(await header.getCaptionText()).toBeFalsy();
-    component.caption = 'foo';
+    component.caption.set('foo');
+    fixture.detectChanges();
     expect(await header.getCaptionText()).toBeTruthy();
 
-    component.addCaptionTemplate = true;
+    component.addCaptionTemplate.set(true);
+    fixture.detectChanges();
     expect(await header.getCaptionText()).toBeTruthy();
     const nodes = await header.getCaptionTemplateNodes();
     expect(nodes.length).toEqual(0);
@@ -89,14 +94,16 @@ describe('ZvHeader', () => {
   it('should show description text', async () => {
     expect(await header.getDescriptionText()).toBeFalsy();
 
-    component.description = 'bar';
+    component.description.set('bar');
+    fixture.detectChanges();
     expect(await header.getDescriptionText()).toBe('bar');
   });
 
   it('should show description template', async () => {
     expect(await header.getDescriptionText()).toBeFalsy();
 
-    component.addDescriptionTemplate = true;
+    component.addDescriptionTemplate.set(true);
+    fixture.detectChanges();
     const nodes = await header.getDescriptionTemplateNodes();
     expect(nodes.length).toEqual(1);
 
@@ -107,10 +114,12 @@ describe('ZvHeader', () => {
 
   it('should show description text when input and template are set at the same time', async () => {
     expect(await header.getDescriptionText()).toBeFalsy();
-    component.description = 'foo';
+    component.description.set('foo');
+    fixture.detectChanges();
     expect(await header.getDescriptionText()).toBeTruthy();
 
-    component.addDescriptionTemplate = true;
+    component.addDescriptionTemplate.set(true);
+    fixture.detectChanges();
     expect(await header.getDescriptionText()).toBeTruthy();
     const nodes = await header.getDescriptionTemplateNodes();
     expect(nodes.length).toEqual(0);
@@ -120,7 +129,8 @@ describe('ZvHeader', () => {
     let btns = await header.getActionTemplateNodes();
     expect(btns.length).toBe(0);
 
-    component.addButtons = true;
+    component.addButtons.set(true);
+    fixture.detectChanges();
     btns = await header.getActionTemplateNodes();
     expect(btns.length).toBe(1);
     expect(await btns[0].text()).toEqual('testButton');

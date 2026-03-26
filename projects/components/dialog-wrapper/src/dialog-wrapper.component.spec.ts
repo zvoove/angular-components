@@ -73,7 +73,7 @@ export class TestDialogWrapperDataSource implements IZvDialogWrapperDataSource {
     </zv-dialog-wrapper>
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvDialogWrapper],
 })
 export class ZvDialogWrapperTestDialog {
@@ -85,7 +85,7 @@ export class ZvDialogWrapperTestDialog {
     cancelFn: () => this.cancelFunction(),
   });
 
-  private _cancelFunctionCalled: number;
+  private _cancelFunctionCalled = 0;
 
   public actionFunction() {
     return of();
@@ -101,8 +101,7 @@ export class ZvDialogWrapperTestDialog {
   selector: 'zv-dialog-wrapper-test',
   template: ``,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
-  imports: [ZvDialogWrapper],
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class ZvDialogWrapperTestComponent {
   public readonly dialog = inject(MatDialog);
@@ -146,8 +145,8 @@ describe('DialogUnitTestComponent', () => {
   });
 
   it('should call actionFunction on ok click', async () => {
-    spyOn(dialogRef.componentInstance, 'actionFunction').and.callThrough();
-    spyOn(dialogRef.componentInstance.dataSource, 'confirm').and.callThrough();
+    vi.spyOn(dialogRef.componentInstance, 'actionFunction');
+    vi.spyOn(dialogRef.componentInstance.dataSource, 'confirm');
 
     const btns = await dialogWrapper.getActionButtons({ text: 'Ok' });
     expect(btns.length).toEqual(1);
@@ -158,15 +157,21 @@ describe('DialogUnitTestComponent', () => {
   });
 
   it('should call cancelFunction and then close on cancel click', async () => {
-    const cancelSpy = spyOn(dialogRef.componentInstance, 'cancelFunction').and.callThrough();
-    const closeSpy = spyOn(dialogRef.componentInstance.dataSource, 'close').and.callThrough();
+    const originalCancel = dialogRef.componentInstance.cancelFunction.bind(dialogRef.componentInstance);
+    const cancelSpy = vi.spyOn(dialogRef.componentInstance, 'cancelFunction').mockImplementation(originalCancel);
+    const originalClose = dialogRef.componentInstance.dataSource.close.bind(dialogRef.componentInstance.dataSource);
+    const closeSpy = vi.spyOn(dialogRef.componentInstance.dataSource, 'close').mockImplementation(originalClose);
 
     const btns = await dialogWrapper.getActionButtons({ text: 'Cancel' });
     expect(btns.length).toEqual(1);
     await btns[0].click();
+    fixture.detectChanges();
 
     expect(cancelSpy).toHaveBeenCalledTimes(1);
     expect(closeSpy).toHaveBeenCalledTimes(1);
+    // Wait for dialog close animation to complete
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    fixture.detectChanges();
     expect((await rootLoader.getAllHarnesses(ZvDialogWrapperHarness)).length).toEqual(0);
   });
 

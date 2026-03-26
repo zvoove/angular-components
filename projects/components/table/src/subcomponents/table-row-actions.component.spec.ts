@@ -1,6 +1,6 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 import { Observable } from 'rxjs';
 import { IZvTableAction, IZvTableActionRouterLink, ZvTableActionScope } from '../models';
@@ -12,49 +12,51 @@ import { MatButtonHarness } from '@angular/material/button/testing';
   selector: 'zv-test-component',
   template: `
     <zv-table-row-actions
-      [actions]="actions"
-      [loadActionsFn]="loadActionsFn"
-      [openMenuFn]="openMenuFn"
-      [item]="item"
-      [moreMenuThreshold]="moreMenuThreshold"
+      [actions]="actions()"
+      [loadActionsFn]="loadActionsFn()"
+      [openMenuFn]="openMenuFn()"
+      [item]="item()"
+      [moreMenuThreshold]="moreMenuThreshold()"
     />
   `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvTableRowActionsComponent],
 })
 export class TestComponent {
-  public actions: IZvTableAction<any>[] = [];
-  public loadActionsFn: (data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]> = null;
-  public openMenuFn: (data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]> | IZvTableAction<any>[] | null = null;
-  public item: any = {};
-  public moreMenuThreshold = 2;
+  public readonly actions = signal<IZvTableAction<any>[]>([]);
+  public readonly loadActionsFn = signal<(data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]>>(null);
+  public readonly openMenuFn =
+    signal<(data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]> | IZvTableAction<any>[] | null>(null);
+  public readonly item = signal<any>({});
+  public readonly moreMenuThreshold = signal(2);
 
-  @ViewChild(ZvTableRowActionsComponent, { static: true }) comp: ZvTableRowActionsComponent<any>;
+  @ViewChild(ZvTableRowActionsComponent, { static: true })
+  comp: ZvTableRowActionsComponent<any>;
 }
 
 describe('ZvTableRowActionsComponent', () => {
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [RouterModule.forRoot([]), TestComponent],
     }).compileComponents();
-  }));
+  });
 
   it('should respect threshold', async () => {
     const fixture = TestBed.createComponent(TestComponent);
     const component = fixture.componentInstance;
     expect(component).toBeDefined();
 
-    component.actions = [{ icon: 'remove', label: 'Remove', scope: ZvTableActionScope.row, actionFn: () => {} }];
+    component.actions.set([{ icon: 'remove', label: 'Remove', scope: ZvTableActionScope.row, actionFn: () => {} }]);
+    component.moreMenuThreshold.set(2);
+    fixture.autoDetectChanges();
+
     const loader = TestbedHarnessEnvironment.loader(fixture);
 
-    component.moreMenuThreshold = 2;
-    fixture.detectChanges();
+    await expect(loader.getHarness(MatIconHarness.with({ name: 'more_vert' }))).rejects.toThrowError();
 
-    await expectAsync(loader.getHarness(MatIconHarness.with({ name: 'more_vert' }))).toBeRejectedWithError();
-
-    component.moreMenuThreshold = 0;
-    fixture.detectChanges();
+    component.moreMenuThreshold.set(0);
+    await fixture.whenStable();
 
     const icon = await loader.getHarness(MatIconHarness.with({ name: 'more_vert' }));
     expect(icon).toBeDefined();
@@ -84,7 +86,7 @@ describe('ZvTableRowActionsComponent', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      component.actions = [
+      component.actions.set([
         {
           icon: 'remove',
           label: 'Remove',
@@ -93,9 +95,9 @@ describe('ZvTableRowActionsComponent', () => {
           isDisabledFn: testCase.isDisabledFn,
           routerLink: testCase.routerLink,
         },
-      ];
+      ]);
       const loader = TestbedHarnessEnvironment.loader(fixture);
-      fixture.detectChanges();
+      fixture.autoDetectChanges();
 
       const button = await loader.getHarness(MatButtonHarness);
       expect(button).toBeDefined();
