@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewEncapsulation, input, viewChild } from '@angular/core';
 import { HighlightModule } from 'ngx-highlightjs';
 import { HighlightLineNumbers } from 'ngx-highlightjs/line-numbers';
 
@@ -11,15 +11,15 @@ import { HighlightLineNumbers } from 'ngx-highlightjs/line-numbers';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppCodeComponent implements OnInit {
-  @Input({ transform: cleanCode, required: true }) code = '';
-  @Input({ required: true }) language = '';
+  readonly code = input('', { transform: cleanCode });
+  readonly language = input.required<string>();
 
-  @ViewChild('codeDiv', { static: true }) private _codeDiv!: ElementRef<HTMLDivElement>;
+  private readonly _codeDiv = viewChild.required<ElementRef<HTMLDivElement>>('codeDiv');
+
+  resolvedCode = '';
 
   ngOnInit() {
-    if (!this.code) {
-      this.code = cleanCode(this._codeDiv.nativeElement.textContent);
-    }
+    this.resolvedCode = this.code() || cleanCode(this._codeDiv().nativeElement.textContent);
   }
 }
 

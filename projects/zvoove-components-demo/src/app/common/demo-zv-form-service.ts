@@ -4,8 +4,9 @@ import { Observable, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DemoZvFormsService extends BaseZvFormService {
-  public getLabel(formControl: any): Observable<string> {
-    return formControl.zvLabel ? of(formControl.zvLabel) : null;
+  public getLabel(formControl: unknown): Observable<string> {
+    const ctrl = formControl as { zvLabel?: string };
+    return ctrl.zvLabel ? of(ctrl.zvLabel) : null;
   }
   protected mapDataToError(errorData: IZvFormErrorData[]): Observable<IZvFormError[]> {
     return of(

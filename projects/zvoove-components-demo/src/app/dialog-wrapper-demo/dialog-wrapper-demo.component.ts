@@ -44,7 +44,9 @@ export class DemoDialogWrapperDataSource implements IZvDialogWrapperDataSource {
     return this.somethingChanged$;
   }
 
-  disconnect(): void {}
+  disconnect(): void {
+    /* noop */
+  }
 
   confirm() {
     return this.options.actionFn();

@@ -16,7 +16,7 @@ import {
   ZvSelectService,
   ZvSelectSortBy,
 } from '@zvoove/components/select';
-import { iif, NEVER, of, throwError } from 'rxjs';
+import { iif, NEVER, Observable, of, throwError } from 'rxjs';
 import { delay, finalize, tap } from 'rxjs/operators';
 import { CodeFiles } from '../common/code-files/code-files.component';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
@@ -36,6 +36,14 @@ declare type DemoDataSourceItems = 'default' | 'error' | 'error_once' | 'loading
 
 interface DemoLogs extends Record<string, string | number> {
   loadCount: number;
+}
+
+interface DemoSelectItem {
+  id: number;
+  strId: string;
+  labelA: string;
+  labelB: string;
+  disabled?: boolean;
 }
 
 @Component({
@@ -76,27 +84,27 @@ export class SelectDemoComponent implements OnInit {
   private readonly cd = inject(ChangeDetectorRef);
 
   public visible = true;
-  public ngModel: any = null;
-  public value: any = null;
+  public ngModel: DemoSelectItem | DemoSelectItem[] | null = null;
+  public value: DemoSelectItem | DemoSelectItem[] | null = null;
   public form = new FormGroup({
     ctrl: new FormControl(null),
   });
-  public items = Array.from(Array(500).keys()).map((i) => ({
+  public items: DemoSelectItem[] = Array.from(Array(500).keys()).map((i) => ({
     id: i,
     strId: `id${i}`,
     labelA: `Label A ${i}`,
     labelB: `Label B ${i}`,
     disabled: i % 5 === 4,
   }));
-  public unknowIitem = {
+  public unknowIitem: DemoSelectItem = {
     id: -1,
     strId: `id-1`,
     labelA: `Label A -1`,
     labelB: `Label B -1`,
   };
-  public ngModelDataSource: DefaultZvSelectDataSource;
-  public formDataSource: DefaultZvSelectDataSource;
-  public valueDataSource: DefaultZvSelectDataSource;
+  public ngModelDataSource: DefaultZvSelectDataSource<DemoSelectItem>;
+  public formDataSource: DefaultZvSelectDataSource<DemoSelectItem>;
+  public valueDataSource: DefaultZvSelectDataSource<DemoSelectItem>;
   public multiple = false;
   public clearable = true;
   public disabled = false;
@@ -133,7 +141,7 @@ export class SelectDemoComponent implements OnInit {
   }
 
   public createDataSource(logs: DemoLogs) {
-    const ds = new DefaultZvSelectDataSource({
+    const ds = new DefaultZvSelectDataSource<DemoSelectItem>({
       mode: this.dataSourceMode,
       idKey: this.dataSourceIdKey,
       labelKey: this.dataSourceLabelKey,
@@ -144,7 +152,7 @@ export class SelectDemoComponent implements OnInit {
       sortBy: this.getZvSelectSortBy(),
     });
     if (this.reverseSort) {
-      ds.sortCompare = (a, b) => b.entity.id - a.entity.id;
+      ds.sortCompare = (a, b) => (b.entity as DemoSelectItem).id - (a.entity as DemoSelectItem).id;
     }
     return ds;
   }
@@ -165,15 +173,17 @@ export class SelectDemoComponent implements OnInit {
     logs.loadCount = 0;
     switch (this.dataSourceItems) {
       case 'default': {
-        let items: any = this.items;
+        let items: typeof this.items | Observable<typeof this.items> | (() => typeof this.items | Observable<typeof this.items>) =
+          this.items;
         if (this.itemsAsObservable) {
-          items = of(items).pipe(
+          const obs = of(this.items).pipe(
             tap(() => {
               ++logs.loadCount;
               this.cd.markForCheck();
             }),
             delay(1000)
           );
+          items = obs;
         }
         if (this.itemsAsFunction) {
           const originalItems = items;

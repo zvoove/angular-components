@@ -10,7 +10,7 @@ export abstract class ZvSelectDataSource<T = unknown> {
   /** The error that occured in the last observable returned by _loadItems or null. */
   public error: unknown = null;
 
-  public compareWith: (value1: T, value2: T) => boolean = DEFAULT_COMPARER;
+  public compareWith: (value1: unknown, value2: unknown) => boolean = DEFAULT_COMPARER;
 
   /**
    * Connects a collection viewer (such as a data-table) to this data source. Note that

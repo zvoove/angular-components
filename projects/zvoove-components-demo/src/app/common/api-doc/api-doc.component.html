@@ -13,24 +13,24 @@
           </tr>
         </thead>
         <tbody>
-          @for (input of inputs(); track input.name) {
+          @for (input of inputs(); track input.name()) {
             <tr>
               <td>
-                [{{ input.name }}]
-                @if (input.required) {
+                [{{ input.name() }}]
+                @if (input.required()) {
                   <i> - required</i>
                 }
               </td>
               <td>
-                @if (!input.typeUrl) {
-                  {{ input.type }}
+                @if (!input.typeUrl()) {
+                  {{ input.type() }}
                 } @else {
-                  <a [href]="input.typeUrl" rel="noopener noreferrer">{{ input.type }}</a>
+                  <a [href]="input.typeUrl()" rel="noopener noreferrer">{{ input.type() }}</a>
                 }
               </td>
               <td>
-                {{ input.desc }}
-                @if (input.twoWay) {
+                {{ input.desc() }}
+                @if (input.twoWay()) {
                   <span>Can be used for two-way binding.</span>
                 }
               </td>
@@ -47,19 +47,19 @@
           </tr>
         </thead>
         <tbody>
-          @for (output of outputs(); track output.name) {
+          @for (output of outputs(); track output.name()) {
             <tr>
-              <td>({{ output.name }})</td>
+              <td>({{ output.name() }})</td>
               <td>
-                @if (!output.typeUrl) {
-                  {{ output.type }}
+                @if (!output.typeUrl()) {
+                  {{ output.type() }}
                 } @else {
-                  <a [href]="output.typeUrl" rel="noopener noreferrer">{{ output.type }}</a>
+                  <a [href]="output.typeUrl()" rel="noopener noreferrer">{{ output.type() }}</a>
                 }
               </td>
               <td>
-                {{ output.desc }}
-                @if (output.twoWay) {
+                {{ output.desc() }}
+                @if (output.twoWay()) {
                   <span>Can be used for two-way binding.</span>
                 }
               </td>
@@ -76,17 +76,17 @@
           </tr>
         </thead>
         <tbody>
-          @for (property of properties(); track property.name) {
+          @for (property of properties(); track property.name()) {
             <tr>
-              <td>{{ property.name }}</td>
+              <td>{{ property.name() }}</td>
               <td>
-                @if (!property.typeUrl) {
-                  {{ property.type }}
+                @if (!property.typeUrl()) {
+                  {{ property.type() }}
                 } @else {
-                  <a [href]="property.typeUrl" rel="noopener noreferrer">{{ property.type }}</a>
+                  <a [href]="property.typeUrl()" rel="noopener noreferrer">{{ property.type() }}</a>
                 }
               </td>
-              <td>{{ property.desc }}</td>
+              <td>{{ property.desc() }}</td>
             </tr>
           }
         </tbody>
@@ -100,11 +100,11 @@
           </tr>
         </thead>
         <tbody>
-          @for (method of methods(); track method.signature) {
+          @for (method of methods(); track method.signature()) {
             <tr>
-              <td>{{ method.signature }}</td>
-              <td>{{ method.returnType }}</td>
-              <td>{{ method.desc }}</td>
+              <td>{{ method.signature() }}</td>
+              <td>{{ method.returnType() }}</td>
+              <td>{{ method.desc() }}</td>
             </tr>
           }
         </tbody>

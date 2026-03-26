@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>{{
-      type === 'form' ? 'Reactive forms' : type === 'model' ? '[(ngModel)] binding' : '[(value)] binding'
+      type() === 'form' ? 'Reactive forms' : type() === 'model' ? '[(ngModel)] binding' : '[(value)] binding'
     }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
@@ -11,11 +11,11 @@
     <div class="app-form-control-demo-card__state">
       <div>Value</div>
       <div>
-        <pre>{{ formControl?.value ?? value }}</pre>
+        <pre>{{ formControl?.value ?? value() }}</pre>
       </div>
       <div>Value Type</div>
       <div>
-        <pre>{{ getType(formControl?.value ?? value) }}</pre>
+        <pre>{{ getType(formControl?.value ?? value()) }}</pre>
       </div>
       @if (formControl) {
         <div>Touched</div>
@@ -47,13 +47,13 @@
           <pre>{{ formControl.errors | json }}</pre>
         </div>
       }
-      @for (data of additionalData | keyvalue; track data.key) {
+      @for (data of additionalData() | keyvalue; track data.key) {
         <div>{{ data.key }}</div>
         <div>{{ data.value }}</div>
       }
     </div>
 
     Code:
-    <app-code-files [files]="codeFiles" />
+    <app-code-files [files]="codeFiles()" />
   </mat-card-content>
 </mat-card>

@@ -120,7 +120,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   get dataSource(): ZvSelectDataSource<T> {
     return this._dataSourceInstance;
   }
-  set dataSource(dataSource: ZvSelectData<T> | ZvSelectDataSource<T>) {
+  set dataSource(dataSource: ZvSelectData<T> | ZvSelectDataSource<T> | string) {
     if (this._dataSourceInput !== dataSource) {
       this._dataSourceInput = dataSource;
       this._switchDataSource(dataSource);
@@ -275,7 +275,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   /** The data source. */
   private _dataSourceInstance!: ZvSelectDataSource<T>;
   /** The value the [dataSource] input was called with. */
-  private _dataSourceInput: ZvSelectData<T> | ZvSelectDataSource<T> | undefined;
+  private _dataSourceInput: ZvSelectData<T> | ZvSelectDataSource<T> | string | undefined;
   private _matSelect!: MatSelect;
   private _onModelTouched: (() => void) | undefined;
   private _focused = false;
@@ -429,7 +429,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   }
 
   /** Set up a subscription for the data provided by the data source. */
-  private _switchDataSource(dataSource: ZvSelectData<T> | ZvSelectDataSource<T> | undefined) {
+  private _switchDataSource(dataSource: ZvSelectData<T> | ZvSelectDataSource<T> | string | undefined) {
     if (!this._onInitCalled) {
       // before oninit ngControl.control isn't set, but it is needed for datasource creation
       return;

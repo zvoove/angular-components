@@ -125,18 +125,17 @@ function getUsersLocale(allowedPrefixes: string[], defaultValue: string): string
   if (typeof window === 'undefined' || typeof window.navigator === 'undefined') {
     return defaultValue;
   }
-  const naviagtor = window.navigator;
-  const languages = [
+  const nav = window.navigator as Navigator & { browserLanguage?: string; userLanguage?: string };
+  const languages: (string | undefined)[] = [
     document.cookie
       .split('; ')
       .find((row) => row.startsWith('LOCALE_ID='))
       ?.split('=')[1],
-    ...naviagtor.languages,
-    naviagtor.language,
-    (naviagtor as any).browserLanguage,
-    (naviagtor as any).userLanguage,
+    ...nav.languages,
+    nav.language,
+    nav.browserLanguage,
+    nav.userLanguage,
   ];
-  const allowedLanguages = languages.filter((lang) => lang && allowedPrefixes.some((prefix) => lang.startsWith(prefix)));
-  const lang = allowedLanguages.length ? allowedLanguages[0] : defaultValue;
-  return lang;
+  const allowedLanguages = languages.filter((lang): lang is string => !!lang && allowedPrefixes.some((prefix) => lang.startsWith(prefix)));
+  return allowedLanguages.length ? allowedLanguages[0] : defaultValue;
 }

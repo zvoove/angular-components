@@ -153,7 +153,7 @@
         @if (showCustomToggleColumn && expandable) {
           <zv-table-column [header]="'Custom row detail toggle'" property="__custom" [sortable]="false">
             <ng-container *zvTableColumnTemplate="let item; let expanded = expanded">
-              <button (click)="table.toggleRowDetail(item)">Custom row detail expand button</button>
+              <button (click)="tableRef()?.toggleRowDetail(item)">Custom row detail expand button</button>
             </ng-container>
           </zv-table-column>
         }

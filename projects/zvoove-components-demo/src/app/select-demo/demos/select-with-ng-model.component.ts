@@ -15,11 +15,11 @@ import { ZvSelectModule } from '@zvoove/components/select/src/select.module';
 export class SelectWithNgModelComponent {
   private readonly cd = inject(ChangeDetectorRef);
 
-  public items: any[] = Array.from(Array(50).keys()).map((i) => ({
+  public items: { value: string; label: string }[] = Array.from(Array(50).keys()).map((i) => ({
     value: `id${i}`,
     label: `Item ${i}`,
   }));
-  public ngModelValue: any = 'id11';
+  public ngModelValue = 'id11';
 
   public random() {
     const idx = Math.floor(Math.random() * this.items.length);

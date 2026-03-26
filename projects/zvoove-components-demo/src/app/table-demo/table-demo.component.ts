@@ -1,5 +1,5 @@
 import { DatePipe, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, viewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -109,7 +109,7 @@ export class TableDemoComponent {
   private readonly cd = inject(ChangeDetectorRef);
 
   public show = true;
-  @ViewChild(ZvTable) public table: ZvTable;
+  readonly tableRef = viewChild(ZvTable);
 
   public pageEvent: PageEvent;
 
