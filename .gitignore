@@ -47,6 +47,9 @@ testem.log
 __screenshots__/
 .vitest-attachments/
 
+# Claude Code
+.claude/settings.local.json
+
 # System Files
 .DS_Store
 Thumbs.db

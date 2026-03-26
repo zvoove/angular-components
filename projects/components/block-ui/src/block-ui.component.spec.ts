@@ -13,13 +13,12 @@ import { ZvBlockUiHarness } from './testing/block-ui.harness';
       <div id="content">test text</div>
     </zv-block-ui>
   `,
-  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ZvBlockUi],
 })
 export class TestComponent {
-  public blocked = signal(false);
-  public spinnerText = signal('');
+  public readonly blocked = signal(false);
+  public readonly spinnerText = signal('');
 }
 
 describe('ZvBlockUi', () => {
@@ -63,11 +62,13 @@ describe('ZvBlockUi', () => {
   it('should display spinner when blocked', async () => {
     component.blocked.set(true);
     fixture.detectChanges();
+    const div = await blockui.getContentDiv();
+    const minDimension = Math.min(await div!.getProperty('offsetWidth'), await div!.getProperty('offsetHeight'));
+    const expectedDiameter = Math.max(Math.min(minDimension, 100), 20);
 
     expect(await blockui.isBlocked()).toBe(true);
     expect(await blockui.getSpinnerText()).toBe(null);
-    // In jsdom, rendered dimensions are always 0, so check the component's calculated diameter instead
-    expect(fixture.debugElement.children[0].componentInstance.spinnerDiameter()).toBe(20);
+    expect(await blockui.getSpinnerDiameter()).toBe(expectedDiameter);
     expect(await blockui.isClickthrough()).toBe(false);
   });
 

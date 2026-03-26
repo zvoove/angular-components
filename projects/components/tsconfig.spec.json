@@ -7,5 +7,6 @@
     // To much errors for now, but we should enable this in the future.
     "strictNullChecks": false
   },
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["**/*.spec.ts", "**/*.d.ts"],
+  "files": ["test-setup.ts"]
 }

@@ -59,9 +59,10 @@
                   "maximumWarning": "6kb"
                 }
               ]
-            }
+            },
+            "development": {}
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -80,9 +81,6 @@
           "options": {
             "buildTarget": "zvoove-components-demo:build"
           }
-        },
-        "test": {
-          "builder": "@angular/build:unit-test"
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
@@ -108,8 +106,10 @@
           "configurations": {
             "production": {
               "tsConfig": "projects/components/tsconfig.lib.prod.json"
-            }
-          }
+            },
+            "development": {}
+          },
+          "defaultConfiguration": "development"
         },
         "test": {
           "builder": "@angular/build:unit-test",
@@ -122,7 +122,8 @@
             "browser": {
               "browsers": ["chromium"]
             }
-          }
+          },
+          "defaultConfiguration": "browser"
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",

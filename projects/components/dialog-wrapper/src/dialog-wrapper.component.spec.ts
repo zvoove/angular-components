@@ -102,7 +102,6 @@ export class ZvDialogWrapperTestDialog {
   template: ``,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [ZvDialogWrapper],
 })
 export class ZvDialogWrapperTestComponent {
   public readonly dialog = inject(MatDialog);
