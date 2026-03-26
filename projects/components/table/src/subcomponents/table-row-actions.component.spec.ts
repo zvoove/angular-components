@@ -24,12 +24,12 @@ import { MatButtonHarness } from '@angular/material/button/testing';
   imports: [ZvTableRowActionsComponent],
 })
 export class TestComponent {
-  public actions = signal<IZvTableAction<any>[]>([]);
-  public loadActionsFn = signal<(data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]>>(null);
-  public openMenuFn =
+  public readonly actions = signal<IZvTableAction<any>[]>([]);
+  public readonly loadActionsFn = signal<(data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]>>(null);
+  public readonly openMenuFn =
     signal<(data: any, actions: IZvTableAction<any>[]) => Observable<IZvTableAction<any>[]> | IZvTableAction<any>[] | null>(null);
-  public item = signal<any>({});
-  public moreMenuThreshold = signal(2);
+  public readonly item = signal<any>({});
+  public readonly moreMenuThreshold = signal(2);
 
   @ViewChild(ZvTableRowActionsComponent, { static: true })
   comp: ZvTableRowActionsComponent<any>;

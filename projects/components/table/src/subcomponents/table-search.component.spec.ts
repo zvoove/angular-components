@@ -14,7 +14,7 @@ import { ZvTableSearchComponent } from './table-search.component';
   imports: [ZvTableSearchComponent],
 })
 export class TestComponent {
-  public searchText = signal('search text');
+  public readonly searchText = signal('search text');
 
   @ViewChild(ZvTableSearchComponent, { static: true })
   tableSearch: ZvTableSearchComponent;

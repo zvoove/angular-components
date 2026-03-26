@@ -83,7 +83,7 @@ export class TestNoFormComponent {
 export class TestNgModelComponent {
   public readonly cd = inject(ChangeDetectorRef);
 
-  value = signal<any>(null);
+  readonly value = signal<any>(null);
 
   readonly formField = viewChild(ZvFormField);
 }
@@ -106,11 +106,11 @@ export class TestFormComponent {
   public readonly cd = inject(ChangeDetectorRef);
 
   formControl = new FormControl('', [Validators.pattern('pattern'), Validators.minLength(5)]);
-  customLabel = signal<string | null>(null);
-  hint = signal<string | null>(null);
-  subscriptType = signal<ZvFormFieldSubscriptType | null>(null);
-  hintToggle = signal(false);
-  required = signal(false);
+  readonly customLabel = signal<string | null>(null);
+  readonly hint = signal<string | null>(null);
+  readonly subscriptType = signal<ZvFormFieldSubscriptType | null>(null);
+  readonly hintToggle = signal(false);
+  readonly required = signal(false);
 
   readonly formField = viewChild(ZvFormField);
 }

@@ -144,22 +144,22 @@ function createColDef(data: { property?: string; header?: string; sortable?: boo
   imports: [MatIconTestingModule, ZvTableModule],
 })
 export class TestComponent {
-  public caption = signal('title');
-  public dataSource = signal<ZvTableDataSource<any>>(undefined);
-  public tableId = signal('tableId');
-  public refreshable = signal(true);
-  public filterable = signal(true);
-  public showSettings = signal(true);
-  public layout = signal<'card' | 'border' | 'flat'>('card');
-  public striped = signal(true);
-  public sortDefinitions = signal<IZvTableSortDefinition[]>([{ prop: '__customSort', displayName: 'Custom Sort' }]);
-  public preferSortDropdown = signal(true);
+  public readonly caption = signal('title');
+  public readonly dataSource = signal<ZvTableDataSource<any>>(undefined);
+  public readonly tableId = signal('tableId');
+  public readonly refreshable = signal(true);
+  public readonly filterable = signal(true);
+  public readonly showSettings = signal(true);
+  public readonly layout = signal<'card' | 'border' | 'flat'>('card');
+  public readonly striped = signal(true);
+  public readonly sortDefinitions = signal<IZvTableSortDefinition[]>([{ prop: '__customSort', displayName: 'Custom Sort' }]);
+  public readonly preferSortDropdown = signal(true);
 
   /** Karma doesn't recognize url changes from code. */
-  public stateManager = signal(new ZvTableMemoryStateManager());
+  public readonly stateManager = signal(new ZvTableMemoryStateManager());
 
-  public expanded = signal(false);
-  public showToggleColumn = signal(true);
+  public readonly expanded = signal(false);
+  public readonly showToggleColumn = signal(true);
 
   @ViewChild(ZvTable, { static: true })
   table: ZvTable;

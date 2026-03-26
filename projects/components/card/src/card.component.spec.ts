@@ -45,13 +45,13 @@ import { ZvCardHarness } from './testing/card.harness';
   imports: [ZvCardModule],
 })
 export class TestDataSourceComponent {
-  public caption = signal<string>(undefined);
-  public description = signal<string>(undefined);
-  public addTopButton = signal(false);
-  public addCardActionButton = signal(false);
-  public addCaptionTemplate = signal(false);
-  public addDescriptionTemplate = signal(false);
-  public addFooterTemplate = signal(false);
+  public readonly caption = signal<string>(undefined);
+  public readonly description = signal<string>(undefined);
+  public readonly addTopButton = signal(false);
+  public readonly addCardActionButton = signal(false);
+  public readonly addCaptionTemplate = signal(false);
+  public readonly addDescriptionTemplate = signal(false);
+  public readonly addFooterTemplate = signal(false);
   @ViewChild(ZvCard) headerComponent: ZvCard;
 }
 

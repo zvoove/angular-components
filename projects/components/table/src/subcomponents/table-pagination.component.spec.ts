@@ -24,11 +24,11 @@ import { ZvTablePaginationComponent } from './table-pagination.component';
   imports: [ZvTablePaginationComponent],
 })
 class PaginationTestComponent {
-  public pageSize = signal(5);
-  public dataLength = signal(15);
-  public pageIndex = signal(0);
+  public readonly pageSize = signal(5);
+  public readonly dataLength = signal(15);
+  public readonly pageIndex = signal(0);
   public pageSizeOptions: number[] = [5, 10, 25];
-  public pageDebounce = signal<number>(undefined);
+  public readonly pageDebounce = signal<number>(undefined);
 
   @ViewChild(ZvTablePaginationComponent)
   public pagination: ZvTablePaginationComponent;

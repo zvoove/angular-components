@@ -144,15 +144,15 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
   imports: [FormsModule, ReactiveFormsModule, ZvSelect],
 })
 export class TestComponent implements OnDestroy {
-  dataSource = signal<any>([ITEMS.red, ITEMS.green, ITEMS.blue]);
+  readonly dataSource = signal<any>([ITEMS.red, ITEMS.green, ITEMS.blue]);
   control = new FormControl(null, [Validators.required]);
   form = new FormGroup({
     select: this.control,
   });
   emittedValues: any[] = [];
-  errorStateMatcher = signal<ErrorStateMatcher>(null);
-  panelClass = signal<Record<string, boolean>>({});
-  clearable = signal(true);
+  readonly errorStateMatcher = signal<ErrorStateMatcher>(null);
+  readonly panelClass = signal<Record<string, boolean>>({});
+  readonly clearable = signal(true);
 
   @ViewChild(ZvSelect, { static: true })
   select: ZvSelect;
@@ -203,11 +203,11 @@ const ITEMS = {
 export class TestMultipleComponent {
   public readonly cd = inject(ChangeDetectorRef);
 
-  showToggleAll = signal(true);
-  dataSource = signal<any>([ITEMS.red, ITEMS.green, ITEMS.blue]);
-  value = signal<any>(null);
-  selectedLabel = signal(true);
-  customTemplate = signal(false);
+  readonly showToggleAll = signal(true);
+  readonly dataSource = signal<any>([ITEMS.red, ITEMS.green, ITEMS.blue]);
+  readonly value = signal<any>(null);
+  readonly selectedLabel = signal(true);
+  readonly customTemplate = signal(false);
 
   @ViewChild(ZvSelect, { static: true })
   select: ZvSelect;
@@ -222,7 +222,7 @@ export class TestMultipleComponent {
 })
 export class TestValueComponent {
   public items = [ITEMS.red, ITEMS.green, ITEMS.blue];
-  public value = signal<any>(null);
+  public readonly value = signal<any>(null);
 }
 
 @Component({
@@ -245,7 +245,7 @@ export class TestValueComponent {
 })
 export class TestCustomTemplateComponent {
   public items = [ITEMS.red, ITEMS.green, ITEMS.blue];
-  public value = signal<any>(null);
+  public readonly value = signal<any>(null);
 }
 
 @Component({
@@ -261,9 +261,9 @@ export class TestCustomTemplateComponent {
   imports: [ZvSelect, ZvFormField, MatLabel, FormsModule],
 })
 export class TestWithFormFieldComponent {
-  public dataSource = signal<any>([ITEMS.red, ITEMS.green, ITEMS.blue]);
-  public value = signal<any>(null);
-  public clearable = signal(false);
+  public readonly dataSource = signal<any>([ITEMS.red, ITEMS.green, ITEMS.blue]);
+  public readonly value = signal<any>(null);
+  public readonly clearable = signal(false);
 }
 
 @Injectable({ providedIn: 'root' })

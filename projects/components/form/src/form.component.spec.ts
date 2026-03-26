@@ -51,7 +51,7 @@ class TestZvFormService extends BaseZvFormService {
   imports: [ZvForm],
 })
 export class TestDataSourceComponent {
-  public dataSource = signal<IZvFormDataSource>(undefined);
+  public readonly dataSource = signal<IZvFormDataSource>(undefined);
   @ViewChild(ZvForm)
   formComponent: ZvForm;
 }

@@ -316,7 +316,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._onInitCalled = true;
 
     // before oninit ngControl.control isn't set, but it is needed for datasource creation
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
     this._switchDataSource(this._dataSourceInput);
 
     this.filterCtrl.valueChanges

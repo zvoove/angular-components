@@ -714,8 +714,8 @@ function isValidDate(date: unknown) {
 export class ValueTestComponent {
   @ViewChild(ZvDateTimeInput)
   dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
-  disabled = signal(false);
-  value = signal<Date | null>(null);
+  readonly disabled = signal(false);
+  readonly value = signal<Date | null>(null);
 }
 
 @Component({
@@ -745,10 +745,10 @@ export class InputsTestComponent {
   dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
   @ViewChild('dateInput', { read: NgModel })
   ngModel: NgModel;
-  disabled = signal(false);
-  value = signal<Date | null>(null);
-  required = signal(false);
-  errorStateMatcher = signal<ErrorStateMatcher>(null);
+  readonly disabled = signal(false);
+  readonly value = signal<Date | null>(null);
+  readonly required = signal(false);
+  readonly errorStateMatcher = signal<ErrorStateMatcher>(null);
 }
 
 @Component({

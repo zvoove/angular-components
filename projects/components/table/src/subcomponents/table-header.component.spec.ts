@@ -18,10 +18,10 @@ import { ZvTableHeaderComponent } from './table-header.component';
   imports: [ZvTableHeaderComponent],
 })
 export class TestComponent {
-  public caption = signal('caption');
-  public showSorting = signal(true);
-  public filterable = signal(true);
-  public topButtonSection = signal<TemplateRef<any> | null>(null);
+  public readonly caption = signal('caption');
+  public readonly showSorting = signal(true);
+  public readonly filterable = signal(true);
+  public readonly topButtonSection = signal<TemplateRef<any> | null>(null);
 
   @ViewChild(ZvTableHeaderComponent, { static: true }) cmp: ZvTableHeaderComponent;
 

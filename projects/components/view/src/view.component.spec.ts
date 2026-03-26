@@ -29,7 +29,7 @@ class TestViewDataSource implements IZvViewDataSource {
   imports: [ZvView],
 })
 export class TestDataSourceComponent {
-  public dataSource = signal<TestViewDataSource>(undefined);
+  public readonly dataSource = signal<TestViewDataSource>(undefined);
   @ViewChild(ZvView)
   formComponent: ZvView;
 }

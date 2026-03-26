@@ -32,11 +32,11 @@ import { ZvHeaderHarness } from './testing/header.harness';
   imports: [ZvHeaderModule, MatButtonModule],
 })
 export class TestDataSourceComponent {
-  public caption = signal<string>(undefined);
-  public description = signal<string>(undefined);
-  public addButtons = signal(false);
-  public addCaptionTemplate = signal(false);
-  public addDescriptionTemplate = signal(false);
+  public readonly caption = signal<string>(undefined);
+  public readonly description = signal<string>(undefined);
+  public readonly addButtons = signal(false);
+  public readonly addCaptionTemplate = signal(false);
+  public readonly addDescriptionTemplate = signal(false);
   @ViewChild(ZvHeader) headerComponent: ZvHeader;
 }
 
