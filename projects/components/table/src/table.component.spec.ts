@@ -212,7 +212,7 @@ describe('ZvTable', () => {
 
     it('should update table state from the settings service and the query params', async () => {
       const table = createTableInstance();
-      table.stateManager = new ZvTableUrlStateManager(router as any, route);
+      table.stateManager = new ZvTableUrlStateManager(router, route);
       settingsService.settings$.next({});
       vi.spyOn(settingsService, 'getStream');
       table.columnDefs = [createColDef({ property: 'prop1' }), createColDef({ property: 'prop2' })];
