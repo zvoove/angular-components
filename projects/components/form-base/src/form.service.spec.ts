@@ -145,7 +145,6 @@ describe('BaseZvFormService', () => {
       vi.useRealTimers();
     });
 
-    // eslint-disable-next-line jasmine/missing-expect
     it('should return errors in the right order (group)', async () =>
       validateGetFormErrors(true, [
         'array.0.nested1:required',
@@ -156,11 +155,9 @@ describe('BaseZvFormService', () => {
         ':pattern',
       ]));
 
-    // eslint-disable-next-line jasmine/missing-expect
     it('shouldnt return control errors if includeControls is false', async () =>
       validateGetFormErrors(false, ['array.0:pattern', 'array:maxlength', ':pattern']));
 
-    // eslint-disable-next-line jasmine/missing-expect
     it('should fall back to options.includeControlsDefault if includeControls is null', async () => {
       service.options.includeControlsDefault = false;
       await validateGetFormErrors(null, ['array.0:pattern', 'array:maxlength', ':pattern']);

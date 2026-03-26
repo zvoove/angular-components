@@ -147,7 +147,6 @@ describe('ZvNativeTimeAdapter', () => {
     assertValidTime(adapter.deserialize(adapter.invalid()), false);
   });
 
-  // eslint-disable-next-line jasmine/missing-expect
   it('should create an invalid Time', () => {
     assertValidTime(adapter.invalid(), false);
   });
