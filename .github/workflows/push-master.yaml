@@ -16,7 +16,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 23
+          node-version: 24
           registry-url: 'https://registry.npmjs.org'
 
       - run: |
@@ -38,7 +38,4 @@ jobs:
       - run: npm run build:components
 
       - name: Publish to npm
-        id: publish
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          package: ./dist/components/package.json
+        run: npm publish ./dist/components --provenance --access public
