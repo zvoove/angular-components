@@ -1,10 +1,4 @@
 {
   "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
-  "schematics": {
-    "ng-add": {
-      "version": "14.0.0",
-      "description": "Replace all prosoft occurences with zvoove and change the prefix to zv",
-      "factory": "./rename-prosoft-to-zvoove/index"
-    }
-  }
+  "schematics": {}
 }
