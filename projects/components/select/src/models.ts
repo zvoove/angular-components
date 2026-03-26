@@ -1,7 +1,7 @@
-export interface ZvSelectItem<T = any> {
+export interface ZvSelectItem<T = unknown> {
   label: string;
   value: T;
-  entity?: any;
+  entity?: unknown;
   hidden?: boolean;
   disabled?: boolean;
 }

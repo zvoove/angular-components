@@ -26,9 +26,9 @@ export class ZvTableColumn {
   @Input() public headerStyles: Record<string, string> = {};
   @Input() public columnStyles: Record<string, string> = {};
   @ContentChild(ZvTableColumnTemplate, { read: TemplateRef })
-  public columnTemplate: TemplateRef<any> | null = null;
+  public columnTemplate: TemplateRef<unknown> | null = null;
   @ContentChild(ZvTableColumnHeaderTemplate, { read: TemplateRef })
-  public headerTemplate: TemplateRef<any> | null = null;
+  public headerTemplate: TemplateRef<unknown> | null = null;
 }
 
 @Directive({
@@ -66,7 +66,7 @@ export class ZvTableRowDetail {
   @Input() public showToggleColumn: boolean | ((row: object) => boolean) = true;
 
   @ContentChild(ZvTableRowDetailTemplate, { read: TemplateRef })
-  public template: TemplateRef<any> | null = null;
+  public template: TemplateRef<unknown> | null = null;
 
   private expandedItems = new WeakSet();
   private seenItems = new WeakSet<object>();

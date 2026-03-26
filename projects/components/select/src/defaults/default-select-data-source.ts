@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -345,7 +344,7 @@ function createEntityComparer(idKey: keyof any) {
   };
 }
 
-function normalizeLabel(option: ZvSelectItem) {
+function normalizeLabel<T>(option: ZvSelectItem<T>) {
   if (!option.label) {
     option.label = '';
   } else if (!(typeof option.label === 'string')) {

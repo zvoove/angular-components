@@ -20,7 +20,7 @@ export class ZvTableUrlStateManager extends ZvTableStateManager {
 
   public remove(tableId: string) {
     const currentParams = this.route.snapshot.queryParamMap;
-    const newQueryParams: Record<string, any> = {};
+    const newQueryParams: Record<string, string | null> = {};
     for (const key of currentParams.keys) {
       if (key !== tableId) {
         newQueryParams[key] = currentParams.get(key);
@@ -47,7 +47,7 @@ export class ZvTableUrlStateManager extends ZvTableStateManager {
   }
 
   public requestUpdate(tableId: string, updateInfo: IZvTableUpdateDataInfo) {
-    const newQueryParams: Record<string, any> = {};
+    const newQueryParams: Record<string, string | null> = {};
 
     const currentParams = this.route.snapshot.queryParamMap;
     for (const key of currentParams.keys) {

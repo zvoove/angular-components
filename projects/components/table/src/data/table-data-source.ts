@@ -16,14 +16,14 @@ export interface IExtendedZvTableUpdateDataInfo<TTrigger> extends IZvTableUpdate
   triggerData: TTrigger;
 }
 
-export interface ZvTableDataSourceOptions<TData, TTrigger = any> {
+export interface ZvTableDataSourceOptions<TData, TTrigger = unknown> {
   loadTrigger$?: Observable<TTrigger>;
   loadDataFn: (updateInfo: IExtendedZvTableUpdateDataInfo<TTrigger>) => Observable<TData[] | IZvTableFilterResult<TData>>;
   loadRowActionFn?: (data: TData, actions: IZvTableAction<TData>[]) => Observable<IZvTableAction<TData>[]>;
   openRowMenuActionFn?: (
     data: TData,
     actions: IZvTableAction<TData>[]
-  ) => Observable<IZvTableAction<TData>[]> | IZvTableAction<any>[] | null;
+  ) => Observable<IZvTableAction<TData>[]> | IZvTableAction<TData>[] | null;
   actions?: IZvTableAction<TData>[];
   mode?: ZvTableMode;
   moreMenuThreshold?: number;
@@ -36,7 +36,7 @@ export interface IZvTableFilterResult<T> {
 
 export declare type ZvTableMode = 'client' | 'server';
 
-export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implements ITableDataSource<T> {
+export class ZvTableDataSource<T, TTrigger = unknown> extends DataSource<T> implements ITableDataSource<T> {
   /** Subject that emits, when the table should be checked by the change detection */
   public _internalDetectChanges = new Subject<void>();
 
@@ -64,7 +64,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
   public loading = true;
 
   /** The error that occured in the last observable returned by loadData or null. */
-  public error: any = null;
+  public error: unknown = null;
 
   /** The locale for the table texts. */
   public locale!: string;
@@ -109,12 +109,12 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
   public readonly openMenuRowActionFn: (
     data: T,
     actions: IZvTableAction<T>[]
-  ) => Observable<IZvTableAction<T>[]> | IZvTableAction<any>[] | null;
+  ) => Observable<IZvTableAction<T>[]> | IZvTableAction<T>[] | null;
 
   public readonly moreMenuThreshold: number;
 
   /** Stream that emits when a new data array is set on the data source. */
-  private readonly _updateDataTrigger$: Observable<any>;
+  private readonly _updateDataTrigger$: Observable<TTrigger>;
 
   private readonly _loadData: (updateInfo: IExtendedZvTableUpdateDataInfo<TTrigger>) => Observable<T[] | IZvTableFilterResult<T>>;
 
@@ -204,7 +204,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
   public filterPredicate = (row: Record<string, unknown>, filter: string) => {
     // Transform the data into a lowercase string of all property values.
     const dataStr = this.filterValues(row)
-      .map((value) => (value instanceof Date ? value.toLocaleString(this.locale) : (value as any) + '').toLowerCase())
+      .map((value) => (value instanceof Date ? value.toLocaleString(this.locale) : String(value)).toLowerCase())
       // Use an obscure Unicode character to delimit the words in the concatenated string.
       // This avoids matches where the values of two columns combined will match the user's query
       // (e.g. `Flute` and `Stop` will match `Test`). The character is intended to be something
@@ -260,10 +260,8 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
     }
 
     return data.sort((a: T, b: T) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      let valueA = this.sortingDataAccessor(a, sortProp) as any;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      let valueB = this.sortingDataAccessor(b, sortProp) as any;
+      let valueA: unknown = this.sortingDataAccessor(a, sortProp);
+      let valueB: unknown = this.sortingDataAccessor(b, sortProp);
 
       // If both valueA and valueB exist (truthy), then compare the two. Otherwise, check if
       // one value exists while the other doesn't. In this case, existing value should come first.
@@ -272,8 +270,8 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
       let comparatorResult = 0;
       if (valueA != null && valueB != null) {
         if (valueA instanceof Date || valueB instanceof Date) {
-          valueA = new Date(valueA as unknown as string).toISOString();
-          valueB = new Date(valueB as unknown as string).toISOString();
+          valueA = new Date(valueA as string).toISOString();
+          valueB = new Date(valueB as string).toISOString();
         }
 
         const propertyType = typeof valueA;
@@ -281,9 +279,9 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
           comparatorResult = (valueA as string).localeCompare(valueB as string);
         }
         // Check if one value is greater than the other; if equal, comparatorResult should remain 0.
-        else if (valueA > valueB) {
+        else if ((valueA as number) > (valueB as number)) {
           comparatorResult = 1;
-        } else if (valueA < valueB) {
+        } else if ((valueA as number) < (valueB as number)) {
           comparatorResult = -1;
         }
       } else if (valueA != null) {
@@ -390,7 +388,6 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
   public connect() {
     this._initDataChangeSubscription();
     this._updateDataTriggerSub = this._updateDataTrigger$.subscribe((data) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       this._lastLoadTriggerData = data;
       this.updateData();
     });
@@ -435,7 +432,7 @@ export class ZvTableDataSource<T, TTrigger = any> extends DataSource<T> implemen
     // If there is a filter string, filter out data that does not contain it.
     // Each data object is converted to a string using the function defined by filterTermAccessor.
     // May be overridden for customization.
-    const filteredData = !this.filter ? data : data.filter((obj) => this.filterPredicate(obj as Record<string, any>, this.filter));
+    const filteredData = !this.filter ? data : data.filter((obj) => this.filterPredicate(obj as Record<string, unknown>, this.filter));
 
     this.dataLength = filteredData.length;
 

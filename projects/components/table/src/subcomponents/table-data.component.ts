@@ -124,7 +124,7 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
     this.sortChanged.emit({ sortColumn: sort.active, sortDirection: sort.direction || 'asc' });
   }
 
-  public toggleRowDetail(item: Record<string, any>) {
+  public toggleRowDetail(item: object) {
     this.rowDetail!.toggle(item);
     this.cd.markForCheck();
   }
@@ -153,9 +153,8 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
     return this.dataSource.selectionModel.selected;
   }
 
-  public showRowDetails(row: any) {
+  public showRowDetails(row: object) {
     if (typeof this.rowDetail!.showToggleColumn === 'function') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       return this.rowDetail!.showToggleColumn(row);
     }
 

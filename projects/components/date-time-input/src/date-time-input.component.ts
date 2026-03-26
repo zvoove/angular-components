@@ -33,6 +33,7 @@ import {
   NgControl,
   NgForm,
   ReactiveFormsModule,
+  ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
@@ -173,7 +174,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   timePlaceholder = this.dateTimeAdapter.timeAdapter.parseFormatExample();
 
   /** `View -> model callback called when value changes` */
-  _onChange: (value: any) => void = () => {};
+  _onChange: (value: TDateTime | null) => void = () => {};
 
   /** `View -> model callback called when input has been touched` */
   _onTouched = () => {};
@@ -260,7 +261,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   @ViewChild(MatDatepickerInput) public matDateInput!: MatDatepickerInput<TDate>;
   @ViewChild(ZvTimeInput) public zvTimeInput!: ZvTimeInput<TTime>;
   _childValidators: ValidatorFn[] = [(control) => this.matDateInput?.validate(control), (control) => this.zvTimeInput?.validate(control)];
-  validate(control: AbstractControl): Record<string, any> | null {
+  validate(control: AbstractControl): ValidationErrors | null {
     const errors = this._childValidators.map((v) => v(control)).filter((error) => error);
     if (!errors.length) {
       if (this._form.value.time && !this._form.value.date) {
@@ -284,10 +285,8 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
    *
    * @param value New value to be written to the model.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  writeValue(value: any): void {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    this._assignValue(value, { assignForm: true, emitChange: false });
+  writeValue(value: unknown): void {
+    this._assignValue(value as TDateTime | null, { assignForm: true, emitChange: false });
   }
 
   /**
@@ -297,8 +296,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
    *
    * @param fn Callback to be triggered when the value changes.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: TDateTime | null) => void): void {
     this._onChange = fn;
   }
 

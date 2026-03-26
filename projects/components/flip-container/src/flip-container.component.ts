@@ -58,14 +58,13 @@ export class ZvFlipContainer implements AfterViewInit {
     this.show('back');
   }
 
-  private _timerRef: any = 0;
+  private _timerRef: ReturnType<typeof setTimeout> | null = null;
   public show(show: 'back' | 'front') {
     if (this._active !== show) {
       this._active = show;
       this.cd.markForCheck();
       this._flipStart();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      clearTimeout(this._timerRef);
+      clearTimeout(this._timerRef!);
       this._timerRef = setTimeout(() => {
         this._flipDone();
       }, 300);

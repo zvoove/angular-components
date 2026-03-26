@@ -42,7 +42,7 @@ export interface IZvTableAction<T> {
 
 export interface IZvTableActionRouterLink {
   path: string[];
-  queryParams?: Record<string, any>;
+  queryParams?: Record<string, string>;
 }
 
 export interface ITableDataSource<T> extends DataSource<T> {
@@ -63,7 +63,7 @@ export interface ITableDataSource<T> extends DataSource<T> {
   readonly dataLength: number;
 
   /** The error that occured in the last observable returned by loadData or null. */
-  error: any;
+  error: unknown;
 
   /** The locale for the table texts. */
   locale: string;
@@ -99,7 +99,7 @@ export interface ITableDataSource<T> extends DataSource<T> {
   readonly loadRowActionFn: (data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]>;
 
   /** Component open callbacks of actions which can be executed for a selection of rows */
-  readonly openMenuRowActionFn: (data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]> | IZvTableAction<any>[] | null;
+  readonly openMenuRowActionFn: (data: T, actions: IZvTableAction<T>[]) => Observable<IZvTableAction<T>[]> | IZvTableAction<T>[] | null;
 
   readonly moreMenuThreshold: number;
 

@@ -31,6 +31,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { DEFAULT_COMPARER, ZvSelectDataSource, isZvSelectDataSource } from './data/select-data-source';
+import { ZvSelectData } from './defaults/default-select-service';
 import { ZvSelectOptionTemplate } from './directives/select-option-template.directive';
 import { ZvSelectTriggerTemplate } from './directives/select-trigger-template.directive';
 import { getSelectUnknownDataSourceError } from './helpers/errors';
@@ -116,12 +117,11 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
    *   - `DataSource` object that implements the connect/disconnect interface.
    */
   @Input({ required: true })
-  get dataSource(): any {
+  get dataSource(): ZvSelectDataSource<T> {
     return this._dataSourceInstance;
   }
-  set dataSource(dataSource: any) {
+  set dataSource(dataSource: ZvSelectData<T> | ZvSelectDataSource<T>) {
     if (this._dataSourceInput !== dataSource) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       this._dataSourceInput = dataSource;
       this._switchDataSource(dataSource);
     }
@@ -141,7 +141,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   /** If true, then there will be a toggle all checkbox available (only multiple select mode) */
   @Input() public showToggleAll = true;
   @Input() public multiple = false;
-  @Input() public panelClass: string | string[] | Set<string> | Record<string, any> = '';
+  @Input() public panelClass: string | string[] | Set<string> | Record<string, boolean> = '';
   @Input() public placeholder = '';
   @Input() public required = false;
   @Input() public selectedLabel = true;
@@ -196,6 +196,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._errorStateTracker.errorState = value;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- constrained by MatSelect.compareWith type
   public get compareWith(): (o1: any, o2: any) => boolean {
     return this._dataSourceInstance?.compareWith ?? DEFAULT_COMPARER;
   }
@@ -223,7 +224,6 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
 
   /** the error that occured while loading the options */
   public get error() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this._dataSourceInstance?.error;
   }
 
@@ -244,12 +244,11 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     return '';
   }
 
-  readonly $currentSelection = signal([] as MatOption<any>[]);
+  readonly $currentSelection = signal([] as MatOption<T>[]);
   readonly $customTriggerDataArray = computed(() => {
-    const selectedOptions = this.$currentSelection().map((option: MatOption): ZvSelectTriggerData => {
+    const selectedOptions = this.$currentSelection().map((option: MatOption<T>): ZvSelectTriggerData => {
       return {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        value: option.value,
+        value: option.value as unknown as string,
         viewValue: option.viewValue,
       };
     });
@@ -276,15 +275,15 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   /** The data source. */
   private _dataSourceInstance!: ZvSelectDataSource<T>;
   /** The value the [dataSource] input was called with. */
-  private _dataSourceInput: any;
+  private _dataSourceInput: ZvSelectData<T> | ZvSelectDataSource<T> | undefined;
   private _matSelect!: MatSelect;
-  private _onModelTouched: any;
+  private _onModelTouched: (() => void) | undefined;
   private _focused = false;
   private _onInitCalled = false;
   _errorStateTracker: _ErrorStateTracker;
 
   /** View -> model callback called when value changes */
-  private _onChange: (value: any) => void = () => {};
+  private _onChange: (value: T | null) => void = () => {};
 
   constructor() {
     const defaultErrorStateMatcher = inject(ErrorStateMatcher);
@@ -321,7 +320,6 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
 
     this.filterCtrl.valueChanges
       .pipe(takeUntil(this._ngUnsubscribe$))
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       .subscribe((searchText) => this.dataSource.searchTextChanged(searchText));
 
     let selectionSignalInitialized = false;
@@ -329,8 +327,10 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
       .pipe(
         tap(() => {
           if (!selectionSignalInitialized && this._matSelect._selectionModel) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- MatSelect._selectionModel.selected is MatOption<any>[]
             this.$currentSelection.set(this._matSelect._selectionModel.selected);
             this._matSelect._selectionModel.changed.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(() => {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- MatSelect._selectionModel.selected is MatOption<any>[]
               this.$currentSelection.set(this._matSelect._selectionModel.selected);
             });
             selectionSignalInitialized = true;
@@ -356,7 +356,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._matSelect.setDescribedByIds(ids);
   }
 
-  public writeValue(value: any) {
+  public writeValue(value: unknown) {
     this._propagateValueChange(value, ValueChangeSource.writeValue);
   }
 
@@ -364,8 +364,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._onChange = fn;
   }
 
-  public registerOnTouched(fn: any): void {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  public registerOnTouched(fn: () => void): void {
     this._onModelTouched = fn;
   }
 
@@ -384,7 +383,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._dataSourceInstance.panelOpenChanged(open);
   }
 
-  public onValueChange(value: any) {
+  public onValueChange(value: T | null) {
     this._propagateValueChange(value, ValueChangeSource.matSelect);
   }
 
@@ -402,39 +401,35 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._dataSourceInstance.forceReload();
   }
 
-  private _propagateValueChange(value: any, source: ValueChangeSource) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this._value = value;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    this.empty = this.multiple ? !value?.length : value == null || value === '';
+  private _propagateValueChange(value: unknown, source: ValueChangeSource) {
+    this._value = value as T | null;
+    this.empty = this.multiple ? !Array.isArray(value) || value.length === 0 : value == null || value === '';
     this._updateToggleAllCheckbox();
-    this._pushSelectedValuesToDataSource(value);
+    this._pushSelectedValuesToDataSource(this._value);
     if (source !== ValueChangeSource.valueInput) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this.valueChange.emit(value);
+      this.valueChange.emit(this._value);
     }
     if (source !== ValueChangeSource.writeValue) {
-      this._onChange(value);
+      this._onChange(this._value);
     }
     this.cd.markForCheck();
   }
 
-  private _pushSelectedValuesToDataSource(value: any): void {
+  private _pushSelectedValuesToDataSource(value: T | null): void {
     if (!this._dataSourceInstance) {
       return;
     }
-    let values: any[];
+    let values: T[];
     if (this.multiple) {
       values = Array.isArray(value) ? value : [];
     } else {
       values = value ? [value] : [];
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this._dataSourceInstance.selectedValuesChanged(values);
   }
 
   /** Set up a subscription for the data provided by the data source. */
-  private _switchDataSource(dataSource: any) {
+  private _switchDataSource(dataSource: ZvSelectData<T> | ZvSelectDataSource<T> | undefined) {
     if (!this._onInitCalled) {
       // before oninit ngControl.control isn't set, but it is needed for datasource creation
       return;
@@ -444,8 +439,8 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._dataSourceInstance?.disconnect();
     this._renderChangeSubscription.unsubscribe();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this._dataSourceInstance = this.selectService?.createDataSource(dataSource, this.ngControl?.control ?? null) ?? dataSource;
+    this._dataSourceInstance = (this.selectService?.createDataSource(dataSource, this.ngControl?.control ?? null) ??
+      dataSource) as ZvSelectDataSource<T>;
     if (!isZvSelectDataSource(this._dataSourceInstance)) {
       throw getSelectUnknownDataSourceError();
     }
@@ -476,7 +471,6 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
       this.stateChanges.next();
     }
     if (!isFocused && this._onModelTouched != null) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       this._onModelTouched();
     }
   }
