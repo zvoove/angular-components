@@ -20,7 +20,7 @@ import { ZvFlipContainerModule } from './flip-container.module';
 export class TestComponent {
   public removeHiddenNodes = true;
 
-  readonly cmp = viewChild(ZvFlipContainer, { static: true });
+  readonly cmp = viewChild.required(ZvFlipContainer);
 }
 
 describe('ZvFlipContainer', () => {

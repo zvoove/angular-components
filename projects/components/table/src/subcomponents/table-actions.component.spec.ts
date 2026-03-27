@@ -26,7 +26,7 @@ export class TestComponent {
   public actions: IZvTableAction<any>[] = [];
   public items: any = [];
 
-  readonly comp = viewChild(ZvTableActionsComponent, { static: true });
+  readonly comp = viewChild.required(ZvTableActionsComponent);
 }
 
 describe('ZvTableActionsComponent', () => {

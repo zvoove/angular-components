@@ -29,7 +29,7 @@ export class TestComponent {
     { prop: 'prop2', displayName: 'Sort Prop' },
   ];
 
-  readonly tableSort = viewChild(ZvTableSortComponent, { static: true });
+  readonly tableSort = viewChild.required(ZvTableSortComponent);
 
   public onSortChanged(_event: IZvTableSort) {}
 }

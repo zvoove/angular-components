@@ -34,7 +34,7 @@ export class TestComponent {
   public sortDefinitions: IZvTableSortDefinition[] = [];
   public pageSizeOptions: number[] = [1, 3, 7];
 
-  readonly tableSearch = viewChild(ZvTableSettingsComponent, { static: true });
+  readonly tableSearch = viewChild.required(ZvTableSettingsComponent);
 
   public onSettingsSaved() {}
   public onSettingsAborted() {}

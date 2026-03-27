@@ -31,7 +31,7 @@ export class TestComponent {
   public readonly item = signal<any>({});
   public readonly moreMenuThreshold = signal(2);
 
-  readonly comp = viewChild(ZvTableRowActionsComponent, { static: true });
+  readonly comp = viewChild.required(ZvTableRowActionsComponent);
 }
 
 describe('ZvTableRowActionsComponent', () => {

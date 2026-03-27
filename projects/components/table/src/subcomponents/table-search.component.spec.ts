@@ -16,7 +16,7 @@ import { ZvTableSearchComponent } from './table-search.component';
 export class TestComponent {
   public readonly searchText = signal('search text');
 
-  readonly tableSearch = viewChild(ZvTableSearchComponent, { static: true });
+  readonly tableSearch = viewChild.required(ZvTableSearchComponent);
 
   public onSearchChanged(_event: string) {}
 }

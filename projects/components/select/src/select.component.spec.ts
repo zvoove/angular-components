@@ -161,7 +161,7 @@ export class TestComponent implements OnDestroy {
   readonly panelClass = signal<Record<string, boolean>>({});
   readonly clearable = signal(true);
 
-  readonly select = viewChild(ZvSelect, { static: true });
+  readonly select = viewChild.required(ZvSelect);
 
   private valuesSubscription: Subscription;
   constructor() {
@@ -215,7 +215,7 @@ export class TestMultipleComponent {
   readonly selectedLabel = signal(true);
   readonly customTemplate = signal(false);
 
-  readonly select = viewChild(ZvSelect, { static: true });
+  readonly select = viewChild.required(ZvSelect);
 }
 
 @Component({

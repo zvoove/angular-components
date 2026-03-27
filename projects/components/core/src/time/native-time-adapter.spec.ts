@@ -88,7 +88,7 @@ describe('ZvNativeTimeAdapter', () => {
   });
 
   it.skip('should format with a different locale', () => {
-    adapter.setLocale('ja-JP');
+    (adapter as any).setLocale('ja-JP');
     expect(adapter.format(newTime(14, 45), {})).toEqual('2017/1/1');
   });
 
@@ -98,8 +98,8 @@ describe('ZvNativeTimeAdapter', () => {
 
   it.skip('should clone', () => {
     const time = newTime(14, 45);
-    expect(adapter.clone(time)).toEqual(time);
-    expect(adapter.clone(time)).not.toBe(time);
+    expect((adapter as any).clone(time)).toEqual(time);
+    expect((adapter as any).clone(time)).not.toBe(time);
   });
 
   it('should compare Times', () => {

@@ -31,7 +31,7 @@ export class TestComponent {
   public readonly searchText = signal('');
   public readonly topButtonSection = signal<TemplateRef<any> | null>(null);
 
-  readonly cmp = viewChild(ZvTableHeaderComponent, { static: true });
+  readonly cmp = viewChild.required(ZvTableHeaderComponent);
 
   readonly dummyTpl = viewChild('tpl', { read: TemplateRef });
 }

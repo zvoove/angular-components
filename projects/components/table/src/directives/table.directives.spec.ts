@@ -12,7 +12,7 @@ import { ZvTableRowDetail } from './table.directives';
 class TestRowDetailComponent {
   readonly expanded = signal(false);
 
-  readonly dir = viewChild(ZvTableRowDetail, { static: true });
+  readonly dir = viewChild.required(ZvTableRowDetail);
 }
 
 describe('ZvTableRowDetailDirective', () => {

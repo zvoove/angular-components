@@ -125,8 +125,8 @@ export class TestCheckboxComponent {
   public asyncLabel$ = of('async label');
   formControl = new FormControl('');
 
-  readonly formFieldTemplateLabel = viewChild<ZvFormField>('f1', { static: true });
-  readonly formFieldNoLabel = viewChild<ZvFormField>('f2', { static: true });
+  readonly formFieldTemplateLabel = viewChild.required<ZvFormField>('f1');
+  readonly formFieldNoLabel = viewChild.required<ZvFormField>('f2');
 }
 
 describe('ZvFormField', () => {

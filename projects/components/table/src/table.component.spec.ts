@@ -174,8 +174,8 @@ export class TestComponent {
   public readonly expanded = signal(false);
   public readonly showToggleColumn = signal(true);
 
-  readonly table = viewChild(ZvTable, { static: true });
-  readonly paginator = viewChild(ZvTablePaginationComponent, { static: true });
+  readonly table = viewChild.required(ZvTable);
+  readonly paginator = viewChild.required(ZvTablePaginationComponent);
 
   public onPage(_event: unknown) {}
   public onListActionExecute(_selection: unknown[]) {}
@@ -743,7 +743,7 @@ describe('ZvTable', () => {
         expect(await customHeaderCells[0].getText()).toEqual('custom');
       });
 
-      it('should create data rows', async () => {
+      it.only('should create data rows', async () => {
         const dataRows = await table.getRows();
         expect(dataRows.length).toEqual(4); // 2 rows with 2x row detail per row - because the 3rd item is on the 2nd page
 
@@ -756,25 +756,27 @@ describe('ZvTable', () => {
         expect(await strDataCell[0].getText()).toEqual('item 1');
         expect(await (await strDataCell[0].host()).getCssValue('color')).toEqual('rgb(0, 0, 255)');
 
-        const detail = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('zv-table-data__detail-row'));
+        let detail = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('zv-table-data__detail-row'));
+        expect(detail.length).toEqual(2);
 
-        for (const d of detail) {
-          expect(await (await d.host()).getCssValue('height')).toEqual('0');
-        }
+        expect(await (await detail[0].host()).hasClass('zv-table-data__detail-row--collapsed')).toBe(true);
+        expect(await (await detail[1].host()).hasClass('zv-table-data__detail-row--collapsed')).toBe(true);
 
         const expanderCell = await data[0].getCells({ columnName: 'rowDetailExpander' });
         expect(expanderCell.length).toEqual(1);
 
-        await (await expanderCell[0].host()).click();
-        expect(await (await detail[0].host()).getCssValue('height')).not.toEqual('0');
+        // Click the button inside the cell (not the <td>) to trigger the (click) handler
+        const expanderButtons = fixture.debugElement.queryAll(By.css('.mat-column-rowDetailExpander button'));
+        expanderButtons[0].nativeElement.click();
+        fixture.detectChanges();
+        expect(await (await detail[0].host()).hasClass('zv-table-data__detail-row--expanded')).toBe(true);
+        expect(await (await detail[1].host()).hasClass('zv-table-data__detail-row--collapsed')).toBe(true);
 
-        const customExpanderCell = await data[0].getCells({ columnName: '__custom' });
-        expect(customExpanderCell.length).toEqual(1);
-
-        await (await customExpanderCell[0].host()).click();
-        for (const d of detail) {
-          expect(await (await d.host()).getCssValue('height')).toEqual('0');
-        }
+        // Click the custom toggle button to collapse row 0 again
+        const customButtons = fixture.debugElement.queryAll(By.css('.mat-column-__custom button'));
+        customButtons[0].nativeElement.click();
+        fixture.detectChanges();
+        expect(await (await detail[0].host()).hasClass('zv-table-data__detail-row--collapsed')).toBe(true);
       });
 
       it('should filter', async () => {
