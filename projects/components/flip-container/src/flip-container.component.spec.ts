@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { By } from '@angular/platform-browser';
@@ -20,7 +20,7 @@ import { ZvFlipContainerModule } from './flip-container.module';
 export class TestComponent {
   public removeHiddenNodes = true;
 
-  @ViewChild(ZvFlipContainer, { static: true }) cmp: ZvFlipContainer;
+  readonly cmp = viewChild(ZvFlipContainer, { static: true });
 }
 
 describe('ZvFlipContainer', () => {
@@ -40,70 +40,70 @@ describe('ZvFlipContainer', () => {
     const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(component.cmp.active).toEqual('front');
+    expect(component.cmp().active).toEqual('front');
 
-    component.cmp.toggleFlip();
-    expect(component.cmp.active).toEqual('back');
+    component.cmp().toggleFlip();
+    expect(component.cmp().active).toEqual('back');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('back');
+    expect(component.cmp().active).toEqual('back');
 
-    component.cmp.toggleFlip();
-    expect(component.cmp.active).toEqual('front');
+    component.cmp().toggleFlip();
+    expect(component.cmp().active).toEqual('front');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('front');
+    expect(component.cmp().active).toEqual('front');
 
-    component.cmp.showFront();
-    expect(component.cmp.active).toEqual('front');
+    component.cmp().showFront();
+    expect(component.cmp().active).toEqual('front');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('front');
+    expect(component.cmp().active).toEqual('front');
 
-    component.cmp.showBack();
-    expect(component.cmp.active).toEqual('back');
+    component.cmp().showBack();
+    expect(component.cmp().active).toEqual('back');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('back');
+    expect(component.cmp().active).toEqual('back');
 
-    component.cmp.showBack();
-    expect(component.cmp.active).toEqual('back');
+    component.cmp().showBack();
+    expect(component.cmp().active).toEqual('back');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('back');
+    expect(component.cmp().active).toEqual('back');
 
-    component.cmp.show('back');
-    expect(component.cmp.active).toEqual('back');
+    component.cmp().show('back');
+    expect(component.cmp().active).toEqual('back');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('back');
+    expect(component.cmp().active).toEqual('back');
 
-    component.cmp.show('front');
-    expect(component.cmp.active).toEqual('front');
+    component.cmp().show('front');
+    expect(component.cmp().active).toEqual('front');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('front');
+    expect(component.cmp().active).toEqual('front');
 
-    component.cmp.show('front');
-    expect(component.cmp.active).toEqual('front');
+    component.cmp().show('front');
+    expect(component.cmp().active).toEqual('front');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('front');
+    expect(component.cmp().active).toEqual('front');
 
-    component.cmp.show('back');
-    expect(component.cmp.active).toEqual('back');
+    component.cmp().show('back');
+    expect(component.cmp().active).toEqual('back');
     fixture.detectChanges();
     await vi.advanceTimersByTimeAsync(300);
     fixture.detectChanges();
-    expect(component.cmp.active).toEqual('back');
+    expect(component.cmp().active).toEqual('back');
   });
 
   it('should hide DOM nodes with removeHiddenNodes false', async () => {
@@ -120,7 +120,7 @@ describe('ZvFlipContainer', () => {
     expect(frontEl.hidden).toEqual(false);
     expect(frontEl.children.length).toEqual(1);
 
-    component.cmp.toggleFlip();
+    component.cmp().toggleFlip();
     fixture.detectChanges();
 
     await vi.advanceTimersByTimeAsync(300);
@@ -146,7 +146,7 @@ describe('ZvFlipContainer', () => {
     expect(frontEl.hidden).toEqual(false);
     expect(frontEl.children.length).toEqual(1);
 
-    component.cmp.toggleFlip();
+    component.cmp().toggleFlip();
     fixture.detectChanges();
 
     await vi.advanceTimersByTimeAsync(300);
@@ -167,7 +167,7 @@ describe('ZvFlipContainer', () => {
     const flipBoxDbgEl = fixture.debugElement.query(By.css('.zv-flip-container__flip-box')).nativeElement as HTMLElement;
     expect(flipBoxDbgEl.className).toContain('zv-flip-container__flip-box--active-front');
 
-    component.cmp.toggleFlip();
+    component.cmp().toggleFlip();
     fixture.detectChanges();
 
     expect(flipBoxDbgEl.className).toContain('zv-flip-container__flip-box--active-back');
@@ -190,7 +190,7 @@ describe('ZvFlipContainer', () => {
     expect(frontEl.hasAttribute('inert')).toEqual(false);
     expect(backEl.hasAttribute('inert')).toEqual(true);
 
-    component.cmp.toggleFlip();
+    component.cmp().toggleFlip();
     fixture.detectChanges();
 
     await vi.advanceTimersByTimeAsync(300);

@@ -8,8 +8,8 @@ import {
   OnDestroy,
   QueryList,
   Type,
-  ViewChild,
   inject,
+  viewChild,
   signal,
 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -161,8 +161,7 @@ export class TestComponent implements OnDestroy {
   readonly panelClass = signal<Record<string, boolean>>({});
   readonly clearable = signal(true);
 
-  @ViewChild(ZvSelect, { static: true })
-  select: ZvSelect;
+  readonly select = viewChild(ZvSelect, { static: true });
 
   private valuesSubscription: Subscription;
   constructor() {
@@ -216,8 +215,7 @@ export class TestMultipleComponent {
   readonly selectedLabel = signal(true);
   readonly customTemplate = signal(false);
 
-  @ViewChild(ZvSelect, { static: true })
-  select: ZvSelect;
+  readonly select = viewChild(ZvSelect, { static: true });
 }
 
 @Component({
@@ -552,11 +550,11 @@ describe('ZvSelect', () => {
     fixture.detectChanges();
     await flushMicrotasks();
     fixture.detectChanges();
-    expect(component.select.focused).toBe(false);
+    expect(component.select().focused).toBe(false);
     await zvSelect.open();
-    expect(component.select.focused).toBe(true);
+    expect(component.select().focused).toBe(true);
     await zvSelect.close();
-    expect(component.select.focused).toBe(false);
+    expect(component.select().focused).toBe(false);
   });
 
   it('should set the right css classes', async () => {
@@ -591,12 +589,12 @@ describe('ZvSelect', () => {
     errorState = false;
 
     // Required
-    component.select.required = true;
-    (component.select as any).cd.markForCheck();
+    component.select().required = true;
+    (component.select() as any).cd.markForCheck();
     fixture.detectChanges();
     fixture.detectChanges();
     assertZvSelectCssClasses(fixture, ['zv-select', 'zv-select-required']);
-    component.select.required = false;
+    component.select().required = false;
 
     // mat-option
     component.panelClass.set({ 'custom-mat-option-class': true });

@@ -2,7 +2,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader, TestKey } from '@angular/cdk/testing';
-import { ChangeDetectionStrategy, Component, LOCALE_ID, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, LOCALE_ID, signal, viewChild } from '@angular/core';
 import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerInput, MatDatepickerModule } from '@angular/material/datepicker';
@@ -34,7 +34,7 @@ describe('ZvDateTimeInput', () => {
       });
       fixture = TestBed.createComponent(ValueTestComponent);
       fixture.detectChanges();
-      cmp = fixture.componentInstance.dateTimeInputCmp;
+      cmp = fixture.componentInstance.dateTimeInputCmp();
       expect(cmp).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
@@ -402,7 +402,7 @@ describe('ZvDateTimeInput', () => {
       });
       fixture = TestBed.createComponent(InputsTestComponent);
       fixture.detectChanges();
-      cmp = fixture.componentInstance.dateTimeInputCmp;
+      cmp = fixture.componentInstance.dateTimeInputCmp();
       expect(cmp).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
@@ -458,7 +458,7 @@ describe('ZvDateTimeInput', () => {
       });
       fixture = TestBed.createComponent(FormTestComponent);
       fixture.detectChanges();
-      cmp = fixture.componentInstance.dateTimeInputCmp;
+      cmp = fixture.componentInstance.dateTimeInputCmp();
       formControl = fixture.componentInstance.control;
       expect(cmp).toBeDefined();
 
@@ -712,8 +712,7 @@ function isValidDate(date: unknown) {
   ],
 })
 export class ValueTestComponent {
-  @ViewChild(ZvDateTimeInput)
-  dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
+  readonly dateTimeInputCmp = viewChild(ZvDateTimeInput);
   readonly disabled = signal(false);
   readonly value = signal<Date | null>(null);
 }
@@ -741,10 +740,8 @@ export class ValueTestComponent {
   ],
 })
 export class InputsTestComponent {
-  @ViewChild(ZvDateTimeInput)
-  dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
-  @ViewChild('dateInput', { read: NgModel })
-  ngModel: NgModel;
+  readonly dateTimeInputCmp = viewChild(ZvDateTimeInput);
+  readonly ngModel = viewChild('dateInput', { read: NgModel });
   readonly disabled = signal(false);
   readonly value = signal<Date | null>(null);
   readonly required = signal(false);
@@ -766,7 +763,6 @@ export class InputsTestComponent {
   ],
 })
 export class FormTestComponent {
-  @ViewChild(ZvDateTimeInput)
-  dateTimeInputCmp!: ZvDateTimeInput<Date, Date, string>;
+  readonly dateTimeInputCmp = viewChild(ZvDateTimeInput);
   control = new FormControl<Date | null>(null);
 }

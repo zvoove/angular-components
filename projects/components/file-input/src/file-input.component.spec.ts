@@ -2,7 +2,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader } from '@angular/cdk/testing';
-import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { ZvFileInput } from './file-input.component';
 import { ZvFileInputHarness } from './testing/file-input.harness';
 
@@ -14,8 +14,7 @@ import { ZvFileInputHarness } from './testing/file-input.harness';
   imports: [ZvFileInput],
 })
 export class TestComponent {
-  @ViewChild(ZvFileInput)
-  fileInputCmp!: ZvFileInput;
+  readonly fileInputCmp = viewChild(ZvFileInput);
 
   readonly accept = signal<string[]>([]);
 }
@@ -30,7 +29,7 @@ describe('ZvFileInput', () => {
   beforeEach(async () => {
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
-    cmp = fixture.componentInstance.fileInputCmp;
+    cmp = fixture.componentInstance.fileInputCmp();
     expect(cmp).toBeDefined();
 
     loader = TestbedHarnessEnvironment.loader(fixture);

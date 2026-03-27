@@ -59,7 +59,7 @@ describe('ZvNumberInput', () => {
     expect(clearTimerSpy).toHaveBeenCalledTimes(7);
   });
 
-  it('Should display the spinner value 0.75  ', () => {
+  it('Should display the spinner value 0.75', () => {
     fixture.componentRef.setInput('stepSize', 0.25);
     fixture.detectChanges();
 

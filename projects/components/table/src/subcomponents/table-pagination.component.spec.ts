@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DebugElement, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DebugElement, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { FormsModule } from '@angular/forms';
@@ -30,8 +30,7 @@ class PaginationTestComponent {
   public pageSizeOptions: number[] = [5, 10, 25];
   public readonly pageDebounce = signal<number>(undefined);
 
-  @ViewChild(ZvTablePaginationComponent)
-  public pagination: ZvTablePaginationComponent;
+  readonly pagination = viewChild(ZvTablePaginationComponent);
 
   public onPage = (_: PageEvent) => {};
 }
@@ -97,7 +96,7 @@ describe('ZvTablePaginationComponent', () => {
       component.pageIndex.set(0);
       await fixture.whenStable();
 
-      expect(component.pagination.pages().length).toEqual(data[2]);
+      expect(component.pagination().pages().length).toEqual(data[2]);
     }
   });
 
@@ -105,6 +104,6 @@ describe('ZvTablePaginationComponent', () => {
     component.dataLength.set(15);
     component.pageSize.set(5);
     await fixture.whenStable();
-    expect(component.pagination.pages().length).toEqual(3);
+    expect(component.pagination().pages().length).toEqual(3);
   });
 });

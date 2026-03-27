@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, TemplateRef, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ZvTableHeaderComponent } from './table-header.component';
 
@@ -31,10 +31,9 @@ export class TestComponent {
   public readonly searchText = signal('');
   public readonly topButtonSection = signal<TemplateRef<any> | null>(null);
 
-  @ViewChild(ZvTableHeaderComponent, { static: true }) cmp: ZvTableHeaderComponent;
+  readonly cmp = viewChild(ZvTableHeaderComponent, { static: true });
 
-  @ViewChild('tpl', { read: TemplateRef, static: true })
-  public dummyTpl: TemplateRef<any> | null = null;
+  readonly dummyTpl = viewChild('tpl', { read: TemplateRef });
 }
 
 describe('ZvTableHeaderComponent', () => {
@@ -55,41 +54,41 @@ describe('ZvTableHeaderComponent', () => {
     component.filterable.set(false);
     component.topButtonSection.set(null);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop()).toBe('0');
+    expect(component.cmp()!.paddingTop()).toBe('0');
 
     component.caption.set('test');
     component.showSorting.set(false);
     component.filterable.set(false);
     component.topButtonSection.set(null);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop()).toBe('0');
+    expect(component.cmp()!.paddingTop()).toBe('0');
 
     component.caption.set('test');
     component.showSorting.set(true);
     component.filterable.set(true);
-    component.topButtonSection.set(component.dummyTpl);
+    component.topButtonSection.set(component.dummyTpl());
     await fixture.whenStable();
-    expect(component.cmp.paddingTop()).toBe('0');
+    expect(component.cmp()!.paddingTop()).toBe('0');
 
     component.caption.set('');
     component.showSorting.set(true);
     component.filterable.set(false);
     component.topButtonSection.set(null);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop()).toBe('1em');
+    expect(component.cmp()!.paddingTop()).toBe('1em');
 
     component.caption.set('');
     component.showSorting.set(false);
     component.filterable.set(true);
     component.topButtonSection.set(null);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop()).toBe('1em');
+    expect(component.cmp()!.paddingTop()).toBe('1em');
 
     component.caption.set('');
     component.showSorting.set(false);
     component.filterable.set(false);
-    component.topButtonSection.set(component.dummyTpl);
+    component.topButtonSection.set(component.dummyTpl());
     await fixture.whenStable();
-    expect(component.cmp.paddingTop()).toBe('1em');
+    expect(component.cmp()!.paddingTop()).toBe('1em');
   });
 });

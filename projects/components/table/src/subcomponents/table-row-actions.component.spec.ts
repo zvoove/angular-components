@@ -1,5 +1,5 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 import { Observable } from 'rxjs';
@@ -31,8 +31,7 @@ export class TestComponent {
   public readonly item = signal<any>({});
   public readonly moreMenuThreshold = signal(2);
 
-  @ViewChild(ZvTableRowActionsComponent, { static: true })
-  comp: ZvTableRowActionsComponent<any>;
+  readonly comp = viewChild(ZvTableRowActionsComponent, { static: true });
 }
 
 describe('ZvTableRowActionsComponent', () => {

@@ -1,5 +1,5 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatIconButton } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
@@ -13,7 +13,7 @@ import { ZvTableActionsComponent } from './table-actions.component';
 @Component({
   selector: 'zv-test-component',
   template: `
-    <button mat-icon-button type="button" [matMenuTriggerFor]="comp.menu()">
+    <button mat-icon-button type="button" [matMenuTriggerFor]="comp().menu()">
       <mat-icon>more_vert</mat-icon>
     </button>
     <zv-table-actions [actions]="actions" [items]="items" />
@@ -26,7 +26,7 @@ export class TestComponent {
   public actions: IZvTableAction<any>[] = [];
   public items: any = [];
 
-  @ViewChild(ZvTableActionsComponent, { static: true }) comp: ZvTableActionsComponent<any>;
+  readonly comp = viewChild(ZvTableActionsComponent, { static: true });
 }
 
 describe('ZvTableActionsComponent', () => {

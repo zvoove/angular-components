@@ -1,17 +1,7 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  DebugElement,
-  Injectable,
-  ViewChild,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DebugElement, Injectable, inject, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -135,8 +125,8 @@ export class TestCheckboxComponent {
   public asyncLabel$ = of('async label');
   formControl = new FormControl('');
 
-  @ViewChild('f1', { static: true }) formFieldTemplateLabel: ZvFormField;
-  @ViewChild('f2', { static: true }) formFieldNoLabel: ZvFormField;
+  readonly formFieldTemplateLabel = viewChild<ZvFormField>('f1', { static: true });
+  readonly formFieldNoLabel = viewChild<ZvFormField>('f2', { static: true });
 }
 
 describe('ZvFormField', () => {

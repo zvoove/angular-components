@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { MatIconButton } from '@angular/material/button';
@@ -16,8 +16,7 @@ import { ZvTableSearchComponent } from './table-search.component';
 export class TestComponent {
   public readonly searchText = signal('search text');
 
-  @ViewChild(ZvTableSearchComponent, { static: true })
-  tableSearch: ZvTableSearchComponent;
+  readonly tableSearch = viewChild(ZvTableSearchComponent, { static: true });
 
   public onSearchChanged(_event: string) {}
 }
@@ -49,7 +48,7 @@ describe('ZvTableSearchComponent', () => {
     input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
 
     await vi.advanceTimersByTimeAsync(50);
-    component.tableSearch.ngOnDestroy();
+    component.tableSearch().ngOnDestroy();
 
     await vi.advanceTimersByTimeAsync(999);
     expect(component.onSearchChanged).not.toHaveBeenCalled();
@@ -129,23 +128,23 @@ describe('ZvTableSearchComponent', () => {
     vi.spyOn(component, 'onSearchChanged');
 
     component.searchText.set('text');
-    component.tableSearch.currentSearchText.set('');
+    component.tableSearch().currentSearchText.set('');
     fixture.autoDetectChanges();
     expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText.set('');
     fixture.detectChanges();
-    component.tableSearch.currentSearchText.set('text');
+    component.tableSearch().currentSearchText.set('text');
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText.set('text');
-    component.tableSearch.currentSearchText.set('text');
+    component.tableSearch().currentSearchText.set('text');
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.directive(MatIconButton))).not.toBe(null);
 
     component.searchText.set('');
-    component.tableSearch.currentSearchText.set('');
+    component.tableSearch().currentSearchText.set('');
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.directive(MatIconButton))).toBe(null);
   });

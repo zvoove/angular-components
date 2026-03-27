@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { MatButton } from '@angular/material/button';
@@ -34,8 +34,7 @@ export class TestComponent {
   public sortDefinitions: IZvTableSortDefinition[] = [];
   public pageSizeOptions: number[] = [1, 3, 7];
 
-  @ViewChild(ZvTableSettingsComponent, { static: true })
-  tableSearch: ZvTableSettingsComponent;
+  readonly tableSearch = viewChild(ZvTableSettingsComponent, { static: true });
 
   public onSettingsSaved() {}
   public onSettingsAborted() {}
@@ -75,17 +74,17 @@ describe('ZvTableSettingsComponent', () => {
           sortDirection: 'desc',
         };
         component.tableId = 'tableA';
-        component.tableSearch.settingsService.getStream = () => of(settings);
+        component.tableSearch().settingsService.getStream = () => of(settings);
         fixture.detectChanges();
 
         vi.spyOn(component, 'onSettingsSaved');
-        vi.spyOn(component.tableSearch.settingsService, 'save').mockReturnValue(of(null).pipe(delay(10)));
+        vi.spyOn(component.tableSearch().settingsService, 'save').mockReturnValue(of(null).pipe(delay(10)));
 
         const [saveButton] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
 
         saveButton.triggerEventHandler('click', null);
 
-        expect(component.tableSearch.settingsService.save).toHaveBeenCalledWith('tableA', settings);
+        expect(component.tableSearch().settingsService.save).toHaveBeenCalledWith('tableA', settings);
 
         await vi.advanceTimersByTimeAsync(10);
 
@@ -107,15 +106,15 @@ describe('ZvTableSettingsComponent', () => {
         customProperty: 'custom value',
       };
       component.tableId = 'tableA';
-      component.tableSearch.settingsService.getStream = () => of(settings);
+      component.tableSearch().settingsService.getStream = () => of(settings);
       fixture.detectChanges();
 
-      vi.spyOn(component.tableSearch.settingsService, 'save').mockReturnValue(of(null));
+      vi.spyOn(component.tableSearch().settingsService, 'save').mockReturnValue(of(null));
 
       const [saveButton] = fixture.debugElement.query(By.directive(MatCardActions)).queryAll(By.directive(MatButton));
       saveButton.triggerEventHandler('click', null);
 
-      expect(component.tableSearch.settingsService.save).toHaveBeenCalledWith('tableA', settings);
+      expect(component.tableSearch().settingsService.save).toHaveBeenCalledWith('tableA', settings);
     });
   });
 

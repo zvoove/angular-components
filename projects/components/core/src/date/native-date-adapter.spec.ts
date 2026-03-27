@@ -38,8 +38,8 @@ describe('ZvNativeDateAdapter', () => {
   it('should parse invalid value as invalid', () => {
     const d = adapter.parse('hello');
     expect(d).not.toBeNull();
-    expect(adapter.isDateInstance(d), 'Expected string to have been fed through Date.parse').toBe(true);
-    expect(adapter.isValid(d as Date), 'Expected to parse as "invalid date" object').toBe(false);
+    expect(adapter.isDateInstance(d)).toBe(true);
+    expect(adapter.isValid(d as Date)).toBe(false);
   });
 
   it('should return localized format example', () => {

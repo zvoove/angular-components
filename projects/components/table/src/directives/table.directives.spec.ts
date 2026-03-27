@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ZvTableRowDetail } from './table.directives';
 
@@ -12,8 +12,7 @@ import { ZvTableRowDetail } from './table.directives';
 class TestRowDetailComponent {
   readonly expanded = signal(false);
 
-  @ViewChild(ZvTableRowDetail, { static: true })
-  dir!: ZvTableRowDetail;
+  readonly dir = viewChild(ZvTableRowDetail, { static: true });
 }
 
 describe('ZvTableRowDetailDirective', () => {
@@ -27,7 +26,7 @@ describe('ZvTableRowDetailDirective', () => {
     });
     fixture = TestBed.createComponent(TestRowDetailComponent);
     fixture.detectChanges();
-    dir = fixture.componentInstance.dir;
+    dir = fixture.componentInstance.dir()!;
     item = {};
   });
 

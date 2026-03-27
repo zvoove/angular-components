@@ -1,7 +1,7 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
-import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IZvException } from '@zvoove/components/core';
 import { ZvViewHarness } from './testing/view.harness';
@@ -30,8 +30,7 @@ class TestViewDataSource implements IZvViewDataSource {
 })
 export class TestDataSourceComponent {
   public readonly dataSource = signal<TestViewDataSource>(undefined);
-  @ViewChild(ZvView)
-  formComponent: ZvView;
+  readonly formComponent = viewChild(ZvView);
 }
 
 describe('ZvView', () => {

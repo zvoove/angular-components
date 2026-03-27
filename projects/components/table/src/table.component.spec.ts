@@ -8,9 +8,9 @@ import {
   EnvironmentInjector,
   Injectable,
   LOCALE_ID,
-  ViewChild,
   runInInjectionContext,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
@@ -174,10 +174,8 @@ export class TestComponent {
   public readonly expanded = signal(false);
   public readonly showToggleColumn = signal(true);
 
-  @ViewChild(ZvTable, { static: true })
-  table: ZvTable;
-  @ViewChild(ZvTablePaginationComponent, { static: true })
-  paginator: ZvTablePaginationComponent;
+  readonly table = viewChild(ZvTable, { static: true });
+  readonly paginator = viewChild(ZvTablePaginationComponent, { static: true });
 
   public onPage(_event: unknown) {}
   public onListActionExecute(_selection: unknown[]) {}
@@ -596,7 +594,7 @@ describe('ZvTable', () => {
       fixture = TestBed.createComponent(TestComponent);
       component = fixture.componentInstance;
       expect(component).toBeDefined();
-      modifySettings?.(component.table._settingsService as TestSettingsService);
+      modifySettings?.(component.table()._settingsService as TestSettingsService);
       component.dataSource.set(tableDataSource);
       fixture.detectChanges();
       // Allow async data source subscriptions to settle
@@ -760,7 +758,9 @@ describe('ZvTable', () => {
 
         const detail = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('zv-table-data__detail-row'));
 
-        expect(detail.every(async (d) => (await (await d.host()).getCssValue('height')) === '0')).toEqual(true);
+        for (const d of detail) {
+          expect(await (await d.host()).getCssValue('height')).toEqual('0');
+        }
 
         const expanderCell = await data[0].getCells({ columnName: 'rowDetailExpander' });
         expect(expanderCell.length).toEqual(1);
@@ -772,19 +772,21 @@ describe('ZvTable', () => {
         expect(customExpanderCell.length).toEqual(1);
 
         await (await customExpanderCell[0].host()).click();
-        expect(detail.every(async (d) => (await (await d.host()).getCssValue('height')) === '0')).toEqual(true);
+        for (const d of detail) {
+          expect(await (await d.host()).getCssValue('height')).toEqual('0');
+        }
       });
 
       it('should filter', async () => {
         const searchInput = await table.getSearchInput();
         expect(await searchInput.getValue()).toEqual('');
 
-        vi.spyOn(component.table, 'onSearchChanged');
+        vi.spyOn(component.table(), 'onSearchChanged');
         await searchInput.setValue('asdf');
         // Wait for search debounce (300ms)
         await new Promise((resolve) => setTimeout(resolve, 350));
-        expect(component.table.onSearchChanged).toHaveBeenCalledTimes(1);
-        expect(component.table.onSearchChanged).toHaveBeenCalledWith('asdf');
+        expect(component.table().onSearchChanged).toHaveBeenCalledTimes(1);
+        expect(component.table().onSearchChanged).toHaveBeenCalledWith('asdf');
       });
 
       it('should reset page to 0 when filtering', async () => {
@@ -807,11 +809,11 @@ describe('ZvTable', () => {
         );
 
         // Set the page to 2 manually to simulate navigation
-        component.table.pageIndex = 1;
+        component.table().pageIndex = 1;
         fixture.detectChanges();
 
         // Verify we're on page 2
-        expect(component.table.pageIndex).toEqual(1);
+        expect(component.table().pageIndex).toEqual(1);
 
         // Apply a filter
         const searchInput = await table.getSearchInput();
@@ -820,7 +822,7 @@ describe('ZvTable', () => {
         await new Promise((resolve) => setTimeout(resolve, 350));
 
         // Verify that the page index is reset to 0
-        expect(component.table.pageIndex).toEqual(0);
+        expect(component.table().pageIndex).toEqual(0);
       });
 
       it('should sort via dropdown', async () => {
@@ -834,9 +836,9 @@ describe('ZvTable', () => {
         const optionTexts = await Promise.all((await sortSelect.getOptions()).map(async (o) => await o.getText()));
         expect(optionTexts).toEqual(['', 'Custom Sort', 'id']);
 
-        vi.spyOn(component.table, 'onSortChanged');
+        vi.spyOn(component.table(), 'onSortChanged');
         await sortSelect.clickOptions({ text: 'id' });
-        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+        expect(component.table().onSortChanged).toHaveBeenCalledWith({
           sortColumn: 'id',
           sortDirection: 'asc',
         });
@@ -844,7 +846,7 @@ describe('ZvTable', () => {
         const sortDirectionButtons = await table.getSortDirectionButtons();
         expect(sortDirectionButtons.length).toEqual(2);
         await sortDirectionButtons[0].click();
-        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+        expect(component.table().onSortChanged).toHaveBeenCalledWith({
           sortColumn: 'id',
           sortDirection: 'desc',
         });
@@ -863,12 +865,12 @@ describe('ZvTable', () => {
 
         const idSortHeader = (await sort.getSortHeaders({ label: 'id' }))[0];
 
-        vi.spyOn(component.table, 'onSortChanged');
+        vi.spyOn(component.table(), 'onSortChanged');
         await idSortHeader.click();
         let activeHeader = await sort.getActiveHeader();
         expect(await activeHeader.getLabel()).toEqual('id');
         expect(await activeHeader.getSortDirection()).toEqual('asc');
-        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+        expect(component.table().onSortChanged).toHaveBeenCalledWith({
           sortColumn: 'id',
           sortDirection: 'asc',
         });
@@ -877,7 +879,7 @@ describe('ZvTable', () => {
         activeHeader = await sort.getActiveHeader();
         expect(await activeHeader.getLabel()).toEqual('id');
         expect(await activeHeader.getSortDirection()).toEqual('desc');
-        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+        expect(component.table().onSortChanged).toHaveBeenCalledWith({
           sortColumn: 'id',
           sortDirection: 'desc',
         });
@@ -886,7 +888,7 @@ describe('ZvTable', () => {
         activeHeader = await sort.getActiveHeader();
         expect(await activeHeader?.getLabel()).toEqual('id');
         expect(await activeHeader?.getSortDirection()).toEqual('asc');
-        expect(component.table.onSortChanged).toHaveBeenCalledWith({
+        expect(component.table().onSortChanged).toHaveBeenCalledWith({
           sortColumn: 'id',
           sortDirection: 'asc',
         });
@@ -900,9 +902,9 @@ describe('ZvTable', () => {
         const listActions = await listActionsMenu.getItems();
         expect(listActions.length).toEqual(3);
 
-        vi.spyOn(component.table.dataSource(), 'updateData');
+        vi.spyOn(component.table().dataSource(), 'updateData');
         await listActionsMenu.clickItem({ text: 'refresh Refresh list' });
-        expect(component.table.dataSource().updateData).toHaveBeenCalled();
+        expect(component.table().dataSource().updateData).toHaveBeenCalled();
       });
 
       it('should hide refresh button', async () => {
@@ -993,7 +995,7 @@ describe('ZvTable', () => {
         })
       );
 
-      (component.table as any).pageDebounce = signal(0);
+      (component.table() as any).pageDebounce = signal(0);
 
       const gotoPageSelect = await table.getGotoPageSelect();
       await gotoPageSelect.open();
