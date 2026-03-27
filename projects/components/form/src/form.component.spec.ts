@@ -304,12 +304,12 @@ describe('ZvForm', () => {
         threshold: 0,
       });
       expect(getErrorContainer(fixture)).not.toBe(null);
-      expect(observedEl).toBe(component.formComponent.errorCardWrapper.nativeElement);
-      component.formComponent.errorCardWrapper.nativeElement.scrollIntoView ??= () => {};
-      vi.spyOn(component.formComponent.errorCardWrapper.nativeElement, 'scrollIntoView');
+      expect(observedEl).toBe(component.formComponent.errorCardWrapper().nativeElement);
+      component.formComponent.errorCardWrapper().nativeElement.scrollIntoView ??= () => {};
+      vi.spyOn(component.formComponent.errorCardWrapper().nativeElement, 'scrollIntoView');
 
       opts.scrollToError();
-      expect(component.formComponent.errorCardWrapper.nativeElement.scrollIntoView).toHaveBeenCalledTimes(1);
+      expect(component.formComponent.errorCardWrapper().nativeElement.scrollIntoView).toHaveBeenCalledTimes(1);
 
       intersectCallback([{ intersectionRatio: 1 }]);
       intersectCallback([{ intersectionRatio: 1 }]);

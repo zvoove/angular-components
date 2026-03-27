@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, ViewEncapsulation } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { ZvBlockUi } from '@zvoove/components/block-ui';
@@ -13,33 +13,14 @@ import { IZvViewDataSource } from './view-data-source';
   encapsulation: ViewEncapsulation.None,
   imports: [ZvBlockUi, MatCard, MatIcon, ZvErrorMessagePipe],
 })
-export class ZvView implements OnDestroy {
-  @Input({ required: true }) public set dataSource(value: IZvViewDataSource) {
-    if (this._dataSource) {
-      this._dataSource.disconnect();
-    }
+export class ZvView {
+  public readonly dataSource = input.required<IZvViewDataSource>();
 
-    this._dataSource = value;
-
-    if (this._dataSource) {
-      this.activateDataSource();
-    }
-  }
-  public get dataSource(): IZvViewDataSource {
-    return this._dataSource;
-  }
-  private _dataSource!: IZvViewDataSource;
-
-  public ngOnDestroy() {
-    if (this._dataSource) {
-      this._dataSource.disconnect();
-    }
-  }
-
-  private activateDataSource() {
-    if (!this._dataSource) {
-      return;
-    }
-    this._dataSource.connect();
+  constructor() {
+    effect((onCleanup) => {
+      const ds = this.dataSource();
+      ds.connect();
+      onCleanup(() => ds.disconnect());
+    });
   }
 }

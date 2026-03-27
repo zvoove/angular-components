@@ -6,12 +6,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnDestroy,
   PLATFORM_ID,
-  ViewChild,
   ViewEncapsulation,
+  effect,
   inject,
+  input,
+  signal,
+  untracked,
+  viewChild,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCard, MatCardContent } from '@angular/material/card';
@@ -40,39 +43,22 @@ export const dependencies = {
 export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
   private readonly cd = inject(ChangeDetectorRef);
 
-  @Input({ required: true }) public set dataSource(value: IZvFormDataSource) {
-    if (this._dataSource) {
-      this._dataSource.disconnect();
-      this._dataSourceSub.unsubscribe();
-    }
-
-    this._dataSource = value;
-
-    this.updateErrorCardObserver();
-
-    if (this._dataSource) {
-      this.activateDataSource();
-    }
-  }
-  public get dataSource(): IZvFormDataSource {
-    return this._dataSource;
-  }
-  private _dataSource!: IZvFormDataSource;
+  public readonly dataSource = input.required<IZvFormDataSource>();
 
   public get autocomplete() {
-    return this.dataSource.autocomplete;
+    return this.dataSource().autocomplete;
   }
 
   public get form(): FormGroup {
-    return this.dataSource.form;
+    return this.dataSource().form;
   }
 
   public get buttons(): IZvButton[] {
-    return this.dataSource.buttons;
+    return this.dataSource().buttons;
   }
 
   public get progress(): number | null | undefined {
-    return this.dataSource.progress;
+    return this.dataSource().progress;
   }
 
   public get showProgress(): boolean {
@@ -80,7 +66,7 @@ export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
   }
 
   public get savebarMode(): string {
-    return this.dataSource.savebarMode || 'auto';
+    return this.dataSource().savebarMode || 'auto';
   }
 
   public get savebarHidden(): boolean {
@@ -95,29 +81,44 @@ export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
   }
 
   public get contentVisible(): boolean {
-    return this.dataSource.contentVisible;
+    return this.dataSource().contentVisible;
   }
 
   public get contentBlocked(): boolean {
-    return this.dataSource.contentBlocked;
+    return this.dataSource().contentBlocked;
   }
 
   public get exception(): IZvException | null {
-    return this.dataSource.exception;
+    return this.dataSource().exception;
   }
 
-  @ViewChild('errorCardWrapper') public errorCardWrapper: ElementRef | null = null;
+  public readonly errorCardWrapper = viewChild<ElementRef>('errorCardWrapper');
 
   private _dataSourceSub = Subscription.EMPTY;
   private _errorCardObserver: IntersectionObserver | null = null;
-  private _viewReady = false;
+  private readonly _viewReady = signal(false);
   private _errrorInView$ = new BehaviorSubject<boolean>(false);
   private isServer = isPlatformServer(inject(PLATFORM_ID));
 
+  constructor() {
+    effect((onCleanup) => {
+      const ds = this.dataSource();
+      const ready = this._viewReady();
+      untracked(() => {
+        this.updateErrorCardObserver();
+        if (ready) {
+          this.activateDataSource();
+        }
+      });
+      onCleanup(() => {
+        this._dataSourceSub.unsubscribe();
+        ds?.disconnect();
+      });
+    });
+  }
+
   public ngAfterViewInit() {
-    this._viewReady = true;
-    this.updateErrorCardObserver();
-    this.activateDataSource();
+    this._viewReady.set(true);
   }
 
   public ngAfterViewChecked() {
@@ -131,15 +132,11 @@ export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
     }
 
     this._errrorInView$.complete();
-
-    this._dataSourceSub.unsubscribe();
-    if (this._dataSource) {
-      this._dataSource.disconnect();
-    }
   }
 
   private activateDataSource() {
-    if (!this._viewReady || !this._dataSource) {
+    const ds = this.dataSource();
+    if (!this._viewReady() || !ds) {
       return;
     }
 
@@ -147,11 +144,11 @@ export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
       errorInView$: this._errrorInView$.pipe(distinctUntilChanged()),
       scrollToError: () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        this.errorCardWrapper?.nativeElement.scrollIntoView({ behavior: 'smooth' });
+        this.errorCardWrapper()?.nativeElement.scrollIntoView({ behavior: 'smooth' });
       },
     } as IZvFormDataSourceConnectOptions;
 
-    this._dataSourceSub = this._dataSource.connect(options).subscribe(() => {
+    this._dataSourceSub = ds.connect(options).subscribe(() => {
       this.cd.markForCheck();
     });
   }
@@ -160,7 +157,9 @@ export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
     if (this.isServer) {
       return;
     }
-    if (!this._errorCardObserver && this._dataSource && this._viewReady && this.errorCardWrapper) {
+    const ds = this.dataSource();
+    const errorCardWrapper = this.errorCardWrapper();
+    if (!this._errorCardObserver && ds && this._viewReady() && errorCardWrapper) {
       const options = {
         root: null, // relative to document viewport
         rootMargin: '-100px', // margin around root. Values are similar to css property. Unitless values not allowed
@@ -175,8 +174,8 @@ export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
       }, options);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this._errorCardObserver.observe(this.errorCardWrapper.nativeElement);
-    } else if (this._errorCardObserver && !this._dataSource) {
+      this._errorCardObserver.observe(errorCardWrapper.nativeElement);
+    } else if (this._errorCardObserver && !ds) {
       this._errorCardObserver.disconnect();
       this._errorCardObserver = null;
     }
