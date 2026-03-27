@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import {
