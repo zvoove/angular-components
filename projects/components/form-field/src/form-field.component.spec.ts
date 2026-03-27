@@ -220,8 +220,8 @@ describe('ZvFormField', () => {
       component.formControl.markAsTouched();
       fixture.detectChanges();
 
-      expect(component.formField()._ngControl.invalid).toBe(true);
-      expect(component.formField()._matFormField._control.errorState).toBe(true);
+      expect(component.formField()._ngControl()?.invalid).toBe(true);
+      expect(component.formField()._matFormField()._control.errorState).toBe(true);
 
       let errorsChecked = false;
       component.formField().errors$.subscribe((e) => {

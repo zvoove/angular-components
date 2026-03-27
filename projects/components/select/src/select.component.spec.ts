@@ -121,9 +121,16 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
 
   const fixture = TestBed.createComponent(ZvSelect);
   const component = fixture.componentInstance;
-  component.setMatSelect = matSelect;
+  (component as any)._matSelect = matSelect;
   component.dataSource = dataSource;
-  return { component: component, matSelect: matSelect, service: service, dataSource: dataSource, focused: component.focused };
+  return {
+    fixture: fixture,
+    component: component,
+    matSelect: matSelect,
+    service: service,
+    dataSource: dataSource,
+    focused: component.focused,
+  };
 }
 
 @Component({
@@ -326,8 +333,8 @@ describe('ZvSelect', () => {
   });
 
   it('should determine empty value correctly', () => {
-    const { component } = createZvSelect();
-    component.multiple = true;
+    const { fixture, component } = createZvSelect();
+    fixture.componentRef.setInput('multiple', true);
 
     const items = [
       { value: 1, label: 'i1', hidden: false },
@@ -347,7 +354,7 @@ describe('ZvSelect', () => {
     component.value = items;
     expect(component.empty).toBe(false);
 
-    component.multiple = false;
+    fixture.componentRef.setInput('multiple', false);
     component.value = null;
     expect(component.empty).toBe(true);
 
@@ -395,7 +402,7 @@ describe('ZvSelect', () => {
     const matSelect = createFakeMatSelect();
 
     const { component } = createZvSelect();
-    component.setMatSelect = matSelect;
+    (component as any)._matSelect = matSelect;
 
     vi.spyOn(matSelect.stateChanges, 'next');
 

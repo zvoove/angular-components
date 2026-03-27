@@ -9,6 +9,10 @@ import { ZvTableHeaderComponent } from './table-header.component';
       [caption]="caption()"
       [showSorting]="showSorting()"
       [filterable]="filterable()"
+      [selectedRows]="selectedRows()"
+      [sortColumn]="sortColumn()"
+      [sortDirection]="sortDirection()"
+      [searchText]="searchText()"
       [topButtonSection]="topButtonSection()"
     />
     <ng-template #tpl />
@@ -21,6 +25,10 @@ export class TestComponent {
   public readonly caption = signal('caption');
   public readonly showSorting = signal(true);
   public readonly filterable = signal(true);
+  public readonly selectedRows = signal<unknown[]>([]);
+  public readonly sortColumn = signal<string | null>(null);
+  public readonly sortDirection = signal<'asc' | 'desc'>('asc');
+  public readonly searchText = signal('');
   public readonly topButtonSection = signal<TemplateRef<any> | null>(null);
 
   @ViewChild(ZvTableHeaderComponent, { static: true }) cmp: ZvTableHeaderComponent;

@@ -60,7 +60,7 @@ describe('ZvNumberInput', () => {
   });
 
   it('Should display the spinner value 0.75  ', () => {
-    spinner.stepSize = 0.25;
+    fixture.componentRef.setInput('stepSize', 0.25);
     fixture.detectChanges();
 
     const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
@@ -74,8 +74,8 @@ describe('ZvNumberInput', () => {
   it('Should display the formatted value with thousand and decimal separator when input is filled by value 1234.1234', () => {
     fixture.detectChanges();
 
-    spinner.decimals = 4;
-    const spinnerInput = spinner._inputfieldViewChild.nativeElement;
+    fixture.componentRef.setInput('decimals', 4);
+    const spinnerInput = spinner._inputfieldViewChild()!.nativeElement;
     spinnerInput.value = '1234.1234';
     triggerEvent(spinnerInput, 'input');
 
@@ -100,7 +100,7 @@ describe('ZvNumberInput', () => {
     fixture.detectChanges();
 
     spinner.disabled = true;
-    const spinnerInput = spinner._inputfieldViewChild.nativeElement;
+    const spinnerInput = spinner._inputfieldViewChild()!.nativeElement;
     spinnerInput.value = '1';
     triggerEvent(spinnerInput, 'keyup');
     fixture.detectChanges();
@@ -112,7 +112,7 @@ describe('ZvNumberInput', () => {
   });
 
   it('should have a max', () => {
-    spinner.max = 1;
+    fixture.componentRef.setInput('max', 1);
     fixture.detectChanges();
     const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
     triggerEvent(spinnerUp, 'mousedown');
@@ -132,7 +132,7 @@ describe('ZvNumberInput', () => {
   });
 
   it('should have a min', () => {
-    spinner.min = -1;
+    fixture.componentRef.setInput('min', -1);
     fixture.detectChanges();
     const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-down');
     triggerEvent(spinnerUp, 'mousedown');
@@ -168,7 +168,7 @@ describe('ZvNumberInput', () => {
 
   it('should change placeholder tabindex and required', () => {
     spinner.placeholder = 'PLACEHOLDER';
-    spinner.tabindex = 13;
+    fixture.componentRef.setInput('tabindex', 13);
     spinner.required = true;
     fixture.detectChanges();
 
@@ -200,7 +200,7 @@ describe('ZvNumberInput', () => {
   it('should format input', () => {
     spinner._thousandSeparator = ',';
     spinner._decimalSeparator = '.';
-    spinner.stepSize = 0.25;
+    fixture.componentRef.setInput('stepSize', 0.25);
     spinner.value = 10000;
     fixture.detectChanges();
 

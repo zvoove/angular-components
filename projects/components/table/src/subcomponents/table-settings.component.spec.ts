@@ -141,7 +141,8 @@ describe('ZvTableSettingsComponent', () => {
 
       const fixture = TestBed.createComponent(ZvTableSettingsComponent);
       const component = fixture.componentInstance;
-      component.tableId = 'table.1';
+      fixture.componentRef.setInput('tableId', 'table.1');
+      fixture.componentRef.setInput('pageSizeOptions', []);
 
       fixture.detectChanges();
 
@@ -159,7 +160,8 @@ describe('ZvTableSettingsComponent', () => {
 
       const fixture = TestBed.createComponent(ZvTableSettingsComponent);
       const component = fixture.componentInstance;
-      component.tableId = 'table.1';
+      fixture.componentRef.setInput('tableId', 'table.1');
+      fixture.componentRef.setInput('pageSizeOptions', []);
       fixture.detectChanges();
 
       let asyncSettings: IZvTableSetting;
@@ -177,6 +179,8 @@ describe('ZvTableSettingsComponent', () => {
 
     it('columnVisible should return false for blacklisted columns', () => {
       const fixture = TestBed.createComponent(ZvTableSettingsComponent);
+      fixture.componentRef.setInput('tableId', 'test');
+      fixture.componentRef.setInput('pageSizeOptions', []);
       const component = fixture.componentInstance;
       function createSettings(blacklist: string[]): IZvTableSetting {
         return {
@@ -185,8 +189,8 @@ describe('ZvTableSettingsComponent', () => {
       }
       function createColumnDef(propName: string): ZvTableColumn {
         return {
-          property: propName,
-        } as Partial<IZvTableSetting> as any;
+          property: () => propName,
+        } as any;
       }
       expect(component.columnVisible(createSettings(['prop']), createColumnDef('prop'))).toEqual(false);
       expect(component.columnVisible(createSettings(['a']), createColumnDef('prop'))).toEqual(true);
@@ -198,6 +202,8 @@ describe('ZvTableSettingsComponent', () => {
 
       beforeEach(() => {
         const fixture = TestBed.createComponent(ZvTableSettingsComponent);
+        fixture.componentRef.setInput('tableId', 'test');
+        fixture.componentRef.setInput('pageSizeOptions', []);
         component = fixture.componentInstance;
       });
 
@@ -235,34 +241,32 @@ describe('ZvTableSettingsComponent', () => {
 
     it('onColumnVisibilityChange should toggle column in blacklist', () => {
       const fixture = TestBed.createComponent(ZvTableSettingsComponent);
+      fixture.componentRef.setInput('tableId', 'test');
+      fixture.componentRef.setInput('pageSizeOptions', []);
       const component = fixture.componentInstance;
 
       const settings: IZvTableSetting = {
         columnBlacklist: [],
       } as any;
-      const columnDef: ZvTableColumn = {
-        property: '',
-      } as any;
+      function createColumnDef(propName: string): ZvTableColumn {
+        return { property: () => propName } as any;
+      }
       const event = new MatCheckboxChange();
 
-      columnDef.property = 'prop';
       event.checked = false;
-      component.onColumnVisibilityChange(event, settings, columnDef);
+      component.onColumnVisibilityChange(event, settings, createColumnDef('prop'));
       expect(settings.columnBlacklist).toEqual(['prop']);
 
-      columnDef.property = 'prop2';
       event.checked = false;
-      component.onColumnVisibilityChange(event, settings, columnDef);
+      component.onColumnVisibilityChange(event, settings, createColumnDef('prop2'));
       expect(settings.columnBlacklist).toEqual(['prop', 'prop2']);
 
-      columnDef.property = 'prop';
       event.checked = true;
-      component.onColumnVisibilityChange(event, settings, columnDef);
+      component.onColumnVisibilityChange(event, settings, createColumnDef('prop'));
       expect(settings.columnBlacklist).toEqual(['prop2']);
 
-      columnDef.property = 'prop';
       event.checked = true;
-      component.onColumnVisibilityChange(event, settings, columnDef);
+      component.onColumnVisibilityChange(event, settings, createColumnDef('prop'));
       expect(settings.columnBlacklist).toEqual(['prop2']);
     });
   });

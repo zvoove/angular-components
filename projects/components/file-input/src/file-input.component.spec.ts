@@ -2,13 +2,13 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader } from '@angular/cdk/testing';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
 import { ZvFileInput } from './file-input.component';
 import { ZvFileInputHarness } from './testing/file-input.harness';
 
 @Component({
   selector: 'zv-test-component',
-  template: ` <zv-file-input /> `,
+  template: ` <zv-file-input [accept]="accept()" /> `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvFileInput],
@@ -16,6 +16,8 @@ import { ZvFileInputHarness } from './testing/file-input.harness';
 export class TestComponent {
   @ViewChild(ZvFileInput)
   fileInputCmp!: ZvFileInput;
+
+  readonly accept = signal<string[]>([]);
 }
 
 describe('ZvFileInput', () => {
@@ -53,7 +55,7 @@ describe('ZvFileInput', () => {
     expect(await harness.isRequired()).toEqual(false);
     expect(await harness.isReadonly()).toEqual(false);
 
-    cmp.accept = ['.png', '.jpg'];
+    fixture.componentInstance.accept.set(['.png', '.jpg']);
     cmp.placeholder = 'PLACEHOLDER';
     cmp.required = true;
     cmp.readonly = true;
