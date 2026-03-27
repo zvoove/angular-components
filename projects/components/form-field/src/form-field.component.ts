@@ -1,22 +1,21 @@
 import { AsyncPipe, isPlatformServer } from '@angular/common';
-import type { QueryList } from '@angular/core';
 import {
   AfterContentChecked,
   ChangeDetectionStrategy,
   Component,
-  ContentChild,
-  ContentChildren,
   ElementRef,
-  HostBinding,
   InjectionToken,
-  Input,
-  OnChanges,
   OnDestroy,
   PLATFORM_ID,
-  SimpleChanges,
-  ViewChild,
   ViewEncapsulation,
+  computed,
+  contentChild,
+  contentChildren,
+  effect,
   inject,
+  input,
+  untracked,
+  viewChild,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -64,44 +63,38 @@ function applyConfigDefaults(config: ZvFormFieldConfig | null): {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [MatFormField, MatLabel, MatPrefix, MatSuffix, MatIconButton, MatIcon, MatError, AsyncPipe],
+  host: {
+    '[class.zv-form-field--subscript-resize]': 'autoResizeHintError()',
+  },
 })
-export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
+export class ZvFormField implements AfterContentChecked, OnDestroy {
   private _elementRef = inject(ElementRef);
   private formsService = inject(ZvFormService);
   private defaults = applyConfigDefaults(inject(ZV_FORM_FIELD_CONFIG, { optional: true }));
   private matDefaults = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
 
-  @Input() public createLabel = true;
-  @Input() public hint = '';
-  @Input() public floatLabel: FloatLabelType = this.matDefaults?.floatLabel || 'auto';
-  @Input() public subscriptType: ZvFormFieldSubscriptType = (this.defaults ? this.defaults.subscriptType : null) ?? 'resize';
-  @Input() public hintToggle: boolean | null = null;
+  public readonly createLabel = input(true);
+  public readonly hint = input('');
+  public readonly floatLabel = input<FloatLabelType>(this.matDefaults?.floatLabel || 'auto');
+  public readonly subscriptType = input<ZvFormFieldSubscriptType>(this.defaults.subscriptType ?? 'resize');
+  public readonly hintToggle = input<boolean | null>(null);
 
-  @ViewChild(MatFormField, { static: true }) public _matFormField!: MatFormField;
+  public readonly _matFormField = viewChild.required(MatFormField);
 
   /** We can get the FromControl from this */
-  @ContentChild(NgControl) public _ngControl: NgControl | null = null;
+  public readonly _ngControl = contentChild(NgControl);
 
   /** The MatFormFieldControl or null, if it is no MatFormFieldControl */
-  @ContentChild(MatFormFieldControl) public _control: MatFormFieldControl<unknown> | null = null;
+  public readonly _control = contentChild(MatFormFieldControl);
 
   /** The MatLabel, if it is set or null */
-  @ContentChild(MatLabel) public set labelChild(value: MatLabel) {
-    this._labelChild = value;
-    this.updateLabel();
-    if (this._matFormField) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _changeDetectorRef
-      (this._matFormField as any)._changeDetectorRef.markForCheck();
-    }
-  }
+  public readonly labelChild = contentChild(MatLabel);
   public _labelChild: MatLabel | null = null;
 
-  @ContentChildren(MatPrefix) public _prefixChildren!: QueryList<MatPrefix>;
-  @ContentChildren(MatSuffix) public _suffixChildren!: QueryList<MatSuffix>;
+  public readonly _prefixChildren = contentChildren(MatPrefix);
+  public readonly _suffixChildren = contentChildren(MatSuffix);
 
-  @HostBinding('class.zv-form-field--subscript-resize') public get autoResizeHintError() {
-    return this.subscriptType === 'resize';
-  }
+  public readonly autoResizeHintError = computed(() => this.subscriptType() === 'resize');
 
   // mat-form-field childs, that we dont support:
   // @ContentChild(MatPlaceholder) _placeholderChild: MatPlaceholder; // Deprecated, placeholder attribute of the form field control should be used instead!
@@ -109,11 +102,12 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
   // @ContentChildren(MatHint) public _hintChildren: QueryList<MatHint>; // No idea how to make this work...
 
   public get hintToggleOptionActive(): boolean {
-    return typeof this.hintToggle === 'boolean' ? this.hintToggle : this.defaults.hintToggle;
+    const toggle = this.hintToggle();
+    return typeof toggle === 'boolean' ? toggle : this.defaults.hintToggle;
   }
 
   public get showHintToggle(): boolean {
-    return !!this.hint && this.hintToggleOptionActive;
+    return !!this.hint() && this.hintToggleOptionActive;
   }
 
   public get hintText(): string {
@@ -123,14 +117,15 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
       return '';
     }
 
-    const isRequired = this._control?.required;
-    const isDisabled = this._control?.disabled;
+    const control = this._control();
+    const isRequired = control?.required;
+    const isDisabled = control?.disabled;
     if (!isRequired || isDisabled) {
-      return this.hint;
+      return this.hint();
     }
 
     const requiredText = this.defaults?.requiredText;
-    return [requiredText, this.hint].filter((s) => !!s).join('. ');
+    return [requiredText, this.hint()].filter((s) => !!s).join('. ');
   }
 
   /** The error messages to show */
@@ -143,6 +138,14 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
   public noUnderline = false;
   public showHint = false;
   public calculatedLabel: string | null = null;
+
+  /** Mutable override for floatLabel when emulated controls need 'always' */
+  public _floatLabelOverride: FloatLabelType | null = null;
+
+  /** Resolved float label: override takes precedence over input */
+  public get resolvedFloatLabel(): FloatLabelType {
+    return this._floatLabelOverride ?? this.floatLabel();
+  }
 
   private formControl: FormControl | null = null;
 
@@ -161,17 +164,37 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
 
   private isServer = isPlatformServer(inject(PLATFORM_ID));
 
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes.hintToggle) {
-      this.showHint = !this.hintToggleOptionActive;
-    }
+  constructor() {
+    // Replace labelChild setter — track contentChild and run side effects
+    effect(() => {
+      const label = this.labelChild();
+      this._labelChild = label ?? null;
+      untracked(() => {
+        this.updateLabel();
+        const matFormField = this._matFormField();
+        if (matFormField) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _changeDetectorRef
+          (matFormField as any)._changeDetectorRef.markForCheck();
+        }
+      });
+    });
+
+    // Replace ngOnChanges — track hintToggle input
+    effect(() => {
+      this.hintToggle();
+      untracked(() => {
+        this.showHint = !this.hintToggleOptionActive;
+      });
+    });
   }
 
   public ngAfterContentChecked(): void {
     if (this.initialized) {
       return;
     }
-    this.formControl = this._ngControl && (this._ngControl.control as FormControl);
+    const ngControl = this._ngControl();
+    const control = this._control();
+    this.formControl = ngControl ? (ngControl.control as FormControl) : null;
     // Slider is not initialized the first time we enter this method, therefore we need to check if it got initialized already or not
     if (this.formControl) {
       this.initialized = true;
@@ -180,8 +203,8 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
     if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
       this.matFormFieldControl.ngOnDestroy();
     }
-    this.matFormFieldControl = this._control || new DummyMatFormFieldControl(this._ngControl, this.formControl);
-    this._matFormField._control = this.matFormFieldControl;
+    this.matFormFieldControl = control || new DummyMatFormFieldControl(ngControl ?? null, this.formControl);
+    this._matFormField()._control = this.matFormFieldControl;
     this.emulated = this.matFormFieldControl instanceof DummyMatFormFieldControl;
     // This tells the mat-input that it is inside a mat-form-field
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _isInFormField
@@ -189,14 +212,14 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _isInFormField
       (this.matFormFieldControl as any)._isInFormField = true;
     }
-    this.realFormControl = getRealFormControl(this._ngControl, this.matFormFieldControl);
+    this.realFormControl = getRealFormControl(ngControl, this.matFormFieldControl);
     this.controlType = this.formsService.getControlType(this.realFormControl) || 'unknown';
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     this._elementRef.nativeElement.classList.add(`zv-form-field-type-${this.controlType}`);
 
     this.noUnderline = this.emulated || !!this.realFormControl.noUnderline;
-    if (this.floatLabel === 'auto' && (this.emulated || this.realFormControl.shouldLabelFloat === undefined)) {
-      this.floatLabel = 'always';
+    if (this.floatLabel() === 'auto' && (this.emulated || this.realFormControl.shouldLabelFloat === undefined)) {
+      this._floatLabelOverride = 'always';
     }
 
     if (this.formControl) {
@@ -231,7 +254,7 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
       return;
     }
     this.calculatedLabel = null;
-    if (!this.createLabel || this._labelChild || !this.formControl) {
+    if (!this.createLabel() || this._labelChild || !this.formControl) {
       return;
     }
 
@@ -265,13 +288,13 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
       // when only our own component is marked for check, then the label will not be shown
       // when labelText$ didn't run synchronously
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _changeDetectorRef
-      (this._matFormField as any)._changeDetectorRef.markForCheck();
+      (this._matFormField() as any)._changeDetectorRef.markForCheck();
     });
   }
 }
 
 function getRealFormControl(
-  ngControl: NgControl | null,
+  ngControl: NgControl | null | undefined,
   matFormFieldControl: MatFormFieldControl<unknown>
 ): { noUnderline?: boolean; shouldLabelFloat?: boolean } {
   if (!(matFormFieldControl instanceof DummyMatFormFieldControl) || !ngControl) {
