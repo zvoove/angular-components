@@ -3,21 +3,21 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ContentChild,
   DoCheck,
-  EventEmitter,
-  HostBinding,
   Input,
   OnDestroy,
   OnInit,
-  Output,
   TemplateRef,
-  ViewChild,
   ViewEncapsulation,
+  afterNextRender,
   booleanAttribute,
   computed,
+  contentChild,
+  input,
+  output,
   signal,
   inject,
+  viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroupDirective, FormsModule, NgControl, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -52,7 +52,8 @@ const enum ValueChangeSource {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[class.zv-select-multiple]': 'multiple',
+    '[id]': 'id',
+    '[class.zv-select-multiple]': 'multiple()',
     '[class.zv-select-disabled]': 'disabled',
     '[class.zv-select-invalid]': 'errorState',
     '[class.zv-select-required]': 'required',
@@ -74,35 +75,24 @@ const enum ValueChangeSource {
     ZvErrorMessagePipe,
   ],
 })
+// D11: CVA+MatFormFieldControl — dataSource, value, disabled, required, placeholder, errorStateMatcher
+// kept as getter/setter @Input; simple inputs migrated to signal input(); outputs to output().
 export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy {
   private readonly cd = inject(ChangeDetectorRef);
   private readonly selectService = inject(ZvSelectService, { optional: true });
   public readonly ngControl = inject(NgControl, { optional: true, self: true });
 
   public static nextId = 0;
-  @HostBinding() public id = `zv-select-${ZvSelect.nextId++}`;
+  public id = `zv-select-${ZvSelect.nextId++}`;
 
-  @ContentChild(ZvSelectOptionTemplate, { read: TemplateRef })
-  public optionTemplate: TemplateRef<unknown> | null = null;
-
-  @ContentChild(ZvSelectTriggerTemplate)
-  public customTrigger: ZvSelectTriggerTemplate | null = null;
+  public readonly optionTemplate = contentChild(ZvSelectOptionTemplate, { read: TemplateRef });
+  public readonly customTrigger = contentChild(ZvSelectTriggerTemplate);
 
   public get triggerTemplate(): TemplateRef<unknown> | null {
-    return this.customTrigger?.templateRef ?? null;
+    return this.customTrigger()?.templateRef ?? null;
   }
 
-  @ViewChild(MatSelect, { static: true }) public set setMatSelect(select: MatSelect) {
-    this._matSelect = select;
-
-    // MatSelect doesn't trigger stateChanges on close which causes problems, so we patch it here.
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const close = select.close;
-    select.close = () => {
-      close.call(select);
-      select.stateChanges.next();
-    };
-  }
+  public readonly _matSelectQuery = viewChild.required(MatSelect);
 
   /**
    * Stream containing the latest information on what rows are being displayed on screen.
@@ -137,14 +127,14 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   private _value: T | null = null;
 
   /** If true, then there will be a empty option available to deselect any values (only single select mode) */
-  @Input() public clearable = true;
+  public readonly clearable = input(true);
   /** If true, then there will be a toggle all checkbox available (only multiple select mode) */
-  @Input() public showToggleAll = true;
-  @Input() public multiple = false;
-  @Input() public panelClass: string | string[] | Set<string> | Record<string, boolean> = '';
+  public readonly showToggleAll = input(true);
+  public readonly multiple = input(false);
+  public readonly panelClass = input<string | string[] | Set<string> | Record<string, boolean>>('');
   @Input() public placeholder = '';
   @Input() public required = false;
-  @Input() public selectedLabel = true;
+  public readonly selectedLabel = input(true);
 
   /**
    * Event that emits whenever the raw value of the select changes. This is here primarily
@@ -152,9 +142,9 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
    *
    * @docs-private
    */
-  @Output() readonly valueChange: EventEmitter<T | null> = new EventEmitter<T | null>();
-  @Output() public readonly openedChange = new EventEmitter<boolean>();
-  @Output() public readonly selectionChange = new EventEmitter<MatSelectChange>();
+  public readonly valueChange = output<T | null>();
+  public readonly openedChange = output<boolean>();
+  public readonly selectionChange = output<MatSelectChange>();
 
   public empty = true;
 
@@ -229,7 +219,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
 
   /** If true, then the empty option should be shown. */
   public get showEmptyInput() {
-    if (this.multiple || !this.clearable || !this.items?.length) {
+    if (this.multiple() || !this.clearable() || !this.items?.length) {
       return false;
     }
     const searchText = (this.filterCtrl.value || '').toLowerCase();
@@ -238,7 +228,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
 
   public get tooltip(): string {
     // MatSelect is not fully initialized in the beginning, so we need to skip this here until it is ready
-    if (this.multiple && this._matSelect?._selectionModel && this._matSelect.selected) {
+    if (this.multiple() && this._matSelect?._selectionModel && this._matSelect.selected) {
       return (this._matSelect.selected as MatOption[]).map((x) => x.viewValue).join(', ');
     }
     return '';
@@ -256,7 +246,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   });
   /** The value displayed in the trigger. */
   readonly $customTriggerData = computed(() => {
-    if (this.multiple) {
+    if (this.multiple()) {
       return this.$customTriggerDataArray();
     }
     return this.$customTriggerDataArray()[0];
@@ -298,6 +288,18 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     }
 
     this._errorStateTracker = new _ErrorStateTracker(defaultErrorStateMatcher, ngControl, parentFormGroup, parentForm, this.stateChanges);
+
+    afterNextRender(() => {
+      const select = this._matSelectQuery();
+      this._matSelect = select;
+      // MatSelect doesn't trigger stateChanges on close which causes problems, so we patch it here.
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      const close = select.close;
+      select.close = () => {
+        close.call(select);
+        select.stateChanges.next();
+      };
+    });
   }
 
   public ngDoCheck() {
@@ -403,7 +405,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
 
   private _propagateValueChange(value: unknown, source: ValueChangeSource) {
     this._value = value as T | null;
-    this.empty = this.multiple ? !Array.isArray(value) || value.length === 0 : value == null || value === '';
+    this.empty = this.multiple() ? !Array.isArray(value) || value.length === 0 : value == null || value === '';
     this._updateToggleAllCheckbox();
     this._pushSelectedValuesToDataSource(this._value);
     if (source !== ValueChangeSource.valueInput) {
@@ -420,7 +422,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
       return;
     }
     let values: T[];
-    if (this.multiple) {
+    if (this.multiple()) {
       values = Array.isArray(value) ? value : [];
     } else {
       values = value ? [value] : [];
@@ -457,7 +459,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   }
 
   private _updateToggleAllCheckbox() {
-    if (this.multiple && this.items && Array.isArray(this._value)) {
+    if (this.multiple() && this.items && Array.isArray(this._value)) {
       const selectedValueCount = this._value.length;
       this.toggleAllCheckboxChecked = this.items.length === selectedValueCount;
       this.toggleAllCheckboxIndeterminate = selectedValueCount > 0 && selectedValueCount < this.items.length;

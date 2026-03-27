@@ -1,19 +1,19 @@
-<div [matTooltip]="tooltip" [matTooltipDisabled]="!multiple">
+<div [matTooltip]="tooltip" [matTooltipDisabled]="!multiple()">
   <mat-select
     [ngModel]="value"
     [disableOptionCentering]="true"
     [compareWith]="compareWith"
     [disabled]="disabled"
-    [multiple]="multiple"
+    [multiple]="multiple()"
     [errorStateMatcher]="errorStateMatcher"
-    [panelClass]="panelClass"
+    [panelClass]="panelClass()"
     [placeholder]="placeholder"
     [required]="required"
     (valueChange)="onValueChange($event)"
     (selectionChange)="onSelectionChange($event)"
     (openedChange)="onOpenedChange($event)"
   >
-    @if (!multiple && triggerTemplate && !empty) {
+    @if (!multiple() && triggerTemplate && !empty) {
       <mat-select-trigger>
         @if (triggerTemplate) {
           <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }" />
@@ -21,7 +21,7 @@
       </mat-select-trigger>
     }
 
-    @if (multiple && !empty) {
+    @if (multiple() && !empty) {
       <mat-select-trigger class="zv-select__multiple-trigger">
         <div class="zv-select__multiple-trigger__label">
           @if (!triggerTemplate) {
@@ -31,7 +31,7 @@
             <ng-container [ngTemplateOutlet]="triggerTemplate" [ngTemplateOutletContext]="{ $implicit: $customTriggerData() }" />
           }
         </div>
-        @if ($customTriggerDataArray().length > 1 && selectedLabel) {
+        @if ($customTriggerDataArray().length > 1 && selectedLabel()) {
           <div class="zv-select__multiple-trigger__selected-label" i18n="@@zvc.xSelectedLabel">
             ({{ $customTriggerDataArray().length }} selected)
           </div>
@@ -43,7 +43,7 @@
       <ngx-mat-select-search
         [formControl]="filterCtrl"
         [searching]="loading"
-        [showToggleAllCheckbox]="showToggleAll"
+        [showToggleAllCheckbox]="showToggleAll()"
         [toggleAllCheckboxChecked]="toggleAllCheckboxChecked"
         [toggleAllCheckboxIndeterminate]="toggleAllCheckboxIndeterminate"
         (toggleAll)="onToggleAll($event)"
@@ -67,11 +67,11 @@
 
     @for (item of items; track trackByOptions($index, item)) {
       <mat-option [value]="item.value" [class.zv-select__option--hidden]="item.hidden" [disabled]="item.disabled" class="zv-select__option">
-        @if (!optionTemplate) {
+        @if (!optionTemplate()) {
           {{ item.label }}
         }
-        @if (optionTemplate) {
-          <ng-template [ngTemplateOutlet]="optionTemplate" [ngTemplateOutletContext]="{ $implicit: item }" />
+        @if (optionTemplate()) {
+          <ng-template [ngTemplateOutlet]="optionTemplate()!" [ngTemplateOutletContext]="{ $implicit: item }" />
         }
       </mat-option>
     }
