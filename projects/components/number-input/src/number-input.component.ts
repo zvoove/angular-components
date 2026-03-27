@@ -270,6 +270,16 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
         untracked(() => this._formatValue());
       }
     });
+
+    // Notify MatFormField when signal inputs change (replaces ngOnChanges)
+    effect(() => {
+      this.min();
+      this.max();
+      this.decimals();
+      this.stepSize();
+      this.tabindex();
+      this.stateChanges.next();
+    });
   }
 
   ngOnInit() {

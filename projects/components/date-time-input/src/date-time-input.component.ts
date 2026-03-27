@@ -129,10 +129,12 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
 
   /** Whether the control is empty. */
   get empty(): boolean {
-    if (!this._dateInputElementRef()?.nativeElement.value && !this._timeInputElementRef()?.nativeElement.value) {
-      return this.value == null || !this._dateInputElementRef() || !this._timeInputElementRef();
+    const dateRef = this._dateInputElementRef();
+    const timeRef = this._timeInputElementRef();
+    if (!dateRef || !timeRef) {
+      return this.value == null;
     }
-    return false;
+    return !dateRef.nativeElement.value && !timeRef.nativeElement.value;
   }
 
   /** Whether the `MatFormField` label should try to float. */
@@ -335,13 +337,13 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
 
   /** Focuses the date input element. */
   private _focus(event: MouseEvent | null, options?: FocusOptions): void {
-    let target = this._dateInputElementRef()!.nativeElement;
+    let target: HTMLInputElement | undefined = this._dateInputElementRef()?.nativeElement;
     if (this.shouldLabelFloat && event?.target instanceof HTMLInputElement) {
       target = event.target;
     } else if (this._form.value.date) {
-      target = this._timeInputElementRef()!.nativeElement;
+      target = this._timeInputElementRef()?.nativeElement;
     }
-    target.focus(options);
+    target?.focus(options);
   }
 
   _onFocus() {
@@ -369,7 +371,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
     const input = event.target as HTMLInputElement;
     if (event.key === 'ArrowRight' && input.selectionStart === input.selectionEnd && input.selectionStart === input.value.length) {
       event.preventDefault();
-      this._timeInputElementRef()!.nativeElement.focus();
+      this._timeInputElementRef()?.nativeElement.focus();
     }
   }
 
@@ -377,7 +379,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
     const input = event.target as HTMLInputElement;
     if (event.key === 'ArrowLeft' && input.selectionStart === input.selectionEnd && input.selectionStart === 0) {
       event.preventDefault();
-      this._dateInputElementRef()!.nativeElement.focus();
+      this._dateInputElementRef()?.nativeElement.focus();
     }
   }
 

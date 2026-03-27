@@ -325,16 +325,17 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
       .pipe(takeUntil(this._ngUnsubscribe$))
       .subscribe((searchText) => this.dataSource.searchTextChanged(searchText));
 
+    const matSelect = this._matSelectQuery();
     let selectionSignalInitialized = false;
-    this._matSelect.stateChanges
+    matSelect.stateChanges
       .pipe(
         tap(() => {
-          if (!selectionSignalInitialized && this._matSelect._selectionModel) {
+          if (!selectionSignalInitialized && matSelect._selectionModel) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- MatSelect._selectionModel.selected is MatOption<any>[]
-            this.$currentSelection.set(this._matSelect._selectionModel.selected);
-            this._matSelect._selectionModel.changed.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(() => {
+            this.$currentSelection.set(matSelect._selectionModel.selected);
+            matSelect._selectionModel.changed.pipe(takeUntil(this._ngUnsubscribe$)).subscribe(() => {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- MatSelect._selectionModel.selected is MatOption<any>[]
-              this.$currentSelection.set(this._matSelect._selectionModel.selected);
+              this.$currentSelection.set(matSelect._selectionModel.selected);
             });
             selectionSignalInitialized = true;
           }
