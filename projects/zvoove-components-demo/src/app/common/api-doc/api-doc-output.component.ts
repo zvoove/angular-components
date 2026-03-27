@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector
@@ -6,9 +6,9 @@ import { Directive, Input } from '@angular/core';
   standalone: true,
 })
 export class AppApiDocOutput {
-  @Input({ required: true }) name: string;
-  @Input({ required: true }) type: string;
-  @Input() typeUrl: string;
-  @Input({ required: true }) desc: string;
-  @Input() twoWay = false;
+  readonly name = input.required<string>();
+  readonly type = input.required<string>();
+  readonly typeUrl = input<string>();
+  readonly desc = input.required<string>();
+  readonly twoWay = input(false);
 }

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation, inject, input } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -31,19 +31,19 @@ import { InvalidErrorStateMatcher } from '../common/invalid-error-state-matcher'
 @Component({
   selector: 'app-reference-column',
   template: `
-    <zv-form-field [hint]="hint" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+    <zv-form-field [hint]="hint()" [hintToggle]="hintToggle()" [subscriptType]="subscriptType()">
       <mat-label>Referenz Column</mat-label>
-      <input matInput [(ngModel)]="value" type="text" [required]="required" />
+      <input matInput [(ngModel)]="value" type="text" [required]="required()" />
     </zv-form-field>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule, FormsModule, ZvFormField],
 })
 export class ReferenceColumnComponent {
-  @Input() public subscriptType: ZvFormFieldSubscriptType = 'single-line';
-  @Input() public hintToggle = false;
-  @Input() public hint = 'hint text';
-  @Input() public required = false;
+  readonly subscriptType = input<ZvFormFieldSubscriptType>('single-line');
+  readonly hintToggle = input(false);
+  readonly hint = input('hint text');
+  readonly required = input(false);
   public value = '';
 }
 
@@ -161,7 +161,7 @@ export class FormFieldDemoComponent {
         continue;
       }
       const ctrl = this.form.controls[ctrlName as keyof typeof this.form.controls];
-      (ctrl as any).zvLabel = ctrlName;
+      (ctrl as unknown as { zvLabel: string }).zvLabel = ctrlName;
     }
   }
 }

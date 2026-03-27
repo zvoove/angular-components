@@ -12,9 +12,9 @@ export class CustomZvSelectService extends DefaultZvSelectService {
     super();
   }
 
-  public override createDataSource<T>(data: ZvSelectData | string, control: AbstractControl): ZvSelectDataSource<T> {
+  public override createDataSource<T>(data: ZvSelectData<T> | string, control: AbstractControl | null): ZvSelectDataSource<T> {
     if (typeof data === 'string') {
-      data = getLookupData(data);
+      return super.createDataSource(getLookupData(data) as ZvSelectData<T>, control);
     }
     return super.createDataSource(data, control);
   }

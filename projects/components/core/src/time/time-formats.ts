@@ -2,10 +2,10 @@ import { InjectionToken } from '@angular/core';
 
 export interface ZvTimeFormats {
   parse: {
-    timeInput: any;
+    timeInput: unknown;
   };
   display: {
-    timeInput: any;
+    timeInput: unknown;
   };
 }
 

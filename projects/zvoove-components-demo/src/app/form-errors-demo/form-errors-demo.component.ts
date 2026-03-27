@@ -17,6 +17,9 @@ export class FormErrorsDemoComponent {
       input1: new FormControl('a', [Validators.required, Validators.minLength(3), Validators.maxLength(5)]),
       input2: new FormControl('', [Validators.required]),
     },
-    (form: AbstractControl) => (form.value.input1 !== form.value.input2 ? { equal: 'must be equal' } : null)
+    (form: AbstractControl) => {
+      const val = form.value as { input1: string; input2: string };
+      return val.input1 !== val.input2 ? { equal: 'must be equal' } : null;
+    }
   );
 }

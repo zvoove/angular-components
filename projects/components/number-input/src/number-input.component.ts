@@ -1,3 +1,9 @@
+/* eslint-disable @angular-eslint/no-conflicting-lifecycle --
+   Both DoCheck and OnChanges are required: OnChanges notifies MatFormField
+   of input changes via stateChanges.next(), while DoCheck runs
+   updateErrorState() which depends on parent form submission state that
+   cannot be observed reactively. This follows Angular Material's own
+   MatInput implementation. */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import type { ElementRef } from '@angular/core';
 import {
@@ -233,7 +239,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   _ariaDescribedby = '';
 
   _formattedValue = '';
-  _timer: any;
+  _timer: ReturnType<typeof setTimeout> | null = null;
   _decimalSeparator!: string;
   _thousandSeparator!: string;
   _calculatedDecimals: number | null = null;
@@ -242,7 +248,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   @ViewChild('inputfield', { static: true })
   _inputfieldViewChild!: ElementRef<HTMLInputElement>;
 
-  _onModelChange = (_val: any) => {};
+  _onModelChange = (_val: number | null) => {};
   _onModelTouched = () => {};
 
   constructor() {
@@ -322,12 +328,11 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
     this._inputfieldViewChild.nativeElement.focus(options);
   }
 
-  writeValue(value: any): void {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  writeValue(value: number | null): void {
     this.value = value;
   }
 
-  registerOnChange(fn: (val: any) => void): void {
+  registerOnChange(fn: (val: number | null) => void): void {
     this._onModelChange = fn;
   }
 
@@ -352,8 +357,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
   _clearTimer() {
     if (this._timer) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      clearInterval(this._timer);
+      clearTimeout(this._timer);
     }
   }
 
@@ -379,13 +383,12 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _formatValue() {
-    const value: any = this.value;
+    const value = this.value;
     if (value == null) {
       this._formattedValue = '';
     } else {
       const decimals = this._getDecimals();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      this._formattedValue = value.toLocaleString(this.localeId, { maximumFractionDigits: decimals });
+      this._formattedValue = value.toLocaleString(this.localeId, { maximumFractionDigits: decimals ?? undefined });
     }
 
     if (this._inputfieldViewChild && this._inputfieldViewChild.nativeElement) {

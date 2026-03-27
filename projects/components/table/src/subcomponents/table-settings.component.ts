@@ -61,7 +61,7 @@ export class ZvTableSettingsComponent implements OnInit {
   @Input() public columnDefinitions: ZvTableColumn[] = [];
   @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
   @Input() public pageSizeOptions!: number[];
-  @Input() public customSettings: TemplateRef<any> | null = null;
+  @Input() public customSettings: TemplateRef<unknown> | null = null;
 
   @Output() public readonly settingsSaved = new EventEmitter<void>();
   @Output() public readonly settingsAborted = new EventEmitter<void>();

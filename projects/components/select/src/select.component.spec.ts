@@ -97,7 +97,7 @@ function createFakeDataSource(items: ZvSelectItem[] = []): ZvSelectDataSource {
   return {
     connect: () => of<ZvSelectItem[]>(items),
     disconnect: () => {},
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     selectedValuesChanged: (_: any | any[]) => {},
     panelOpenChanged: (_: boolean) => {},
     searchTextChanged: (_: string) => {},

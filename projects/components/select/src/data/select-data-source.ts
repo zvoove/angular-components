@@ -1,16 +1,16 @@
 import { Observable } from 'rxjs';
 import { ZvSelectItem } from '../models';
 
-export const DEFAULT_COMPARER = (a: any, b: any) => a === b;
+export const DEFAULT_COMPARER = (a: unknown, b: unknown) => a === b;
 
-export abstract class ZvSelectDataSource<T = any> {
+export abstract class ZvSelectDataSource<T = unknown> {
   /** The flag that indicates if the select is currently loading data. */
   public loading = false;
 
   /** The error that occured in the last observable returned by _loadItems or null. */
-  public error: any = null;
+  public error: unknown = null;
 
-  public compareWith: (value1: T, value2: T) => boolean = DEFAULT_COMPARER;
+  public compareWith: (value1: unknown, value2: unknown) => boolean = DEFAULT_COMPARER;
 
   /**
    * Connects a collection viewer (such as a data-table) to this data source. Note that
@@ -35,10 +35,9 @@ export abstract class ZvSelectDataSource<T = any> {
 }
 
 /** Checks whether an object is a data source. */
-export function isZvSelectDataSource(value: any): value is ZvSelectDataSource<unknown> {
+export function isZvSelectDataSource(value: unknown): value is ZvSelectDataSource<unknown> {
   // Check if the value is a ZvSelectDataSource by observing if it has a connect function. Cannot
   // be checked as an `instanceof ZvSelectDataSource` since people could create their own sources
   // that match the interface, but don't extend ZvSelectDataSource.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-  return value && typeof value.connect === 'function';
+  return value != null && typeof (value as ZvSelectDataSource<unknown>).connect === 'function';
 }

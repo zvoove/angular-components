@@ -76,8 +76,12 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
     }
   }
 
-  public onContainerClick(): void {}
-  public setDescribedByIds(): void {}
+  public onContainerClick(): void {
+    /* noop - required by MatFormFieldControl */
+  }
+  public setDescribedByIds(): void {
+    /* noop - required by MatFormFieldControl */
+  }
 
   public onChange = () => {};
   public onTouched = () => {};
@@ -92,11 +96,19 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<string>, On
     }
   }
 
-  public writeValue() {}
+  public writeValue() {
+    /* noop - required by ControlValueAccessor */
+  }
 
-  public registerOnChange() {}
+  public registerOnChange() {
+    /* noop - required by ControlValueAccessor */
+  }
 
-  public registerOnTouched(): void {}
+  public registerOnTouched(): void {
+    /* noop - required by ControlValueAccessor */
+  }
 
-  public setDisabledState(): void {}
+  public setDisabledState(): void {
+    /* noop - required by ControlValueAccessor */
+  }
 }

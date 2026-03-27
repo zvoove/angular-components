@@ -18,6 +18,6 @@ export class SelectWithEventsOnlyComponent {
   public values: string[] = [];
 
   public onSelectionChange(event: MatSelectChange) {
-    this.values.push(event.value);
+    this.values.push(event.value as string);
   }
 }

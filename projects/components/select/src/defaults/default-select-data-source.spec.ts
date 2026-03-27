@@ -394,7 +394,7 @@ describe('DefaultZvSelectDataSource', () => {
     expect(currentRenderOptions).toEqual([createMissingOption(10), createIdOption(item2), createIdOption(item)]);
 
     // Sollte auch mit custom compareWith function gehen (value 9 und value 11 identisch)
-    dataSource.compareWith = (a: number, b: number) => (a === 11 && b === 9) || (a === 9 && b === 11);
+    dataSource.compareWith = (a: unknown, b: unknown) => (a === 11 && b === 9) || (a === 9 && b === 11);
 
     items$.next([item, item3]);
     await vi.advanceTimersByTimeAsync(1);
@@ -625,7 +625,7 @@ describe('DefaultZvSelectDataSource', () => {
     });
 
     it('ZvSelectSort.Comparer with custom reverse sorting', async () => {
-      await initDataSource(ZvSelectSortBy.comparer, (a, b) => b.value - a.value); // reverse sort
+      await initDataSource(ZvSelectSortBy.comparer, (a, b) => (b.value as number) - (a.value as number)); // reverse sort
 
       const expectedOptions = [item5Label6Selected, item6Label5Selected, item2Label4, item4Label3, item3Label2Selected, item1Label1].map(
         (x) => createIdOption(x)
@@ -649,7 +649,7 @@ describe('DefaultZvSelectDataSource', () => {
     });
 
     it('ZvSelectSort.Both with custom reverse sorting', async () => {
-      await initDataSource(ZvSelectSortBy.both, (a, b) => b.value - a.value); // reverse sort
+      await initDataSource(ZvSelectSortBy.both, (a, b) => (b.value as number) - (a.value as number)); // reverse sort
 
       const expectedOptions = [item5Label6Selected, item6Label5Selected, item3Label2Selected, item2Label4, item4Label3, item1Label1].map(
         (x) => createIdOption(x)

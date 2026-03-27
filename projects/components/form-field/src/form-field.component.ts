@@ -90,7 +90,7 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
     this._labelChild = value;
     this.updateLabel();
     if (this._matFormField) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _changeDetectorRef
       (this._matFormField as any)._changeDetectorRef.markForCheck();
     }
   }
@@ -184,9 +184,9 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
     this._matFormField._control = this.matFormFieldControl;
     this.emulated = this.matFormFieldControl instanceof DummyMatFormFieldControl;
     // This tells the mat-input that it is inside a mat-form-field
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _isInFormField
     if ((this.matFormFieldControl as any)._isInFormField !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _isInFormField
       (this.matFormFieldControl as any)._isInFormField = true;
     }
     this.realFormControl = getRealFormControl(this._ngControl, this.matFormFieldControl);
@@ -201,7 +201,7 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
 
     if (this.formControl) {
       if (this.formsService.tryDetectRequired) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access -- dynamically setting required on MatFormFieldControl
         (this.matFormFieldControl as any).required = hasRequiredField(this.formControl);
       }
 
@@ -264,7 +264,7 @@ export class ZvFormField implements OnChanges, AfterContentChecked, OnDestroy {
 
       // when only our own component is marked for check, then the label will not be shown
       // when labelText$ didn't run synchronously
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- accessing Angular Material internal _changeDetectorRef
       (this._matFormField as any)._changeDetectorRef.markForCheck();
     });
   }

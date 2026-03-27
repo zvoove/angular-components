@@ -42,8 +42,10 @@ export class FormDemoComponent {
       input2: new FormControl('b'),
     },
     [
-      (formGroup: AbstractControl) =>
-        formGroup.value.input1 === formGroup.value.input2 ? null : { equal: 'input1 and input2 must be equal' },
+      (formGroup: AbstractControl) => {
+        const val = formGroup.value as { input1: string; input2: string };
+        return val.input1 === val.input2 ? null : { equal: 'input1 and input2 must be equal' };
+      },
     ]
   );
   public counter = 0;

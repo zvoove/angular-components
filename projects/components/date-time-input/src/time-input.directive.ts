@@ -8,6 +8,7 @@ import {
   OnChanges,
   OnDestroy,
   Output,
+  Provider,
   SimpleChanges,
   forwardRef,
   inject,
@@ -46,14 +47,14 @@ export class ZvTimeInputEvent<TTime> {
 }
 
 /** @docs-private */
-export const ZV_TIME_VALUE_ACCESSOR: any = {
+export const ZV_TIME_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => ZvTimeInput),
   multi: true,
 };
 
 /** @docs-private */
-export const ZV_TIME_VALIDATORS: any = {
+export const ZV_TIME_VALIDATORS: Provider = {
   provide: NG_VALIDATORS,
   useExisting: forwardRef(() => ZvTimeInput),
   multi: true,
@@ -85,8 +86,7 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
   get value(): TTime | null {
     return this._value;
   }
-  set value(value: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  set value(value: TTime | null) {
     this._assignValueProgrammatically(value);
   }
   protected _value: TTime | null = null;
@@ -130,7 +130,7 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
   _onTouched = () => {};
   _validatorOnChange = () => {};
 
-  private _cvaOnChange: (value: any) => void = () => {};
+  private _cvaOnChange: (value: TTime | null) => void = () => {};
   private _localeSubscription = Subscription.EMPTY;
 
   /** The form control validator for whether the input parses. */
@@ -179,12 +179,12 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
   }
 
   // Implemented as part of ControlValueAccessor.
-  writeValue(value: TTime): void {
-    this._assignValueProgrammatically(value);
+  writeValue(value: unknown): void {
+    this._assignValueProgrammatically(value as TTime | null);
   }
 
   // Implemented as part of ControlValueAccessor.
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: TTime | null) => void): void {
     this._cvaOnChange = fn;
   }
 

@@ -40,8 +40,7 @@ export class FormDataSource<
   TSaveResponse,
   TForm extends FormGroup = FormGroup,
   TFormValue = ReturnType<TForm['getRawValue']>,
-> implements IZvFormDataSource
-{
+> implements IZvFormDataSource {
   public buttons: IZvButton[] = [];
   public exception: IZvException | null = null;
   public progress: number | null = null;
@@ -150,7 +149,7 @@ export class FormDataSource<
     this.updateButtons();
     this.stateChanges$.next();
 
-    const formValue: TFormValue = this.form.getRawValue();
+    const formValue = this.form.getRawValue() as TFormValue;
     this.options
       .saveFn(formValue, {
         loadParams: this.loadParams,

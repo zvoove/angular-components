@@ -17,7 +17,7 @@ import { delay } from 'rxjs/operators';
 export class SelectWithOtherLoadTriggerComponent {
   private readonly cd = inject(ChangeDetectorRef);
 
-  public dataSource: ZvSelectDataSource;
+  public dataSource!: ZvSelectDataSource<number>;
   public currentLoadTrigger = 'initial';
   public loadCount = 0;
   public form = new FormGroup({

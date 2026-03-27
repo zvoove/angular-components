@@ -71,14 +71,12 @@ export abstract class ZvTimeAdapter<TTime> {
    * @returns The deserialized time object, either a valid time, null if the value can be
    *     deserialized into a null time (e.g. the empty string), or an invalid time.
    */
-  deserialize(value: any): TTime | null {
+  deserialize(value: unknown): TTime | null {
     if (!value) {
       return null;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    if (this.isTimeInstance(value) && this.isValid(value)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return value;
+    if (this.isTimeInstance(value) && this.isValid(value as TTime)) {
+      return value as TTime;
     }
     if (typeof value === 'string') {
       const matches = value.match(/^(\d{2}):(\d{2})$/);

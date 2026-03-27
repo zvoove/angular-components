@@ -23,9 +23,9 @@ import { ZvTableSortComponent } from './table-sort.component';
 })
 export class ZvTableHeaderComponent {
   @Input() public caption!: string;
-  @Input() public topButtonSection!: TemplateRef<any> | null;
-  @Input() public customHeader!: TemplateRef<any> | null;
-  @Input() public selectedRows!: any[];
+  @Input() public topButtonSection!: TemplateRef<unknown> | null;
+  @Input() public customHeader!: TemplateRef<unknown> | null;
+  @Input() public selectedRows!: unknown[];
   @Input() public showSorting!: boolean;
   @Input() public sortColumn!: string | null;
   @Input() public sortDirection!: 'asc' | 'desc';

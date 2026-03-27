@@ -4,5 +4,5 @@ import { ZvSelectDataSource } from '../data/select-data-source';
 
 @Injectable({ providedIn: 'root' })
 export abstract class ZvSelectService {
-  public abstract createDataSource<T>(dataSource: any, _: AbstractControl | null): ZvSelectDataSource<T>;
+  public abstract createDataSource<T>(dataSource: unknown, _: AbstractControl | null): ZvSelectDataSource<T>;
 }

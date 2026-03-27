@@ -273,7 +273,6 @@ describe('ZvForm', () => {
           },
           disconnect: () => {},
         } as unknown as IntersectionObserver;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any;
 
       const fixture = TestBed.createComponent(TestDataSourceComponent);
