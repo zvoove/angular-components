@@ -1,6 +1,10 @@
 name: pull request ci
 on: [pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     name: ci
@@ -9,17 +13,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - run: |
-          docker build . --target=test-components -t zvoove-angular-components:test-comp
-          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
-          docker build . --target=linter -t zvoove-angular-components:lint
-        name: build ci images
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
 
-      - run: docker run --rm zvoove-angular-components:lint
-        name: run linter
+      - name: Install dependencies
+        run: npm ci
 
-      - run: docker run --rm zvoove-angular-components:test-comp
-        name: test components
+      - name: Lint
+        run: npm run lint
 
-      - run: docker run --rm zvoove-angular-components:test-schem
-        name: test schematics
+      - name: Test components
+        run: npm run test:components
+
+      - name: Test schematics
+        run: npm run test:schematics

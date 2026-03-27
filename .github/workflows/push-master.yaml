@@ -4,12 +4,17 @@ on:
     branches:
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
-  id-token: write  # Required for OIDC
+  id-token: write
   contents: read
 
 jobs:
-  deploy:
+  ci:
+    name: ci
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,25 +22,74 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry-url: 'https://registry.npmjs.org'
+          cache: npm
 
-      - run: |
-          docker build . --target=test-components -t zvoove-angular-components:test-comp
-          docker build . --target=test-schematics -t zvoove-angular-components:test-schem
-          docker build . --target=linter -t zvoove-angular-components:lint
-        name: build ci images
-
-      - run: docker run --rm zvoove-angular-components:lint
-        name: run linter
-
-      - run: docker run --rm zvoove-angular-components:test-comp
-        name: test components
-
-      - run: docker run --rm zvoove-angular-components:test-schem
-        name: test schematics
       - run: npm ci
 
-      - run: npm run build:components
+      - name: Lint
+        run: npm run lint
+
+      - name: Test components
+        run: npm run test:components
+
+      - name: Test schematics
+        run: npm run test:schematics
+
+      - name: Build components
+        run: npm run build:components
+
+      - name: Build demo
+        run: npm run build:components-demo -- --base-href /components/
+
+      - name: Upload components artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: components-dist
+          path: dist/components
+
+      - name: Upload demo artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/zvoove-components-demo/browser
+
+  publish:
+    name: publish to npm
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download components artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: components-dist
+          path: dist/components
+
+      - name: Check if version already published
+        id: version-check
+        run: |
+          LOCAL=$(node -p "require('./dist/components/package.json').version")
+          REMOTE=$(npm view @zvoove/components version 2>/dev/null || echo "0.0.0")
+          echo "should_publish=$( [ "$LOCAL" != "$REMOTE" ] && echo true || echo false )" >> "$GITHUB_OUTPUT"
 
       - name: Publish to npm
+        if: steps.version-check.outputs.should_publish == 'true'
         run: npm publish ./dist/components --provenance --access public
+
+  deploy-demo:
+    name: deploy demo to github pages
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
