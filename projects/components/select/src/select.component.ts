@@ -317,6 +317,9 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   public ngOnInit() {
     this._onInitCalled = true;
 
+    const matSelect = this._matSelect ?? this._matSelectQuery();
+    this._matSelect = matSelect;
+
     // before oninit ngControl.control isn't set, but it is needed for datasource creation
 
     this._switchDataSource(this._dataSourceInput);
@@ -324,8 +327,6 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this.filterCtrl.valueChanges
       .pipe(takeUntil(this._ngUnsubscribe$))
       .subscribe((searchText) => this.dataSource.searchTextChanged(searchText));
-
-    const matSelect = this._matSelectQuery();
     let selectionSignalInitialized = false;
     matSelect.stateChanges
       .pipe(
@@ -450,7 +451,7 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     }
 
     this._dataSourceInstance.searchTextChanged(this.filterCtrl.value);
-    this._dataSourceInstance.panelOpenChanged(this._matSelect.panelOpen);
+    this._dataSourceInstance.panelOpenChanged(this._matSelect?.panelOpen ?? false);
     this._pushSelectedValuesToDataSource(this._value);
 
     this._renderChangeSubscription = this._dataSourceInstance.connect().subscribe((items) => {

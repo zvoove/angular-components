@@ -1,7 +1,17 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, LOCALE_ID, ViewChild, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EnvironmentInjector,
+  Injectable,
+  LOCALE_ID,
+  ViewChild,
+  runInInjectionContext,
+  signal,
+} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { IconType, MatIconHarness, MatIconTestingModule } from '@angular/material/icon/testing';
@@ -81,12 +91,15 @@ const route: ActivatedRoute = {
 } as any;
 
 function createColDef(data: { property?: string; header?: string; sortable?: boolean }): ZvTableColumn {
-  const colDef = new ZvTableColumn();
-  // Signal inputs cannot be assigned directly; replace them with writable signals for testing
-  (colDef as any).sortable = signal(data.sortable || false);
-  (colDef as any).property = signal(data.property || null);
-  (colDef as any).header = signal(data.header || null);
-  return colDef;
+  const injector = TestBed.inject(EnvironmentInjector);
+  return runInInjectionContext(injector, () => {
+    const colDef = new ZvTableColumn();
+    // Signal inputs cannot be assigned directly; replace them with writable signals for testing
+    (colDef as any).sortable = signal(data.sortable ?? true);
+    (colDef as any).property = signal(data.property || '');
+    (colDef as any).header = signal(data.header || '');
+    return colDef;
+  });
 }
 
 @Component({

@@ -55,41 +55,41 @@ describe('ZvTableHeaderComponent', () => {
     component.filterable.set(false);
     component.topButtonSection.set(null);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop).toBe('0');
+    expect(component.cmp.paddingTop()).toBe('0');
 
     component.caption.set('test');
     component.showSorting.set(false);
     component.filterable.set(false);
     component.topButtonSection.set(null);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop).toBe('0');
+    expect(component.cmp.paddingTop()).toBe('0');
 
     component.caption.set('test');
     component.showSorting.set(true);
     component.filterable.set(true);
     component.topButtonSection.set(component.dummyTpl);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop).toBe('0');
+    expect(component.cmp.paddingTop()).toBe('0');
 
     component.caption.set('');
     component.showSorting.set(true);
     component.filterable.set(false);
     component.topButtonSection.set(null);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop).toBe('1em');
+    expect(component.cmp.paddingTop()).toBe('1em');
 
     component.caption.set('');
     component.showSorting.set(false);
     component.filterable.set(true);
     component.topButtonSection.set(null);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop).toBe('1em');
+    expect(component.cmp.paddingTop()).toBe('1em');
 
     component.caption.set('');
     component.showSorting.set(false);
     component.filterable.set(false);
     component.topButtonSection.set(component.dummyTpl);
     await fixture.whenStable();
-    expect(component.cmp.paddingTop).toBe('1em');
+    expect(component.cmp.paddingTop()).toBe('1em');
   });
 });

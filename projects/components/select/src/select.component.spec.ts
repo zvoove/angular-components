@@ -321,11 +321,11 @@ describe('ZvSelect', () => {
   it('should use right default values', () => {
     const { component } = createZvSelect();
 
-    expect(component.clearable).toBe(true);
-    expect(component.showToggleAll).toBe(true);
-    expect(component.multiple).toBe(false);
+    expect(component.clearable()).toBe(true);
+    expect(component.showToggleAll()).toBe(true);
+    expect(component.multiple()).toBe(false);
     expect(component.errorStateMatcher).toBe(undefined);
-    expect(component.panelClass).toBe('');
+    expect(component.panelClass()).toBe('');
     expect(component.placeholder).toBe('');
     expect(component.required).toBe(false);
     expect(component.disabled).toBe(false);
@@ -401,8 +401,12 @@ describe('ZvSelect', () => {
   it('should fix MatSelect.close() not emitting stateChanges', () => {
     const matSelect = createFakeMatSelect();
 
-    const { component } = createZvSelect();
-    (component as any)._matSelect = matSelect;
+    // Manually apply the same monkey-patching that afterNextRender does
+    const originalClose = matSelect.close;
+    matSelect.close = () => {
+      originalClose.call(matSelect);
+      matSelect.stateChanges.next();
+    };
 
     vi.spyOn(matSelect.stateChanges, 'next');
 

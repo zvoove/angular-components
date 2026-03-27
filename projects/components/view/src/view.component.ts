@@ -19,6 +19,7 @@ export class ZvView {
   constructor() {
     effect((onCleanup) => {
       const ds = this.dataSource();
+      if (!ds) return;
       ds.connect();
       onCleanup(() => ds.disconnect());
     });
