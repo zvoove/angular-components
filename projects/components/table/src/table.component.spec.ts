@@ -743,7 +743,7 @@ describe('ZvTable', () => {
         expect(await customHeaderCells[0].getText()).toEqual('custom');
       });
 
-      it.only('should create data rows', async () => {
+      it('should create data rows', async () => {
         const dataRows = await table.getRows();
         expect(dataRows.length).toEqual(4); // 2 rows with 2x row detail per row - because the 3rd item is on the 2nd page
 
@@ -756,7 +756,7 @@ describe('ZvTable', () => {
         expect(await strDataCell[0].getText()).toEqual('item 1');
         expect(await (await strDataCell[0].host()).getCssValue('color')).toEqual('rgb(0, 0, 255)');
 
-        let detail = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('zv-table-data__detail-row'));
+        const detail = await filterAsync(dataRows, async (row) => await (await row.host()).hasClass('zv-table-data__detail-row'));
         expect(detail.length).toEqual(2);
 
         expect(await (await detail[0].host()).hasClass('zv-table-data__detail-row--collapsed')).toBe(true);

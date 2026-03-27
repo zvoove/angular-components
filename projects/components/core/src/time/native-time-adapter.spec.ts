@@ -87,19 +87,8 @@ describe('ZvNativeTimeAdapter', () => {
     ).toEqual('3:30 PM');
   });
 
-  it.skip('should format with a different locale', () => {
-    (adapter as any).setLocale('ja-JP');
-    expect(adapter.format(newTime(14, 45), {})).toEqual('2017/1/1');
-  });
-
   it('should throw when attempting to format invalid Time', () => {
     expect(() => adapter.format(adapter.invalid(), {})).toThrowError(/ZvNativeTimeAdapter: Cannot format invalid Time\./);
-  });
-
-  it.skip('should clone', () => {
-    const time = newTime(14, 45);
-    expect((adapter as any).clone(time)).toEqual(time);
-    expect((adapter as any).clone(time)).not.toBe(time);
   });
 
   it('should compare Times', () => {

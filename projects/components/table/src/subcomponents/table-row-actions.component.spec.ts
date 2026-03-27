@@ -101,9 +101,31 @@ describe('ZvTableRowActionsComponent', () => {
       const button = await loader.getHarness(MatButtonHarness);
       expect(button).toBeDefined();
       expect(await button.isDisabled()).toBe(testCase.expected);
-      if (testCase.routerLink && testCase.expected) {
-        expect(await (await button.host()).getCssValue('pointer-events')).toBe('none');
-      }
     });
   });
+
+  disabledFnTestCases
+    .filter((tc) => tc.routerLink && tc.expected)
+    .forEach((testCase) => {
+      it('should set pointer-events none on disabled router link action', async () => {
+        const fixture = TestBed.createComponent(TestComponent);
+        const component = fixture.componentInstance;
+
+        component.actions.set([
+          {
+            icon: 'remove',
+            label: 'Remove',
+            scope: ZvTableActionScope.row,
+            actionFn: testCase.actionFn,
+            isDisabledFn: testCase.isDisabledFn,
+            routerLink: testCase.routerLink,
+          },
+        ]);
+        const loader = TestbedHarnessEnvironment.loader(fixture);
+        fixture.autoDetectChanges();
+
+        const button = await loader.getHarness(MatButtonHarness);
+        expect(await (await button.host()).getCssValue('pointer-events')).toBe('none');
+      });
+    });
 });

@@ -82,9 +82,36 @@ describe('ZvTableActionsComponent', () => {
       const items = await menu.getItems();
       expect(items[0]).toBeDefined();
       expect(await items[0].isDisabled()).toBe(testCase.expected);
-      if (testCase.routerLink && testCase.expected) {
-        expect(await (await items[0].host()).getCssValue('pointer-events')).toBe('none');
-      }
     });
   });
+
+  disabledFnTestCases
+    .filter((tc) => tc.routerLink && tc.expected)
+    .forEach((testCase) => {
+      it('should set pointer-events none on disabled router link action', async () => {
+        const fixture = TestBed.createComponent(TestComponent);
+        const component = fixture.componentInstance;
+
+        component.actions = [
+          {
+            icon: 'remove',
+            label: 'Remove',
+            scope: ZvTableActionScope.row,
+            actionFn: testCase.actionFn,
+            isDisabledFn: testCase.isDisabledFn,
+            routerLink: testCase.routerLink,
+          },
+        ];
+
+        const loader = TestbedHarnessEnvironment.loader(fixture);
+        fixture.detectChanges();
+
+        const menuTrigger = await loader.getHarness(MatButtonHarness);
+        menuTrigger.click();
+
+        const menu = await loader.getHarness(MatMenuHarness);
+        const items = await menu.getItems();
+        expect(await (await items[0].host()).getCssValue('pointer-events')).toBe('none');
+      });
+    });
 });

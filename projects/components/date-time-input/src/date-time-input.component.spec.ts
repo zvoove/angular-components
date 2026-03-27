@@ -35,10 +35,13 @@ describe('ZvDateTimeInput', () => {
       fixture = TestBed.createComponent(ValueTestComponent);
       fixture.detectChanges();
       cmp = fixture.componentInstance.dateTimeInputCmp();
-      expect(cmp).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
       harness = await loader.getHarness(ZvDateTimeInputHarness);
+    });
+
+    it('should be defined', () => {
+      expect(cmp).toBeDefined();
     });
 
     it('should have size 12 for the date input', async () => {
@@ -403,10 +406,13 @@ describe('ZvDateTimeInput', () => {
       fixture = TestBed.createComponent(InputsTestComponent);
       fixture.detectChanges();
       cmp = fixture.componentInstance.dateTimeInputCmp();
-      expect(cmp).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
       harness = await loader.getHarness(ZvDateTimeInputHarness);
+    });
+
+    it('should be defined', () => {
+      expect(cmp).toBeDefined();
     });
 
     it('should respect required input', async () => {
@@ -460,10 +466,13 @@ describe('ZvDateTimeInput', () => {
       fixture.detectChanges();
       cmp = fixture.componentInstance.dateTimeInputCmp();
       formControl = fixture.componentInstance.control;
-      expect(cmp).toBeDefined();
 
       loader = TestbedHarnessEnvironment.loader(fixture);
       harness = await loader.getHarness(ZvDateTimeInputHarness);
+    });
+
+    it('should be defined', () => {
+      expect(cmp).toBeDefined();
     });
 
     it('should respect disabled form', async () => {

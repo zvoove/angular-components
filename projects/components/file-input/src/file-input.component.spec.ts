@@ -30,7 +30,6 @@ describe('ZvFileInput', () => {
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
     cmp = fixture.componentInstance.fileInputCmp();
-    expect(cmp).toBeDefined();
 
     loader = TestbedHarnessEnvironment.loader(fixture);
     harness = await loader.getHarness(ZvFileInputHarness);
@@ -39,6 +38,10 @@ describe('ZvFileInput', () => {
       cmp._cd.markForCheck();
       fixture.detectChanges();
     };
+  });
+
+  it('should be defined', () => {
+    expect(cmp).toBeDefined();
   });
 
   it('Should respect disabled', async () => {

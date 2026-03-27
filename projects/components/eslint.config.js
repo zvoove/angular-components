@@ -1,6 +1,6 @@
 // @ts-check
 const tseslint = require("typescript-eslint");
-const vitest = require("eslint-plugin-vitest");
+const vitest = require("@vitest/eslint-plugin");
 const rootConfig = require("../../eslint.config.js");
 
 module.exports = tseslint.config(
