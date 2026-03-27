@@ -1,16 +1,5 @@
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-  ViewEncapsulation,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation, effect, inject, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatIcon } from '@angular/material/icon';
@@ -28,7 +17,6 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
-import { Subscription } from 'rxjs';
 import { ZvTableColumn, ZvTableRowDetail } from '../directives/table.directives';
 import { ITableDataSource, IZvTableAction, IZvTableSort, ZvTableActionScope } from '../models';
 import { ZvTableActionsComponent } from './table-actions.component';
@@ -66,23 +54,23 @@ import { TableRowDetailComponent } from './table-row-detail.component';
     MatSortHeader,
   ],
 })
-export class ZvTableDataComponent<TData = unknown> implements OnChanges {
+export class ZvTableDataComponent<TData = unknown> {
   private readonly cd = inject(ChangeDetectorRef);
 
-  @Input() public dataSource!: ITableDataSource<TData>;
-  @Input() public tableId!: string;
-  @Input() public rowDetail!: ZvTableRowDetail | null;
-  @Input() public columnDefs!: ZvTableColumn[];
-  @Input() public showListActions!: boolean;
-  @Input() public refreshable!: boolean;
-  @Input() public settingsEnabled!: boolean;
-  @Input() public displayedColumns!: string[];
-  @Input() public showSorting!: boolean;
-  @Input() public sortColumn!: string | null;
-  @Input() public sortDirection!: 'asc' | 'desc';
-  @Output() public readonly showSettingsClicked = new EventEmitter<void>();
-  @Output() public readonly refreshDataClicked = new EventEmitter<void>();
-  @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
+  public readonly dataSource = input.required<ITableDataSource<TData>>();
+  public readonly tableId = input.required<string>();
+  public readonly rowDetail = input<ZvTableRowDetail | null>(null);
+  public readonly columnDefs = input.required<ZvTableColumn[]>();
+  public readonly showListActions = input.required<boolean>();
+  public readonly refreshable = input.required<boolean>();
+  public readonly settingsEnabled = input.required<boolean>();
+  public readonly displayedColumns = input.required<string[]>();
+  public readonly showSorting = input.required<boolean>();
+  public readonly sortColumn = input.required<string | null>();
+  public readonly sortDirection = input.required<'asc' | 'desc'>();
+  public readonly showSettingsClicked = output<void>();
+  public readonly refreshDataClicked = output<void>();
+  public readonly sortChanged = output<IZvTableSort>();
 
   private refreshAction: IZvTableAction<TData> = {
     icon: 'refresh',
@@ -97,27 +85,24 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
     scope: ZvTableActionScope.list,
   };
   public get listActions() {
-    const actions = [...this.dataSource.listActions];
-    if (this.refreshable) {
+    const actions = [...this.dataSource().listActions];
+    if (this.refreshable()) {
       actions.push(this.refreshAction);
     }
-    if (this.settingsEnabled) {
+    if (this.settingsEnabled()) {
       actions.push(this.settingsAction);
     }
     return actions;
   }
 
-  private _dataSourceChangesSub = Subscription.EMPTY;
-
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes.dataSource) {
-      this._dataSourceChangesSub.unsubscribe();
-      if (this.dataSource._internalDetectChanges) {
-        this._dataSourceChangesSub = this.dataSource._internalDetectChanges.subscribe(() => {
-          this.cd.markForCheck();
-        });
+  constructor() {
+    effect((onCleanup) => {
+      const ds = this.dataSource();
+      if (ds._internalDetectChanges) {
+        const sub = ds._internalDetectChanges.subscribe(() => this.cd.markForCheck());
+        onCleanup(() => sub.unsubscribe());
       }
-    }
+    });
   }
 
   public onSortChanged(sort: Sort) {
@@ -125,37 +110,38 @@ export class ZvTableDataComponent<TData = unknown> implements OnChanges {
   }
 
   public toggleRowDetail(item: object) {
-    this.rowDetail!.toggle(item);
+    this.rowDetail()!.toggle(item);
     this.cd.markForCheck();
   }
 
   public onMasterToggleChange() {
-    this.dataSource.toggleVisibleRowSelection();
+    this.dataSource().toggleVisibleRowSelection();
   }
 
   public onRowToggleChange(row: TData) {
-    this.dataSource.selectionModel.toggle(row);
+    this.dataSource().selectionModel.toggle(row);
   }
 
   public isMasterToggleChecked() {
-    return this.dataSource.selectionModel.hasValue() && this.dataSource.allVisibleRowsSelected;
+    return this.dataSource().selectionModel.hasValue() && this.dataSource().allVisibleRowsSelected;
   }
 
   public isMasterToggleIndeterminate() {
-    return this.dataSource.selectionModel.hasValue() && !this.dataSource.allVisibleRowsSelected;
+    return this.dataSource().selectionModel.hasValue() && !this.dataSource().allVisibleRowsSelected;
   }
 
   public isRowSelected(row: TData) {
-    return this.dataSource.selectionModel.isSelected(row);
+    return this.dataSource().selectionModel.isSelected(row);
   }
 
   public getSelectedRows() {
-    return this.dataSource.selectionModel.selected;
+    return this.dataSource().selectionModel.selected;
   }
 
   public showRowDetails(row: object) {
-    if (typeof this.rowDetail!.showToggleColumn === 'function') {
-      return this.rowDetail!.showToggleColumn(row);
+    const showToggle = this.rowDetail()!.showToggleColumn();
+    if (typeof showToggle === 'function') {
+      return showToggle(row);
     }
 
     return true;

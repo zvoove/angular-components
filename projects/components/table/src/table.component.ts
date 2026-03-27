@@ -358,13 +358,13 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
     this.sortDirection = urlSettings.sortDirection || tableSettings.sortDirection || 'asc';
     this.filterText = urlSettings.searchText || '';
 
-    this.displayedColumns = this.columnDefs.map((x) => x.property);
+    this.displayedColumns = this.columnDefs.map((x) => x.property());
     if (tableSettings.columnBlacklist && tableSettings.columnBlacklist.length) {
       this.displayedColumns = this.displayedColumns.filter((x) => !tableSettings.columnBlacklist!.includes(x));
     }
 
     // Row Detail Expander aktivieren
-    if (this.rowDetail && this.rowDetail.showToggleColumn) {
+    if (this.rowDetail && this.rowDetail.showToggleColumn()) {
       this.displayedColumns.splice(0, 0, 'rowDetailExpander');
     }
 
@@ -383,8 +383,8 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
 
   private mergeSortDefinitions() {
     const sortableColumns = this.columnDefs
-      .filter((def) => def.sortable)
-      .map((def) => ({ prop: def.property, displayName: def.header }) as IZvTableSortDefinition);
+      .filter((def) => def.sortable())
+      .map((def) => ({ prop: def.property(), displayName: def.header() }) as IZvTableSortDefinition);
 
     this._mergedSortDefinitions = sortableColumns
       .concat(this._sortDefinitions)
