@@ -233,14 +233,13 @@ describe('ZvTable', () => {
       (table as any).stateManager = signal(new ZvTableUrlStateManager(router, route));
       settingsService.settings$.next({});
       vi.spyOn(settingsService, 'getStream');
-      table.columnDefs = [createColDef({ property: 'prop1' }), createColDef({ property: 'prop2' })];
-      (table as any)._rowDetail = { showToggleColumn: () => true } as any;
+      const colDefs = [createColDef({ property: 'prop1' }), createColDef({ property: 'prop2' })];
+      // Override content query signals so the consolidated effect populates columnDefs and _rowDetail correctly
+      (table as any).columnDefsQuery = signal(colDefs);
+      (table as any).rowDetailQuery = signal({ showToggleColumn: () => true });
       table.dataSource().listActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.list });
       table.dataSource().rowActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.row });
 
-      // In isolated tests (no fixture/CD), the consolidated effect doesn't run.
-      // Call updateTableState() explicitly to build displayedColumns.
-      (table as any).updateTableState();
       table.ngOnInit();
       await vi.advanceTimersByTimeAsync(1);
 
