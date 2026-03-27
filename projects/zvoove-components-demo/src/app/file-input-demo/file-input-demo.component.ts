@@ -39,9 +39,7 @@ export class FileInputDemoComponent {
 
   public id = '';
   public acceptStr = '*.*';
-  public get accept() {
-    return this.acceptStr.split(',').map((s) => s.trim());
-  }
+  public accept = ['*.*'];
   public placeholder = '';
   public required = false;
   public disabled = false;
@@ -50,6 +48,10 @@ export class FileInputDemoComponent {
 
   public validatorRequired = false;
   public useErrorStateMatcher = false;
+
+  public onAcceptChange() {
+    this.accept = this.acceptStr.split(',').map((s) => s.trim());
+  }
 
   public onValidatorChange() {
     const validators = [];

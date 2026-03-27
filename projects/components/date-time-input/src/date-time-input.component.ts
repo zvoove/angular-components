@@ -255,8 +255,8 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
   }
 
   _childValidators: ValidatorFn[] = [
-    (control) => this.matDateInput()?.validate(control) ?? null,
-    (control) => this.zvTimeInput()?.validate(control) ?? null,
+    (control) => (this._dateInputElementRef()?.nativeElement.value ? this.matDateInput()?.validate(control) : null) ?? null,
+    (control) => (this._timeInputElementRef()?.nativeElement.value ? this.zvTimeInput()?.validate(control) : null) ?? null,
   ];
   validate(control: AbstractControl): ValidationErrors | null {
     const errors = this._childValidators.map((v) => v(control)).filter((error) => error);
@@ -317,9 +317,9 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
   setDisabledState(isDisabled: boolean): void {
     this._disabled = isDisabled;
     if (isDisabled) {
-      this._form.disable();
+      this._form.disable({ emitEvent: false });
     } else {
-      this._form.enable();
+      this._form.enable({ emitEvent: false });
     }
     this._changeDetectorRef.markForCheck();
     this.stateChanges.next();

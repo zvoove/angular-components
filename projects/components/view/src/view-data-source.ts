@@ -36,8 +36,8 @@ export class ZvViewDataSource<TParams, TData> implements IZvViewDataSource {
     if (this.connected) {
       throw new Error('ViewDataSource is already connected.');
     }
+    this.connected = true;
     this.connectSub = this.options.loadTrigger$.subscribe((params) => {
-      this.connected = true;
       this.params = params;
       this.loadData(params);
     });
@@ -51,6 +51,7 @@ export class ZvViewDataSource<TParams, TData> implements IZvViewDataSource {
   }
 
   public disconnect(): void {
+    this.connected = false;
     this.connectSub.unsubscribe();
     this.loadingSub.unsubscribe();
   }

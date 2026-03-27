@@ -161,6 +161,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
   set required(value: boolean) {
     this._required = coerceBooleanProperty(value);
+    this.stateChanges.next();
     this.cd.markForCheck();
   }
   protected _required = false;
@@ -271,15 +272,8 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
       }
     });
 
-    // Notify MatFormField when signal inputs change (replaces ngOnChanges)
-    effect(() => {
-      this.min();
-      this.max();
-      this.decimals();
-      this.stepSize();
-      this.tabindex();
-      this.stateChanges.next();
-    });
+    // No effect needed: min/max/decimals/stepSize/tabindex don't affect MatFormField display.
+    // Properties that do (required, disabled, value) notify via their setters.
   }
 
   ngOnInit() {

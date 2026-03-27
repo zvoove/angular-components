@@ -11,7 +11,6 @@ import {
   OnDestroy,
   OnInit,
   ViewEncapsulation,
-  effect,
   inject,
   input,
   output,
@@ -136,6 +135,7 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
   }
   set required(value: boolean) {
     this._required = coerceBooleanProperty(value);
+    this.stateChanges.next();
     this._cd.markForCheck();
   }
   protected _required = false;
@@ -232,10 +232,8 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
       this.stateChanges
     );
 
-    effect(() => {
-      this.accept(); // track signal input
-      this.stateChanges.next();
-    });
+    // No effect needed: accept doesn't affect MatFormField display.
+    // Properties that do (required, disabled, value) notify via their setters.
   }
 
   ngOnInit() {
