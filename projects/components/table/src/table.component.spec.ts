@@ -238,6 +238,9 @@ describe('ZvTable', () => {
       table.dataSource().listActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.list });
       table.dataSource().rowActions.push({ icon: 'add', label: 'Add', scope: ZvTableActionScope.row });
 
+      // In isolated tests (no fixture/CD), the consolidated effect doesn't run.
+      // Call updateTableState() explicitly to build displayedColumns.
+      (table as any).updateTableState();
       table.ngOnInit();
       await vi.advanceTimersByTimeAsync(1);
 
