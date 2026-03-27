@@ -70,5 +70,10 @@
   },
   "lint-staged": {
     "*.{ts,json,scss,html}": "prettier --write"
+  },
+  "overrides": {
+    "eslint-plugin-vitest": {
+      "eslint": "$eslint"
+    }
   }
 }
