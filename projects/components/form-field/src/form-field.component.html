@@ -3,7 +3,7 @@
   style="width: 100%"
   [class.mat-form-field--emulated]="emulated"
   [class.mat-form-field--no-underline]="noUnderline"
-  [floatLabel]="floatLabel"
+  [floatLabel]="resolvedFloatLabel"
   [hintLabel]="hintText"
 >
   @if (_labelChild) {
@@ -16,13 +16,13 @@
       <mat-label>{{ calculatedLabel }}</mat-label>
     </mat-label>
   }
-  @if (_prefixChildren.length) {
+  @if (_prefixChildren().length) {
     <ng-container matPrefix>
       <ng-content select="[matPrefix]" />
     </ng-container>
   }
   <ng-content />
-  @if (_suffixChildren.length) {
+  @if (_suffixChildren().length) {
     <ng-container matSuffix>
       <ng-content select="[matSuffix]" />
     </ng-container>

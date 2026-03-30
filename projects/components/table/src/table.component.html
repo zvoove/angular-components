@@ -1,15 +1,15 @@
 <zv-flip-container [animation]="'fade'">
   <div *zvFlipContainerFront>
     <zv-table-header
-      [caption]="caption"
-      [topButtonSection]="topButtonSection"
-      [selectedRows]="dataSource.selectionModel.selected"
-      [customHeader]="customHeader"
+      [caption]="caption()"
+      [topButtonSection]="topButtonSection() ?? null"
+      [selectedRows]="dataSource().selectionModel.selected"
+      [customHeader]="customHeader() ?? null"
       [showSorting]="showDropdownSorting"
       [sortColumn]="sortColumn"
       [sortDirection]="sortDirection"
-      [sortDefinitions]="sortDefinitions"
-      [filterable]="filterable"
+      [sortDefinitions]="mergedSortDefinitions"
+      [filterable]="filterable()"
       [searchText]="filterText"
       (sortChanged)="onSortChanged($event)"
       (searchChanged)="onSearchChanged($event)"
@@ -17,18 +17,18 @@
 
     <zv-block-ui [blocked]="showLoading" [clickthrough]="true">
       <zv-table-data
-        [dataSource]="dataSource"
-        [tableId]="tableId"
+        [dataSource]="dataSource()"
+        [tableId]="tableId()"
         [rowDetail]="rowDetail"
         [columnDefs]="columnDefs"
-        [refreshable]="refreshable"
+        [refreshable]="refreshable()"
         [settingsEnabled]="settingsEnabled"
         [showListActions]="showListActions"
         [displayedColumns]="displayedColumns"
         [showSorting]="!showDropdownSorting"
-        [sortColumn]="dataSource.sortColumn"
-        [sortDirection]="dataSource.sortDirection"
-        (showSettingsClicked)="flipContainer.showBack()"
+        [sortColumn]="dataSource().sortColumn"
+        [sortDirection]="dataSource().sortDirection"
+        (showSettingsClicked)="flipContainer().showBack()"
         (refreshDataClicked)="onRefreshDataClicked()"
         (sortChanged)="onSortChanged($event)"
       />
@@ -44,7 +44,7 @@
         [dataLength]="dataLength"
         [pageIndex]="pageIndex"
         [pageSizeOptions]="pageSizeOptions"
-        [pageDebounce]="pageDebounce"
+        [pageDebounce]="pageDebounce()"
         (page)="onPage($event)"
       />
     </zv-block-ui>
@@ -52,13 +52,13 @@
   <div *zvFlipContainerBack>
     @if (settingsEnabled) {
       <zv-table-settings
-        [tableId]="tableId"
+        [tableId]="tableId()"
         [columnDefinitions]="columnDefs"
-        [sortDefinitions]="sortDefinitions"
+        [sortDefinitions]="mergedSortDefinitions"
         [pageSizeOptions]="pageSizeOptions"
-        (settingsAborted)="flipContainer.showFront()"
+        (settingsAborted)="flipContainer().showFront()"
         (settingsSaved)="onSettingsSaved()"
-        [customSettings]="customSettings"
+        [customSettings]="customSettings() ?? null"
       />
     }
   </div>

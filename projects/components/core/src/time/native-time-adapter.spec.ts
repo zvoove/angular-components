@@ -25,12 +25,8 @@ describe('ZvNativeTimeAdapter', () => {
     adapter = timeAdapter;
 
     assertValidTime = (t: Time | null, valid: boolean) => {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
-      expect(adapter.isTimeInstance(t), `Expected ${t} to be a time instance`).not.toBeNull();
-      expect(
-        adapter.isValid(t!),
-        `Expected ${JSON.stringify(t)} to be ${valid ? 'valid' : 'invalid'}, but ` + `was ${valid ? 'invalid' : 'valid'}`
-      ).toBe(valid);
+      expect(adapter.isTimeInstance(t)).not.toBeNull();
+      expect(adapter.isValid(t!)).toBe(valid);
     };
   }));
 
@@ -73,8 +69,8 @@ describe('ZvNativeTimeAdapter', () => {
   it('should parse invalid value as invalid', () => {
     const t = adapter.parse('hello');
     expect(t).not.toBeNull();
-    expect(adapter.isTimeInstance(t), 'Expected string to have been fed through Time.parse').toBe(true);
-    expect(adapter.isValid(t as Time), 'Expected to parse as "invalid Time" object').toBe(false);
+    expect(adapter.isTimeInstance(t)).toBe(true);
+    expect(adapter.isValid(t as Time)).toBe(false);
   });
 
   it('should format as 24 hour format', () => {
@@ -91,20 +87,9 @@ describe('ZvNativeTimeAdapter', () => {
     ).toEqual('3:30 PM');
   });
 
-  // it('should format with a different locale', () => {
-  //   adapter.setLocale('ja-JP');
-  //   expect(adapter.format(newTime(14, 45), {})).toEqual('2017/1/1');
-  // });
-
   it('should throw when attempting to format invalid Time', () => {
     expect(() => adapter.format(adapter.invalid(), {})).toThrowError(/ZvNativeTimeAdapter: Cannot format invalid Time\./);
   });
-
-  //   it('should clone', () => {
-  //     let Time = newTime(14, 45);
-  //     expect(adapter.clone(Time)).toEqual(Time);
-  //     expect(adapter.clone(Time)).not.toBe(Time);
-  //   });
 
   it('should compare Times', () => {
     expect(adapter.compareTime(newTime(14, 45), newTime(14, 46))).toBeLessThan(0);

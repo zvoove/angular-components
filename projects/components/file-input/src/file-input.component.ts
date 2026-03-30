@@ -1,9 +1,4 @@
-/* eslint-disable @angular-eslint/no-conflicting-lifecycle --
-   Both DoCheck and OnChanges are required: OnChanges notifies MatFormField
-   of input changes via stateChanges.next(), while DoCheck runs
-   updateErrorState() which depends on parent form submission state that
-   cannot be observed reactively. This follows Angular Material's own
-   MatInput implementation. */
+/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import {
@@ -12,15 +7,14 @@ import {
   Component,
   DoCheck,
   ElementRef,
-  EventEmitter,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
-  Output,
-  ViewChild,
   ViewEncapsulation,
   inject,
+  input,
+  output,
+  viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -52,13 +46,15 @@ let nextUniqueId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<File>, OnChanges, OnDestroy, OnInit, DoCheck {
+export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<File>, OnDestroy, OnInit, DoCheck {
+  // Signal inputs (access via .inputName()): accept
+  // Getter/setter properties (access via .propName): disabled, required, placeholder, value, id, readonly
   public readonly ngControl = inject(NgControl, { optional: true, self: true });
   public readonly _cd = inject(ChangeDetectorRef);
 
   fileSelectText = $localize`:@@zvc.chooseFile:Please choose a file.`;
 
-  @Input() accept: string[] = [];
+  public readonly accept = input<string[]>([]);
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -139,6 +135,7 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
   }
   set required(value: boolean) {
     this._required = coerceBooleanProperty(value);
+    this.stateChanges.next();
     this._cd.markForCheck();
   }
   protected _required = false;
@@ -178,7 +175,7 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
   }
   _value: File | null = null;
 
-  @Output() public readonly valueChange = new EventEmitter<File | null>();
+  public readonly valueChange = output<File | null>();
 
   /** Whether the element is readonly. */
   @Input()
@@ -211,8 +208,7 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
   /** The aria-describedby attribute on the input for improved a11y. */
   _ariaDescribedby!: string;
 
-  @ViewChild('input', { static: true })
-  _inputfieldViewChild!: ElementRef<HTMLInputElement>;
+  public readonly _inputfieldViewChild = viewChild<ElementRef<HTMLInputElement>>('input');
   _errorStateTracker: _ErrorStateTracker;
 
   _onModelChange: (val: unknown) => void = () => {};
@@ -235,16 +231,15 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
       _parentForm,
       this.stateChanges
     );
+
+    // No effect needed: accept doesn't affect MatFormField display.
+    // Properties that do (required, disabled, value) notify via their setters.
   }
 
   ngOnInit() {
     // Force setter to be called in case id was not specified.
     // eslint-disable-next-line no-self-assign
     this.id = this.id;
-  }
-
-  ngOnChanges() {
-    this.stateChanges.next();
   }
 
   ngOnDestroy() {
@@ -287,7 +282,7 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
 
   /** Focuses the input. */
   focus(options?: FocusOptions): void {
-    this._inputfieldViewChild.nativeElement.focus(options);
+    this._inputfieldViewChild()?.nativeElement.focus(options);
   }
 
   writeValue(value: unknown): void {

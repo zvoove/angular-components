@@ -1,9 +1,4 @@
-/* eslint-disable @angular-eslint/no-conflicting-lifecycle --
-   Both DoCheck and OnChanges are required: OnChanges notifies MatFormField
-   of input changes via stateChanges.next(), while DoCheck runs
-   updateErrorState() which depends on parent form submission state that
-   cannot be observed reactively. This follows Angular Material's own
-   MatInput implementation. */
+/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import {
@@ -12,16 +7,14 @@ import {
   Component,
   DoCheck,
   ElementRef,
-  EventEmitter,
   Input,
-  OnChanges,
   OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild,
   ViewEncapsulation,
   booleanAttribute,
   inject,
+  input,
+  output,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -62,9 +55,7 @@ let nextUniqueId = 0;
   },
   providers: [{ provide: MatFormFieldControl, useExisting: ZvDateTimeInput }],
 })
-export class ZvDateTimeInput<TDateTime, TDate, TTime>
-  implements ControlValueAccessor, MatFormFieldControl<TDateTime>, OnChanges, OnInit, DoCheck
-{
+export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAccessor, MatFormFieldControl<TDateTime>, OnInit, DoCheck {
   public _changeDetectorRef = inject(ChangeDetectorRef);
   _defaultErrorStateMatcher = inject(ErrorStateMatcher);
   _parentForm = inject(NgForm, { optional: true });
@@ -97,7 +88,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   }
   private _id = this._uid;
 
-  @Input({ required: true }) public matDatepicker!: MatDatepickerPanel<MatDatepickerControl<unknown>, unknown, unknown>;
+  public readonly matDatepicker = input.required<MatDatepickerPanel<MatDatepickerControl<unknown>, unknown, unknown>>();
 
   /** Value of the date-time control. */
   @Input()
@@ -108,7 +99,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     this._assignValue(newValue, { assignForm: true, emitChange: true });
   }
   private _value: TDateTime | null = null;
-  @Output() public readonly valueChange = new EventEmitter<TDateTime | null>();
+  public readonly valueChange = output<TDateTime | null>();
 
   /** Placeholder to be shown if no value has been selected. (not supported for this component!) */
   public readonly placeholder = '';
@@ -120,7 +111,14 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   private _focused = false;
 
   @Input({ transform: booleanAttribute })
-  public disabled = false;
+  get disabled(): boolean {
+    return this._disabled;
+  }
+  set disabled(value: boolean) {
+    this._disabled = value;
+    this.setDisabledState(this._disabled);
+  }
+  private _disabled = false;
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -131,10 +129,12 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
 
   /** Whether the control is empty. */
   get empty(): boolean {
-    if (!this._dateInputElementRef || !this._timeInputElementRef) {
+    const dateRef = this._dateInputElementRef();
+    const timeRef = this._timeInputElementRef();
+    if (!dateRef || !timeRef) {
       return this.value == null;
     }
-    return !this._dateInputElementRef.nativeElement.value && !this._timeInputElementRef.nativeElement.value;
+    return !dateRef.nativeElement.value && !timeRef.nativeElement.value;
   }
 
   /** Whether the `MatFormField` label should try to float. */
@@ -187,8 +187,10 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     time: new FormControl<TTime | null>(null),
   });
 
-  @ViewChild('date') _dateInputElementRef!: ElementRef<HTMLInputElement>;
-  @ViewChild('time') _timeInputElementRef!: ElementRef<HTMLInputElement>;
+  public readonly _dateInputElementRef = viewChild<ElementRef<HTMLInputElement>>('date');
+  public readonly _timeInputElementRef = viewChild<ElementRef<HTMLInputElement>>('time');
+  public readonly matDateInput = viewChild(MatDatepickerInput);
+  public readonly zvTimeInput = viewChild(ZvTimeInput);
   _errorStateTracker: _ErrorStateTracker;
 
   constructor() {
@@ -230,12 +232,6 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.disabled) {
-      this.setDisabledState(this.disabled);
-    }
-  }
-
   ngDoCheck() {
     if (this.ngControl) {
       // We need to re-evaluate this on every change detection cycle, because there are some
@@ -258,9 +254,10 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     this._ariaDescribedby = ids.join(' ');
   }
 
-  @ViewChild(MatDatepickerInput) public matDateInput!: MatDatepickerInput<TDate>;
-  @ViewChild(ZvTimeInput) public zvTimeInput!: ZvTimeInput<TTime>;
-  _childValidators: ValidatorFn[] = [(control) => this.matDateInput?.validate(control), (control) => this.zvTimeInput?.validate(control)];
+  _childValidators: ValidatorFn[] = [
+    (control) => (this._dateInputElementRef()?.nativeElement.value ? this.matDateInput()?.validate(control) : null) ?? null,
+    (control) => (this._timeInputElementRef()?.nativeElement.value ? this.zvTimeInput()?.validate(control) : null) ?? null,
+  ];
   validate(control: AbstractControl): ValidationErrors | null {
     const errors = this._childValidators.map((v) => v(control)).filter((error) => error);
     if (!errors.length) {
@@ -318,11 +315,11 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
    * @param isDisabled Sets whether the component is disabled.
    */
   setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this._disabled = isDisabled;
     if (isDisabled) {
-      this._form.disable();
+      this._form.disable({ emitEvent: false });
     } else {
-      this._form.enable();
+      this._form.enable({ emitEvent: false });
     }
     this._changeDetectorRef.markForCheck();
     this.stateChanges.next();
@@ -340,13 +337,13 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
 
   /** Focuses the date input element. */
   private _focus(event: MouseEvent | null, options?: FocusOptions): void {
-    let target = this._dateInputElementRef.nativeElement;
+    let target: HTMLInputElement | undefined = this._dateInputElementRef()?.nativeElement;
     if (this.shouldLabelFloat && event?.target instanceof HTMLInputElement) {
       target = event.target;
     } else if (this._form.value.date) {
-      target = this._timeInputElementRef.nativeElement;
+      target = this._timeInputElementRef()?.nativeElement;
     }
-    target.focus(options);
+    target?.focus(options);
   }
 
   _onFocus() {
@@ -374,7 +371,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     const input = event.target as HTMLInputElement;
     if (event.key === 'ArrowRight' && input.selectionStart === input.selectionEnd && input.selectionStart === input.value.length) {
       event.preventDefault();
-      this._timeInputElementRef.nativeElement.focus();
+      this._timeInputElementRef()?.nativeElement.focus();
     }
   }
 
@@ -382,7 +379,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     const input = event.target as HTMLInputElement;
     if (event.key === 'ArrowLeft' && input.selectionStart === input.selectionEnd && input.selectionStart === 0) {
       event.preventDefault();
-      this._dateInputElementRef.nativeElement.focus();
+      this._dateInputElementRef()?.nativeElement.focus();
     }
   }
 

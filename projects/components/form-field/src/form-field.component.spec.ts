@@ -1,17 +1,7 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  DebugElement,
-  Injectable,
-  ViewChild,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DebugElement, Injectable, inject, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -135,8 +125,8 @@ export class TestCheckboxComponent {
   public asyncLabel$ = of('async label');
   formControl = new FormControl('');
 
-  @ViewChild('f1', { static: true }) formFieldTemplateLabel: ZvFormField;
-  @ViewChild('f2', { static: true }) formFieldNoLabel: ZvFormField;
+  readonly formFieldTemplateLabel = viewChild.required<ZvFormField>('f1');
+  readonly formFieldNoLabel = viewChild.required<ZvFormField>('f2');
 }
 
 describe('ZvFormField', () => {
@@ -220,8 +210,8 @@ describe('ZvFormField', () => {
       component.formControl.markAsTouched();
       fixture.detectChanges();
 
-      expect(component.formField()._ngControl.invalid).toBe(true);
-      expect(component.formField()._matFormField._control.errorState).toBe(true);
+      expect(component.formField()._ngControl()?.invalid).toBe(true);
+      expect(component.formField()._matFormField()._control.errorState).toBe(true);
 
       let errorsChecked = false;
       component.formField().errors$.subscribe((e) => {
@@ -380,7 +370,7 @@ describe('ZvFormField', () => {
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
 
-      expect(component.formField().floatLabel).toEqual('auto');
+      expect(component.formField().floatLabel()).toEqual('auto');
     });
 
     it('should priorize MAT_FORM_FIELD_DEFAULT_OPTIONS over its own settings', async () => {
@@ -398,7 +388,7 @@ describe('ZvFormField', () => {
       const fixture = TestBed.createComponent(TestFormComponent);
       const component = fixture.componentInstance;
       expect(component).toBeDefined();
-      expect(component.formField().floatLabel).toEqual('always');
+      expect(component.formField().floatLabel()).toEqual('always');
     });
   });
 

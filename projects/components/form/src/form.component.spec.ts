@@ -1,5 +1,5 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, DebugElement, Injectable, ViewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DebugElement, Injectable, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonHarness } from '@angular/material/button/testing';
@@ -52,8 +52,7 @@ class TestZvFormService extends BaseZvFormService {
 })
 export class TestDataSourceComponent {
   public readonly dataSource = signal<IZvFormDataSource>(undefined);
-  @ViewChild(ZvForm)
-  formComponent: ZvForm;
+  readonly formComponent = viewChild(ZvForm);
 }
 
 describe('ZvForm', () => {
@@ -304,12 +303,12 @@ describe('ZvForm', () => {
         threshold: 0,
       });
       expect(getErrorContainer(fixture)).not.toBe(null);
-      expect(observedEl).toBe(component.formComponent.errorCardWrapper.nativeElement);
-      component.formComponent.errorCardWrapper.nativeElement.scrollIntoView ??= () => {};
-      vi.spyOn(component.formComponent.errorCardWrapper.nativeElement, 'scrollIntoView');
+      expect(observedEl).toBe(component.formComponent().errorCardWrapper().nativeElement);
+      component.formComponent().errorCardWrapper().nativeElement.scrollIntoView ??= () => {};
+      vi.spyOn(component.formComponent().errorCardWrapper().nativeElement, 'scrollIntoView');
 
       opts.scrollToError();
-      expect(component.formComponent.errorCardWrapper.nativeElement.scrollIntoView).toHaveBeenCalledTimes(1);
+      expect(component.formComponent().errorCardWrapper().nativeElement.scrollIntoView).toHaveBeenCalledTimes(1);
 
       intersectCallback([{ intersectionRatio: 1 }]);
       intersectCallback([{ intersectionRatio: 1 }]);

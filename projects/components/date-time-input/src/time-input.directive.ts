@@ -1,18 +1,6 @@
+/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
-import {
-  AfterViewInit,
-  Directive,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Output,
-  Provider,
-  SimpleChanges,
-  forwardRef,
-  inject,
-} from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, Provider, forwardRef, inject, output } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -73,7 +61,7 @@ export const ZV_TIME_VALIDATORS: Provider = {
   },
   exportAs: 'matTimeInput',
 })
-export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, OnChanges, OnDestroy, Validator {
+export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, OnDestroy, Validator {
   private readonly _elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
   private readonly _timeAdapter = inject<ZvTimeAdapter<TTime>>(ZvTimeAdapter, { optional: true });
   private readonly _timeFormats = inject<ZvTimeFormats>(ZV_TIME_FORMATS, { optional: true });
@@ -119,10 +107,10 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
   private _disabled = false;
 
   /** Emits when a `change` event is fired on this `<input>`. */
-  @Output() readonly timeChange: EventEmitter<ZvTimeInputEvent<TTime>> = new EventEmitter<ZvTimeInputEvent<TTime>>();
+  public readonly timeChange = output<ZvTimeInputEvent<TTime>>();
 
   /** Emits when an `input` event is fired on this `<input>`. */
-  @Output() readonly timeInput: EventEmitter<ZvTimeInputEvent<TTime>> = new EventEmitter<ZvTimeInputEvent<TTime>>();
+  public readonly timeInput = output<ZvTimeInputEvent<TTime>>();
 
   /** Emits when the internal state has changed */
   readonly stateChanges = new Subject<void>();
@@ -155,12 +143,6 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
 
   ngAfterViewInit() {
     this._isInitialized = true;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (!!this._timeAdapter && timeInputsHaveChanged(changes, this._timeAdapter)) {
-      this.stateChanges.next();
-    }
   }
 
   ngOnDestroy() {
@@ -265,27 +247,4 @@ export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, 
   private _isValidValue(value: TTime | null): boolean {
     return !value || !!this._timeAdapter?.isValid(value);
   }
-}
-
-/**
- * Checks whether the `SimpleChanges` object from an `ngOnChanges`
- * callback has any changes, accounting for date objects.
- */
-export function timeInputsHaveChanged(changes: SimpleChanges, adapter: ZvTimeAdapter<unknown>): boolean {
-  const keys = Object.keys(changes);
-
-  for (const key of keys) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { previousValue, currentValue } = changes[key];
-
-    if (adapter.isTimeInstance(previousValue) && adapter.isTimeInstance(currentValue)) {
-      if (!adapter.sameTime(previousValue, currentValue)) {
-        return true;
-      }
-    } else {
-      return true;
-    }
-  }
-
-  return false;
 }

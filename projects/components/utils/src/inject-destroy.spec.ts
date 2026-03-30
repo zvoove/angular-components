@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 import { interval, takeUntil } from 'rxjs';
 import { injectDestroy } from './inject-destroy';
 
-describe(injectDestroy.name, () => {
+describe('injectDestroy', () => {
   describe('emits when the component is destroyed using takeUntil', () => {
     // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
     @Component({ standalone: true, template: '' })

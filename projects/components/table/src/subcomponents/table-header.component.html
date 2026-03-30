@@ -1,25 +1,25 @@
-@if (caption) {
-  <h2 class="zv-table-header__caption">{{ caption }}</h2>
+@if (caption()) {
+  <h2 class="zv-table-header__caption">{{ caption() }}</h2>
 }
-@if (customHeader) {
+@if (customHeader()) {
   <div class="zv-table-header__custom-content">
-    <ng-container [ngTemplateOutlet]="customHeader" />
+    <ng-container [ngTemplateOutlet]="customHeader()" />
   </div>
 }
-@if (showSorting) {
+@if (showSorting()) {
   <zv-table-sort
     class="zv-table-header__sort"
-    [sortColumn]="sortColumn"
-    [sortDirection]="sortDirection"
-    [sortDefinitions]="sortDefinitions"
+    [sortColumn]="sortColumn()"
+    [sortDirection]="sortDirection()"
+    [sortDefinitions]="sortDefinitions()"
     (sortChanged)="sortChanged.emit($event)"
   />
 }
-@if (filterable) {
-  <zv-table-search class="zv-table-header__search" [searchText]="searchText" (searchChanged)="searchChanged.emit($event)" />
+@if (filterable()) {
+  <zv-table-search class="zv-table-header__search" [searchText]="searchText()" (searchChanged)="searchChanged.emit($event)" />
 }
-@if (topButtonSection) {
+@if (topButtonSection()) {
   <div class="zv-table-header__actions">
-    <ng-container [ngTemplateOutlet]="topButtonSection" [ngTemplateOutletContext]="{ $implicit: selectedRows }" />
+    <ng-container [ngTemplateOutlet]="topButtonSection()" [ngTemplateOutletContext]="{ $implicit: selectedRows() }" />
   </div>
 }

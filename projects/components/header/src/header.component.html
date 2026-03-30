@@ -1,21 +1,21 @@
 <div class="zv-header__text">
   <div class="zv-header__caption mat-headline-6 mat-title-large">
-    @if (caption) {
-      {{ caption }}
+    @if (caption()) {
+      {{ caption() }}
     } @else {
-      <ng-container [ngTemplateOutlet]="captionSection" />
+      <ng-container [ngTemplateOutlet]="captionSection() ?? null" />
     }
   </div>
   <div class="zv-header__description mat-body">
-    @if (description) {
-      {{ description }}
+    @if (description()) {
+      {{ description() }}
     } @else {
-      <ng-container [ngTemplateOutlet]="descriptionSection" />
+      <ng-container [ngTemplateOutlet]="descriptionSection() ?? null" />
     }
   </div>
 </div>
-@if (topButtonSection) {
+@if (topButtonSection()) {
   <div class="zv-header__actions">
-    <ng-container [ngTemplateOutlet]="topButtonSection" />
+    <ng-container [ngTemplateOutlet]="topButtonSection() ?? null" />
   </div>
 }

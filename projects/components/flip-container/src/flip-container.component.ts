@@ -4,9 +4,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ContentChild,
   ElementRef,
   TemplateRef,
+  contentChild,
   inject,
   input,
   viewChild,
@@ -30,11 +30,9 @@ export class ZvFlipContainer implements AfterViewInit {
     return this._active;
   }
 
-  @ContentChild(FlipContainerFront, { read: TemplateRef })
-  public _frontTemplate: TemplateRef<unknown> | null = null;
+  public readonly _frontTemplate = contentChild(FlipContainerFront, { read: TemplateRef });
 
-  @ContentChild(FlipContainerBack, { read: TemplateRef })
-  public _backTemplate: TemplateRef<unknown> | null = null;
+  public readonly _backTemplate = contentChild(FlipContainerBack, { read: TemplateRef });
 
   public readonly _frontside = viewChild.required<ElementRef<HTMLDivElement>>('frontside');
   public readonly _backside = viewChild.required<ElementRef<HTMLDivElement>>('backside');

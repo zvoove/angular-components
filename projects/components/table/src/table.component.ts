@@ -1,23 +1,19 @@
-import type { QueryList } from '@angular/core';
 import {
-  AfterContentInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ContentChild,
-  ContentChildren,
-  EventEmitter,
-  HostBinding,
+  contentChild,
+  contentChildren,
+  effect,
   inject,
-  Input,
+  input,
   LOCALE_ID,
-  OnChanges,
   OnDestroy,
   OnInit,
-  Output,
-  SimpleChanges,
+  output,
   TemplateRef,
-  ViewChild,
+  untracked,
+  viewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
@@ -47,9 +43,11 @@ import { ZvTableSettingsComponent } from './subcomponents/table-settings.compone
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
   host: {
-    '[class.mat-elevation-z1]': `layout === 'card'`,
-    '[class.zv-table--card]': `layout === 'card'`,
-    '[class.zv-table--border]': `layout === 'border'`,
+    '[class.mat-elevation-z1]': "layout() === 'card'",
+    '[class.zv-table--card]': "layout() === 'card'",
+    '[class.zv-table--border]': "layout() === 'border'",
+    '[class.zv-table--striped]': 'striped()',
+    '[class.zv-table--row-detail]': '!!rowDetailQuery()',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -62,7 +60,7 @@ import { ZvTableSettingsComponent } from './subcomponents/table-settings.compone
     ZvTableSettingsComponent,
   ],
 })
-export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContentInit, OnDestroy {
+export class ZvTable<TData = unknown> implements OnInit, OnDestroy {
   public _settingsService = inject(ZvTableSettingsService);
   public _exceptionMessageExtractor = inject(ZvExceptionMessageExtractor);
   public _cd = inject(ChangeDetectorRef);
@@ -70,94 +68,35 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   public _router = inject(Router);
   public _locale = inject(LOCALE_ID);
 
-  @Input() public caption = '';
-  @Input({ required: true }) public dataSource!: ITableDataSource<TData>;
-  @Input({ required: true }) public tableId!: string;
-  @Input()
-  public set sortDefinitions(value: IZvTableSortDefinition[]) {
-    this._sortDefinitions = value ? [...value] : [];
-    this.mergeSortDefinitions();
-  }
-
-  public get sortDefinitions(): IZvTableSortDefinition[] {
-    return this._mergedSortDefinitions;
-  }
-
-  @Input() public refreshable = true;
-  @Input() public filterable = true;
-  @Input() public showSettings = true;
-  @Input() public pageDebounce: number | null = null;
-  @Input() public preferSortDropdown = this._settingsService.preferSortDropdown;
-
-  @Input()
-  public layout: 'card' | 'border' | 'flat' = 'card';
-
-  @Input()
-  @HostBinding('class.zv-table--striped')
-  public striped = false;
-
-  @Input() stateManager: ZvTableStateManager = new ZvTableUrlStateManager(this._router, this._route);
+  public readonly caption = input('');
+  public readonly dataSource = input.required<ITableDataSource<TData>>();
+  public readonly tableId = input.required<string>();
+  public readonly refreshable = input(true);
+  public readonly filterable = input(true);
+  public readonly showSettings = input(true);
+  public readonly pageDebounce = input<number | null>(null);
+  public readonly preferSortDropdown = input(this._settingsService.preferSortDropdown);
+  public readonly layout = input<'card' | 'border' | 'flat'>('card');
+  public readonly stateManager = input<ZvTableStateManager>(new ZvTableUrlStateManager(this._router, this._route));
+  public readonly sortDefinitions = input<IZvTableSortDefinition[]>([]);
+  public readonly striped = input(false);
 
   /** @deprecated use the datasource to detect paginations */
-  @Output() public readonly page = new EventEmitter<PageEvent>();
+  public readonly page = output<PageEvent>();
 
-  @ViewChild(ZvFlipContainer, { static: true }) public flipContainer!: ZvFlipContainer;
+  public readonly flipContainer = viewChild.required(ZvFlipContainer);
 
-  @ContentChild(ZvTableCustomHeaderTemplate, { read: TemplateRef })
-  public set customHeader(value: TemplateRef<unknown> | null) {
-    this._customHeader = value;
-    this._cd.markForCheck();
-  }
+  public readonly customHeader = contentChild(ZvTableCustomHeaderTemplate, { read: TemplateRef });
+  public readonly customSettings = contentChild(ZvTableCustomSettingsTemplate, { read: TemplateRef });
+  public readonly topButtonSection = contentChild(ZvTableTopButtonSectionTemplate, { read: TemplateRef });
 
-  public get customHeader() {
-    return this._customHeader;
-  }
+  public readonly columnDefsQuery = contentChildren(ZvTableColumn);
 
-  private _customHeader: TemplateRef<unknown> | null = null;
-
-  @ContentChild(ZvTableCustomSettingsTemplate, { read: TemplateRef })
-  public set customSettings(value: TemplateRef<unknown> | null) {
-    this._customSettings = value;
-    this._cd.markForCheck();
-  }
-
-  public get customSettings() {
-    return this._customSettings;
-  }
-
-  private _customSettings: TemplateRef<unknown> | null = null;
-
-  @ContentChild(ZvTableTopButtonSectionTemplate, { read: TemplateRef })
-  public set topButtonSection(value: TemplateRef<unknown> | null) {
-    this._topButtonSection = value;
-    this._cd.markForCheck();
-  }
-
-  public get topButtonSection() {
-    return this._topButtonSection;
-  }
-
-  private _topButtonSection: TemplateRef<unknown> | null = null;
-
-  @ContentChildren(ZvTableColumn)
-  public set columnDefsSetter(queryList: QueryList<ZvTableColumn>) {
-    this.columnDefs = [...queryList.toArray()];
-    this.mergeSortDefinitions();
-    this.updateTableState();
-  }
-
-  @HostBinding('class.zv-table--row-detail')
-  @ContentChild(ZvTableRowDetail)
-  public set rowDetail(value: ZvTableRowDetail | null) {
-    this._rowDetail = value;
-    this.updateTableState();
-  }
+  public readonly rowDetailQuery = contentChild(ZvTableRowDetail);
 
   public get rowDetail() {
     return this._rowDetail;
   }
-
-  private _rowDetail: ZvTableRowDetail | null = null;
 
   public pageSizeOptions!: number[];
   public columnDefs: ZvTableColumn[] = [];
@@ -165,79 +104,83 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   public displayedColumns: string[] = [];
 
   public get sortDirection(): 'asc' | 'desc' {
-    return this.dataSource.sortDirection;
+    return this.dataSource().sortDirection;
   }
 
   public set sortDirection(value: 'asc' | 'desc') {
-    this.dataSource.sortDirection = value;
+    this.dataSource().sortDirection = value;
   }
 
   public get sortColumn(): string | null {
-    return this.dataSource.sortColumn;
+    return this.dataSource().sortColumn;
   }
 
   public set sortColumn(value: string | null) {
-    this.dataSource.sortColumn = value;
+    this.dataSource().sortColumn = value;
   }
 
   public get pageIndex(): number {
-    return this.dataSource.pageIndex;
+    return this.dataSource().pageIndex;
   }
 
   public set pageIndex(value: number) {
-    this.dataSource.pageIndex = value;
+    this.dataSource().pageIndex = value;
   }
 
   public get pageSize(): number {
-    return this.dataSource.pageSize;
+    return this.dataSource().pageSize;
   }
 
   public set pageSize(value: number) {
-    this.dataSource.pageSize = value;
+    this.dataSource().pageSize = value;
   }
 
   public get dataLength(): number {
-    return this.dataSource.dataLength;
+    return this.dataSource().dataLength;
   }
 
   public get filterText(): string {
-    return this.dataSource.filter;
+    return this.dataSource().filter;
   }
 
   public set filterText(value: string) {
-    this.dataSource.filter = value;
+    this.dataSource().filter = value;
   }
 
   public get showNoEntriesText(): boolean {
-    return !this.dataSource.loading && !this.dataSource.error && !this.dataSource.visibleRows.length;
+    return !this.dataSource().loading && !this.dataSource().error && !this.dataSource().visibleRows.length;
   }
 
   public get errorMessage(): string | null {
-    return this._exceptionMessageExtractor.extractErrorMessage(this.dataSource.error);
+    return this._exceptionMessageExtractor.extractErrorMessage(this.dataSource().error);
   }
 
   public get showError(): boolean {
-    return !!this.dataSource.error;
+    return !!this.dataSource().error;
   }
 
   public get showLoading(): boolean {
-    return this.dataSource.loading;
+    return this.dataSource().loading;
   }
 
   public get settingsEnabled(): boolean {
-    return !!(this.tableId && this._settingsService.settingsEnabled && this.showSettings);
+    return !!(this.tableId() && this._settingsService.settingsEnabled && this.showSettings());
   }
 
   public get showListActions(): boolean {
-    return !!this.dataSource.listActions.length || this.settingsEnabled || this.refreshable;
+    return !!this.dataSource().listActions.length || this.settingsEnabled || this.refreshable();
   }
 
   public get useSortDropdown(): boolean | null {
-    return this.preferSortDropdown || this._sortDefinitions.length !== 0;
+    return this.preferSortDropdown() || this._sortDefinitions.length !== 0;
   }
 
   public get showDropdownSorting(): boolean {
     return (this.useSortDropdown && !!this._mergedSortDefinitions.length) ?? false;
+  }
+
+  public get mergedSortDefinitions(): IZvTableSortDefinition[] {
+    return this._mergedSortDefinitions;
   }
 
   private subscriptions: Subscription[] = [];
@@ -245,22 +188,35 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   private _mergedSortDefinitions: IZvTableSortDefinition[] = [];
   private _tableSettings: Partial<IZvTableSetting> = {};
   private _urlSettings: Partial<IZvTableUpdateDataInfo> = {};
+  private _rowDetail: ZvTableRowDetail | null = null;
+  private _previousDataSource: ITableDataSource<TData> | null = null;
+
+  constructor() {
+    effect(() => {
+      const cols = this.columnDefsQuery();
+      const sortDefs = this.sortDefinitions();
+      const detail = this.rowDetailQuery();
+      const ds = this.dataSource();
+
+      untracked(() => {
+        this.columnDefs = [...cols];
+        this._sortDefinitions = sortDefs ? [...sortDefs] : [];
+        this._rowDetail = detail ?? null;
+
+        if (this._previousDataSource && this._previousDataSource !== ds) {
+          ds.tableReady = this._previousDataSource.tableReady;
+        }
+        this._previousDataSource = ds;
+
+        this.mergeSortDefinitions();
+        this.updateTableState();
+      });
+    });
+  }
 
   public ngOnInit() {
-    this.dataSource.locale = this._locale;
+    this.dataSource().locale = this._locale;
     this.pageSizeOptions = this._settingsService.pageSizeOptions;
-  }
-
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes.dataSource && !changes.dataSource.firstChange) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      this.dataSource.tableReady = changes.dataSource.previousValue.tableReady as unknown as boolean;
-    }
-
-    this.updateTableState();
-  }
-
-  public ngAfterContentInit(): void {
     // This can't happen earlier, otherwise the ContentChilds would not be resolved yet
     this.initListSettingsSubscription();
   }
@@ -295,12 +251,12 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
   }
 
   public onRefreshDataClicked() {
-    this.dataSource.updateData(true);
+    this.dataSource().updateData(true);
   }
 
   public onSettingsSaved() {
-    this.stateManager.remove(this.tableId);
-    this.flipContainer.showFront();
+    this.stateManager().remove(this.tableId());
+    this.flipContainer().showFront();
   }
 
   /** @public This is a public api */
@@ -314,15 +270,15 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
 
   private requestUpdate(data: Partial<IZvTableUpdateDataInfo>) {
     const updateInfo = {
-      ...this.dataSource.getUpdateDataInfo(),
+      ...this.dataSource().getUpdateDataInfo(),
       ...data,
     };
-    this.stateManager.requestUpdate(this.tableId, updateInfo);
+    this.stateManager().requestUpdate(this.tableId(), updateInfo);
   }
 
   private initListSettingsSubscription() {
-    const tableSettings$ = this._settingsService.getStream(this.tableId, false);
-    const stateSettings$ = this.stateManager.createStateSource(this.tableId);
+    const tableSettings$ = this._settingsService.getStream(this.tableId(), false);
+    const stateSettings$ = this.stateManager().createStateSource(this.tableId());
     this.subscriptions.push(
       combineLatest([stateSettings$, tableSettings$])
         .pipe(
@@ -337,12 +293,12 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
             // Paging, Sorting, Filter und Display Columns updaten
             this.updateTableState();
 
-            this.dataSource.tableReady = true;
-            this.dataSource.updateData(false);
+            this.dataSource().tableReady = true;
+            this.dataSource().updateData(false);
           },
           // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
           error: (err: Error | unknown) => {
-            this.dataSource.error = err;
+            this.dataSource().error = err;
           },
         })
     );
@@ -358,23 +314,23 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
     this.sortDirection = urlSettings.sortDirection || tableSettings.sortDirection || 'asc';
     this.filterText = urlSettings.searchText || '';
 
-    this.displayedColumns = this.columnDefs.map((x) => x.property);
+    this.displayedColumns = this.columnDefs.map((x) => x.property());
     if (tableSettings.columnBlacklist && tableSettings.columnBlacklist.length) {
       this.displayedColumns = this.displayedColumns.filter((x) => !tableSettings.columnBlacklist!.includes(x));
     }
 
     // Row Detail Expander aktivieren
-    if (this.rowDetail && this.rowDetail.showToggleColumn) {
+    if (this.rowDetail && this.rowDetail.showToggleColumn()) {
       this.displayedColumns.splice(0, 0, 'rowDetailExpander');
     }
 
     // Selektierung der Rows aktivieren
-    if (this.dataSource.listActions.length) {
+    if (this.dataSource().listActions.length) {
       this.displayedColumns.splice(0, 0, 'select');
     }
 
     // Selektierungs- und Row-Aktionen aktivieren
-    if (this.showListActions || this.dataSource.rowActions.length) {
+    if (this.showListActions || this.dataSource().rowActions.length) {
       this.displayedColumns.push('options');
     }
 
@@ -383,8 +339,8 @@ export class ZvTable<TData = unknown> implements OnInit, OnChanges, AfterContent
 
   private mergeSortDefinitions() {
     const sortableColumns = this.columnDefs
-      .filter((def) => def.sortable)
-      .map((def) => ({ prop: def.property, displayName: def.header }) as IZvTableSortDefinition);
+      .filter((def) => def.sortable())
+      .map((def) => ({ prop: def.property(), displayName: def.header() }) as IZvTableSortDefinition);
 
     this._mergedSortDefinitions = sortableColumns
       .concat(this._sortDefinitions)

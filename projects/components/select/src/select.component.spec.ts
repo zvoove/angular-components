@@ -8,8 +8,8 @@ import {
   OnDestroy,
   QueryList,
   Type,
-  ViewChild,
   inject,
+  viewChild,
   signal,
 } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -121,9 +121,16 @@ function createZvSelect(options?: { dataSource?: ZvSelectDataSource; service?: Z
 
   const fixture = TestBed.createComponent(ZvSelect);
   const component = fixture.componentInstance;
-  component.setMatSelect = matSelect;
+  (component as any)._matSelect = matSelect;
   component.dataSource = dataSource;
-  return { component: component, matSelect: matSelect, service: service, dataSource: dataSource, focused: component.focused };
+  return {
+    fixture: fixture,
+    component: component,
+    matSelect: matSelect,
+    service: service,
+    dataSource: dataSource,
+    focused: component.focused,
+  };
 }
 
 @Component({
@@ -154,8 +161,7 @@ export class TestComponent implements OnDestroy {
   readonly panelClass = signal<Record<string, boolean>>({});
   readonly clearable = signal(true);
 
-  @ViewChild(ZvSelect, { static: true })
-  select: ZvSelect;
+  readonly select = viewChild.required(ZvSelect);
 
   private valuesSubscription: Subscription;
   constructor() {
@@ -209,8 +215,7 @@ export class TestMultipleComponent {
   readonly selectedLabel = signal(true);
   readonly customTemplate = signal(false);
 
-  @ViewChild(ZvSelect, { static: true })
-  select: ZvSelect;
+  readonly select = viewChild.required(ZvSelect);
 }
 
 @Component({
@@ -314,11 +319,11 @@ describe('ZvSelect', () => {
   it('should use right default values', () => {
     const { component } = createZvSelect();
 
-    expect(component.clearable).toBe(true);
-    expect(component.showToggleAll).toBe(true);
-    expect(component.multiple).toBe(false);
+    expect(component.clearable()).toBe(true);
+    expect(component.showToggleAll()).toBe(true);
+    expect(component.multiple()).toBe(false);
     expect(component.errorStateMatcher).toBe(undefined);
-    expect(component.panelClass).toBe('');
+    expect(component.panelClass()).toBe('');
     expect(component.placeholder).toBe('');
     expect(component.required).toBe(false);
     expect(component.disabled).toBe(false);
@@ -326,8 +331,8 @@ describe('ZvSelect', () => {
   });
 
   it('should determine empty value correctly', () => {
-    const { component } = createZvSelect();
-    component.multiple = true;
+    const { fixture, component } = createZvSelect();
+    fixture.componentRef.setInput('multiple', true);
 
     const items = [
       { value: 1, label: 'i1', hidden: false },
@@ -347,7 +352,7 @@ describe('ZvSelect', () => {
     component.value = items;
     expect(component.empty).toBe(false);
 
-    component.multiple = false;
+    fixture.componentRef.setInput('multiple', false);
     component.value = null;
     expect(component.empty).toBe(true);
 
@@ -394,8 +399,12 @@ describe('ZvSelect', () => {
   it('should fix MatSelect.close() not emitting stateChanges', () => {
     const matSelect = createFakeMatSelect();
 
-    const { component } = createZvSelect();
-    component.setMatSelect = matSelect;
+    // Manually apply the same monkey-patching that afterNextRender does
+    const originalClose = matSelect.close;
+    matSelect.close = () => {
+      originalClose.call(matSelect);
+      matSelect.stateChanges.next();
+    };
 
     vi.spyOn(matSelect.stateChanges, 'next');
 
@@ -541,11 +550,11 @@ describe('ZvSelect', () => {
     fixture.detectChanges();
     await flushMicrotasks();
     fixture.detectChanges();
-    expect(component.select.focused).toBe(false);
+    expect(component.select().focused).toBe(false);
     await zvSelect.open();
-    expect(component.select.focused).toBe(true);
+    expect(component.select().focused).toBe(true);
     await zvSelect.close();
-    expect(component.select.focused).toBe(false);
+    expect(component.select().focused).toBe(false);
   });
 
   it('should set the right css classes', async () => {
@@ -580,12 +589,12 @@ describe('ZvSelect', () => {
     errorState = false;
 
     // Required
-    component.select.required = true;
-    (component.select as any).cd.markForCheck();
+    component.select().required = true;
+    (component.select() as any).cd.markForCheck();
     fixture.detectChanges();
     fixture.detectChanges();
     assertZvSelectCssClasses(fixture, ['zv-select', 'zv-select-required']);
-    component.select.required = false;
+    component.select().required = false;
 
     // mat-option
     component.panelClass.set({ 'custom-mat-option-class': true });

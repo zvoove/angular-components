@@ -1,9 +1,4 @@
-/* eslint-disable @angular-eslint/no-conflicting-lifecycle --
-   Both DoCheck and OnChanges are required: OnChanges notifies MatFormField
-   of input changes via stateChanges.next(), while DoCheck runs
-   updateErrorState() which depends on parent form submission state that
-   cannot be observed reactively. This follows Angular Material's own
-   MatInput implementation. */
+/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import type { ElementRef } from '@angular/core';
 import {
@@ -11,16 +6,18 @@ import {
   ChangeDetectorRef,
   Component,
   DoCheck,
-  EventEmitter,
   Input,
   LOCALE_ID,
-  OnChanges,
   OnDestroy,
   OnInit,
-  Output,
-  ViewChild,
   ViewEncapsulation,
+  computed,
+  effect,
   inject,
+  input,
+  output,
+  untracked,
+  viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { _ErrorStateTracker, ErrorStateMatcher } from '@angular/material/core';
@@ -53,37 +50,37 @@ let nextUniqueId = 0;
   encapsulation: ViewEncapsulation.None,
   imports: [MatIcon],
 })
-export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<number>, OnChanges, OnDestroy, OnInit, DoCheck {
+export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<number>, OnDestroy, OnInit, DoCheck {
+  // Signal inputs (access via .inputName()): min, max, tabindex, decimals, stepSize
+  // Getter/setter properties (access via .propName): disabled, required, placeholder, value, id, readonly, errorStateMatcher
+
   public readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cd = inject(ChangeDetectorRef);
   private readonly localeId = inject(LOCALE_ID);
 
   /** Mininum boundary value. */
-  @Input() min: number | null = null;
+  public readonly min = input<number | null>(null);
 
   /** Maximum boundary value. */
-  @Input() max: number | null = null;
+  public readonly max = input<number | null>(null);
 
   /** Index of the element in tabbing order. */
-  @Input() tabindex: number | null = null;
+  public readonly tabindex = input<number | null>(null);
 
   /** Number of allowed decimal places. */
-  @Input() decimals: number | null = null;
+  public readonly decimals = input<number | null>(null);
 
   /** Step factor to increment/decrement the value. */
-  @Input()
-  get stepSize(): number {
-    return this._stepSize;
-  }
-  set stepSize(val: number) {
-    this._stepSize = val;
+  public readonly stepSize = input(1);
 
-    if (this._stepSize != null) {
-      const tokens = this.stepSize.toString().split(/[,]|[.]/);
-      this._calculatedDecimals = tokens[1] ? tokens[1].length : null;
+  public readonly _calculatedDecimals = computed(() => {
+    const val = this.stepSize();
+    if (val != null) {
+      const tokens = val.toString().split(/[,]|[.]/);
+      return tokens[1] ? tokens[1].length : null;
     }
-  }
-  _stepSize = 1;
+    return null;
+  });
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -164,6 +161,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
   set required(value: boolean) {
     this._required = coerceBooleanProperty(value);
+    this.stateChanges.next();
     this.cd.markForCheck();
   }
   protected _required = false;
@@ -203,7 +201,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
   _value: number | null = null;
 
-  @Output() public readonly valueChange = new EventEmitter<number | null>();
+  public readonly valueChange = output<number | null>();
 
   /** Whether the element is readonly. */
   @Input()
@@ -242,11 +240,9 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   _timer: ReturnType<typeof setTimeout> | null = null;
   _decimalSeparator!: string;
   _thousandSeparator!: string;
-  _calculatedDecimals: number | null = null;
   _errorStateTracker: _ErrorStateTracker;
 
-  @ViewChild('inputfield', { static: true })
-  _inputfieldViewChild!: ElementRef<HTMLInputElement>;
+  public readonly _inputfieldViewChild = viewChild<ElementRef<HTMLInputElement>>('inputfield');
 
   _onModelChange = (_val: number | null) => {};
   _onModelTouched = () => {};
@@ -268,6 +264,16 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
       _parentForm,
       this.stateChanges
     );
+
+    effect(() => {
+      const el = this._inputfieldViewChild();
+      if (el) {
+        untracked(() => this._formatValue());
+      }
+    });
+
+    // No effect needed: min/max/decimals/stepSize/tabindex don't affect MatFormField display.
+    // Properties that do (required, disabled, value) notify via their setters.
   }
 
   ngOnInit() {
@@ -278,10 +284,6 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
     const intlParts = Intl.NumberFormat(this.localeId).formatToParts(1000.1);
     this._decimalSeparator = intlParts.find((part) => part.type === 'decimal')!.value;
     this._thousandSeparator = intlParts.find((part) => part.type === 'group')!.value;
-  }
-
-  ngOnChanges() {
-    this.stateChanges.next();
   }
 
   ngOnDestroy() {
@@ -325,7 +327,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
   /** Focuses the input. */
   focus(options?: FocusOptions): void {
-    this._inputfieldViewChild.nativeElement.focus(options);
+    this._inputfieldViewChild()?.nativeElement.focus(options);
   }
 
   writeValue(value: number | null): void {
@@ -362,7 +364,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _spin(_event: Event, dir: number) {
-    const step = this.stepSize * dir;
+    const step = this.stepSize() * dir;
     const newValue = this._fixNumber((this.value ?? 0) + step);
     this.value = newValue;
     this._onModelChange(newValue);
@@ -391,13 +393,14 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
       this._formattedValue = value.toLocaleString(this.localeId, { maximumFractionDigits: decimals ?? undefined });
     }
 
-    if (this._inputfieldViewChild && this._inputfieldViewChild.nativeElement) {
-      this._inputfieldViewChild.nativeElement.value = this._formattedValue;
+    const viewChild = this._inputfieldViewChild();
+    if (viewChild?.nativeElement) {
+      viewChild.nativeElement.value = this._formattedValue;
     }
   }
 
   _getDecimals() {
-    return this.decimals === null ? this._calculatedDecimals : this.decimals;
+    return this.decimals() === null ? this._calculatedDecimals() : this.decimals();
   }
 
   _toFixed(value: number, decimals: number) {
@@ -417,12 +420,14 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
       return null;
     }
 
-    if (this.max !== null && value > this.max) {
-      value = this.max;
+    const max = this.max();
+    if (max !== null && value > max) {
+      value = max;
     }
 
-    if (this.min !== null && value < this.min) {
-      value = this.min;
+    const min = this.min();
+    if (min !== null && value < min) {
+      value = min;
     }
 
     return value;
@@ -430,7 +435,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
   _onUpButtonMousedown(event: Event) {
     if (!this.disabled) {
-      this._inputfieldViewChild.nativeElement.focus();
+      this._inputfieldViewChild()?.nativeElement.focus();
       this._repeat(event, null, 1);
       event.preventDefault();
     }
@@ -450,7 +455,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
   _onDownButtonMousedown(event: Event) {
     if (!this.disabled) {
-      this._inputfieldViewChild.nativeElement.focus();
+      this._inputfieldViewChild()?.nativeElement.focus();
       this._repeat(event, null, -1);
       event.preventDefault();
     }

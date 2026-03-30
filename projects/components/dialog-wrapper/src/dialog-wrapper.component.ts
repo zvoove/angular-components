@@ -40,6 +40,7 @@ export class ZvDialogWrapper implements OnDestroy {
   public get showProgress(): boolean {
     return this.progress != null && this.progress >= 0;
   }
+  // eslint-disable-next-line @angular-eslint/prefer-signals -- synchronous teardown required: old subscription must be unsubscribed before new connect()
   @Input({ required: true }) public set dataSource(value: IZvDialogWrapperDataSource) {
     if (this._dataSource) {
       this._dataSource.disconnect();

@@ -49,7 +49,7 @@ export class FormDataSource<
   private hasLoadError = false;
   private saving = false;
   private blockView = false;
-  private stateChanges$!: Subject<void>;
+  private stateChanges$ = new Subject<void>();
   private loadParams: TTriggerData | null = null;
   private loadingSub = Subscription.EMPTY;
   private connectSub = Subscription.EMPTY;

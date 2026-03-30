@@ -1,6 +1,6 @@
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { ZvHeaderHarness } from '@zvoove/components/header/src/testing/header.harness';
@@ -52,7 +52,7 @@ export class TestDataSourceComponent {
   public readonly addCaptionTemplate = signal(false);
   public readonly addDescriptionTemplate = signal(false);
   public readonly addFooterTemplate = signal(false);
-  @ViewChild(ZvCard) headerComponent: ZvCard;
+  readonly headerComponent = viewChild(ZvCard);
 }
 
 describe('ZvCard', () => {

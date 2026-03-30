@@ -1,5 +1,5 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatIconButton } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
@@ -13,7 +13,7 @@ import { ZvTableActionsComponent } from './table-actions.component';
 @Component({
   selector: 'zv-test-component',
   template: `
-    <button mat-icon-button type="button" [matMenuTriggerFor]="comp.menu()">
+    <button mat-icon-button type="button" [matMenuTriggerFor]="comp().menu()">
       <mat-icon>more_vert</mat-icon>
     </button>
     <zv-table-actions [actions]="actions" [items]="items" />
@@ -26,7 +26,7 @@ export class TestComponent {
   public actions: IZvTableAction<any>[] = [];
   public items: any = [];
 
-  @ViewChild(ZvTableActionsComponent, { static: true }) comp: ZvTableActionsComponent<any>;
+  readonly comp = viewChild.required(ZvTableActionsComponent);
 }
 
 describe('ZvTableActionsComponent', () => {
@@ -82,9 +82,36 @@ describe('ZvTableActionsComponent', () => {
       const items = await menu.getItems();
       expect(items[0]).toBeDefined();
       expect(await items[0].isDisabled()).toBe(testCase.expected);
-      if (testCase.routerLink && testCase.expected) {
-        expect(await (await items[0].host()).getCssValue('pointer-events')).toBe('none');
-      }
     });
   });
+
+  disabledFnTestCases
+    .filter((tc) => tc.routerLink && tc.expected)
+    .forEach((testCase) => {
+      it('should set pointer-events none on disabled router link action', async () => {
+        const fixture = TestBed.createComponent(TestComponent);
+        const component = fixture.componentInstance;
+
+        component.actions = [
+          {
+            icon: 'remove',
+            label: 'Remove',
+            scope: ZvTableActionScope.row,
+            actionFn: testCase.actionFn,
+            isDisabledFn: testCase.isDisabledFn,
+            routerLink: testCase.routerLink,
+          },
+        ];
+
+        const loader = TestbedHarnessEnvironment.loader(fixture);
+        fixture.detectChanges();
+
+        const menuTrigger = await loader.getHarness(MatButtonHarness);
+        menuTrigger.click();
+
+        const menu = await loader.getHarness(MatMenuHarness);
+        const items = await menu.getItems();
+        expect(await (await items[0].host()).getCssValue('pointer-events')).toBe('none');
+      });
+    });
 });

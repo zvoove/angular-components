@@ -2,20 +2,21 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader } from '@angular/cdk/testing';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { ZvFileInput } from './file-input.component';
 import { ZvFileInputHarness } from './testing/file-input.harness';
 
 @Component({
   selector: 'zv-test-component',
-  template: ` <zv-file-input /> `,
+  template: ` <zv-file-input [accept]="accept()" /> `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvFileInput],
 })
 export class TestComponent {
-  @ViewChild(ZvFileInput)
-  fileInputCmp!: ZvFileInput;
+  readonly fileInputCmp = viewChild(ZvFileInput);
+
+  readonly accept = signal<string[]>([]);
 }
 
 describe('ZvFileInput', () => {
@@ -28,8 +29,7 @@ describe('ZvFileInput', () => {
   beforeEach(async () => {
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
-    cmp = fixture.componentInstance.fileInputCmp;
-    expect(cmp).toBeDefined();
+    cmp = fixture.componentInstance.fileInputCmp();
 
     loader = TestbedHarnessEnvironment.loader(fixture);
     harness = await loader.getHarness(ZvFileInputHarness);
@@ -38,6 +38,10 @@ describe('ZvFileInput', () => {
       cmp._cd.markForCheck();
       fixture.detectChanges();
     };
+  });
+
+  it('should be defined', () => {
+    expect(cmp).toBeDefined();
   });
 
   it('Should respect disabled', async () => {
@@ -53,7 +57,7 @@ describe('ZvFileInput', () => {
     expect(await harness.isRequired()).toEqual(false);
     expect(await harness.isReadonly()).toEqual(false);
 
-    cmp.accept = ['.png', '.jpg'];
+    fixture.componentInstance.accept.set(['.png', '.jpg']);
     cmp.placeholder = 'PLACEHOLDER';
     cmp.required = true;
     cmp.readonly = true;

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, TemplateRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, inject, input, output } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { Observable, Subscription } from 'rxjs';
 import { first, map } from 'rxjs/operators';
@@ -57,21 +57,21 @@ import { ZvTableSortComponent } from './table-sort.component';
 export class ZvTableSettingsComponent implements OnInit {
   public readonly settingsService = inject(ZvTableSettingsService);
 
-  @Input() public tableId!: string;
-  @Input() public columnDefinitions: ZvTableColumn[] = [];
-  @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
-  @Input() public pageSizeOptions!: number[];
-  @Input() public customSettings: TemplateRef<unknown> | null = null;
+  public readonly tableId = input.required<string>();
+  public readonly columnDefinitions = input<ZvTableColumn[]>([]);
+  public readonly sortDefinitions = input<IZvTableSortDefinition[]>([]);
+  public readonly pageSizeOptions = input.required<number[]>();
+  public readonly customSettings = input<TemplateRef<unknown> | null>(null);
 
-  @Output() public readonly settingsSaved = new EventEmitter<void>();
-  @Output() public readonly settingsAborted = new EventEmitter<void>();
+  public readonly settingsSaved = output<void>();
+  public readonly settingsAborted = output<void>();
 
   public settings$!: Observable<IZvTableSetting>;
 
   private _settingSaveSub!: Subscription;
 
   public ngOnInit(): void {
-    this.settings$ = this.settingsService.getStream(this.tableId, true).pipe(
+    this.settings$ = this.settingsService.getStream(this.tableId(), true).pipe(
       map((settings) => {
         settings = settings || ({} as IZvTableSetting);
         return {
@@ -86,7 +86,7 @@ export class ZvTableSettingsComponent implements OnInit {
   }
 
   public columnVisible(settings: IZvTableSetting, columnDef: ZvTableColumn) {
-    return !settings.columnBlacklist.some((x) => x === columnDef.property);
+    return !settings.columnBlacklist.some((x) => x === columnDef.property());
   }
 
   public onSortChanged(event: IZvTableSort, settings: IZvTableSetting) {
@@ -99,9 +99,9 @@ export class ZvTableSettingsComponent implements OnInit {
 
   public onColumnVisibilityChange(event: MatCheckboxChange, settings: IZvTableSetting, columnDef: ZvTableColumn) {
     if (event.checked) {
-      settings.columnBlacklist = settings.columnBlacklist.filter((x) => x !== columnDef.property);
-    } else if (!settings.columnBlacklist.find((x) => x === columnDef.property)) {
-      settings.columnBlacklist.push(columnDef.property);
+      settings.columnBlacklist = settings.columnBlacklist.filter((x) => x !== columnDef.property());
+    } else if (!settings.columnBlacklist.find((x) => x === columnDef.property())) {
+      settings.columnBlacklist.push(columnDef.property());
     }
   }
 
@@ -110,7 +110,7 @@ export class ZvTableSettingsComponent implements OnInit {
       this._settingSaveSub.unsubscribe();
     }
     this._settingSaveSub = this.settingsService
-      .save(this.tableId, setting)
+      .save(this.tableId(), setting)
       .pipe(first())
       .subscribe({
         complete: () => this.settingsSaved.emit(),

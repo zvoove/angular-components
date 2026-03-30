@@ -1,5 +1,6 @@
 // @ts-check
 const tseslint = require("typescript-eslint");
+const vitest = require("@vitest/eslint-plugin");
 const rootConfig = require("../../eslint.config.js");
 
 module.exports = tseslint.config(
@@ -20,7 +21,14 @@ module.exports = tseslint.config(
   },
   {
     files: ["**/*.spec.ts"],
+    plugins: {
+      vitest: vitest,
+    },
     rules: {
+      ...vitest.configs.recommended.rules,
+      "vitest/expect-expect": ["error", {
+        assertFunctionNames: ["expect", "assert*", "sortAssert", "validate*"],
+      }],
       "@typescript-eslint/no-explicit-any": "off",
     },
   },

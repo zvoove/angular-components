@@ -14,7 +14,7 @@
       </div>
       <zv-form-field>
         <mat-label>accept (comma separeted)</mat-label>
-        <input matInput type="text" [(ngModel)]="acceptStr" />
+        <input matInput type="text" [(ngModel)]="acceptStr" (ngModelChange)="onAcceptChange()" />
       </zv-form-field>
       <zv-form-field>
         <mat-label>id</mat-label>

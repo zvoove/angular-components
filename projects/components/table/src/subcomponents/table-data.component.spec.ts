@@ -26,36 +26,38 @@ describe('ZvTableDataComponent', () => {
   });
 
   it('isMasterToggleChecked should only return true when there are visible rows and they are all selected', () => {
-    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
-    component.dataSource = createDataSourceMock();
+    const fixture = TestBed.createComponent(ZvTableDataComponent);
+    const component = fixture.componentInstance;
+    fixture.componentRef.setInput('dataSource', createDataSourceMock());
 
-    (component.dataSource as any).allVisibleRowsSelected = false;
-    component.dataSource.selectionModel.select({});
+    (component.dataSource() as any).allVisibleRowsSelected = false;
+    component.dataSource().selectionModel.select({});
     expect(component.isMasterToggleChecked()).toBe(false);
 
-    (component.dataSource as any).allVisibleRowsSelected = true;
-    component.dataSource.selectionModel.select({});
+    (component.dataSource() as any).allVisibleRowsSelected = true;
+    component.dataSource().selectionModel.select({});
     expect(component.isMasterToggleChecked()).toBe(true);
 
-    (component.dataSource as any).allVisibleRowsSelected = true;
-    component.dataSource.selectionModel.clear();
+    (component.dataSource() as any).allVisibleRowsSelected = true;
+    component.dataSource().selectionModel.clear();
     expect(component.isMasterToggleChecked()).toBe(false);
   });
 
   it('isMasterToggleIndeterminate should only return true when some but not all rows are selected', () => {
-    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
-    component.dataSource = createDataSourceMock();
+    const fixture = TestBed.createComponent(ZvTableDataComponent);
+    const component = fixture.componentInstance;
+    fixture.componentRef.setInput('dataSource', createDataSourceMock());
 
-    (component.dataSource as any).allVisibleRowsSelected = false;
-    component.dataSource.selectionModel.select({});
+    (component.dataSource() as any).allVisibleRowsSelected = false;
+    component.dataSource().selectionModel.select({});
     expect(component.isMasterToggleIndeterminate()).toBe(true);
 
-    (component.dataSource as any).allVisibleRowsSelected = true;
-    component.dataSource.selectionModel.select({});
+    (component.dataSource() as any).allVisibleRowsSelected = true;
+    component.dataSource().selectionModel.select({});
     expect(component.isMasterToggleIndeterminate()).toBe(false);
 
-    (component.dataSource as any).allVisibleRowsSelected = true;
-    component.dataSource.selectionModel.clear();
+    (component.dataSource() as any).allVisibleRowsSelected = true;
+    component.dataSource().selectionModel.clear();
     expect(component.isMasterToggleIndeterminate()).toBe(false);
   });
 
@@ -68,11 +70,11 @@ describe('ZvTableDataComponent', () => {
     (component as any).cd = cdSpy;
 
     let toggledRow: any = null;
-    component.rowDetail = {
+    fixture.componentRef.setInput('rowDetail', {
       toggle: (x: any) => {
         toggledRow = x;
       },
-    } as any;
+    } as any);
 
     const row = { a: 'b' };
     component.toggleRowDetail(row);
@@ -82,43 +84,47 @@ describe('ZvTableDataComponent', () => {
   });
 
   it('onMasterToggleChange should call toggleVisibleRowSelection on data source', () => {
-    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
-    component.dataSource = createDataSourceMock();
+    const fixture = TestBed.createComponent(ZvTableDataComponent);
+    const component = fixture.componentInstance;
+    fixture.componentRef.setInput('dataSource', createDataSourceMock());
 
-    vi.spyOn(component.dataSource, 'toggleVisibleRowSelection');
+    vi.spyOn(component.dataSource(), 'toggleVisibleRowSelection');
     component.onMasterToggleChange();
-    expect(component.dataSource.toggleVisibleRowSelection).toHaveBeenCalled();
+    expect(component.dataSource().toggleVisibleRowSelection).toHaveBeenCalled();
   });
 
   it('onRowToggleChange should toggle row', () => {
-    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
-    component.dataSource = createDataSourceMock();
+    const fixture = TestBed.createComponent(ZvTableDataComponent);
+    const component = fixture.componentInstance;
+    fixture.componentRef.setInput('dataSource', createDataSourceMock());
 
     const row = { a: 'b' };
     component.onRowToggleChange(row);
 
-    expect(component.dataSource.selectionModel.isSelected(row)).toBe(true);
-    expect(component.dataSource.selectionModel.selected.length).toBe(1);
+    expect(component.dataSource().selectionModel.isSelected(row)).toBe(true);
+    expect(component.dataSource().selectionModel.selected.length).toBe(1);
   });
 
   it('isRowSelected should only return true if row is selected', () => {
-    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
-    component.dataSource = createDataSourceMock();
+    const fixture = TestBed.createComponent(ZvTableDataComponent);
+    const component = fixture.componentInstance;
+    fixture.componentRef.setInput('dataSource', createDataSourceMock());
 
     const row = { a: 'b' };
-    component.dataSource.selectionModel.select(row);
+    component.dataSource().selectionModel.select(row);
 
     expect(component.isRowSelected(row)).toBe(true);
     expect(component.isRowSelected({})).toBe(false);
   });
 
   it('getSelectedRows should return selected rows', () => {
-    const component = TestBed.createComponent(ZvTableDataComponent).componentInstance;
-    component.dataSource = createDataSourceMock();
+    const fixture = TestBed.createComponent(ZvTableDataComponent);
+    const component = fixture.componentInstance;
+    fixture.componentRef.setInput('dataSource', createDataSourceMock());
 
     const row1 = { a: 'b' };
     const row2 = { b: 'c' };
-    component.dataSource.selectionModel.select(row1, row2);
+    component.dataSource().selectionModel.select(row1, row2);
 
     expect(component.getSelectedRows()).toEqual([row1, row2]);
   });

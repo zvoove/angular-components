@@ -1,14 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  HostBinding,
-  Input,
-  Output,
-  TemplateRef,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef, ViewEncapsulation, computed, input, output } from '@angular/core';
 import { IZvTableSort, IZvTableSortDefinition } from '../models';
 import { ZvTableSearchComponent } from './table-search.component';
 import { ZvTableSortComponent } from './table-sort.component';
@@ -20,23 +11,24 @@ import { ZvTableSortComponent } from './table-sort.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [NgTemplateOutlet, ZvTableSortComponent, ZvTableSearchComponent],
+  host: { '[style.padding-top]': 'paddingTop()' },
 })
 export class ZvTableHeaderComponent {
-  @Input() public caption!: string;
-  @Input() public topButtonSection!: TemplateRef<unknown> | null;
-  @Input() public customHeader!: TemplateRef<unknown> | null;
-  @Input() public selectedRows!: unknown[];
-  @Input() public showSorting!: boolean;
-  @Input() public sortColumn!: string | null;
-  @Input() public sortDirection!: 'asc' | 'desc';
-  @Input() public sortDefinitions: IZvTableSortDefinition[] = [];
-  @Input() public filterable!: boolean;
-  @Input() public searchText!: string;
+  public readonly caption = input.required<string>();
+  public readonly topButtonSection = input<TemplateRef<unknown> | null>(null);
+  public readonly customHeader = input<TemplateRef<unknown> | null>(null);
+  public readonly selectedRows = input.required<unknown[]>();
+  public readonly showSorting = input.required<boolean>();
+  public readonly sortColumn = input.required<string | null>();
+  public readonly sortDirection = input.required<'asc' | 'desc'>();
+  public readonly sortDefinitions = input<IZvTableSortDefinition[]>([]);
+  public readonly filterable = input.required<boolean>();
+  public readonly searchText = input.required<string>();
 
-  @Output() public readonly sortChanged = new EventEmitter<IZvTableSort>();
-  @Output() public readonly searchChanged = new EventEmitter<string | null>();
+  public readonly sortChanged = output<IZvTableSort>();
+  public readonly searchChanged = output<string | null>();
 
-  @HostBinding('style.padding-top') public get paddingTop() {
-    return !this.caption && (this.showSorting || this.filterable || this.topButtonSection) ? '1em' : '0';
-  }
+  public readonly paddingTop = computed(() =>
+    !this.caption() && (this.showSorting() || this.filterable() || this.topButtonSection()) ? '1em' : '0'
+  );
 }

@@ -1,5 +1,5 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 import { Observable } from 'rxjs';
@@ -31,8 +31,7 @@ export class TestComponent {
   public readonly item = signal<any>({});
   public readonly moreMenuThreshold = signal(2);
 
-  @ViewChild(ZvTableRowActionsComponent, { static: true })
-  comp: ZvTableRowActionsComponent<any>;
+  readonly comp = viewChild.required(ZvTableRowActionsComponent);
 }
 
 describe('ZvTableRowActionsComponent', () => {
@@ -102,9 +101,31 @@ describe('ZvTableRowActionsComponent', () => {
       const button = await loader.getHarness(MatButtonHarness);
       expect(button).toBeDefined();
       expect(await button.isDisabled()).toBe(testCase.expected);
-      if (testCase.routerLink && testCase.expected) {
-        expect(await (await button.host()).getCssValue('pointer-events')).toBe('none');
-      }
     });
   });
+
+  disabledFnTestCases
+    .filter((tc) => tc.routerLink && tc.expected)
+    .forEach((testCase) => {
+      it('should set pointer-events none on disabled router link action', async () => {
+        const fixture = TestBed.createComponent(TestComponent);
+        const component = fixture.componentInstance;
+
+        component.actions.set([
+          {
+            icon: 'remove',
+            label: 'Remove',
+            scope: ZvTableActionScope.row,
+            actionFn: testCase.actionFn,
+            isDisabledFn: testCase.isDisabledFn,
+            routerLink: testCase.routerLink,
+          },
+        ]);
+        const loader = TestbedHarnessEnvironment.loader(fixture);
+        fixture.autoDetectChanges();
+
+        const button = await loader.getHarness(MatButtonHarness);
+        expect(await (await button.host()).getCssValue('pointer-events')).toBe('none');
+      });
+    });
 });

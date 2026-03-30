@@ -1,5 +1,5 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatMiniFabButton } from '@angular/material/button';
 import { MatSelectHarness } from '@angular/material/select/testing';
@@ -29,8 +29,7 @@ export class TestComponent {
     { prop: 'prop2', displayName: 'Sort Prop' },
   ];
 
-  @ViewChild(ZvTableSortComponent, { static: true })
-  tableSort: ZvTableSortComponent;
+  readonly tableSort = viewChild.required(ZvTableSortComponent);
 
   public onSortChanged(_event: IZvTableSort) {}
 }
