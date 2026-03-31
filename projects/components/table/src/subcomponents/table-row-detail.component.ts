@@ -1,8 +1,6 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, afterNextRender, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, effect, input, signal } from '@angular/core';
 
 import { NgTemplateOutlet } from '@angular/common';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { delay, of, switchMap, tap } from 'rxjs';
 import { ZvTableRowDetail } from '../directives/table.directives';
 
 @Component({
@@ -14,12 +12,8 @@ import { ZvTableRowDetail } from '../directives/table.directives';
   imports: [NgTemplateOutlet],
   host: {
     '[class.zv-table-row-detail]': 'true',
-    '[class.zv-table-row-detail--expanding-init]': 'show() && animInit()',
-    '[class.zv-table-row-detail--expanding-to]': 'show() && animTo()',
-    '[class.zv-table-row-detail--expanded]': 'show() && animDone()',
-    '[class.zv-table-row-detail--collapsing-init]': '!show() && animInit()',
-    '[class.zv-table-row-detail--collapsing-to]': '!show() && animTo()',
-    '[class.zv-table-row-detail--collapsed]': '!show() && animDone()',
+    '[class.zv-table-row-detail--open]': 'show()',
+    '(transitionend)': 'onTransitionEnd()',
   },
 })
 export class TableRowDetailComponent<T> {
@@ -29,39 +23,18 @@ export class TableRowDetailComponent<T> {
 
   /** Expanded Items, die sichtbar sind (wird beim Start der Aufklapp-Animation und am Ende der Zuklapp-Animation gesetzt) */
   public readonly renderContent = signal(false);
-  public readonly animInit = signal(false);
-  public readonly animTo = signal(false);
-  public readonly animDone = signal(true);
 
   constructor() {
-    afterNextRender({ read: () => {} });
+    effect(() => {
+      if (this.show()) {
+        this.renderContent.set(true);
+      }
+    });
+  }
 
-    const cancelableDelay = (ms: number) => switchMap((v) => of(v).pipe(delay(ms)));
-    toObservable(this.show)
-      .pipe(
-        tap((show) => {
-          if (show) {
-            this.renderContent.set(true);
-          }
-          this.animInit.set(true);
-          this.animTo.set(false);
-          this.animDone.set(false);
-        }),
-        cancelableDelay(1),
-        tap(() => {
-          this.animTo.set(true);
-        }),
-        cancelableDelay(250),
-        tap((show) => {
-          if (!show) {
-            this.renderContent.set(false);
-          }
-          this.animInit.set(false);
-          this.animTo.set(false);
-          this.animDone.set(true);
-        }),
-        takeUntilDestroyed()
-      )
-      .subscribe();
+  onTransitionEnd() {
+    if (!this.show()) {
+      this.renderContent.set(false);
+    }
   }
 }
