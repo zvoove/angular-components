@@ -1,0 +1,111 @@
+<app-component-page-wrapper [componentName]="'zv-avatar'">
+  <ng-template appComponentPageContent [type]="'demo'">
+    <mat-card>
+      <mat-card-content>
+        <mat-form-field>
+          <mat-select [(ngModel)]="type">
+            <mat-option [value]="'avatar'">avatar</mat-option>
+            <mat-option [value]="'initials'">initials</mat-option>
+            <mat-option [value]="'image'">image</mat-option>
+          </mat-select>
+          <mat-label>type</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select [(ngModel)]="size">
+            <mat-option [value]="'small'">small</mat-option>
+            <mat-option [value]="'medium'">medium</mat-option>
+            <mat-option [value]="'large'">large</mat-option>
+          </mat-select>
+          <mat-label>size</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select [(ngModel)]="variant">
+            <mat-option [value]="'round'">round</mat-option>
+            <mat-option [value]="'square'">square</mat-option>
+          </mat-select>
+          <mat-label>variant</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select [(ngModel)]="initialsAmount">
+            <mat-option [value]="1">1</mat-option>
+            <mat-option [value]="2">2</mat-option>
+          </mat-select>
+          <mat-label>initialsAmount</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput [(ngModel)]="name" />
+          <mat-label>name</mat-label>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput [(ngModel)]="image" />
+          <mat-label>image</mat-label>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-content style="display: flex; align-items: center; gap: 16px">
+        <zv-avatar [type]="type" [size]="size" [variant]="variant" [initialsAmount]="initialsAmount" [name]="name" [image]="image" />
+        <zv-avatar [type]="type" size="small" [variant]="variant" [initialsAmount]="initialsAmount" [name]="name" [image]="image" />
+        <zv-avatar [type]="type" size="medium" [variant]="variant" [initialsAmount]="initialsAmount" [name]="name" [image]="image" />
+        <zv-avatar [type]="type" size="large" [variant]="variant" [initialsAmount]="initialsAmount" [name]="name" [image]="image" />
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Fallback Demo</mat-card-title>
+      </mat-card-header>
+      <mat-card-content style="display: flex; align-items: center; gap: 16px">
+        <zv-avatar
+          type="image"
+          image="https://invalid-url-for-fallback-demo.test/404.jpg"
+          [name]="name"
+          [initialsAmount]="initialsAmount"
+        />
+        <zv-avatar type="image" image="https://invalid-url-for-fallback-demo.test/404.jpg" name="" />
+        <zv-avatar type="initials" name="" />
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'api'">
+    <app-api-doc [name]="'zv-avatar'">
+      <app-api-doc-input
+        [name]="'type'"
+        [type]="'initials | avatar | image'"
+        [desc]="'What content the avatar displays. Defaults to avatar.'"
+      />
+      <app-api-doc-input
+        [name]="'size'"
+        [type]="'small | medium | large'"
+        [desc]="'Size of the avatar (24px, 40px, 120px). Defaults to medium.'"
+      />
+      <app-api-doc-input [name]="'variant'" [type]="'round | square'" [desc]="'Shape of the avatar. Defaults to round.'" />
+      <app-api-doc-input [name]="'name'" [type]="'string'" [desc]="'Name used for initials extraction and image alt text.'" />
+      <app-api-doc-input [name]="'image'" [type]="'string'" [desc]="'Image URL. Used when type is image.'" />
+      <app-api-doc-input
+        [name]="'initialsAmount'"
+        [type]="'1 | 2'"
+        [desc]="'Number of initials to extract from name. With 2, uses first and last name initials. Defaults to 1.'"
+      />
+    </app-api-doc>
+  </ng-template>
+
+  <ng-template appComponentPageContent [type]="'setup'">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Imports</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Add the following to your imports, where you want to use the zv-avatar:</p>
+        <app-code [code]="importsCode" [language]="'typescript'" />
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</app-component-page-wrapper>

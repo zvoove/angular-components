@@ -1,0 +1,11 @@
+@switch (displayType()) {
+  @case ('avatar') {
+    <mat-icon class="zv-avatar__icon">person</mat-icon>
+  }
+  @case ('initials') {
+    <span class="zv-avatar__initials">{{ initials() }}</span>
+  }
+  @case ('image') {
+    <img class="zv-avatar__image" [src]="image()" [alt]="name() || ''" (error)="imageError.set(true)" />
+  }
+}
