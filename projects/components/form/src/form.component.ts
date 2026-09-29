@@ -26,7 +26,7 @@ import { IZvButton, IZvException, ZvErrorMessagePipe } from '@zvoove/components/
 import { ZvFormErrors } from '@zvoove/components/form-errors';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
-import { IZvFormDataSource, IZvFormDataSourceConnectOptions } from './form-data-source';
+import { IZvFormDataSource } from './form-data-source';
 
 export const dependencies = {
   intersectionObserver: null as typeof IntersectionObserver | null,
@@ -146,7 +146,7 @@ export class ZvForm implements AfterViewInit, AfterViewChecked, OnDestroy {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         this.errorCardWrapper()?.nativeElement.scrollIntoView({ behavior: 'smooth' });
       },
-    } as IZvFormDataSourceConnectOptions;
+    };
 
     this._dataSourceSub = ds.connect(options).subscribe(() => {
       this.cd.markForCheck();

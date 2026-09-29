@@ -1,4 +1,3 @@
-import { IZvTableUpdateDataInfo } from '../models';
 import { asQueryParams, fromQueryParams, _isNumberValue } from './table.helper';
 
 describe('asQueryParams', () => {
@@ -23,7 +22,7 @@ describe('fromQueryParams', () => {
       searchText: 'asdf',
       sortColumn: 'Column1',
       sortDirection: 'desc',
-    } as IZvTableUpdateDataInfo);
+    });
   });
 
   it('should never return NaN for a parameter', () => {
@@ -33,7 +32,7 @@ describe('fromQueryParams', () => {
       searchText: 'asdf',
       sortColumn: 'Column1',
       sortDirection: 'desc',
-    } as IZvTableUpdateDataInfo);
+    });
   });
 
   it('should return partial data when some values are set', () => {
@@ -43,7 +42,7 @@ describe('fromQueryParams', () => {
       searchText: null,
       sortColumn: null,
       sortDirection: 'desc',
-    } as IZvTableUpdateDataInfo);
+    });
 
     expect(fromQueryParams('◬◬test◬◬')).toEqual({
       pageSize: null,
@@ -51,7 +50,7 @@ describe('fromQueryParams', () => {
       searchText: 'test',
       sortColumn: null,
       sortDirection: null,
-    } as IZvTableUpdateDataInfo);
+    });
   });
 
   it('should return undefined when all values are empty', () => {

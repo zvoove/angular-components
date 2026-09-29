@@ -33,7 +33,7 @@ import { InvalidErrorStateMatcher } from '../common/invalid-error-state-matcher'
   template: `
     <zv-form-field [hint]="hint()" [hintToggle]="hintToggle()" [subscriptType]="subscriptType()">
       <mat-label>Referenz Column</mat-label>
-      <input matInput [(ngModel)]="value" type="text" [required]="required()" />
+      <input matInput [(ngModel)]="value" [ngModelOptions]="{ standalone: true }" type="text" [required]="required()" />
     </zv-form-field>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

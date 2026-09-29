@@ -340,7 +340,7 @@ export class ZvTable<TData = unknown> implements OnInit, OnDestroy {
   private mergeSortDefinitions() {
     const sortableColumns = this.columnDefs
       .filter((def) => def.sortable())
-      .map((def) => ({ prop: def.property(), displayName: def.header() }) as IZvTableSortDefinition);
+      .map((def) => ({ prop: def.property(), displayName: def.header() }));
 
     this._mergedSortDefinitions = sortableColumns
       .concat(this._sortDefinitions)

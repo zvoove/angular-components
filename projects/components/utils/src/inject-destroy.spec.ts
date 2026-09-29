@@ -6,7 +6,6 @@ import { injectDestroy } from './inject-destroy';
 
 describe('injectDestroy', () => {
   describe('emits when the component is destroyed using takeUntil', () => {
-    // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
     @Component({ standalone: true, template: '' })
     class TestComponent implements OnInit {
       destroy$ = injectDestroy();

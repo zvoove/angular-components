@@ -51,7 +51,7 @@ export class ZvTablePaginationComponent implements OnDestroy {
       pageIndex: nextPage,
       pageSize: this.pageSize(),
       previousPageIndex: nextPage - 1,
-    } as PageEvent);
+    });
   }
 
   public ngOnDestroy() {

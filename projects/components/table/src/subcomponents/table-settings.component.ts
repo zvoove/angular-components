@@ -80,7 +80,7 @@ export class ZvTableSettingsComponent implements OnInit {
           pageSize: settings.pageSize || 15,
           sortDirection: settings.sortDirection || 'asc',
           sortColumn: settings.sortColumn || null,
-        } as IZvTableSetting;
+        };
       })
     );
   }

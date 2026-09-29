@@ -105,7 +105,7 @@ export class DialogWrapperDemoDialog {
     if (!this.dataSource.exception) {
       this.dataSource.exception = {
         errorObject: { message: 'I am an evil error' },
-      } as IZvException;
+      };
     } else {
       this.dataSource.exception = null;
     }

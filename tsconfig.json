@@ -8,7 +8,6 @@
   },
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
 
@@ -37,7 +36,7 @@
     "module": "es2022",
 
     "paths": {
-      "@zvoove/components/*": ["projects/components/*"]
+      "@zvoove/components/*": ["./projects/components/*"]
     }
   }
 }

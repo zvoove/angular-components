@@ -1,6 +1,6 @@
 import { ApplicationConfig, LOCALE_ID, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 
-import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +25,7 @@ export const appConfig: ApplicationConfig = {
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     { provide: ZV_FORM_FIELD_CONFIG, useValue: { requiredText: '* Required' } },
     { provide: LOCALE_ID, useValue: getUsersLocale(['en', 'de'], 'en-GB') },
-    provideHttpClient(withInterceptorsFromDi(), withFetch()),
+    provideHttpClient(withInterceptorsFromDi()),
     provideRouter([
       {
         path: 'action-button',

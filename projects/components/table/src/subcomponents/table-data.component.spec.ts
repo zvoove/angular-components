@@ -74,7 +74,7 @@ describe('ZvTableDataComponent', () => {
       toggle: (x: any) => {
         toggledRow = x;
       },
-    } as any);
+    });
 
     const row = { a: 'b' };
     component.toggleRowDetail(row);
