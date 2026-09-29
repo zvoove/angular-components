@@ -14,6 +14,7 @@ import {
   effect,
   inject,
   input,
+  Signal,
   untracked,
   viewChild,
 } from '@angular/core';
@@ -153,7 +154,7 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   private matFormFieldControl!: MatFormFieldControl<unknown>;
 
   /** The real control instance (MatSlider, MatSelect, MatCheckbox, ...) */
-  private realFormControl!: { noUnderline?: boolean; shouldLabelFloat?: boolean };
+  private realFormControl!: { noUnderline?: boolean; shouldLabelFloat?: boolean | Signal<boolean> };
 
   /** The control type. Most of the time this is the same as the selector */
   private controlType!: string;
@@ -296,9 +297,9 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
 function getRealFormControl(
   ngControl: NgControl | null | undefined,
   matFormFieldControl: MatFormFieldControl<unknown>
-): { noUnderline?: boolean; shouldLabelFloat?: boolean } {
+): { noUnderline?: boolean; shouldLabelFloat?: boolean | Signal<boolean> } {
   if (!(matFormFieldControl instanceof DummyMatFormFieldControl) || !ngControl) {
     return matFormFieldControl;
   }
-  return ngControl.valueAccessor as unknown as { noUnderline?: boolean; shouldLabelFloat?: boolean };
+  return ngControl.valueAccessor as unknown as { noUnderline?: boolean; shouldLabelFloat?: boolean | Signal<boolean> };
 }

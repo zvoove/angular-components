@@ -18,7 +18,7 @@ import { IconType, MatIconHarness, MatIconTestingModule } from '@angular/materia
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
 import { MatSortHarness } from '@angular/material/sort/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, ParamMap, Params, Router, RouterLink, Routes, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterLink, Routes, convertToParamMap, provideRouter } from '@angular/router';
 import { filterAsync } from '@zvoove/components/utils/src/array';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -255,7 +255,7 @@ describe('ZvTable', () => {
           pageSize: 22,
           sortColumn: 'col',
           sortDirection: 'desc',
-        } as IZvTableSetting,
+        },
       });
       await vi.advanceTimersByTimeAsync(1);
 
@@ -269,7 +269,7 @@ describe('ZvTable', () => {
       queryParams$.next(
         convertToParamMap({
           tableid: '1◬1◬asdf◬Column1◬asc',
-        } as Params)
+        })
       );
       await vi.advanceTimersByTimeAsync(1);
 
@@ -281,24 +281,24 @@ describe('ZvTable', () => {
       expect(table.displayedColumns).toEqual(['select', 'rowDetailExpander', 'prop1', 'options']);
 
       (table as any)._rowDetail = { showToggleColumn: () => false } as any;
-      queryParams$.next(convertToParamMap({ tableid: '1◬1◬asdf◬Column1◬desc' } as Params));
+      queryParams$.next(convertToParamMap({ tableid: '1◬1◬asdf◬Column1◬desc' }));
       await vi.advanceTimersByTimeAsync(1);
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
       (table as any)._rowDetail = null;
-      queryParams$.next(convertToParamMap({ tableid: '1◬2◬asdf◬Column1◬desc' } as Params));
+      queryParams$.next(convertToParamMap({ tableid: '1◬2◬asdf◬Column1◬desc' }));
       await vi.advanceTimersByTimeAsync(1);
       expect(table.displayedColumns).toEqual(['select', 'prop1', 'options']);
 
       table.dataSource().listActions.length = 0;
-      queryParams$.next(convertToParamMap({ tableid: '1◬3◬asdf◬Column1◬desc' } as Params));
+      queryParams$.next(convertToParamMap({ tableid: '1◬3◬asdf◬Column1◬desc' }));
       await vi.advanceTimersByTimeAsync(1);
       expect(table.displayedColumns).toEqual(['prop1', 'options']);
 
       table.dataSource().rowActions.length = 0;
       (table as any).showSettings.set(false);
       (table as any).refreshable.set(false);
-      queryParams$.next(convertToParamMap({ tableid: '1◬4◬asdf◬Column1◬desc' } as Params));
+      queryParams$.next(convertToParamMap({ tableid: '1◬4◬asdf◬Column1◬desc' }));
       await vi.advanceTimersByTimeAsync(1);
       expect(table.displayedColumns).toEqual(['prop1']);
     });

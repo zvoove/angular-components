@@ -45,7 +45,7 @@ describe('ZvTableSearchComponent', () => {
 
     const input = fixture.debugElement.query(By.directive(MatInput));
     input.nativeElement.value = 'new text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' }));
 
     await vi.advanceTimersByTimeAsync(50);
     component.tableSearch().ngOnDestroy();
@@ -66,7 +66,7 @@ describe('ZvTableSearchComponent', () => {
     const input = fixture.debugElement.query(By.directive(MatInput));
 
     input.nativeElement.value = 'new text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' }));
 
     await vi.advanceTimersByTimeAsync(299);
     expect(component.onSearchChanged).not.toHaveBeenCalled();
@@ -86,12 +86,12 @@ describe('ZvTableSearchComponent', () => {
     const input = fixture.debugElement.query(By.directive(MatInput));
 
     input.nativeElement.value = 'new text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' }));
 
     await vi.advanceTimersByTimeAsync(50);
 
     input.nativeElement.value = 'initial text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' } as any));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'a' }));
 
     await vi.advanceTimersByTimeAsync(250);
 
@@ -161,7 +161,7 @@ describe('ZvTableSearchComponent', () => {
     const input = fixture.debugElement.query(By.directive(MatInput));
 
     input.nativeElement.value = 'initial text';
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'Escape' } as any));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'Escape' }));
 
     expect(component.onSearchChanged).toHaveBeenCalledWith('');
 
@@ -180,7 +180,7 @@ describe('ZvTableSearchComponent', () => {
 
     const input = fixture.debugElement.query(By.directive(MatInput));
 
-    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'Escape' } as any));
+    input.triggerEventHandler('keyup', new KeyboardEvent('keyup', { key: 'Escape' }));
 
     await vi.advanceTimersByTimeAsync(300);
 

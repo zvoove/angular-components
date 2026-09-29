@@ -1,5 +1,4 @@
-import { Direction, Directionality } from '@angular/cdk/bidi';
-import { ElementRef, NgZone, EventEmitter, ChangeDetectorRef, signal } from '@angular/core';
+import { ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { getControlType, hasRequiredField } from './helpers';
@@ -44,13 +43,6 @@ describe('getControlType', () => {
   });
   it('should work with mat-slider', () => {
     const elementRef: ElementRef = { nativeElement: { classList: { add: () => {} }, addEventListener: () => {} } };
-    const zone: NgZone = { runOutsideAngular: (x: unknown) => x } as NgZone;
-    const dir: Directionality = {
-      value: 'ltr',
-      change: new EventEmitter<Direction>(),
-      valueSignal: signal('ltr'),
-      ngOnDestroy: () => {},
-    };
     const cd = { markForCheck: () => {} } as ChangeDetectorRef;
     TestBed.configureTestingModule({
       providers: [
@@ -59,7 +51,7 @@ describe('getControlType', () => {
       ],
     });
     TestBed.runInInjectionContext(() => {
-      const control = new MatSlider(zone, null, null, dir);
+      const control = new MatSlider();
       expect(getControlType(control)).toBe('mat-slider');
     });
   });

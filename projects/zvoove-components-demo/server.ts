@@ -1,4 +1,6 @@
 import { APP_BASE_HREF } from '@angular/common';
+// TODO: migrate the custom Express rendering pipeline to AngularNodeAppEngine.
+// CommonEngine remains supported in Angular 22 but is deprecated.
 import { CommonEngine } from '@angular/ssr/node';
 import express, { NextFunction, Request, Response } from 'express';
 import { fileURLToPath } from 'node:url';
@@ -12,6 +14,7 @@ export function app(): express.Express {
   const browserDistFolder = resolve(serverDistFolder, '../browser');
   const indexHtml = join(serverDistFolder, 'index.server.html');
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- AngularNodeAppEngine does not support this custom Express pipeline yet.
   const commonEngine = new CommonEngine();
 
   server.set('view engine', 'html');

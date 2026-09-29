@@ -42,7 +42,7 @@ export class ViewDemoComponent {
       return of({
         loadCount: this.counter(),
         time: new Date(),
-      } as ZvViewDemoItemData).pipe(
+      }).pipe(
         delay(1000),
         map((x) => {
           if (this.loadError) {

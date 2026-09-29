@@ -24,7 +24,6 @@ const baseTsLintConfig = {
         style: "camelCase",
       },
     ],
-    '@angular-eslint/no-conflicting-lifecycle': 'warn',
     '@angular-eslint/no-input-prefix': ['error', { prefixes: ['on', 'can', 'is', 'should'] }],
     '@angular-eslint/no-pipe-impure': 'error',
     "@angular-eslint/prefer-on-push-component-change-detection": "error",
