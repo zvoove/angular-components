@@ -42,6 +42,8 @@
     <mat-option class="zv-select__search">
       <ngx-mat-select-search
         [formControl]="filterCtrl"
+        [placeholderLabel]="searchPlaceholder"
+        [noEntriesFoundLabel]="noEntriesFoundLabel"
         [searching]="loading"
         [showToggleAllCheckbox]="showToggleAll()"
         [toggleAllCheckboxChecked]="toggleAllCheckboxChecked"
