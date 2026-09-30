@@ -325,6 +325,8 @@ describe('ZvSelect', () => {
     expect(component.errorStateMatcher).toBe(undefined);
     expect(component.panelClass()).toBe('');
     expect(component.placeholder).toBe('');
+    expect(component.searchPlaceholder).toBe('');
+    expect(component.noEntriesFoundLabel).toBe('');
     expect(component.required).toBe(false);
     expect(component.disabled).toBe(false);
     expect(component.focused).toBe(false);
