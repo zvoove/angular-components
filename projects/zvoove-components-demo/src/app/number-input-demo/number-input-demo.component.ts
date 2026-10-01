@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { SignalControlDemo } from '../common/signal-control-demo.component';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,6 +18,7 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
   styleUrls: ['./number-input-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    SignalControlDemo,
     MatCardModule,
     MatCheckboxModule,
     ReactiveFormsModule,
@@ -30,6 +32,7 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
   providers: [{ provide: ZvFormService, useClass: DemoZvFormsService }],
 })
 export class NumberInputDemoComponent {
+  readonly signalDemo = viewChild(SignalControlDemo);
   public value = 5;
   public model = 5;
   public control = new FormControl(5);
@@ -72,6 +75,7 @@ export class NumberInputDemoComponent {
     this.value = value;
     this.model = value;
     this.control.patchValue(value);
+    this.signalDemo()?.setValue(value);
   }
 
   public onDisabledChanged() {

@@ -96,3 +96,15 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+<app-signal-control-demo
+  kind="number"
+  [disabledSetting]="disabled"
+  [requiredSetting]="required || validatorRequired"
+  [readonlySetting]="readonly"
+  [placeholder]="placeholder"
+  [minValue]="min"
+  [maxValue]="max"
+  [stepSize]="stepSize"
+  [decimals]="decimals"
+/>

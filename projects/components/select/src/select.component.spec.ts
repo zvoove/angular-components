@@ -325,8 +325,8 @@ describe('ZvSelect', () => {
     expect(component.errorStateMatcher).toBe(undefined);
     expect(component.panelClass()).toBe('');
     expect(component.placeholder).toBe('');
-    expect(component.required).toBe(false);
-    expect(component.disabled).toBe(false);
+    expect(component.required()).toBe(false);
+    expect(component.disabled()).toBe(false);
     expect(component.focused).toBe(false);
   });
 
@@ -340,32 +340,32 @@ describe('ZvSelect', () => {
     ];
     component.dataSource = createFakeDataSource(items);
 
-    component.value = null;
+    fixture.componentRef.setInput('value', null);
     expect(component.empty).toBe(true);
 
-    component.value = [];
+    fixture.componentRef.setInput('value', []);
     expect(component.empty).toBe(true);
 
-    component.value = [items[0]];
+    fixture.componentRef.setInput('value', [items[0]]);
     expect(component.empty).toBe(false);
 
-    component.value = items;
+    fixture.componentRef.setInput('value', items);
     expect(component.empty).toBe(false);
 
     fixture.componentRef.setInput('multiple', false);
-    component.value = null;
+    fixture.componentRef.setInput('value', null);
     expect(component.empty).toBe(true);
 
-    component.value = {};
+    fixture.componentRef.setInput('value', {});
     expect(component.empty).toBe(false);
 
-    component.value = '';
+    fixture.componentRef.setInput('value', '');
     expect(component.empty).toBe(true);
 
-    component.value = 'some value';
+    fixture.componentRef.setInput('value', 'some value');
     expect(component.empty).toBe(false);
 
-    component.value = 0;
+    fixture.componentRef.setInput('value', 0);
     expect(component.empty).toBe(false);
   });
 
@@ -415,13 +415,13 @@ describe('ZvSelect', () => {
 
   it('should update disabled property when calling setDisabledState', () => {
     const { component } = createZvSelect();
-    component.disabled = true;
+    component.disabled.set(true);
 
-    component.setDisabledState(false);
-    expect(component.disabled).toBe(false);
+    component.disabled.set(false);
+    expect(component.disabled()).toBe(false);
 
-    component.setDisabledState(true);
-    expect(component.disabled).toBe(true);
+    component.disabled.set(true);
+    expect(component.disabled()).toBe(true);
   });
 
   it("should not switch dataSource when dataSource input doesn't change", () => {
@@ -559,6 +559,7 @@ describe('ZvSelect', () => {
 
   it('should set the right css classes', async () => {
     const { fixture, component, zvSelect: zvSelect } = await initTest(TestComponent);
+    component.select().requiredInput = false;
 
     let errorState = false;
     component.errorStateMatcher.set({
@@ -589,12 +590,12 @@ describe('ZvSelect', () => {
     errorState = false;
 
     // Required
-    component.select().required = true;
+    component.select().requiredInput = true;
     (component.select() as any).cd.markForCheck();
     fixture.detectChanges();
     fixture.detectChanges();
     assertZvSelectCssClasses(fixture, ['zv-select', 'zv-select-required']);
-    component.select().required = false;
+    component.select().requiredInput = false;
 
     // mat-option
     component.panelClass.set({ 'custom-mat-option-class': true });

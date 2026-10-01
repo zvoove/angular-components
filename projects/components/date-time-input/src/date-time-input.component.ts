@@ -1,5 +1,6 @@
-/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
-import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
+/* eslint-disable @angular-eslint/no-input-rename -- Backing models retain existing public binding names via compatibility setters. */
+/* eslint-disable @angular-eslint/prefer-signals -- Compatibility setters preserve public value events and Material id */
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import {
   ChangeDetectionStrategy,
@@ -15,11 +16,15 @@ import {
   input,
   output,
   viewChild,
+  model,
+  signal,
+  effect,
+  untracked,
+  OnDestroy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
-  ControlValueAccessor,
   FormControl,
   FormGroup,
   FormGroupDirective,
@@ -30,6 +35,8 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { FORM_FIELD, FormValueControl, Field, transformedValue } from '@angular/forms/signals';
+import { connectLegacyControl, signalErrorControl } from '@zvoove/components/form-base';
 import { ErrorStateMatcher, _ErrorStateTracker } from '@angular/material/core';
 import { MatDatepickerControl, MatDatepickerInput, MatDatepickerModule, MatDatepickerPanel } from '@angular/material/datepicker';
 import { MAT_FORM_FIELD, MatFormFieldControl } from '@angular/material/form-field';
@@ -49,19 +56,27 @@ let nextUniqueId = 0;
   host: {
     '[attr.id]': 'id',
     '[attr.aria-describedby]': '_ariaDescribedby || null',
-    '[attr.aria-required]': 'required.toString()',
-    '[attr.aria-disabled]': 'disabled.toString()',
+    '[attr.aria-required]': 'required().toString()',
+    '[attr.aria-disabled]': 'isDisabled().toString()',
     '[attr.aria-invalid]': 'errorState',
   },
   providers: [{ provide: MatFormFieldControl, useExisting: ZvDateTimeInput }],
 })
-export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAccessor, MatFormFieldControl<TDateTime>, OnInit, DoCheck {
+export class ZvDateTimeInput<TDateTime, TDate, TTime>
+  implements FormValueControl<TDateTime | null>, MatFormFieldControl<TDateTime | null>, OnInit, DoCheck, OnDestroy
+{
+  readonly labelledById = signal<string | null>(null);
+  setLabelledById(id: string | null) {
+    this.labelledById.set(id);
+  }
+
+  private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef);
   public _changeDetectorRef = inject(ChangeDetectorRef);
   _defaultErrorStateMatcher = inject(ErrorStateMatcher);
   _parentForm = inject(NgForm, { optional: true });
   _parentFormGroup = inject(FormGroupDirective, { optional: true });
   _parentFormField = inject(MAT_FORM_FIELD, { optional: true });
-  ngControl = inject(NgControl, { optional: true, self: true });
+  ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
   private dateTimeAdapter = inject(ZvDateTimeAdapter<TDateTime, TDate, TTime>);
 
   /**
@@ -91,16 +106,18 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
   public readonly matDatepicker = input.required<MatDatepickerPanel<MatDatepickerControl<unknown>, unknown, unknown>>();
 
   /** Value of the date-time control. */
-  @Input()
-  get value(): TDateTime | null {
-    return this._value;
+  readonly value = model<TDateTime | null>(null, { alias: 'modelValue' });
+  @Input('value')
+  set valueInput(value: TDateTime | null) {
+    this._assignValue(value, { assignForm: true, emitChange: !this.formField });
   }
-  set value(newValue: TDateTime | null) {
-    this._assignValue(newValue, { assignForm: true, emitChange: true });
+  readonly valueChange = output<TDateTime | null>();
+  protected readonly legacyChanges = output<TDateTime | null>();
+  readonly touch = output<void>();
+  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
+  get ngField(): Field<TDateTime | null> | null {
+    return (this.formField?.field() as Field<TDateTime | null>) ?? null;
   }
-  private _value: TDateTime | null = null;
-  public readonly valueChange = output<TDateTime | null>();
-
   /** Placeholder to be shown if no value has been selected. (not supported for this component!) */
   public readonly placeholder = '';
 
@@ -110,15 +127,13 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
   }
   private _focused = false;
 
-  @Input({ transform: booleanAttribute })
-  get disabled(): boolean {
-    return this._disabled;
+  readonly disabled = model(false, { alias: 'disabledState' });
+  @Input('disabled')
+  set disabledInput(value: boolean) {
+    this.disabled.set(value != null && String(value) !== 'false');
   }
-  set disabled(value: boolean) {
-    this._disabled = value;
-    this.setDisabledState(this._disabled);
-  }
-  private _disabled = false;
+  readonly isDisabled = this.disabled;
+  readonly readonly = input(false, { transform: booleanAttribute });
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -132,7 +147,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
     const dateRef = this._dateInputElementRef();
     const timeRef = this._timeInputElementRef();
     if (!dateRef || !timeRef) {
-      return this.value == null;
+      return this.value() == null;
     }
     return !dateRef.nativeElement.value && !timeRef.nativeElement.value;
   }
@@ -143,16 +158,13 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
   }
 
   /** Whether the component is required. */
-  @Input()
-  get required(): boolean {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    return this._required ?? this.ngControl?.control?.hasValidator(Validators.required) ?? false;
+  readonly required = model(false, { alias: 'requiredState' });
+  private explicitRequired = false;
+  @Input('required')
+  set requiredInput(value: boolean) {
+    this.explicitRequired = true;
+    this.required.set(coerceBooleanProperty(value));
   }
-  set required(value: BooleanInput) {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-  }
-  private _required: boolean | undefined;
 
   @Input()
   get errorStateMatcher() {
@@ -164,7 +176,13 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
 
   /** Whether the input is in an error state. */
   get errorState() {
-    return this._errorStateTracker.errorState;
+    const field = this.ngField;
+    return field
+      ? (this.errorStateMatcher ?? this._defaultErrorStateMatcher).isErrorState(
+          signalErrorControl(field),
+          this._parentFormGroup ?? this._parentForm
+        )
+      : this._errorStateTracker.errorState;
   }
   set errorState(value: boolean) {
     this._errorStateTracker.errorState = value;
@@ -172,12 +190,6 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
 
   datePlaceholder = this.dateTimeAdapter.dateAdapter.parseFormatExample();
   timePlaceholder = this.dateTimeAdapter.timeAdapter.parseFormatExample();
-
-  /** `View -> model callback called when value changes` */
-  _onChange: (value: TDateTime | null) => void = () => {};
-
-  /** `View -> model callback called when input has been touched` */
-  _onTouched = () => {};
 
   /** `Callback called when validators have been changed` */
   _validatorOnChange = () => {};
@@ -193,12 +205,35 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
   public readonly zvTimeInput = viewChild(ZvTimeInput);
   _errorStateTracker: _ErrorStateTracker;
 
+  private readonly raw = transformedValue(this.value, {
+    parse: (raw: { value: TDateTime | null; errors: ValidationErrors | null }) => ({
+      value: raw.value,
+      error: raw.errors ? Object.entries(raw.errors).map(([kind, context]) => ({ kind: kind, context: context as unknown })) : undefined,
+    }),
+    format: (value) => ({ value: value, errors: null as ValidationErrors | null }),
+  });
+  private readonly parentValidator = (control: AbstractControl) => this.validate(control);
+  private previousEmitted: TDateTime | null = null;
+
   constructor() {
-    if (this.ngControl) {
-      // Note: we provide the value accessor through here, instead of
-      // the `providers` to avoid running into a circular import.
-      this.ngControl.valueAccessor = this;
-    }
+    connectLegacyControl(
+      this.ngControl,
+      this.legacyChanges,
+      this.touch,
+      (value) => {
+        this._assignValue(value, { assignForm: true, emitChange: false });
+        this.reset();
+      },
+      (disabled) => this.disabled.set(disabled)
+    );
+    effect(() => {
+      const disabled = this.isDisabled();
+      untracked(() => {
+        if (disabled) this._form.disable({ emitEvent: false });
+        else this._form.enable({ emitEvent: false });
+        this.stateChanges.next();
+      });
+    });
 
     this._errorStateTracker = new _ErrorStateTracker(
       this._defaultErrorStateMatcher,
@@ -211,8 +246,10 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
     this._form.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const newValue = this.dateTimeAdapter.mergeDateTime(value.date, value.time);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      this._assignValue(newValue, { assignForm: false, emitChange: true });
+
+      const errors = this.validate(this._form);
+      this.raw.set({ value: newValue as TDateTime | null, errors: errors });
+      this._assignValue(newValue as TDateTime | null, { assignForm: false, emitChange: true });
 
       // We need to markForCheck here, otherwise angular wouldn't recheck
       // shouldLabelFloat when selecting the date in the picker
@@ -227,12 +264,14 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
     if (this.ngControl) {
       // Note: we provide the validator through here, instead of
       // the `providers` NG_VALIDATORS to avoid running into a circular import.
-      this.ngControl.control!.addValidators(this.validate.bind(this));
+      this.ngControl.control!.addValidators(this.parentValidator);
       this.ngControl.control!.updateValueAndValidity();
     }
   }
 
   ngDoCheck() {
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
+    if (this.ngControl?.control && !this.explicitRequired) this.required.set(this.ngControl.control.hasValidator(Validators.required));
     if (this.ngControl) {
       // We need to re-evaluate this on every change detection cycle, because there are some
       // error triggers that we can't subscribe to (e.g. parent form submissions). This means
@@ -276,53 +315,17 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
     this._validatorOnChange = fn;
   }
 
-  /**
-   * Sets the input's value. Part of the ControlValueAccessor interface
-   * required to integrate with Angular's core forms API.
-   *
-   * @param value New value to be written to the model.
-   */
-  writeValue(value: unknown): void {
-    this._assignValue(value as TDateTime | null, { assignForm: true, emitChange: false });
-  }
-
-  /**
-   * Saves a callback function to be invoked when the input's value
-   * changes from user input. Part of the ControlValueAccessor interface
-   * required to integrate with Angular's core forms API.
-   *
-   * @param fn Callback to be triggered when the value changes.
-   */
-  registerOnChange(fn: (value: TDateTime | null) => void): void {
-    this._onChange = fn;
-  }
-
-  /**
-   * Saves a callback function to be invoked when the input is blurred
-   * by the user. Part of the ControlValueAccessor interface required
-   * to integrate with Angular's core forms API.
-   *
-   * @param fn Callback to be triggered when the component has been touched.
-   */
-  registerOnTouched(fn: () => void): void {
-    this._onTouched = fn;
-  }
-
-  /**
-   * Disables the input. Part of the ControlValueAccessor interface required
-   * to integrate with Angular's core forms API.
-   *
-   * @param isDisabled Sets whether the component is disabled.
-   */
-  setDisabledState(isDisabled: boolean): void {
-    this._disabled = isDisabled;
-    if (isDisabled) {
-      this._form.disable({ emitEvent: false });
-    } else {
-      this._form.enable({ emitEvent: false });
-    }
-    this._changeDetectorRef.markForCheck();
+  reset() {
+    this._form.setValue(this.dateTimeAdapter.splitDateTime(this.value()), { emitEvent: false });
+    const dateInput = this.matDateInput();
+    if (dateInput) dateInput.value = this._form.controls.date.value;
+    this.zvTimeInput()?.reset();
+    this.raw.set({ value: this.value(), errors: null });
     this.stateChanges.next();
+  }
+  ngOnDestroy() {
+    this.ngControl?.control?.removeValidators(this.parentValidator);
+    this.stateChanges.complete();
   }
 
   /** Handles a click on the control's container. */
@@ -347,7 +350,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
   }
 
   _onFocus() {
-    if (!this.disabled) {
+    if (!this.isDisabled()) {
       this._focused = true;
       this.stateChanges.next();
     }
@@ -357,11 +360,16 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
    * Calls the touched callback only if the panel is closed. Otherwise, the trigger will
    * "blur" to the panel when it opens, causing a false positive.
    */
-  _onBlur() {
+  _onBlur(event?: FocusEvent) {
+    if (
+      this.ngField &&
+      (this.matDatepicker().opened || (event?.relatedTarget && this.hostElement.nativeElement.contains(event.relatedTarget as Node)))
+    )
+      return;
     this._focused = false;
 
-    if (!this.disabled) {
-      this._onTouched();
+    if (!this.isDisabled()) {
+      this.touch.emit();
       this._changeDetectorRef.markForCheck();
       this.stateChanges.next();
     }
@@ -388,21 +396,15 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime> implements ControlValueAcc
    * Returns whether the value has changed.
    **/
   private _assignValue(newValue: TDateTime | null, options: { assignForm: boolean; emitChange: boolean }) {
-    if (newValue !== this._value) {
-      this._value = newValue;
-      if (options.assignForm) {
-        const parts = this.dateTimeAdapter.splitDateTime(newValue);
-        this._form.setValue(parts);
-      }
-      if (options.emitChange) {
-        this._onChange(this._value);
-        this.valueChange.emit(this._value);
-      }
+    const changed = newValue !== this.previousEmitted;
+    if (options.assignForm && newValue !== this.value()) {
+      this._form.setValue(this.dateTimeAdapter.splitDateTime(newValue), { emitEvent: false });
     }
-    // We need to fire the CVA change event for all
-    // nulls, otherwise the validators won't run.
-    else if (!newValue && options.emitChange) {
-      this._onChange(this._value);
+    this.value.set(newValue);
+    this.previousEmitted = newValue;
+    if (options.emitChange) {
+      if (changed || !newValue) this.legacyChanges.emit(newValue);
+      if (changed) this.valueChange.emit(newValue);
     }
   }
 }

@@ -1,5 +1,6 @@
 import { JsonPipe, KeyValuePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, contentChild, input } from '@angular/core';
+import { FieldState } from '@angular/forms/signals';
 import { AbstractControl, NgModel } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,7 +15,8 @@ import { AppCodeFilesComponent, CodeFiles } from '../code-files/code-files.compo
   imports: [KeyValuePipe, MatCardModule, MatIconModule, JsonPipe, AppCodeFilesComponent],
 })
 export class FormControlDemoCard {
-  readonly type = input.required<'form' | 'model' | 'value'>();
+  readonly type = input.required<'form' | 'model' | 'value' | 'signal'>();
+  readonly field = input<FieldState<unknown>>();
   readonly control = input<AbstractControl>();
   readonly value = input<unknown>();
   readonly codeFiles = input.required<CodeFiles[]>();

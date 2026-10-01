@@ -1,3 +1,4 @@
+import { SignalControlDemo } from '../common/signal-control-demo.component';
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -53,6 +54,7 @@ interface DemoSelectItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [
+    SignalControlDemo,
     allSharedImports,
     MatCardModule,
     MatCheckboxModule,

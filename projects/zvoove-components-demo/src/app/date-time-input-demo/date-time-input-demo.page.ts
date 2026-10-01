@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { SignalControlDemo } from '../common/signal-control-demo.component';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -23,7 +24,7 @@ import { allSharedImports } from '../common/shared-imports';
   templateUrl: './date-time-input-demo.page.html',
   styleUrls: ['./date-time-input-demo.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [allSharedImports, MatDatepickerModule, ZvDateTimeInput],
+  imports: [SignalControlDemo, allSharedImports, MatDatepickerModule, ZvDateTimeInput],
   providers: [
     { provide: ZvFormService, useClass: DemoZvFormsService },
     { provide: ErrorStateMatcher, useClass: InvalidErrorStateMatcher },
@@ -32,6 +33,7 @@ import { allSharedImports } from '../common/shared-imports';
   ],
 })
 export class DateTimeInputDemoComponent {
+  readonly signalDemo = viewChild(SignalControlDemo);
   public value: Date | null = null;
   public model: Date | null = null;
   public control = new FormControl<Date | null>(null);
@@ -71,6 +73,7 @@ export class DateTimeInputDemoComponent {
     this.value = value;
     this.model = value;
     this.control.patchValue(value);
+    this.signalDemo()?.setValue(value);
   }
 
   public onDisabledChanged() {
@@ -127,7 +130,7 @@ export class DateTimeInputDemoComponent {
 
   public getTsCodeSnippet(type: 'value' | 'ngmodel' | 'form'): string {
     let code = `
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ZvDateTimeInput } from '@zvoove/components/date-time-input';
 __IMPORTS__

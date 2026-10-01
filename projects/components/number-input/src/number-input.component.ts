@@ -1,9 +1,9 @@
-/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
+/* eslint-disable @angular-eslint/no-input-rename -- Backing models retain existing public binding names via compatibility setters. */
+/* eslint-disable @angular-eslint/prefer-signals -- value setter preserves legacy output semantics; id remains a Material string. */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import type { ElementRef } from '@angular/core';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   DoCheck,
   Input,
@@ -16,12 +16,16 @@ import {
   inject,
   input,
   output,
+  model,
+  signal,
   untracked,
   viewChild,
 } from '@angular/core';
-import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
+import { FormGroupDirective, NgControl, NgForm, Validators } from '@angular/forms';
+import { FORM_FIELD, FormValueControl, Field } from '@angular/forms/signals';
+import { connectLegacyControl, signalErrorControl } from '@zvoove/components/form-base';
 import { _ErrorStateTracker, ErrorStateMatcher } from '@angular/material/core';
-import { MatFormFieldControl } from '@angular/material/form-field';
+import { MAT_FORM_FIELD, MatFormFieldControl } from '@angular/material/form-field';
 import { replaceAll } from '@zvoove/components/utils';
 import { Subject } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
@@ -38,31 +42,39 @@ let nextUniqueId = 0;
     // the native input element. Otherwise property bindings for those don't work.
     '[attr.id]': 'id',
     '[attr.placeholder]': 'placeholder',
-    '[attr.disabled]': 'disabled',
-    '[attr.required]': 'required',
-    '[attr.readonly]': 'readonly || null',
+    '[attr.disabled]': 'isDisabled()',
+    '[attr.required]': 'isRequired',
+    '[attr.readonly]': 'readonly() || null',
     '[attr.aria-describedby]': '_ariaDescribedby || null',
     '[attr.aria-invalid]': 'errorState',
-    '[attr.aria-required]': 'required.toString()',
+    '[attr.aria-required]': 'isRequired.toString()',
   },
   providers: [{ provide: MatFormFieldControl, useExisting: ZvNumberInput }],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [MatIcon],
 })
-export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<number>, OnDestroy, OnInit, DoCheck {
-  // Signal inputs (access via .inputName()): min, max, tabindex, decimals, stepSize
-  // Getter/setter properties (access via .propName): disabled, required, placeholder, value, id, readonly, errorStateMatcher
+export class ZvNumberInput implements FormValueControl<number | null>, MatFormFieldControl<number | null>, OnDestroy, OnInit, DoCheck {
+  readonly labelledById = signal<string | null>(null);
+  setLabelledById(id: string | null) {
+    this.labelledById.set(id);
+  }
 
-  public readonly ngControl = inject(NgControl, { optional: true, self: true });
-  private readonly cd = inject(ChangeDetectorRef);
+  public readonly ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
+  private readonly defaultMatcher = inject(ErrorStateMatcher);
+  private readonly parentForm = inject(FormGroupDirective, { optional: true }) ?? inject(NgForm, { optional: true });
+  protected readonly parentMatField = inject(MAT_FORM_FIELD, { optional: true });
   private readonly localeId = inject(LOCALE_ID);
 
   /** Mininum boundary value. */
-  public readonly min = input<number | null>(null);
+  public readonly min = input<number | undefined, unknown>(undefined, {
+    transform: (value) => (value == null ? undefined : (value as number)),
+  });
 
   /** Maximum boundary value. */
-  public readonly max = input<number | null>(null);
+  public readonly max = input<number | undefined, unknown>(undefined, {
+    transform: (value) => (value == null ? undefined : (value as number)),
+  });
 
   /** Index of the element in tabbing order. */
   public readonly tabindex = input<number | null>(null);
@@ -115,19 +127,17 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
    *
    * @docs-private
    */
-  @Input()
-  get disabled(): boolean {
-    if (this.ngControl && this.ngControl.disabled !== null) {
-      return this.ngControl.disabled;
-    }
-    return this._disabled;
+  readonly disabled = model(false, { alias: 'disabledState' });
+  @Input('disabled')
+  set disabledInput(value: boolean) {
+    this.disabled.set(value != null && String(value) !== 'false');
   }
-  set disabled(value: boolean) {
-    this._disabled = coerceBooleanProperty(value);
-    this.stateChanges.next();
-    this.cd.markForCheck();
+  readonly isDisabled = this.disabled;
+  readonly touch = output<void>();
+  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
+  get ngField(): Field<number | null> | null {
+    return (this.formField?.field() as Field<number | null>) ?? null;
   }
-  protected _disabled = false;
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -155,16 +165,18 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
    *
    * @docs-private
    */
-  @Input()
-  get required(): boolean {
-    return this._required;
+  readonly required = model(false, { alias: 'requiredState' });
+  private explicitRequired = false;
+  @Input('required')
+  set requiredInput(value: boolean) {
+    this.explicitRequired = true;
+    this.required.set(coerceBooleanProperty(value));
   }
-  set required(value: boolean) {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-    this.cd.markForCheck();
+
+  get isRequired() {
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
+    return this.required() || !!this.ngControl?.control?.hasValidator(Validators.required);
   }
-  protected _required = false;
 
   /** An object used to control when error messages are shown. */
   @Input()
@@ -177,7 +189,10 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
   /** Whether the input is in an error state. */
   get errorState() {
-    return this._errorStateTracker.errorState;
+    const field = this.ngField;
+    return field
+      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(signalErrorControl(field), this.parentForm)
+      : this._errorStateTracker.errorState;
   }
   set errorState(value: boolean) {
     this._errorStateTracker.errorState = value;
@@ -188,31 +203,20 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
    *
    * @docs-private
    */
-  @Input()
-  get value(): number | null {
-    return this._value;
+  // Keep the historical valueChange output, including repeated user edits.
+  // The model's separate alias avoids a duplicate generated valueChange output.
+  readonly value = model<number | null>(null, { alias: 'modelValue' });
+  @Input('value')
+  set valueInput(value: number | null) {
+    if (Object.is(value, this.value())) return;
+    this.value.set(value);
+    this._formatValue();
+    this.stateChanges.next();
   }
-  set value(value: number | null) {
-    if (value !== this.value) {
-      this._value = value;
-      this._formatValue();
-      this.stateChanges.next();
-    }
-  }
-  _value: number | null = null;
-
-  public readonly valueChange = output<number | null>();
+  readonly valueChange = output<number | null>();
 
   /** Whether the element is readonly. */
-  @Input()
-  get readonly(): boolean {
-    return this._readonly;
-  }
-  set readonly(value: boolean) {
-    this._readonly = coerceBooleanProperty(value);
-    this.cd.markForCheck();
-  }
-  private _readonly = false;
+  readonly readonly = input(false, { transform: coerceBooleanProperty });
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -220,7 +224,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
    * @docs-private
    */
   get empty(): boolean {
-    return (this._value === null || this._value === undefined) && !this.autofilled;
+    return (this.value() === null || this.value() === undefined) && !this.autofilled;
   }
 
   /**
@@ -244,18 +248,21 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
 
   public readonly _inputfieldViewChild = viewChild<ElementRef<HTMLInputElement>>('inputfield');
 
-  _onModelChange = (_val: number | null) => {};
-  _onModelTouched = () => {};
-
   constructor() {
     const ngControl = this.ngControl;
     const _parentForm = inject(NgForm, { optional: true });
     const _parentFormGroup = inject(FormGroupDirective, { optional: true });
     const _defaultErrorStateMatcher = inject(ErrorStateMatcher);
 
-    if (this.ngControl) {
-      this.ngControl.valueAccessor = this;
-    }
+    connectLegacyControl(
+      this.ngControl,
+      this.valueChange,
+      this.touch,
+      (value) => {
+        this.valueInput = value;
+      },
+      (disabled) => this.disabled.set(disabled)
+    );
 
     this._errorStateTracker = new _ErrorStateTracker(
       _defaultErrorStateMatcher,
@@ -271,9 +278,6 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
         untracked(() => this._formatValue());
       }
     });
-
-    // No effect needed: min/max/decimals/stepSize/tabindex don't affect MatFormField display.
-    // Properties that do (required, disabled, value) notify via their setters.
   }
 
   ngOnInit() {
@@ -292,6 +296,8 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   ngDoCheck() {
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
+    if (this.ngControl?.control && !this.explicitRequired) this.required.set(this.ngControl.control.hasValidator(Validators.required));
     if (this.ngControl) {
       // We need to re-evaluate this on every change detection cycle, because there are some
       // error triggers that we can't subscribe to (e.g. parent form submissions). This means
@@ -330,20 +336,8 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
     this._inputfieldViewChild()?.nativeElement.focus(options);
   }
 
-  writeValue(value: number | null): void {
-    this.value = value;
-  }
-
-  registerOnChange(fn: (val: number | null) => void): void {
-    this._onModelChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this._onModelTouched = fn;
-  }
-
-  setDisabledState(val: boolean): void {
-    this.disabled = val;
+  reset() {
+    this._formatValue();
   }
 
   _repeat(event: Event, interval: number | null, dir: number) {
@@ -364,10 +358,11 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _spin(_event: Event, dir: number) {
+    if (this.isDisabled() || this.readonly()) return;
     const step = this.stepSize() * dir;
-    const newValue = this._fixNumber((this.value ?? 0) + step);
-    this.value = newValue;
-    this._onModelChange(newValue);
+    const newValue = this._fixNumber((this.value() ?? 0) + step);
+    this.value.set(newValue);
+    this._formatValue();
     this.valueChange.emit(newValue);
   }
 
@@ -385,7 +380,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _formatValue() {
-    const value = this.value;
+    const value = this.value();
     if (value == null) {
       this._formattedValue = '';
     } else {
@@ -421,12 +416,12 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
     }
 
     const max = this.max();
-    if (max !== null && value > max) {
+    if (max != null && value > max) {
       value = max;
     }
 
     const min = this.min();
-    if (min !== null && value < min) {
+    if (min != null && value < min) {
       value = min;
     }
 
@@ -434,7 +429,7 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _onUpButtonMousedown(event: Event) {
-    if (!this.disabled) {
+    if (!this.isDisabled()) {
       this._inputfieldViewChild()?.nativeElement.focus();
       this._repeat(event, null, 1);
       event.preventDefault();
@@ -442,19 +437,19 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _onUpButtonMouseup(_event: Event) {
-    if (!this.disabled) {
+    if (!this.isDisabled()) {
       this._clearTimer();
     }
   }
 
   _onUpButtonMouseleave(_event: Event) {
-    if (!this.disabled) {
+    if (!this.isDisabled()) {
       this._clearTimer();
     }
   }
 
   _onDownButtonMousedown(event: Event) {
-    if (!this.disabled) {
+    if (!this.isDisabled()) {
       this._inputfieldViewChild()?.nativeElement.focus();
       this._repeat(event, null, -1);
       event.preventDefault();
@@ -462,13 +457,13 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _onDownButtonMouseup(_event: Event) {
-    if (!this.disabled) {
+    if (!this.isDisabled()) {
       this._clearTimer();
     }
   }
 
   _onDownButtonMouseleave(_event: Event) {
-    if (!this.disabled) {
+    if (!this.isDisabled()) {
       this._clearTimer();
     }
   }
@@ -484,21 +479,20 @@ export class ZvNumberInput implements ControlValueAccessor, MatFormFieldControl<
   }
 
   _onInput(event: Event) {
-    this._value = this._parseValue((event.target as HTMLInputElement).value);
+    this.value.set(this._parseValue((event.target as HTMLInputElement).value));
     this.stateChanges.next();
-    this._onModelChange(this.value);
-    this.valueChange.emit(this.value);
+    this.valueChange.emit(this.value());
   }
 
   /** Callback for the cases where the focused state of the input changes. */
   _onFocusChanged(isFocused: boolean) {
-    if (isFocused !== this.focused && (!this.readonly || !isFocused)) {
+    if (isFocused !== this.focused && (!this.readonly() || !isFocused)) {
       this.focused = isFocused;
       this.stateChanges.next();
     }
     if (!isFocused) {
       this._formatValue();
-      this._onModelTouched();
+      this.touch.emit();
     }
   }
 }

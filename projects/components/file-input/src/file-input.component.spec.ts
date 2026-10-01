@@ -8,7 +8,9 @@ import { ZvFileInputHarness } from './testing/file-input.harness';
 
 @Component({
   selector: 'zv-test-component',
-  template: ` <zv-file-input [accept]="accept()" /> `,
+  template: `
+    <zv-file-input [accept]="accept()" [disabled]="disabled()" [required]="required()" [readonly]="readonly()" [value]="value()" />
+  `,
   // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ZvFileInput],
@@ -16,6 +18,10 @@ import { ZvFileInputHarness } from './testing/file-input.harness';
 export class TestComponent {
   readonly fileInputCmp = viewChild(ZvFileInput);
 
+  readonly disabled = signal(false);
+  readonly required = signal(false);
+  readonly readonly = signal(false);
+  readonly value = signal<File | null>(null);
   readonly accept = signal<string[]>([]);
 }
 
@@ -45,7 +51,7 @@ describe('ZvFileInput', () => {
   });
 
   it('Should respect disabled', async () => {
-    cmp.disabled = true;
+    fixture.componentInstance.disabled.set(true);
     detectChanges();
 
     expect(await harness.isDisabled()).toEqual(true);
@@ -59,8 +65,8 @@ describe('ZvFileInput', () => {
 
     fixture.componentInstance.accept.set(['.png', '.jpg']);
     cmp.placeholder = 'PLACEHOLDER';
-    cmp.required = true;
-    cmp.readonly = true;
+    fixture.componentInstance.required.set(true);
+    fixture.componentInstance.readonly.set(true);
     detectChanges();
 
     expect(await harness.getAccept()).toEqual('.png,.jpg');
@@ -70,13 +76,13 @@ describe('ZvFileInput', () => {
   });
 
   it('should set filename and empty correctly when setting the file in various ways', async () => {
-    cmp.value = null;
+    fixture.componentInstance.value.set(null);
     detectChanges();
 
     expect(cmp.empty).toBe(true);
     expect(await harness.getText()).toEqual(cmp.fileSelectText);
 
-    cmp.value = new File([], 'test.png');
+    fixture.componentInstance.value.set(new File([], 'test.png'));
     detectChanges();
 
     expect(cmp.empty).toBe(false);
@@ -87,7 +93,7 @@ describe('ZvFileInput', () => {
     expect(cmp.empty).toBe(true);
     expect(await harness.getText()).toEqual(cmp.fileSelectText);
 
-    cmp.writeValue(new File([], 'test2.png'));
+    fixture.componentInstance.value.set(new File([], 'test2.png'));
     detectChanges();
 
     expect(cmp.empty).toBe(false);

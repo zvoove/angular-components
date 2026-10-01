@@ -1,4 +1,6 @@
-/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
+/* eslint-disable @angular-eslint/no-input-rename -- Backing models retain existing public binding names via compatibility setters. */
+import { Validators } from '@angular/forms';
+/* eslint-disable @angular-eslint/prefer-signals -- Compatibility setters preserve data source and output behavior */
 import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -19,8 +21,11 @@ import {
   signal,
   inject,
   viewChild,
+  model,
 } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroupDirective, FormsModule, NgControl, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroupDirective, FormsModule, NgControl, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { FORM_FIELD, FormValueControl, Field } from '@angular/forms/signals';
+import { connectLegacyControl, signalErrorControl } from '@zvoove/components/form-base';
 import { MatIconButton } from '@angular/material/button';
 import { ErrorStateMatcher, MatOption, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
@@ -55,9 +60,9 @@ const enum ValueChangeSource {
   host: {
     '[id]': 'id',
     '[class.zv-select-multiple]': 'multiple()',
-    '[class.zv-select-disabled]': 'disabled',
+    '[class.zv-select-disabled]': 'isDisabled()',
     '[class.zv-select-invalid]': 'errorState',
-    '[class.zv-select-required]': 'required',
+    '[class.zv-select-required]': 'required()',
     '[class.zv-select-empty]': 'empty',
     class: 'zv-select',
   },
@@ -76,12 +81,15 @@ const enum ValueChangeSource {
     ZvErrorMessagePipe,
   ],
 })
-// D11: CVA+MatFormFieldControl — dataSource, value, disabled, required, placeholder, errorStateMatcher
-// kept as getter/setter @Input; simple inputs migrated to signal input(); outputs to output().
-export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormFieldControl<T>, DoCheck, OnInit, OnDestroy {
+export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFormFieldControl<T | null>, DoCheck, OnInit, OnDestroy {
+  readonly labelledById = signal<string | null>(null);
+  setLabelledById(id: string | null) {
+    this.labelledById.set(id);
+  }
+
   private readonly cd = inject(ChangeDetectorRef);
   private readonly selectService = inject(ZvSelectService, { optional: true });
-  public readonly ngControl = inject(NgControl, { optional: true, self: true });
+  public readonly ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
 
   public static nextId = 0;
   public id = `zv-select-${ZvSelect.nextId++}`;
@@ -118,15 +126,22 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     }
   }
 
-  @Input()
-  public get value(): T | null {
-    return this._value;
-  }
-  public set value(value: T | null) {
+  readonly value = model<T | null>(null, { alias: 'modelValue' });
+  @Input('value')
+  set valueInput(value: T | null) {
+    this.value.set(value);
     this._propagateValueChange(value, ValueChangeSource.valueInput);
   }
-  private _value: T | null = null;
-
+  private get _value() {
+    return this.value();
+  }
+  readonly touch = output<void>();
+  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
+  get ngField(): Field<T | null> | null {
+    return (this.formField?.field() as Field<T | null>) ?? null;
+  }
+  private readonly defaultMatcher = inject(ErrorStateMatcher);
+  private readonly parentForm = inject(FormGroupDirective, { optional: true }) ?? inject(NgForm, { optional: true });
   /** If true, then there will be a empty option available to deselect any values (only single select mode) */
   public readonly clearable = input(true);
   /** If true, then there will be a toggle all checkbox available (only multiple select mode) */
@@ -134,7 +149,14 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   public readonly multiple = input(false);
   public readonly panelClass = input<string | string[] | Set<string> | Record<string, boolean>>('');
   @Input() public placeholder = '';
-  @Input() public required = false;
+  readonly required = model(false, { alias: 'requiredState' });
+  private explicitRequired = false;
+  @Input('required')
+  set requiredInput(value: boolean) {
+    this.explicitRequired = true;
+    this.required.set(!!value && String(value) !== 'false');
+  }
+
   public readonly selectedLabel = input(true);
 
   /**
@@ -154,15 +176,20 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   }
 
   public get focused() {
-    const matFocus = this._matSelect.focused;
+    const matFocus = this._matSelect?.focused;
     if (matFocus != null) {
       return this._focused || matFocus;
     }
     return this._focused;
   }
 
-  @Input({ transform: booleanAttribute })
-  public disabled = false;
+  readonly disabled = model(false, { alias: 'disabledState' });
+  @Input('disabled')
+  set disabledInput(value: boolean) {
+    this.disabled.set(value != null && String(value) !== 'false');
+  }
+  readonly isDisabled = this.disabled;
+  readonly readonly = input(false, { transform: booleanAttribute });
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -181,7 +208,10 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
 
   /** Whether the input is in an error state. */
   get errorState() {
-    return this._errorStateTracker.errorState;
+    const field = this.ngField;
+    return field
+      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(signalErrorControl(field), this.parentForm)
+      : this._errorStateTracker.errorState;
   }
   set errorState(value: boolean) {
     this._errorStateTracker.errorState = value;
@@ -268,13 +298,9 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   /** The value the [dataSource] input was called with. */
   private _dataSourceInput: ZvSelectData<T> | ZvSelectDataSource<T> | string | undefined;
   private _matSelect!: MatSelect;
-  private _onModelTouched: (() => void) | undefined;
   private _focused = false;
   private _onInitCalled = false;
   _errorStateTracker: _ErrorStateTracker;
-
-  /** View -> model callback called when value changes */
-  private _onChange: (value: T | null) => void = () => {};
 
   constructor() {
     const defaultErrorStateMatcher = inject(ErrorStateMatcher);
@@ -282,11 +308,13 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     const parentFormGroup = inject(FormGroupDirective, { optional: true });
     const ngControl = this.ngControl;
 
-    if (this.ngControl) {
-      // Note: we provide the value accessor through here, instead of
-      // the `providers` to avoid running into a circular import.
-      this.ngControl.valueAccessor = this;
-    }
+    connectLegacyControl(
+      this.ngControl,
+      this.valueChange,
+      this.touch,
+      (value) => this._propagateValueChange(value, ValueChangeSource.writeValue),
+      (disabled) => this.disabled.set(disabled)
+    );
 
     this._errorStateTracker = new _ErrorStateTracker(defaultErrorStateMatcher, ngControl, parentFormGroup, parentForm, this.stateChanges);
 
@@ -304,6 +332,8 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   }
 
   public ngDoCheck() {
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
+    if (this.ngControl?.control && !this.explicitRequired) this.required.set(this.ngControl.control.hasValidator(Validators.required));
     if (this.ngControl) {
       this.updateErrorState();
     }
@@ -353,28 +383,16 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._renderChangeSubscription.unsubscribe();
   }
 
+  public focus(options?: FocusOptions): void {
+    this._matSelect?.focus(options);
+  }
+
   public onContainerClick(_: MouseEvent): void {
     this._matSelect.onContainerClick(_);
   }
 
   public setDescribedByIds(ids: string[]): void {
     this._matSelect.setDescribedByIds(ids);
-  }
-
-  public writeValue(value: unknown) {
-    this._propagateValueChange(value, ValueChangeSource.writeValue);
-  }
-
-  public registerOnChange(fn: () => void) {
-    this._onChange = fn;
-  }
-
-  public registerOnTouched(fn: () => void): void {
-    this._onModelTouched = fn;
-  }
-
-  public setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
   }
 
   public onSelectionChange(event: MatSelectChange) {
@@ -407,15 +425,12 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   }
 
   private _propagateValueChange(value: unknown, source: ValueChangeSource) {
-    this._value = value as T | null;
+    this.value.set(value as T | null);
     this.empty = this.multiple() ? !Array.isArray(value) || value.length === 0 : value == null || value === '';
     this._updateToggleAllCheckbox();
     this._pushSelectedValuesToDataSource(this._value);
     if (source !== ValueChangeSource.valueInput) {
       this.valueChange.emit(this._value);
-    }
-    if (source !== ValueChangeSource.writeValue) {
-      this._onChange(this._value);
     }
     this.cd.markForCheck();
   }
@@ -444,8 +459,9 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
     this._dataSourceInstance?.disconnect();
     this._renderChangeSubscription.unsubscribe();
 
-    this._dataSourceInstance = (this.selectService?.createDataSource(dataSource, this.ngControl?.control ?? null) ??
-      dataSource) as ZvSelectDataSource<T>;
+    this._dataSourceInstance = ((typeof this.selectService?.createDataSource === 'function'
+      ? this.selectService.createDataSource(dataSource, this.ngControl?.control ?? null)
+      : null) ?? dataSource) as ZvSelectDataSource<T>;
     if (!isZvSelectDataSource(this._dataSourceInstance)) {
       throw getSelectUnknownDataSourceError();
     }
@@ -475,8 +491,8 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
       this._focused = isFocused;
       this.stateChanges.next();
     }
-    if (!isFocused && this._onModelTouched != null) {
-      this._onModelTouched();
+    if (!isFocused) {
+      this.touch.emit();
     }
   }
 }

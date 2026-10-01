@@ -1,21 +1,34 @@
 <div class="app-file-input__container">
-  <button type="button" data-cy="fileUploadButton" mat-stroked-button [disabled]="readonly || disabled" (click)="input.click()">
+  <button
+    #uploadButton
+    [attr.aria-labelledby]="labelledById()"
+    (blur)="touch.emit()"
+    [attr.aria-describedby]="_ariaDescribedby || null"
+    type="button"
+    data-cy="fileUploadButton"
+    mat-stroked-button
+    [disabled]="readonly() || isDisabled()"
+    (click)="input.click()"
+  >
     <mat-icon>upload</mat-icon>
     <span i18n="@@zvc.uploadFile">Upload file</span>
     <input
       class="app-file-input__input"
       type="file"
       [attr.placeholder]="placeholder"
-      [disabled]="disabled"
-      [readonly]="readonly"
-      [required]="required"
+      [disabled]="isDisabled()"
+      [readonly]="readonly()"
+      [required]="required()"
       [accept]="accept()"
       (change)="onFileSelected($event)"
+      (blur)="touch.emit()"
+      [attr.aria-describedby]="_ariaDescribedby || null"
+      [attr.aria-invalid]="errorState"
       #input
     />
   </button>
-  <span class="app-file-input__text">{{ value?.name ?? (placeholder || fileSelectText) }}</span>
-  @if (!empty && !readonly && !disabled) {
+  <span class="app-file-input__text">{{ value()?.name ?? (placeholder || fileSelectText) }}</span>
+  @if (!empty && !readonly() && !isDisabled()) {
     <button type="button" mat-icon-button class="app-file-input__remove" (click)="removeFile()">
       <mat-icon>close</mat-icon>
     </button>

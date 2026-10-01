@@ -1,7 +1,13 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>{{
-      type() === 'form' ? 'Reactive forms' : type() === 'model' ? '[(ngModel)] binding' : '[(value)] binding'
+      type() === 'signal'
+        ? 'Signal forms'
+        : type() === 'form'
+          ? 'Reactive forms'
+          : type() === 'model'
+            ? '[(ngModel)] binding'
+            : '[(value)] binding'
     }}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
@@ -11,12 +17,28 @@
     <div class="app-form-control-demo-card__state">
       <div>Value</div>
       <div>
-        <pre>{{ formControl?.value ?? value() }}</pre>
+        <pre>{{ field() ? field().value() : (formControl?.value ?? value()) }}</pre>
       </div>
       <div>Value Type</div>
       <div>
-        <pre>{{ getType(formControl?.value ?? value()) }}</pre>
+        <pre>{{ getType(field() ? field().value() : (formControl?.value ?? value())) }}</pre>
       </div>
+      @if (field(); as state) {
+        <div>Touched</div>
+        <div>{{ state.touched() }}</div>
+        <div>Dirty</div>
+        <div>{{ state.dirty() }}</div>
+        <div>Valid</div>
+        <div>{{ state.valid() }}</div>
+        <div>Pending</div>
+        <div>{{ state.pending() }}</div>
+        <div>Errors</div>
+        <div>
+          @for (error of state.errors(); track $index) {
+            <pre>{{ error.message || error.kind }}</pre>
+          }
+        </div>
+      }
       @if (formControl) {
         <div>Touched</div>
         <div class="app-form-control-demo-card__height-1em">

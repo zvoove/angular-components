@@ -1,3 +1,4 @@
+import { SignalControlDemo } from '../common/signal-control-demo.component';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation, inject, input } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -54,6 +55,7 @@ export class ReferenceColumnComponent {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [
+    SignalControlDemo,
     ZvFormField,
     MatFormFieldModule,
     MatInputModule,

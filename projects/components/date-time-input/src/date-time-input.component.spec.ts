@@ -83,18 +83,18 @@ describe('ZvDateTimeInput', () => {
       expect(await timeInput.isDisabled()).toEqual(false);
       expect(await host.getAttribute('aria-disabled')).toBe('false');
 
-      cmp.setDisabledState(true);
+      fixture.componentInstance.disabled.set(true);
       fixture.detectChanges();
 
-      expect(cmp.disabled).toBe(true);
+      expect(cmp.disabled()).toBe(true);
       expect(await dateInput.isDisabled()).toEqual(true);
       expect(await timeInput.isDisabled()).toEqual(true);
       expect(await host.getAttribute('aria-disabled')).toBe('true');
 
-      cmp.setDisabledState(false);
+      fixture.componentInstance.disabled.set(false);
       fixture.detectChanges();
 
-      expect(cmp.disabled).toBe(false);
+      expect(cmp.disabled()).toBe(false);
       expect(await dateInput.isDisabled()).toEqual(false);
       expect(await timeInput.isDisabled()).toEqual(false);
       expect(await host.getAttribute('aria-disabled')).toBe('false');
@@ -555,7 +555,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('');
         await timeInput.setValue('');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual(null);
 
         await timeInput.blur();
@@ -571,7 +571,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('1.1.2000');
         await timeInput.setValue('');
         expect(formControl.value).toEqual(new Date(2000, 0, 1));
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual(null);
 
         await timeInput.blur();
@@ -587,7 +587,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('1.1.2000');
         await timeInput.setValue('10:30');
         expect(formControl.value).toEqual(new Date(2000, 0, 1, 10, 30));
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual(null);
 
         await timeInput.blur();
@@ -603,7 +603,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('');
         await timeInput.setValue('10:30');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ zvDateTimeInputState: { date: null, time: { hours: 10, minutes: 30 } } });
 
         await timeInput.blur();
@@ -619,7 +619,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('');
         await timeInput.setValue('asdf');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ zvTimeInputParse: { text: 'asdf' } });
 
         await timeInput.blur();
@@ -635,7 +635,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('asdf');
         await timeInput.setValue('');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ matDatepickerParse: { text: 'asdf' } });
 
         await timeInput.blur();
@@ -655,7 +655,7 @@ describe('ZvDateTimeInput', () => {
         // So either time must always be explicitly be filled or this will result in a date without time.
         // https://github.com/angular/components/issues/27902 this would fix this issue for us.
         // expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ zvTimeInputParse: { text: 'asdf' } });
 
         await timeInput.blur();
@@ -671,7 +671,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('asdf');
         await timeInput.setValue('10:30');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ matDatepickerParse: { text: 'asdf' } });
 
         await timeInput.blur();
@@ -687,7 +687,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('asdf');
         await timeInput.setValue('ghjk');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ matDatepickerParse: { text: 'asdf' }, zvTimeInputParse: { text: 'ghjk' } });
 
         await timeInput.blur();

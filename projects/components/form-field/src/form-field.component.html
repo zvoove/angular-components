@@ -33,7 +33,7 @@
     </button>
   }
 
-  @for (error of errors$ | async; track error.errorText) {
+  @for (error of signalErrors() ?? (errors$ | async); track error.errorText) {
     <mat-error>{{ error.errorText }}</mat-error>
   }
 </mat-form-field>

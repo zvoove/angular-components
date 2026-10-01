@@ -1,4 +1,6 @@
-/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
+/* eslint-disable @angular-eslint/no-input-rename -- Backing models retain existing public binding names via compatibility setters. */
+import { Validators } from '@angular/forms';
+/* eslint-disable @angular-eslint/prefer-signals -- Compatibility value setter and Material string id */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import {
@@ -16,11 +18,14 @@ import {
   output,
   viewChild,
 } from '@angular/core';
-import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
+import { FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { FORM_FIELD, FormValueControl, Field } from '@angular/forms/signals';
+import { connectLegacyControl, signalErrorControl } from '@zvoove/components/form-base';
+import { model, effect, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 
 let nextUniqueId = 0;
@@ -35,21 +40,24 @@ let nextUniqueId = 0;
     // the native input element. Otherwise property bindings for those don't work.
     '[attr.id]': 'id',
     '[attr.placeholder]': 'placeholder',
-    '[attr.disabled]': 'disabled',
-    '[attr.required]': 'required',
-    '[attr.readonly]': 'readonly || null',
+    '[attr.disabled]': 'isDisabled()',
+    '[attr.required]': 'required()',
+    '[attr.readonly]': 'readonly() || null',
     '[attr.aria-describedby]': '_ariaDescribedby || null',
     '[attr.aria-invalid]': 'errorState',
-    '[attr.aria-required]': 'required.toString()',
+    '[attr.aria-required]': 'required().toString()',
   },
   providers: [{ provide: MatFormFieldControl, useExisting: ZvFileInput }],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<File>, OnDestroy, OnInit, DoCheck {
-  // Signal inputs (access via .inputName()): accept
-  // Getter/setter properties (access via .propName): disabled, required, placeholder, value, id, readonly
-  public readonly ngControl = inject(NgControl, { optional: true, self: true });
+export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldControl<File | null>, OnDestroy, OnInit, DoCheck {
+  readonly labelledById = signal<string | null>(null);
+  setLabelledById(id: string | null) {
+    this.labelledById.set(id);
+  }
+
+  public readonly ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
   public readonly _cd = inject(ChangeDetectorRef);
 
   fileSelectText = $localize`:@@zvc.chooseFile:Please choose a file.`;
@@ -89,19 +97,12 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
    *
    * @docs-private
    */
-  @Input()
-  get disabled(): boolean {
-    if (this.ngControl && this.ngControl.disabled !== null) {
-      return this.ngControl.disabled;
-    }
-    return this._disabled;
+  readonly disabled = model(false, { alias: 'disabledState' });
+  @Input('disabled')
+  set disabledInput(value: boolean) {
+    this.disabled.set(value != null && String(value) !== 'false');
   }
-  set disabled(value: boolean) {
-    this._disabled = coerceBooleanProperty(value);
-    this.stateChanges.next();
-    this._cd.markForCheck();
-  }
-  protected _disabled = false;
+  readonly isDisabled = this.disabled;
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -129,16 +130,13 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
    *
    * @docs-private
    */
-  @Input()
-  get required(): boolean {
-    return this._required;
+  readonly required = model(false, { alias: 'requiredState' });
+  private explicitRequired = false;
+  @Input('required')
+  set requiredInput(value: boolean) {
+    this.explicitRequired = true;
+    this.required.set(coerceBooleanProperty(value));
   }
-  set required(value: boolean) {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-    this._cd.markForCheck();
-  }
-  protected _required = false;
 
   /** An object used to control when error messages are shown. */
   @Input()
@@ -151,7 +149,10 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
 
   /** Whether the input is in an error state. */
   get errorState() {
-    return this._errorStateTracker.errorState;
+    const field = this.ngField;
+    return field
+      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(signalErrorControl(field), this.parentForm)
+      : this._errorStateTracker.errorState;
   }
   set errorState(value: boolean) {
     this._errorStateTracker.errorState = value;
@@ -162,31 +163,23 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
    *
    * @docs-private
    */
-  @Input()
-  get value(): File | null {
-    return this._value;
+  readonly value = model<File | null>(null, { alias: 'modelValue' });
+  @Input('value')
+  set valueInput(value: File | null) {
+    this.value.set(value);
+    this.stateChanges.next();
   }
-  set value(value: File | null) {
-    if (value !== this.value) {
-      this._value = value;
-      this.stateChanges.next();
-      this._cd.markForCheck();
-    }
+  readonly valueChange = output<File | null>();
+  readonly touch = output<void>();
+  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
+  get ngField(): Field<File | null> | null {
+    return (this.formField?.field() as Field<File | null>) ?? null;
   }
-  _value: File | null = null;
-
-  public readonly valueChange = output<File | null>();
+  private readonly defaultMatcher = inject(ErrorStateMatcher);
+  private readonly parentForm = inject(FormGroupDirective, { optional: true }) ?? inject(NgForm, { optional: true });
 
   /** Whether the element is readonly. */
-  @Input()
-  get readonly(): boolean {
-    return this._readonly;
-  }
-  set readonly(value: boolean) {
-    this._readonly = coerceBooleanProperty(value);
-    this._cd.markForCheck();
-  }
-  private _readonly = false;
+  readonly readonly = input(false, { transform: coerceBooleanProperty });
 
   /**
    * Implemented as part of MatFormFieldControl.
@@ -194,7 +187,7 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
    * @docs-private
    */
   get empty(): boolean {
-    return (this._value === null || this._value === undefined) && !this.autofilled;
+    return (this.value() === null || this.value() === undefined) && !this.autofilled;
   }
 
   /**
@@ -208,11 +201,9 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
   /** The aria-describedby attribute on the input for improved a11y. */
   _ariaDescribedby!: string;
 
+  private readonly uploadButton = viewChild<ElementRef<HTMLButtonElement>>('uploadButton');
   public readonly _inputfieldViewChild = viewChild<ElementRef<HTMLInputElement>>('input');
   _errorStateTracker: _ErrorStateTracker;
-
-  _onModelChange: (val: unknown) => void = () => {};
-  _onModelTouched = () => {};
 
   constructor() {
     const ngControl = this.ngControl;
@@ -220,9 +211,18 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
     const _parentFormGroup = inject(FormGroupDirective, { optional: true });
     const _defaultErrorStateMatcher = inject(ErrorStateMatcher);
 
-    if (this.ngControl) {
-      this.ngControl.valueAccessor = this;
-    }
+    connectLegacyControl(
+      this.ngControl,
+      this.valueChange,
+      this.touch,
+      (value) => {
+        this.valueInput = value instanceof File ? value : null;
+      },
+      (disabled) => this.disabled.set(disabled)
+    );
+    effect(() => {
+      if (!this.value()) this.reset();
+    });
 
     this._errorStateTracker = new _ErrorStateTracker(
       _defaultErrorStateMatcher,
@@ -231,9 +231,6 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
       _parentForm,
       this.stateChanges
     );
-
-    // No effect needed: accept doesn't affect MatFormField display.
-    // Properties that do (required, disabled, value) notify via their setters.
   }
 
   ngOnInit() {
@@ -247,6 +244,8 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
   }
 
   ngDoCheck() {
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
+    if (this.ngControl?.control && !this.explicitRequired) this.required.set(this.ngControl.control.hasValidator(Validators.required));
     if (this.ngControl) {
       // We need to re-evaluate this on every change detection cycle, because there are some
       // error triggers that we can't subscribe to (e.g. parent form submissions). This means
@@ -282,23 +281,12 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
 
   /** Focuses the input. */
   focus(options?: FocusOptions): void {
-    this._inputfieldViewChild()?.nativeElement.focus(options);
+    this.uploadButton()?.nativeElement.focus(options);
   }
 
-  writeValue(value: unknown): void {
-    this.value = value instanceof File ? value : null;
-  }
-
-  registerOnChange(fn: (val: unknown) => void): void {
-    this._onModelChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this._onModelTouched = fn;
-  }
-
-  setDisabledState(val: boolean): void {
-    this.disabled = val;
+  reset() {
+    const input = this._inputfieldViewChild()?.nativeElement;
+    if (input) input.value = '';
   }
 
   onFileSelected(event: Event) {
@@ -312,9 +300,10 @@ export class ZvFileInput implements ControlValueAccessor, MatFormFieldControl<Fi
   }
 
   setFile(file: File | null) {
-    this.value = file;
-    this._onModelChange(file);
+    this.value.set(file);
+    this.stateChanges.next();
+    if (!file) this.reset();
     this.valueChange.emit(file);
-    this._onModelTouched();
+    this.touch.emit();
   }
 }

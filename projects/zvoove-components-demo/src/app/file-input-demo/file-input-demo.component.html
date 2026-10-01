@@ -82,3 +82,11 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+<app-signal-control-demo
+  kind="file"
+  [disabledSetting]="disabled"
+  [requiredSetting]="required || validatorRequired"
+  [readonlySetting]="readonly"
+  [placeholder]="placeholder"
+/>
