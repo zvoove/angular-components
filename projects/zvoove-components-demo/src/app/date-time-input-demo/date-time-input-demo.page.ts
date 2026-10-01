@@ -1,6 +1,6 @@
-import { SignalControlDemo } from '../common/signal-control-demo.component';
-import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormField, disabled as signalDisabled, form, required as signalRequired } from '@angular/forms/signals';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {
@@ -12,7 +12,7 @@ import {
   provideDateTimeAdapters,
   provideDateTimeFormats,
 } from '@zvoove/components/core';
-import { ZvDateTimeInput } from '@zvoove/components/date-time-input';
+import { ZvDateTimeInput, ZvTimeInput } from '@zvoove/components/date-time-input';
 import { ZvFormService } from '@zvoove/components/form-base';
 import { CodeFiles } from '../common/code-files/code-files.component';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
@@ -24,7 +24,7 @@ import { allSharedImports } from '../common/shared-imports';
   templateUrl: './date-time-input-demo.page.html',
   styleUrls: ['./date-time-input-demo.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SignalControlDemo, allSharedImports, MatDatepickerModule, ZvDateTimeInput],
+  imports: [FormField, allSharedImports, MatDatepickerModule, ZvDateTimeInput, ZvTimeInput],
   providers: [
     { provide: ZvFormService, useClass: DemoZvFormsService },
     { provide: ErrorStateMatcher, useClass: InvalidErrorStateMatcher },
@@ -33,7 +33,6 @@ import { allSharedImports } from '../common/shared-imports';
   ],
 })
 export class DateTimeInputDemoComponent {
-  readonly signalDemo = viewChild(SignalControlDemo);
   public value: Date | null = null;
   public model: Date | null = null;
   public control = new FormControl<Date | null>(null);
@@ -49,6 +48,33 @@ export class DateTimeInputDemoComponent {
   public validatorRequired = false;
   public useErrorStateMatcher = false;
 
+  readonly signalSettings = signal({ required: false, disabled: false });
+  readonly signalModel = signal({ dateTime: null as Date | null, time: null as { hours: number; minutes: number } | null });
+  readonly signalFields = form(this.signalModel, (path) => {
+    signalRequired(path.dateTime, { when: () => this.signalSettings().required, message: 'Enter a date and time' });
+    signalDisabled(path.dateTime, { when: () => this.signalSettings().disabled });
+    signalDisabled(path.time, { when: () => this.signalSettings().disabled });
+  });
+  readonly signalCodeFiles: CodeFiles[] = [
+    {
+      filename: 'app.component.html',
+      code: `<zv-form-field>
+  <mat-label>Date and time</mat-label>
+  <zv-date-time-input [formField]="fields.dateTime" [matDatepicker]="picker" />
+  <mat-datepicker #picker />
+</zv-form-field>
+<input matInput zvTime [formField]="fields.time" />`,
+    },
+    {
+      filename: 'app.component.ts',
+      code: `import { signal } from '@angular/core';
+import { FormField, form, required } from '@angular/forms/signals';
+
+readonly model = signal({ dateTime: null as Date | null, time: null });
+readonly fields = form(this.model, (path) => required(path.dateTime));`,
+    },
+  ];
+
   public now = () => new Date();
 
   public onValidatorChange() {
@@ -57,6 +83,7 @@ export class DateTimeInputDemoComponent {
     } else {
       this.control.removeValidators(Validators.required);
     }
+    this.syncSignalSettings();
   }
 
   public onUseErrorStateMatcherChange() {
@@ -73,7 +100,7 @@ export class DateTimeInputDemoComponent {
     this.value = value;
     this.model = value;
     this.control.patchValue(value);
-    this.signalDemo()?.setValue(value);
+    this.signalModel.update((model) => ({ ...model, dateTime: value }));
   }
 
   public onDisabledChanged() {
@@ -82,6 +109,11 @@ export class DateTimeInputDemoComponent {
     } else {
       this.form.enable();
     }
+    this.syncSignalSettings();
+  }
+
+  public syncSignalSettings() {
+    this.signalSettings.set({ required: this.required || this.validatorRequired, disabled: this.disabled });
   }
 
   public getCodeFiles(type: 'value' | 'ngmodel' | 'form'): CodeFiles[] {

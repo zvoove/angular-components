@@ -1,7 +1,7 @@
-import { SignalControlDemo } from '../common/signal-control-demo.component';
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation, inject, input, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormField, disabled as signalDisabled, form, required as signalRequired, validate } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ErrorStateMatcher, MatOptionModule } from '@angular/material/core';
@@ -26,7 +26,9 @@ import { ZvFormService } from '@zvoove/components/form-base';
 import { ZvFormField, ZvFormFieldSubscriptType } from '@zvoove/components/form-field';
 import { DefaultZvSelectService, ZvSelectModule, ZvSelectService } from '@zvoove/components/select';
 import { of } from 'rxjs';
+import { CodeFiles } from '../common/code-files/code-files.component';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
+import { FormControlDemoCard } from '../common/form-control-card/form-control-demo-card.component';
 import { InvalidErrorStateMatcher } from '../common/invalid-error-state-matcher';
 
 @Component({
@@ -55,7 +57,8 @@ export class ReferenceColumnComponent {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [
-    SignalControlDemo,
+    FormField,
+    FormControlDemoCard,
     ZvFormField,
     MatFormFieldModule,
     MatInputModule,
@@ -111,6 +114,7 @@ export class FormFieldDemoComponent {
       }
     }
     this._disabled = value;
+    this.syncSignalSettings();
     this.cd.markForCheck();
   }
   public customLabel = true;
@@ -134,6 +138,7 @@ export class FormFieldDemoComponent {
       ctrl.updateValueAndValidity();
     }
     this._error = value;
+    this.syncSignalSettings();
     this.cd.markForCheck();
   }
 
@@ -156,6 +161,43 @@ export class FormFieldDemoComponent {
 
   private _disabled = false;
   private _error = false;
+
+  readonly signalSettings = signal({ required: false, disabled: false, error: false });
+  readonly signalModel = signal({ text: '', accepted: false, select: 1 });
+  readonly signalFields = form(this.signalModel, (path) => {
+    signalRequired(path.text, { when: () => this.signalSettings().required, message: 'Enter a value' });
+    signalRequired(path.select, { when: () => this.signalSettings().required, message: 'Select a value' });
+    validate(path.text, () =>
+      this.signalSettings().error
+        ? { kind: 'demo-error', message: 'this is a signal-form demo error' }
+        : undefined
+    );
+    signalDisabled(path, { when: () => this.signalSettings().disabled });
+  });
+  readonly signalCodeFiles: CodeFiles[] = [
+    {
+      filename: 'app.component.html',
+      code: `<zv-form-field hint="Hint text">
+  <mat-label>Signal label</mat-label>
+  <input matInput [formField]="fields.text" />
+</zv-form-field>
+<zv-form-field>
+  <mat-checkbox [formField]="fields.accepted">Accepted</mat-checkbox>
+</zv-form-field>`,
+    },
+    {
+      filename: 'app.component.ts',
+      code: `import { signal } from '@angular/core';
+import { FormField, form, required } from '@angular/forms/signals';
+
+readonly model = signal({ text: '', accepted: false });
+readonly fields = form(this.model, (path) => required(path.text));`,
+    },
+  ];
+
+  public syncSignalSettings() {
+    this.signalSettings.set({ required: this.required, disabled: this.disabled, error: this.error });
+  }
 
   constructor() {
     for (const ctrlName in this.form.controls) {

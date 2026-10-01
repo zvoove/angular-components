@@ -5,8 +5,8 @@
     <div class="app-file-input-demo__settings">
       <div class="app-file-input-demo__checkboxes">
         <mat-checkbox [(ngModel)]="disabled" (change)="onDisabledChanged()">disabled</mat-checkbox>
-        <mat-checkbox [(ngModel)]="readonly">readonly</mat-checkbox>
-        <mat-checkbox [(ngModel)]="required">required</mat-checkbox>
+        <mat-checkbox [(ngModel)]="readonly" (ngModelChange)="syncSignalSettings()">readonly</mat-checkbox>
+        <mat-checkbox [(ngModel)]="required" (ngModelChange)="syncSignalSettings()">required</mat-checkbox>
         <mat-checkbox [(ngModel)]="validatorRequired" (change)="onValidatorChange()">required validator</mat-checkbox>
         <mat-checkbox [(ngModel)]="useErrorStateMatcher" (change)="onUseErrorStateMatcherChange()"
           >errorStateMatcher (always invalid)</mat-checkbox
@@ -26,6 +26,19 @@
       </zv-form-field>
       <button type="button" mat-stroked-button (click)="setValues(null)">set values null</button>
     </div>
+    
+    <app-form-control-demo-card type="signal" [field]="signalFields.file()" [codeFiles]="signalCodeFiles">
+      <zv-form-field [hint]="'Value: ' + signalModel().file">
+        <mat-label>signal forms</mat-label>
+        <zv-file-input
+          [formField]="signalFields.file"
+          [id]="id"
+          [accept]="accept"
+          [placeholder]="placeholder"
+          [errorStateMatcher]="errorStateMatcher"
+        />
+      </zv-form-field>
+    </app-form-control-demo-card>
 
     <div class="app-file-input-demo__input-block">
       <zv-form-field [hint]="'Value: ' + value">
@@ -83,10 +96,3 @@
   </mat-card-content>
 </mat-card>
 
-<app-signal-control-demo
-  kind="file"
-  [disabledSetting]="disabled"
-  [requiredSetting]="required || validatorRequired"
-  [readonlySetting]="readonly"
-  [placeholder]="placeholder"
-/>

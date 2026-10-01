@@ -5,8 +5,8 @@
     <div class="app-number-input-demo__settings">
       <div class="app-number-input-demo__checkboxes">
         <mat-checkbox [(ngModel)]="disabled" (change)="onDisabledChanged()">disabled</mat-checkbox>
-        <mat-checkbox [(ngModel)]="readonly">readonly</mat-checkbox>
-        <mat-checkbox [(ngModel)]="required">required</mat-checkbox>
+        <mat-checkbox [(ngModel)]="readonly" (ngModelChange)="syncSignalSettings()">readonly</mat-checkbox>
+        <mat-checkbox [(ngModel)]="required" (ngModelChange)="syncSignalSettings()">required</mat-checkbox>
         <mat-checkbox [(ngModel)]="validatorRequired" (change)="onValidatorChange()">required validator</mat-checkbox>
         <mat-checkbox [(ngModel)]="useErrorStateMatcher" (change)="onUseErrorStateMatcherChange()"
           >errorStateMatcher (always invalid)</mat-checkbox
@@ -14,11 +14,11 @@
       </div>
       <zv-form-field>
         <mat-label>min value</mat-label>
-        <input matInput type="number" [(ngModel)]="min" />
+        <input matInput type="number" [(ngModel)]="min" (ngModelChange)="syncSignalSettings()" />
       </zv-form-field>
       <zv-form-field>
         <mat-label>max value</mat-label>
-        <input matInput type="number" [(ngModel)]="max" />
+        <input matInput type="number" [(ngModel)]="max" (ngModelChange)="syncSignalSettings()" />
       </zv-form-field>
       <zv-form-field>
         <mat-label>step size</mat-label>
@@ -34,6 +34,19 @@
       </zv-form-field>
       <button type="button" mat-stroked-button (click)="setValues(null)">set values null</button>
     </div>
+
+    <app-form-control-demo-card type="signal" [field]="signalFields.number()" [codeFiles]="signalCodeFiles">
+      <zv-form-field [hint]="'Value: ' + signalModel().number">
+        <mat-label>signal forms</mat-label>
+        <zv-number-input
+          [formField]="signalFields.number"
+          [stepSize]="stepSize"
+          [decimals]="decimals"
+          [placeholder]="placeholder"
+          [errorStateMatcher]="errorStateMatcher"
+        />
+      </zv-form-field>
+    </app-form-control-demo-card>
 
     <div class="app-number-input-demo__input-block">
       <zv-form-field [hint]="'Value: ' + value">
@@ -97,14 +110,3 @@
   </mat-card-content>
 </mat-card>
 
-<app-signal-control-demo
-  kind="number"
-  [disabledSetting]="disabled"
-  [requiredSetting]="required || validatorRequired"
-  [readonlySetting]="readonly"
-  [placeholder]="placeholder"
-  [minValue]="min"
-  [maxValue]="max"
-  [stepSize]="stepSize"
-  [decimals]="decimals"
-/>

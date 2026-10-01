@@ -5,7 +5,7 @@
         <div class="app-date-time-input-demo__settings">
           <div class="app-date-time-input-demo__settings__line">
             <mat-checkbox [(ngModel)]="disabled" (change)="onDisabledChanged()">disabled</mat-checkbox>
-            <mat-checkbox [(ngModel)]="required">required</mat-checkbox>
+            <mat-checkbox [(ngModel)]="required" (ngModelChange)="syncSignalSettings()">required</mat-checkbox>
             <mat-checkbox [(ngModel)]="validatorRequired" (change)="onValidatorChange()">required validator</mat-checkbox>
             <mat-checkbox [(ngModel)]="useErrorStateMatcher" (change)="onUseErrorStateMatcherChange()"
               >errorStateMatcher (always invalid)</mat-checkbox
@@ -22,6 +22,24 @@
         </div>
       </mat-card-content>
     </mat-card>
+
+    <app-form-control-demo-card type="signal" [field]="signalFields.dateTime()" [codeFiles]="signalCodeFiles">
+      <zv-form-field [hint]="'Value: ' + signalModel().dateTime">
+        <mat-label>signal forms</mat-label>
+        <zv-date-time-input
+          [formField]="signalFields.dateTime"
+          [id]="id"
+          [errorStateMatcher]="errorStateMatcher"
+          [matDatepicker]="signalDatepicker"
+        />
+        <mat-datepicker-toggle matSuffix [for]="signalDatepicker" />
+        <mat-datepicker #signalDatepicker />
+      </zv-form-field>
+      <zv-form-field hint="Standalone adapter-based time">
+        <mat-label>signal time</mat-label>
+        <input matInput zvTime [formField]="signalFields.time" />
+      </zv-form-field>
+    </app-form-control-demo-card>
 
     <app-form-control-demo-card [type]="'form'" [formGroup]="form" [control]="form.get('control')" [codeFiles]="getCodeFiles('form')">
       <zv-form-field>
@@ -143,5 +161,3 @@
     </mat-card>
   </ng-template>
 </app-component-page-wrapper>
-
-<app-signal-control-demo kind="date-time" [disabledSetting]="disabled" [requiredSetting]="required || validatorRequired" />

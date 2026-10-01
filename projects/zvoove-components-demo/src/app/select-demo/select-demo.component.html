@@ -8,7 +8,7 @@
           <mat-checkbox [(ngModel)]="multiple" (change)="recreate()">[multiple]</mat-checkbox>
           <mat-checkbox [(ngModel)]="clearable">[clearable]</mat-checkbox>
           <mat-checkbox [(ngModel)]="disabled" (change)="disabledChanged()">[disabled]</mat-checkbox>
-          <mat-checkbox [(ngModel)]="required">[required]</mat-checkbox>
+          <mat-checkbox [(ngModel)]="required" (ngModelChange)="signalSettings.set({ required: $event, disabled: disabled })">[required]</mat-checkbox>
           <span>[errorStateMatcher]</span>
           <mat-checkbox [(ngModel)]="panelClass">[panelClass] (color: green)</mat-checkbox>
           <mat-checkbox [(ngModel)]="selectedLabel">[selectedLabel]</mat-checkbox>
@@ -84,6 +84,36 @@
     </div>
 
     @if (visible) {
+      <app-form-control-demo-card
+        type="signal"
+        [field]="signalFields.value()"
+        [codeFiles]="signalCodeFiles"
+        [additionalData]="signalLogs"
+      >
+        <zv-form-field>
+          <mat-label>Your select (signal forms)</mat-label>
+          <zv-select
+            [formField]="signalFields.value"
+            [dataSource]="signalDataSource"
+            [multiple]="multiple"
+            [clearable]="clearable"
+            [selectedLabel]="selectedLabel"
+            [panelClass]="{ 'app-select-demo__panel': panelClass }"
+          >
+            @if (customTriggerTpl) {
+              <ng-container *zvSelectTriggerTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            }
+            @if (customOptionTpl) {
+              <ng-container *zvSelectOptionTemplate="let item">
+                {{ item | json }}
+              </ng-container>
+            }
+          </zv-select>
+        </zv-form-field>
+      </app-form-control-demo-card>
+
       <app-form-control-demo-card
         [type]="'form'"
         [formGroup]="form"
@@ -263,4 +293,3 @@
   </ng-template>
 </app-component-page-wrapper>
 
-<app-signal-control-demo kind="select" />
