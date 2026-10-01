@@ -20,8 +20,9 @@ import {
   viewChild,
 } from '@angular/core';
 import { FORM_FIELD, Field } from '@angular/forms/signals';
-import { FormControl, NgControl } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
+import { ErrorStateMatcher } from '@angular/material/core';
 import {
   FloatLabelType,
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
@@ -73,6 +74,8 @@ function applyConfigDefaults(config: ZvFormFieldConfig | null): {
 export class ZvFormField implements AfterContentChecked, OnDestroy {
   private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private formsService = inject(ZvFormService);
+  private errorStateMatcher = inject(ErrorStateMatcher);
+  private parentForm = inject(FormGroupDirective, { optional: true }) ?? inject(NgForm, { optional: true });
   private defaults = applyConfigDefaults(inject(ZV_FORM_FIELD_CONFIG, { optional: true }));
   private matDefaults = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
 
@@ -227,7 +230,11 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
       this.matFormFieldControl.ngOnDestroy();
     }
     this.matFormFieldControl = control || new DummyMatFormFieldControl(ngControl ?? null, this.formControl);
-    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) this.matFormFieldControl.ngField = field;
+    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
+      this.matFormFieldControl.ngField = field;
+      this.matFormFieldControl.errorStateMatcher = this.errorStateMatcher;
+      this.matFormFieldControl.parentForm = this.parentForm;
+    }
     this._matFormField()._control = this.matFormFieldControl;
     this.emulated = this.matFormFieldControl instanceof DummyMatFormFieldControl;
     // This tells the mat-input that it is inside a mat-form-field

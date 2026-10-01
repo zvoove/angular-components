@@ -1,5 +1,4 @@
 /* eslint-disable @angular-eslint/no-input-rename -- Backing models retain existing public binding names via compatibility setters. */
-import { Validators } from '@angular/forms';
 /* eslint-disable @angular-eslint/prefer-signals -- Compatibility setters preserve data source and output behavior */
 import { NgTemplateOutlet } from '@angular/common';
 import {
@@ -25,7 +24,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroupDirective, FormsModule, NgControl, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { FORM_FIELD, FormValueControl, Field } from '@angular/forms/signals';
-import { connectLegacyControl, signalErrorControl } from '@zvoove/components/form-base';
+import { LegacyChangeNotifier, connectLegacyControl, createRequiredDetector, signalErrorControlSnapshot } from '@zvoove/components/form-base';
 import { MatIconButton } from '@angular/material/button';
 import { ErrorStateMatcher, MatOption, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
@@ -89,7 +88,8 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
 
   private readonly cd = inject(ChangeDetectorRef);
   private readonly selectService = inject(ZvSelectService, { optional: true });
-  public readonly ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
+  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
+  public readonly ngControl = this.formField ? null : inject(NgControl, { optional: true, self: true });
 
   public static nextId = 0;
   public id = `zv-select-${ZvSelect.nextId++}`;
@@ -136,7 +136,6 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
     return this.value();
   }
   readonly touch = output<void>();
-  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
   get ngField(): Field<T | null> | null {
     return (this.formField?.field() as Field<T | null>) ?? null;
   }
@@ -152,9 +151,11 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
   readonly required = model(false, { alias: 'requiredState' });
   private explicitRequired = false;
   @Input('required')
-  set requiredInput(value: boolean) {
-    this.explicitRequired = true;
-    this.required.set(!!value && String(value) !== 'false');
+  set requiredInput(value: boolean | null | undefined) {
+    // A binding that resolves to null/undefined is treated like no binding at all, so
+    // detection from the bound form control still applies.
+    this.explicitRequired = value != null;
+    if (value != null) this.required.set(!!value && String(value) !== 'false');
   }
 
   public readonly selectedLabel = input(true);
@@ -209,9 +210,9 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
 
   /** Whether the input is in an error state. */
   get errorState() {
-    const field = this.ngField;
-    return field
-      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(signalErrorControl(field), this.parentForm)
+    const snapshot = this._signalErrorSnapshot();
+    return snapshot
+      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(snapshot, this.parentForm)
       : this._errorStateTracker.errorState;
   }
   set errorState(value: boolean) {
@@ -302,6 +303,9 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
   private _focused = false;
   private _onInitCalled = false;
   _errorStateTracker: _ErrorStateTracker;
+  private readonly _signalErrorSnapshot = signalErrorControlSnapshot(() => this.ngField);
+  private readonly _detectRequired = createRequiredDetector(this.ngControl);
+  private readonly _notifyLegacyChange: LegacyChangeNotifier<unknown>;
 
   constructor() {
     const defaultErrorStateMatcher = inject(ErrorStateMatcher);
@@ -309,9 +313,8 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
     const parentFormGroup = inject(FormGroupDirective, { optional: true });
     const ngControl = this.ngControl;
 
-    connectLegacyControl(
+    this._notifyLegacyChange = connectLegacyControl(
       this.ngControl,
-      this.valueChange,
       this.touch,
       (value) => this._propagateValueChange(value, ValueChangeSource.writeValue),
       (disabled) => this.disabled.set(disabled)
@@ -333,8 +336,10 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
   }
 
   public ngDoCheck() {
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
-    if (this.ngControl?.control && !this.explicitRequired) this.required.set(this.ngControl.control.hasValidator(Validators.required));
+    if (!this.explicitRequired) {
+      const detected = this._detectRequired();
+      if (detected !== null) this.required.set(detected);
+    }
     if (this.ngControl) {
       this.updateErrorState();
     }
@@ -389,11 +394,11 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
   }
 
   public onContainerClick(_: MouseEvent): void {
-    this._matSelect.onContainerClick(_);
+    this._matSelect?.onContainerClick(_);
   }
 
   public setDescribedByIds(ids: string[]): void {
-    this._matSelect.setDescribedByIds(ids);
+    this._matSelect?.setDescribedByIds(ids);
   }
 
   public onSelectionChange(event: MatSelectChange) {
@@ -433,6 +438,9 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
     if (source !== ValueChangeSource.valueInput) {
       this.valueChange.emit(this._value);
     }
+    if (source !== ValueChangeSource.writeValue) {
+      this._notifyLegacyChange(this._value);
+    }
     this.cd.markForCheck();
   }
 
@@ -460,9 +468,11 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
     this._dataSourceInstance?.disconnect();
     this._renderChangeSubscription.unsubscribe();
 
-    this._dataSourceInstance = ((typeof this.selectService?.createDataSource === 'function'
-      ? this.selectService.createDataSource(dataSource, this.ngControl?.control ?? null)
-      : null) ?? dataSource) as ZvSelectDataSource<T>;
+    // `ZvSelectService` is an abstract token with `providedIn: 'root'`, so an app that never
+    // provided an implementation still gets a bare instance back that has no `createDataSource`.
+    // Fall back to the raw data source in that case rather than throwing.
+    const createDataSource = this.selectService?.createDataSource?.bind(this.selectService);
+    this._dataSourceInstance = (createDataSource?.(dataSource, this.ngControl?.control ?? null) ?? dataSource) as ZvSelectDataSource<T>;
     if (!isZvSelectDataSource(this._dataSourceInstance)) {
       throw getSelectUnknownDataSourceError();
     }

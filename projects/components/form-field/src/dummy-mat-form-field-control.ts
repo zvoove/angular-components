@@ -1,13 +1,18 @@
 import { OnDestroy, Injectable } from '@angular/core';
 import { Field } from '@angular/forms/signals';
-import { AbstractControl, NgControl } from '@angular/forms';
+import { AbstractControl, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { signalErrorControl } from '@zvoove/components/form-base';
 import { Subject, Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class DummyMatFormFieldControl implements MatFormFieldControl<unknown>, OnDestroy {
   public ngField: Field<unknown> | null = null;
+  /** Assigned by `ZvFormField`; keeps signal fields on the same error timing as real controls. */
+  public errorStateMatcher: ErrorStateMatcher | null = null;
+  public parentForm: FormGroupDirective | NgForm | null = null;
   public id = '';
   public userAriaDescribedBy?: string;
 
@@ -51,7 +56,12 @@ export class DummyMatFormFieldControl implements MatFormFieldControl<unknown>, O
   public focused = false;
   private _errorState = false;
   get errorState() {
-    return this.ngField ? this.ngField().invalid() && this.ngField().touched() : this._errorState;
+    const field = this.ngField;
+    if (!field) return this._errorState;
+    // Route through the matcher so emulated controls show errors at the same time as real ones.
+    return this.errorStateMatcher
+      ? this.errorStateMatcher.isErrorState(signalErrorControl(field), this.parentForm)
+      : field().invalid() && field().touched();
   }
   set errorState(value: boolean) {
     this._errorState = value;

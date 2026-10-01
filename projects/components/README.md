@@ -38,6 +38,28 @@ The controls expose a model with a separate `modelValue` backing alias so the
 historical `valueChange` output can retain its source-dependent and repeated
 emissions. Applications should continue using `value` or `formField`.
 
+### Breaking changes
+
+Every template binding is unchanged. The **TypeScript** surface of `ZvNumberInput`,
+`ZvFileInput`, `ZvSelect`, `ZvDateTimeInput`, and `ZvTimeInput` is not, so code that
+reaches a control through `viewChild`/`ViewChild` needs updating:
+
+| Before | After |
+| --- | --- |
+| `control.value` | `control.value()` |
+| `control.value = x` | `control.value.set(x)` (or bind `[value]`) |
+| `control.disabled` / `= x` | `control.disabled()` / `control.disabled.set(x)` |
+| `control.required` / `= x` | `control.required()` / `control.required.set(x)` |
+| `control.readonly` | `control.readonly()` (input-only, bind `[readonly]`) |
+| `control.writeValue(x)` | bind `[value]`, or drive the bound form control |
+| `control.registerOnChange(fn)` | subscribe to `(valueChange)` |
+| `control.registerOnTouched(fn)` | subscribe to `(touch)` |
+| `control.setDisabledState(x)` | `control.disabled.set(x)` |
+
+The controls no longer implement `ControlValueAccessor` themselves; the CVA is
+installed on the `NgControl` by the legacy adapter, so `[formControl]`,
+`formControlName`, and `[(ngModel)]` keep working unchanged.
+
 A separate legacy adapter retains Angular's CVA update pipeline, including
 `updateOn: 'blur'` and `'submit'`. Angular 22.2's automatic native-control bridge
 commits immediately; the compatibility test records this limitation. The controls
@@ -63,3 +85,16 @@ hook on `ZvFormService`. `getSignalErrors` defaults to an explicit error message
 then the error kind; override it to localize fallback text using the error context.
 Existing `getLabel` and `getControlErrors` overrides still apply to legacy forms;
 existing service subclasses need no new methods.
+
+Note that signal fields take the `getSignalErrors`/`getSignalLabel` path only.
+`filterErrors` and `mapDataToError` are part of the legacy `getControlErrors`
+pipeline and are **not** consulted for signal fields, so a service that localizes
+errors through `mapDataToError` today has to override `getSignalErrors` as well,
+otherwise signal fields fall back to the raw error kind.
+
+`required` is still inferred from the bound legacy form control when no explicit
+`[required]` binding is present, using the same `hasRequiredField` detection as
+before (it runs the composed validator, so `Validators.compose(...)` and custom
+validators that report a `required` error are recognised). Setting
+`ZvFormService.tryDetectRequired` to `false` still disables it. A `[required]`
+binding that evaluates to `null`/`undefined` counts as absent.

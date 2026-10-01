@@ -231,6 +231,20 @@ export class TestValueComponent {
 }
 
 @Component({
+  selector: 'zv-test-form-control-and-value',
+  template: `<zv-select [formControl]="control" [value]="value()" [dataSource]="items" (valueChange)="emitted.push($event)" />`,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, ZvSelect],
+})
+export class TestFormControlAndValueComponent {
+  public items = [ITEMS.red, ITEMS.green, ITEMS.blue];
+  public readonly value = signal<any>(null);
+  public readonly control = new FormControl<any>(null);
+  public readonly emitted: any[] = [];
+}
+
+@Component({
   selector: 'zv-test-custom-template',
   template: `
     <zv-select [value]="value()" (valueChange)="value.set($event)" [dataSource]="items">
@@ -468,6 +482,17 @@ describe('ZvSelect', () => {
     const { component, zvSelect: zvSelect } = await initTest(TestValueComponent);
     await zvSelect.clickOptions({ text: ITEMS.red.label });
     expect(component.value()).toEqual(ITEMS.red.value);
+  });
+
+  it('should write a [value] binding through to the bound form control', async () => {
+    const { component, fixture } = await initTest(TestFormControlAndValueComponent);
+    const emittedBefore = component.emitted.length;
+    component.value.set(ITEMS.green.value);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component.control.value).toEqual(ITEMS.green.value);
+    // [value] has never emitted valueChange, and must not start now.
+    expect(component.emitted.length).toBe(emittedBefore);
   });
 
   it('should emit only once when selecting an option', async () => {

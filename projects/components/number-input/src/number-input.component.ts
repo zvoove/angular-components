@@ -21,9 +21,9 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { FormGroupDirective, NgControl, NgForm, Validators } from '@angular/forms';
+import { FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { FORM_FIELD, FormValueControl, Field } from '@angular/forms/signals';
-import { connectLegacyControl, signalErrorControl } from '@zvoove/components/form-base';
+import { LegacyChangeNotifier, connectLegacyControl, createRequiredDetector, signalErrorControlSnapshot } from '@zvoove/components/form-base';
 import { _ErrorStateTracker, ErrorStateMatcher } from '@angular/material/core';
 import { MAT_FORM_FIELD, MatFormFieldControl } from '@angular/material/form-field';
 import { replaceAll } from '@zvoove/components/utils';
@@ -60,7 +60,8 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
     this.labelledById.set(id);
   }
 
-  public readonly ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
+  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
+  public readonly ngControl = this.formField ? null : inject(NgControl, { optional: true, self: true });
   private readonly defaultMatcher = inject(ErrorStateMatcher);
   private readonly parentForm = inject(FormGroupDirective, { optional: true }) ?? inject(NgForm, { optional: true });
   protected readonly parentMatField = inject(MAT_FORM_FIELD, { optional: true });
@@ -134,7 +135,6 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
   }
   readonly isDisabled = this.disabled;
   readonly touch = output<void>();
-  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
   get ngField(): Field<number | null> | null {
     return (this.formField?.field() as Field<number | null>) ?? null;
   }
@@ -168,14 +168,15 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
   readonly required = model(false, { alias: 'requiredState' });
   private explicitRequired = false;
   @Input('required')
-  set requiredInput(value: boolean) {
-    this.explicitRequired = true;
-    this.required.set(coerceBooleanProperty(value));
+  set requiredInput(value: boolean | null | undefined) {
+    // A binding that resolves to null/undefined is treated like no binding at all, so
+    // detection from the bound form control still applies.
+    this.explicitRequired = value != null;
+    if (value != null) this.required.set(coerceBooleanProperty(value));
   }
 
   get isRequired() {
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
-    return this.required() || !!this.ngControl?.control?.hasValidator(Validators.required);
+    return this.required();
   }
 
   /** An object used to control when error messages are shown. */
@@ -190,9 +191,9 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
 
   /** Whether the input is in an error state. */
   get errorState() {
-    const field = this.ngField;
-    return field
-      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(signalErrorControl(field), this.parentForm)
+    const snapshot = this._signalErrorSnapshot();
+    return snapshot
+      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(snapshot, this.parentForm)
       : this._errorStateTracker.errorState;
   }
   set errorState(value: boolean) {
@@ -246,6 +247,9 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
   _decimalSeparator!: string;
   _thousandSeparator!: string;
   _errorStateTracker: _ErrorStateTracker;
+  private readonly _signalErrorSnapshot = signalErrorControlSnapshot(() => this.ngField);
+  private readonly _detectRequired = createRequiredDetector(this.ngControl);
+  private readonly _notifyLegacyChange: LegacyChangeNotifier<number | null>;
 
   public readonly _inputfieldViewChild = viewChild<ElementRef<HTMLInputElement>>('inputfield');
 
@@ -255,9 +259,8 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
     const _parentFormGroup = inject(FormGroupDirective, { optional: true });
     const _defaultErrorStateMatcher = inject(ErrorStateMatcher);
 
-    connectLegacyControl(
+    this._notifyLegacyChange = connectLegacyControl(
       this.ngControl,
-      this.valueChange,
       this.touch,
       (value) => {
         this.valueInput = value;
@@ -297,8 +300,10 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
   }
 
   ngDoCheck() {
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
-    if (this.ngControl?.control && !this.explicitRequired) this.required.set(this.ngControl.control.hasValidator(Validators.required));
+    if (!this.explicitRequired) {
+      const detected = this._detectRequired();
+      if (detected !== null) this.required.set(detected);
+    }
     if (this.ngControl) {
       // We need to re-evaluate this on every change detection cycle, because there are some
       // error triggers that we can't subscribe to (e.g. parent form submissions). This means
@@ -364,6 +369,7 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
     const newValue = this._fixNumber((this.value() ?? 0) + step);
     this.value.set(newValue);
     this._formatValue();
+    this._notifyLegacyChange(newValue);
     this.valueChange.emit(newValue);
   }
 
@@ -482,6 +488,7 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
   _onInput(event: Event) {
     this.value.set(this._parseValue((event.target as HTMLInputElement).value));
     this.stateChanges.next();
+    this._notifyLegacyChange(this.value());
     this.valueChange.emit(this.value());
   }
 

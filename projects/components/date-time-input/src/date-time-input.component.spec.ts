@@ -460,7 +460,7 @@ describe('ZvDateTimeInput', () => {
       const formField = fixture.nativeElement.querySelector('mat-form-field') as HTMLElement;
       expect(formField.classList.contains('mat-form-field-invalid')).toBe(false);
 
-      fixture.componentInstance.errorStateMatcher = { isErrorState: () => true };
+      fixture.componentInstance.errorStateMatcher.set({ isErrorState: () => true });
       fixture.detectChanges();
 
       expect(fixture.componentInstance.dateTimeInputCmp().errorState).toBe(true);
@@ -798,7 +798,7 @@ export class FormTestComponent {
   selector: 'zv-signal-form-test-component',
   template: `
     <mat-form-field>
-      <zv-date-time-input [formField]="fields.date" [errorStateMatcher]="errorStateMatcher" [matDatepicker]="datepicker" />
+      <zv-date-time-input [formField]="fields.date" [errorStateMatcher]="errorStateMatcher()" [matDatepicker]="datepicker" />
       <mat-datepicker #datepicker />
     </mat-form-field>
   `,
@@ -814,5 +814,5 @@ export class SignalFormTestComponent {
   readonly data = signal({ date: null as Date | null });
   readonly fields = form(this.data);
   readonly dateTimeInputCmp = viewChild(ZvDateTimeInput);
-  errorStateMatcher: ErrorStateMatcher = null;
+  readonly errorStateMatcher = signal<ErrorStateMatcher>(null);
 }

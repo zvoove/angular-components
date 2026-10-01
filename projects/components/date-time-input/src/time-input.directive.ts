@@ -6,7 +6,7 @@ import { AbstractControl, NgControl, ValidationErrors } from '@angular/forms';
 import { FORM_FIELD, FormValueControl, transformedValue } from '@angular/forms/signals';
 import { MAT_INPUT_VALUE_ACCESSOR } from '@angular/material/input';
 import { ZV_TIME_FORMATS, ZvTimeAdapter, ZvTimeFormats } from '@zvoove/components/core';
-import { connectLegacyControl } from '@zvoove/components/form-base';
+import { LegacyChangeNotifier, connectLegacyControl } from '@zvoove/components/form-base';
 import { Subject } from 'rxjs';
 
 export class ZvTimeInputEvent<TTime> {
@@ -71,10 +71,11 @@ export class ZvTimeInput<TTime> implements FormValueControl<TTime | null>, OnIni
     }
   }
 
+  private readonly notifyLegacyChange: LegacyChangeNotifier<TTime | null>;
+
   constructor() {
-    connectLegacyControl(
+    this.notifyLegacyChange = connectLegacyControl(
       this.ngControl,
-      this.valueChange,
       this.touch,
       (value) => {
         this.valueInput = value;
@@ -117,7 +118,11 @@ export class ZvTimeInput<TTime> implements FormValueControl<TTime | null>, OnIni
     this.raw.set(text);
     const value = this.value();
     const changed = !(this.adapter?.sameTime(value, previous) ?? false);
-    if (!value || changed) this.valueChange.emit(value);
+    // The legacy pipeline has to see every null, otherwise its validators don't re-run.
+    if (!value || changed) {
+      this.notifyLegacyChange(value);
+      this.valueChange.emit(value);
+    }
     this.validatorChanged();
     if (changed) this.timeInput.emit(new ZvTimeInputEvent(this, this.element));
     this.stateChanges.next();

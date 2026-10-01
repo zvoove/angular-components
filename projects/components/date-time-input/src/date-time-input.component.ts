@@ -33,10 +33,9 @@ import {
   ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
-  Validators,
 } from '@angular/forms';
 import { FORM_FIELD, FormValueControl, Field, transformedValue } from '@angular/forms/signals';
-import { connectLegacyControl, signalErrorControl } from '@zvoove/components/form-base';
+import { LegacyChangeNotifier, connectLegacyControl, createRequiredDetector, signalErrorControlSnapshot } from '@zvoove/components/form-base';
 import { ErrorStateMatcher, _ErrorStateTracker } from '@angular/material/core';
 import { MatDatepickerControl, MatDatepickerInput, MatDatepickerModule, MatDatepickerPanel } from '@angular/material/datepicker';
 import { MAT_FORM_FIELD, MatFormFieldControl } from '@angular/material/form-field';
@@ -76,7 +75,8 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   _parentForm = inject(NgForm, { optional: true });
   _parentFormGroup = inject(FormGroupDirective, { optional: true });
   _parentFormField = inject(MAT_FORM_FIELD, { optional: true });
-  ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
+  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
+  ngControl = this.formField ? null : inject(NgControl, { optional: true, self: true });
   private dateTimeAdapter = inject(ZvDateTimeAdapter<TDateTime, TDate, TTime>);
 
   /**
@@ -112,9 +112,7 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     this._assignValue(value, { assignForm: true, emitChange: !this.formField });
   }
   readonly valueChange = output<TDateTime | null>();
-  protected readonly legacyChanges = output<TDateTime | null>();
   readonly touch = output<void>();
-  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
   get ngField(): Field<TDateTime | null> | null {
     return (this.formField?.field() as Field<TDateTime | null>) ?? null;
   }
@@ -161,9 +159,11 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   readonly required = model(false, { alias: 'requiredState' });
   private explicitRequired = false;
   @Input('required')
-  set requiredInput(value: boolean) {
-    this.explicitRequired = true;
-    this.required.set(coerceBooleanProperty(value));
+  set requiredInput(value: boolean | null | undefined) {
+    // A binding that resolves to null/undefined is treated like no binding at all, so
+    // detection from the bound form control still applies.
+    this.explicitRequired = value != null;
+    if (value != null) this.required.set(coerceBooleanProperty(value));
   }
 
   @Input()
@@ -177,12 +177,9 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
 
   /** Whether the input is in an error state. */
   get errorState() {
-    const field = this.ngField;
-    return field
-      ? (this.errorStateMatcher ?? this._defaultErrorStateMatcher).isErrorState(
-          signalErrorControl(field),
-          this._parentFormGroup ?? this._parentForm
-        )
+    const snapshot = this._signalErrorSnapshot();
+    return snapshot
+      ? (this.errorStateMatcher ?? this._defaultErrorStateMatcher).isErrorState(snapshot, this._parentFormGroup ?? this._parentForm)
       : this._errorStateTracker.errorState;
   }
   set errorState(value: boolean) {
@@ -215,11 +212,13 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   });
   private readonly parentValidator = (control: AbstractControl) => this.validate(control);
   private previousEmitted: TDateTime | null = null;
+  private readonly _signalErrorSnapshot = signalErrorControlSnapshot(() => this.ngField);
+  private readonly _detectRequired = createRequiredDetector(this.ngControl);
+  private readonly _notifyLegacyChange: LegacyChangeNotifier<TDateTime | null>;
 
   constructor() {
-    connectLegacyControl(
+    this._notifyLegacyChange = connectLegacyControl(
       this.ngControl,
-      this.legacyChanges,
       this.touch,
       (value) => {
         this._assignValue(value, { assignForm: true, emitChange: false });
@@ -271,8 +270,10 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
   }
 
   ngDoCheck() {
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
-    if (this.ngControl?.control && !this.explicitRequired) this.required.set(this.ngControl.control.hasValidator(Validators.required));
+    if (!this.explicitRequired) {
+      const detected = this._detectRequired();
+      if (detected !== null) this.required.set(detected);
+    }
     if (this.ngControl) {
       // We need to re-evaluate this on every change detection cycle, because there are some
       // error triggers that we can't subscribe to (e.g. parent form submissions). This means
@@ -404,7 +405,8 @@ export class ZvDateTimeInput<TDateTime, TDate, TTime>
     this.value.set(newValue);
     this.previousEmitted = newValue;
     if (options.emitChange) {
-      if (changed || !newValue) this.legacyChanges.emit(newValue);
+      // The legacy pipeline has to see every null, otherwise its validators don't re-run.
+      if (changed || !newValue) this._notifyLegacyChange(newValue);
       if (changed) this.valueChange.emit(newValue);
     }
   }

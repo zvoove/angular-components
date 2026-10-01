@@ -1,5 +1,4 @@
 /* eslint-disable @angular-eslint/no-input-rename -- Backing models retain existing public binding names via compatibility setters. */
-import { Validators } from '@angular/forms';
 /* eslint-disable @angular-eslint/prefer-signals -- Compatibility value setter and Material string id */
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
@@ -24,7 +23,7 @@ import { ErrorStateMatcher, _ErrorStateTracker } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { FORM_FIELD, FormValueControl, Field } from '@angular/forms/signals';
-import { connectLegacyControl, signalErrorControl } from '@zvoove/components/form-base';
+import { LegacyChangeNotifier, connectLegacyControl, createRequiredDetector, signalErrorControlSnapshot } from '@zvoove/components/form-base';
 import { model, effect, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 
@@ -57,7 +56,8 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
     this.labelledById.set(id);
   }
 
-  public readonly ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
+  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
+  public readonly ngControl = this.formField ? null : inject(NgControl, { optional: true, self: true });
   public readonly _cd = inject(ChangeDetectorRef);
 
   fileSelectText = $localize`:@@zvc.chooseFile:Please choose a file.`;
@@ -133,9 +133,11 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
   readonly required = model(false, { alias: 'requiredState' });
   private explicitRequired = false;
   @Input('required')
-  set requiredInput(value: boolean) {
-    this.explicitRequired = true;
-    this.required.set(coerceBooleanProperty(value));
+  set requiredInput(value: boolean | null | undefined) {
+    // A binding that resolves to null/undefined is treated like no binding at all, so
+    // detection from the bound form control still applies.
+    this.explicitRequired = value != null;
+    if (value != null) this.required.set(coerceBooleanProperty(value));
   }
 
   /** An object used to control when error messages are shown. */
@@ -150,9 +152,9 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
 
   /** Whether the input is in an error state. */
   get errorState() {
-    const field = this.ngField;
-    return field
-      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(signalErrorControl(field), this.parentForm)
+    const snapshot = this._signalErrorSnapshot();
+    return snapshot
+      ? (this.errorStateMatcher ?? this.defaultMatcher).isErrorState(snapshot, this.parentForm)
       : this._errorStateTracker.errorState;
   }
   set errorState(value: boolean) {
@@ -172,7 +174,6 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
   }
   readonly valueChange = output<File | null>();
   readonly touch = output<void>();
-  private readonly formField = inject(FORM_FIELD, { optional: true, self: true });
   get ngField(): Field<File | null> | null {
     return (this.formField?.field() as Field<File | null>) ?? null;
   }
@@ -205,6 +206,9 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
   private readonly uploadButton = viewChild<ElementRef<HTMLButtonElement>>('uploadButton');
   public readonly _inputfieldViewChild = viewChild<ElementRef<HTMLInputElement>>('input');
   _errorStateTracker: _ErrorStateTracker;
+  private readonly _signalErrorSnapshot = signalErrorControlSnapshot(() => this.ngField);
+  private readonly _detectRequired = createRequiredDetector(this.ngControl);
+  private readonly _notifyLegacyChange: LegacyChangeNotifier<File | null>;
 
   constructor() {
     const ngControl = this.ngControl;
@@ -212,9 +216,8 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
     const _parentFormGroup = inject(FormGroupDirective, { optional: true });
     const _defaultErrorStateMatcher = inject(ErrorStateMatcher);
 
-    connectLegacyControl(
+    this._notifyLegacyChange = connectLegacyControl(
       this.ngControl,
-      this.valueChange,
       this.touch,
       (value) => {
         this.valueInput = value instanceof File ? value : null;
@@ -245,8 +248,10 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
   }
 
   ngDoCheck() {
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- Validator identity is required by hasValidator.
-    if (this.ngControl?.control && !this.explicitRequired) this.required.set(this.ngControl.control.hasValidator(Validators.required));
+    if (!this.explicitRequired) {
+      const detected = this._detectRequired();
+      if (detected !== null) this.required.set(detected);
+    }
     if (this.ngControl) {
       // We need to re-evaluate this on every change detection cycle, because there are some
       // error triggers that we can't subscribe to (e.g. parent form submissions). This means
@@ -304,6 +309,7 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
     this.value.set(file);
     this.stateChanges.next();
     if (!file) this.reset();
+    this._notifyLegacyChange(file);
     this.valueChange.emit(file);
     this.touch.emit();
   }
