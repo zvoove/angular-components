@@ -145,6 +145,7 @@ export class ZvFileInput implements FormValueControl<File | null>, MatFormFieldC
   }
   set errorStateMatcher(value: ErrorStateMatcher) {
     this._errorStateTracker.matcher = value;
+    this.stateChanges.next();
   }
 
   /** Whether the input is in an error state. */

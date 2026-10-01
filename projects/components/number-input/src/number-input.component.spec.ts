@@ -41,6 +41,15 @@ describe('ZvNumberInput', () => {
     expect(clearTimerSpy).toHaveBeenCalledTimes(7);
   });
 
+  it('should notify the form field when the error state matcher changes', () => {
+    fixture.detectChanges();
+    const stateChangesSpy = vi.spyOn(spinner.stateChanges, 'next');
+
+    spinner.errorStateMatcher = { isErrorState: () => true };
+
+    expect(stateChangesSpy).toHaveBeenCalled();
+  });
+
   it('should have value as -3 when down clicked 3 times', () => {
     fixture.detectChanges();
 

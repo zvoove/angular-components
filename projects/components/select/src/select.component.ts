@@ -204,6 +204,7 @@ export class ZvSelect<T = unknown> implements FormValueControl<T | null>, MatFor
   }
   set errorStateMatcher(value: ErrorStateMatcher) {
     this._errorStateTracker.matcher = value;
+    this.stateChanges.next();
   }
 
   /** Whether the input is in an error state. */

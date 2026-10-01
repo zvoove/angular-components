@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader } from '@angular/cdk/testing';
 import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { ZvFileInput } from './file-input.component';
 import { ZvFileInputHarness } from './testing/file-input.harness';
 
@@ -48,6 +49,14 @@ describe('ZvFileInput', () => {
 
   it('should be defined', () => {
     expect(cmp).toBeDefined();
+  });
+
+  it('should notify the form field when the error state matcher changes', () => {
+    const stateChangesSpy = vi.spyOn(cmp.stateChanges, 'next');
+
+    cmp.errorStateMatcher = { isErrorState: () => true } satisfies ErrorStateMatcher;
+
+    expect(stateChangesSpy).toHaveBeenCalled();
   });
 
   it('Should respect disabled', async () => {

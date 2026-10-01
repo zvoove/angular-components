@@ -497,6 +497,15 @@ describe('ZvSelect', () => {
     expect(await zvSelect.isErrorState()).toBe(false);
   });
 
+  it('should notify the form field when the error state matcher changes', () => {
+    const { component } = createZvSelect();
+    const stateChangesSpy = vi.spyOn(component.stateChanges, 'next');
+
+    component.errorStateMatcher = { isErrorState: () => true };
+
+    expect(stateChangesSpy).toHaveBeenCalled();
+  });
+
   it('should use clearable input', async () => {
     const { fixture, component, zvSelect: zvSelect } = await initTest(TestComponent);
     component.clearable.set(true);

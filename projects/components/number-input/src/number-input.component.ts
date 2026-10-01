@@ -185,6 +185,7 @@ export class ZvNumberInput implements FormValueControl<number | null>, MatFormFi
   }
   set errorStateMatcher(value: ErrorStateMatcher) {
     this._errorStateTracker.matcher = value;
+    this.stateChanges.next();
   }
 
   /** Whether the input is in an error state. */

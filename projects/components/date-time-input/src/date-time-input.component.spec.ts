@@ -4,8 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader, TestKey } from '@angular/cdk/testing';
 import { ChangeDetectionStrategy, Component, LOCALE_ID, signal, viewChild } from '@angular/core';
 import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
+import { FormField, form } from '@angular/forms/signals';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerInput, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { By } from '@angular/platform-browser';
 import {
   ZV_NATIVE_DATE_FORMATS,
@@ -450,6 +452,22 @@ describe('ZvDateTimeInput', () => {
     });
   });
 
+  describe('signal form binding', () => {
+    it('updates the form field error state when the matcher changes', () => {
+      const fixture = TestBed.createComponent(SignalFormTestComponent);
+      fixture.detectChanges();
+
+      const formField = fixture.nativeElement.querySelector('mat-form-field') as HTMLElement;
+      expect(formField.classList.contains('mat-form-field-invalid')).toBe(false);
+
+      fixture.componentInstance.errorStateMatcher = { isErrorState: () => true };
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.dateTimeInputCmp().errorState).toBe(true);
+      expect(formField.classList.contains('mat-form-field-invalid')).toBe(true);
+    });
+  });
+
   describe('form binding', () => {
     let cmp: ZvDateTimeInput<Date, Date, string>;
     let formControl: FormControl<Date | null>;
@@ -774,4 +792,27 @@ export class InputsTestComponent {
 export class FormTestComponent {
   readonly dateTimeInputCmp = viewChild(ZvDateTimeInput);
   control = new FormControl<Date | null>(null);
+}
+
+@Component({
+  selector: 'zv-signal-form-test-component',
+  template: `
+    <mat-form-field>
+      <zv-date-time-input [formField]="fields.date" [errorStateMatcher]="errorStateMatcher" [matDatepicker]="datepicker" />
+      <mat-datepicker #datepicker />
+    </mat-form-field>
+  `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormField, ZvDateTimeInput, MatDatepickerModule, MatFormFieldModule],
+  providers: [
+    provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
+    provideDateTimeFormats(ZV_NATIVE_DATE_FORMATS, ZV_NATIVE_TIME_FORMATS),
+  ],
+})
+export class SignalFormTestComponent {
+  readonly data = signal({ date: null as Date | null });
+  readonly fields = form(this.data);
+  readonly dateTimeInputCmp = viewChild(ZvDateTimeInput);
+  errorStateMatcher: ErrorStateMatcher = null;
 }
