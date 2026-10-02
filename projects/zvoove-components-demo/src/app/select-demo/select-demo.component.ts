@@ -1,6 +1,7 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormField, disabled as signalDisabled, form, required as signalRequired } from '@angular/forms/signals';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -53,6 +54,7 @@ interface DemoSelectItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   imports: [
+    FormField,
     allSharedImports,
     MatCardModule,
     MatCheckboxModule,
@@ -135,6 +137,31 @@ export class SelectDemoComponent implements OnInit {
   public ngModelLogs: DemoLogs = { loadCount: 0 };
   public formLogs: DemoLogs = { loadCount: 0 };
   public valueLogs: DemoLogs = { loadCount: 0 };
+  public signalLogs: DemoLogs = { loadCount: 0 };
+
+  readonly signalSettings = signal({ required: false, disabled: false });
+  readonly signalModel = signal({ value: null as DemoSelectItem | DemoSelectItem[] | null });
+  readonly signalFields = form(this.signalModel, (path) => {
+    signalRequired(path.value, { when: () => this.signalSettings().required, message: 'Select an option' });
+    signalDisabled(path.value, { when: () => this.signalSettings().disabled });
+  });
+  readonly signalCodeFiles: CodeFiles[] = [
+    {
+      filename: 'app.component.html',
+      code: `<zv-form-field>
+  <mat-label>Your select</mat-label>
+  <zv-select [dataSource]="dataSource" [multiple]="multiple" [clearable]="clearable" [selectedLabel]="selectedLabel" [formField]="fields.value" />
+</zv-form-field>`,
+    },
+    {
+      filename: 'app.component.ts',
+      code: `import { signal } from '@angular/core';
+import { FormField, form, required } from '@angular/forms/signals';
+
+readonly model = signal({ value: null });
+readonly fields = form(this.model, (path) => required(path.value));`,
+    },
+  ];
 
   public ngOnInit() {
     this.resetDataSource();
@@ -213,12 +240,14 @@ export class SelectDemoComponent implements OnInit {
     this.ngModelDataSource = this.createDataSource(this.ngModelLogs);
     this.formDataSource = this.createDataSource(this.formLogs);
     this.valueDataSource = this.createDataSource(this.valueLogs);
+    this.signalDataSource = this.createDataSource(this.signalLogs);
   }
 
   public patchUnknownItem() {
     const item = this.multiple ? [this.unknowIitem] : this.unknowIitem;
     this.ngModel = item;
     this.form.patchValue({ ctrl: item });
+    this.signalModel.update((model) => ({ ...model, value: item }));
   }
 
   public disabledChanged() {
@@ -227,7 +256,10 @@ export class SelectDemoComponent implements OnInit {
     } else {
       this.form.enable();
     }
+    this.signalSettings.set({ required: this.required, disabled: this.disabled });
   }
+
+  public signalDataSource: DefaultZvSelectDataSource<DemoSelectItem>;
 
   public recreate() {
     this.visible = false;

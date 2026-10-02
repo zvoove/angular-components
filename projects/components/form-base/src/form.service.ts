@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FieldState } from '@angular/forms/signals';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { objectToKeyValueArray } from '@zvoove/components/utils';
 import { merge, Observable, of } from 'rxjs';
@@ -8,6 +9,17 @@ import { IZvFormError, IZvFormErrorData } from './models';
 
 @Injectable({ providedIn: 'root' })
 export abstract class ZvFormService {
+  /** Explicit schema messages take precedence; override to localize kind/context fallbacks. */
+  public getSignalErrors(field: FieldState<unknown>): IZvFormError[] {
+    return field.errors().map((error) => ({
+      errorText: error.message ?? error.kind,
+      data: { controlPath: '', errorKey: error.kind, errorValue: error, isControl: true },
+    }));
+  }
+  public getSignalLabel(_field: FieldState<unknown>): Observable<string> | null {
+    return null;
+  }
+
   public abstract tryDetectRequired: boolean;
   public abstract getLabel(formControl: FormControl): Observable<string> | null;
 

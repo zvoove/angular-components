@@ -4,8 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader, TestKey } from '@angular/cdk/testing';
 import { ChangeDetectionStrategy, Component, LOCALE_ID, signal, viewChild } from '@angular/core';
 import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
+import { FormField, form } from '@angular/forms/signals';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDatepickerInput, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { By } from '@angular/platform-browser';
 import {
   ZV_NATIVE_DATE_FORMATS,
@@ -83,18 +85,18 @@ describe('ZvDateTimeInput', () => {
       expect(await timeInput.isDisabled()).toEqual(false);
       expect(await host.getAttribute('aria-disabled')).toBe('false');
 
-      cmp.setDisabledState(true);
+      fixture.componentInstance.disabled.set(true);
       fixture.detectChanges();
 
-      expect(cmp.disabled).toBe(true);
+      expect(cmp.disabled()).toBe(true);
       expect(await dateInput.isDisabled()).toEqual(true);
       expect(await timeInput.isDisabled()).toEqual(true);
       expect(await host.getAttribute('aria-disabled')).toBe('true');
 
-      cmp.setDisabledState(false);
+      fixture.componentInstance.disabled.set(false);
       fixture.detectChanges();
 
-      expect(cmp.disabled).toBe(false);
+      expect(cmp.disabled()).toBe(false);
       expect(await dateInput.isDisabled()).toEqual(false);
       expect(await timeInput.isDisabled()).toEqual(false);
       expect(await host.getAttribute('aria-disabled')).toBe('false');
@@ -450,6 +452,22 @@ describe('ZvDateTimeInput', () => {
     });
   });
 
+  describe('signal form binding', () => {
+    it('updates the form field error state when the matcher changes', () => {
+      const fixture = TestBed.createComponent(SignalFormTestComponent);
+      fixture.detectChanges();
+
+      const formField = fixture.nativeElement.querySelector('mat-form-field') as HTMLElement;
+      expect(formField.classList.contains('mat-form-field-invalid')).toBe(false);
+
+      fixture.componentInstance.errorStateMatcher.set({ isErrorState: () => true });
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.dateTimeInputCmp().errorState).toBe(true);
+      expect(formField.classList.contains('mat-form-field-invalid')).toBe(true);
+    });
+  });
+
   describe('form binding', () => {
     let cmp: ZvDateTimeInput<Date, Date, string>;
     let formControl: FormControl<Date | null>;
@@ -555,7 +573,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('');
         await timeInput.setValue('');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual(null);
 
         await timeInput.blur();
@@ -571,7 +589,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('1.1.2000');
         await timeInput.setValue('');
         expect(formControl.value).toEqual(new Date(2000, 0, 1));
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual(null);
 
         await timeInput.blur();
@@ -587,7 +605,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('1.1.2000');
         await timeInput.setValue('10:30');
         expect(formControl.value).toEqual(new Date(2000, 0, 1, 10, 30));
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual(null);
 
         await timeInput.blur();
@@ -603,7 +621,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('');
         await timeInput.setValue('10:30');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ zvDateTimeInputState: { date: null, time: { hours: 10, minutes: 30 } } });
 
         await timeInput.blur();
@@ -619,7 +637,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('');
         await timeInput.setValue('asdf');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ zvTimeInputParse: { text: 'asdf' } });
 
         await timeInput.blur();
@@ -635,7 +653,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('asdf');
         await timeInput.setValue('');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ matDatepickerParse: { text: 'asdf' } });
 
         await timeInput.blur();
@@ -655,7 +673,7 @@ describe('ZvDateTimeInput', () => {
         // So either time must always be explicitly be filled or this will result in a date without time.
         // https://github.com/angular/components/issues/27902 this would fix this issue for us.
         // expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ zvTimeInputParse: { text: 'asdf' } });
 
         await timeInput.blur();
@@ -671,7 +689,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('asdf');
         await timeInput.setValue('10:30');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ matDatepickerParse: { text: 'asdf' } });
 
         await timeInput.blur();
@@ -687,7 +705,7 @@ describe('ZvDateTimeInput', () => {
         await dateInput.setValue('asdf');
         await timeInput.setValue('ghjk');
         expect(formControl.value).toEqual(null);
-        expect(cmp.value).toEqual(formControl.value);
+        expect(cmp.value()).toEqual(formControl.value);
         expect(formControl.errors).toEqual({ matDatepickerParse: { text: 'asdf' }, zvTimeInputParse: { text: 'ghjk' } });
 
         await timeInput.blur();
@@ -774,4 +792,27 @@ export class InputsTestComponent {
 export class FormTestComponent {
   readonly dateTimeInputCmp = viewChild(ZvDateTimeInput);
   control = new FormControl<Date | null>(null);
+}
+
+@Component({
+  selector: 'zv-signal-form-test-component',
+  template: `
+    <mat-form-field>
+      <zv-date-time-input [formField]="fields.date" [errorStateMatcher]="errorStateMatcher()" [matDatepicker]="datepicker" />
+      <mat-datepicker #datepicker />
+    </mat-form-field>
+  `,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormField, ZvDateTimeInput, MatDatepickerModule, MatFormFieldModule],
+  providers: [
+    provideDateTimeAdapters(ZvNativeDateTimeAdapter, ZvNativeDateAdapter, ZvNativeTimeAdapter),
+    provideDateTimeFormats(ZV_NATIVE_DATE_FORMATS, ZV_NATIVE_TIME_FORMATS),
+  ],
+})
+export class SignalFormTestComponent {
+  readonly data = signal({ date: null as Date | null });
+  readonly fields = form(this.data);
+  readonly dateTimeInputCmp = viewChild(ZvDateTimeInput);
+  readonly errorStateMatcher = signal<ErrorStateMatcher>(null);
 }

@@ -37,8 +37,17 @@ describe('ZvNumberInput', () => {
     triggerEvent(spinnerUp, 'mouseleave');
     fixture.detectChanges();
 
-    expect(spinner.value).toBe(3);
+    expect(spinner.value()).toBe(3);
     expect(clearTimerSpy).toHaveBeenCalledTimes(7);
+  });
+
+  it('should notify the form field when the error state matcher changes', () => {
+    fixture.detectChanges();
+    const stateChangesSpy = vi.spyOn(spinner.stateChanges, 'next');
+
+    spinner.errorStateMatcher = { isErrorState: () => true };
+
+    expect(stateChangesSpy).toHaveBeenCalled();
   });
 
   it('should have value as -3 when down clicked 3 times', () => {
@@ -55,7 +64,7 @@ describe('ZvNumberInput', () => {
     triggerEvent(spinnerDown, 'mouseleave');
     fixture.detectChanges();
 
-    expect(spinner.value).toBe(-3);
+    expect(spinner.value()).toBe(-3);
     expect(clearTimerSpy).toHaveBeenCalledTimes(7);
   });
 
@@ -68,7 +77,7 @@ describe('ZvNumberInput', () => {
     triggerEvent(spinnerUp, 'mousedown');
     triggerEvent(spinnerUp, 'mousedown');
 
-    expect(spinner.value).toEqual(0.75);
+    expect(spinner.value()).toEqual(0.75);
   });
 
   it('Should display the formatted value with thousand and decimal separator when input is filled by value 1234.1234', () => {
@@ -80,11 +89,11 @@ describe('ZvNumberInput', () => {
     triggerEvent(spinnerInput, 'input');
 
     fixture.detectChanges();
-    expect(spinner.value).toEqual(1234.1234);
+    expect(spinner.value()).toEqual(1234.1234);
   });
 
   it('Should disabled', () => {
-    spinner.disabled = true;
+    fixture.componentRef.setInput('disabled', true);
     fixture.detectChanges();
 
     const spinnerInputField = fixture.nativeElement.querySelector('.zv-number-input__input');
@@ -99,7 +108,7 @@ describe('ZvNumberInput', () => {
   it('value should not change.', () => {
     fixture.detectChanges();
 
-    spinner.disabled = true;
+    fixture.componentRef.setInput('disabled', true);
     const spinnerInput = spinner._inputfieldViewChild()!.nativeElement;
     spinnerInput.value = '1';
     triggerEvent(spinnerInput, 'keyup');
@@ -108,7 +117,7 @@ describe('ZvNumberInput', () => {
     const spinnerUp = fixture.nativeElement.querySelector('.zv-number-input__button-up');
     triggerEvent(spinnerUp, 'mousedown');
 
-    expect(spinner.value).toBeNull();
+    expect(spinner.value()).toBeNull();
   });
 
   it('should have a max', () => {
@@ -127,7 +136,7 @@ describe('ZvNumberInput', () => {
     triggerEvent(spinnerUp, 'mousedown');
     fixture.detectChanges();
 
-    expect(spinner.value).toBe(1);
+    expect(spinner.value()).toBe(1);
     spinner._clearTimer();
   });
 
@@ -147,7 +156,7 @@ describe('ZvNumberInput', () => {
     triggerEvent(spinnerUp, 'mousedown');
     fixture.detectChanges();
 
-    expect(spinner.value).toBe(-1);
+    expect(spinner.value()).toBe(-1);
     spinner._clearTimer();
   });
 
@@ -159,17 +168,17 @@ describe('ZvNumberInput', () => {
     spinner._onInputKeydown(upArrowEvent as KeyboardEvent);
     fixture.detectChanges();
 
-    expect(spinner.value).toEqual(1);
+    expect(spinner.value()).toEqual(1);
     spinner._onInputKeydown(downArrowEvent as KeyboardEvent);
     fixture.detectChanges();
 
-    expect(spinner.value).toEqual(0);
+    expect(spinner.value()).toEqual(0);
   });
 
   it('should change placeholder tabindex and required', () => {
-    spinner.placeholder = 'PLACEHOLDER';
+    fixture.componentRef.setInput('placeholder', 'PLACEHOLDER');
     fixture.componentRef.setInput('tabindex', 13);
-    spinner.required = true;
+    fixture.componentRef.setInput('required', true);
     fixture.detectChanges();
 
     const inputEl = fixture.debugElement.query(By.css('input'));
@@ -179,7 +188,7 @@ describe('ZvNumberInput', () => {
   });
 
   it('should change readonly and disable buttons', async () => {
-    spinner.readonly = true;
+    fixture.componentRef.setInput('readonly', true);
     fixture.detectChanges();
 
     const inputEl = fixture.debugElement.query(By.css('input'));
@@ -189,7 +198,7 @@ describe('ZvNumberInput', () => {
     expect(upButtonEl.nativeElement.disabled).toEqual(true);
     expect(downButtonEl.nativeElement.disabled).toEqual(true);
 
-    spinner.readonly = false;
+    fixture.componentRef.setInput('readonly', false);
     fixture.detectChanges();
 
     expect(inputEl.nativeElement.readOnly).toEqual(false);
@@ -201,10 +210,10 @@ describe('ZvNumberInput', () => {
     spinner._thousandSeparator = ',';
     spinner._decimalSeparator = '.';
     fixture.componentRef.setInput('stepSize', 0.25);
-    spinner.value = 10000;
+    fixture.componentRef.setInput('value', 10000);
     fixture.detectChanges();
 
-    spinner.writeValue(10000000);
+    fixture.componentRef.setInput('value', 10000000);
     fixture.detectChanges();
 
     expect(spinner._formattedValue).toEqual('10,000,000');

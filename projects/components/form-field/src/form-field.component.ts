@@ -14,12 +14,15 @@ import {
   effect,
   inject,
   input,
+  isSignal,
   Signal,
   untracked,
   viewChild,
 } from '@angular/core';
-import { FormControl, NgControl } from '@angular/forms';
+import { FORM_FIELD, Field } from '@angular/forms/signals';
+import { FormControl, FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
+import { ErrorStateMatcher } from '@angular/material/core';
 import {
   FloatLabelType,
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
@@ -69,8 +72,10 @@ function applyConfigDefaults(config: ZvFormFieldConfig | null): {
   },
 })
 export class ZvFormField implements AfterContentChecked, OnDestroy {
-  private _elementRef = inject(ElementRef);
+  private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private formsService = inject(ZvFormService);
+  private errorStateMatcher = inject(ErrorStateMatcher);
+  private parentForm = inject(FormGroupDirective, { optional: true }) ?? inject(NgForm, { optional: true });
   private defaults = applyConfigDefaults(inject(ZV_FORM_FIELD_CONFIG, { optional: true }));
   private matDefaults = inject(MAT_FORM_FIELD_DEFAULT_OPTIONS, { optional: true });
 
@@ -84,6 +89,11 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
 
   /** We can get the FromControl from this */
   public readonly _ngControl = contentChild(NgControl);
+  public readonly _signalControl = contentChild(FORM_FIELD);
+  readonly signalErrors = computed(() => {
+    const field = this._signalControl()?.field();
+    return field ? this.formsService.getSignalErrors(field()) : null;
+  });
 
   /** The MatFormFieldControl or null, if it is no MatFormFieldControl */
   public readonly _control = contentChild(MatFormFieldControl);
@@ -119,8 +129,8 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     }
 
     const control = this._control();
-    const isRequired = control?.required;
-    const isDisabled = control?.disabled;
+    const isRequired = readMaterialState(control?.required) || this._signalControl()?.field()().required();
+    const isDisabled = readMaterialState(control?.disabled) || this._signalControl()?.field()().disabled();
     if (!isRequired || isDisabled) {
       return this.hint();
     }
@@ -162,13 +172,22 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   private labelTextSubscription!: Subscription;
 
   private initialized = false;
+  private previousControl: unknown;
+  private previousNgControl: unknown;
+  private previousField: Field<unknown> | null = null;
 
   private isServer = isPlatformServer(inject(PLATFORM_ID));
 
   constructor() {
+    // Projected controls cannot inject the Material field inside this wrapper's view.
+    effect(() => {
+      const control = this._control() as (MatFormFieldControl<unknown> & { setLabelledById?: (id: string | null) => void }) | undefined;
+      control?.setLabelledById?.(this._matFormField().getLabelId());
+    });
     // Replace labelChild setter — track contentChild and run side effects
     effect(() => {
       const label = this.labelChild();
+      this.createLabel();
       this._labelChild = label ?? null;
       untracked(() => {
         this.updateLabel();
@@ -190,21 +209,32 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
   }
 
   public ngAfterContentChecked(): void {
-    if (this.initialized) {
-      return;
-    }
-    const ngControl = this._ngControl();
+    const ngControl = this._signalControl() ? null : this._ngControl();
     const control = this._control();
+    const field = this._signalControl()?.field() ?? null;
+    const formControl = ngControl?.control;
+    if (this.initialized && control === this.previousControl && formControl === this.previousNgControl && field === this.previousField)
+      return;
+    this.labelTextSubscription?.unsubscribe();
+    this.previousControl = control;
+    this.previousNgControl = formControl;
+    this.previousField = field;
+    this.errors$ = of([]);
+    this._floatLabelOverride = null;
+    if (this.controlType) this._elementRef.nativeElement.classList.remove(`zv-form-field-type-${this.controlType}`);
     this.formControl = ngControl ? (ngControl.control as FormControl) : null;
     // Slider is not initialized the first time we enter this method, therefore we need to check if it got initialized already or not
-    if (this.formControl) {
-      this.initialized = true;
-    }
+    this.initialized = true;
     // We hope noone subscribed matFormFieldControl.stateChanges already - 🤞
     if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
       this.matFormFieldControl.ngOnDestroy();
     }
     this.matFormFieldControl = control || new DummyMatFormFieldControl(ngControl ?? null, this.formControl);
+    if (this.matFormFieldControl instanceof DummyMatFormFieldControl) {
+      this.matFormFieldControl.ngField = field;
+      this.matFormFieldControl.errorStateMatcher = this.errorStateMatcher;
+      this.matFormFieldControl.parentForm = this.parentForm;
+    }
     this._matFormField()._control = this.matFormFieldControl;
     this.emulated = this.matFormFieldControl instanceof DummyMatFormFieldControl;
     // This tells the mat-input that it is inside a mat-form-field
@@ -215,7 +245,7 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     }
     this.realFormControl = getRealFormControl(ngControl, this.matFormFieldControl);
     this.controlType = this.formsService.getControlType(this.realFormControl) || 'unknown';
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+
     this._elementRef.nativeElement.classList.add(`zv-form-field-type-${this.controlType}`);
 
     this.noUnderline = this.emulated || !!this.realFormControl.noUnderline;
@@ -224,15 +254,14 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     }
 
     if (this.formControl) {
-      if (this.formsService.tryDetectRequired) {
+      if (this.formsService.tryDetectRequired && !isSignal(this.matFormFieldControl.required)) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access -- dynamically setting required on MatFormFieldControl
         (this.matFormFieldControl as any).required = hasRequiredField(this.formControl);
       }
 
       this.errors$ = this.formsService.getControlErrors(this.formControl);
-
-      this.updateLabel();
     }
+    this.updateLabel();
   }
 
   public ngOnDestroy(): void {
@@ -255,11 +284,12 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
       return;
     }
     this.calculatedLabel = null;
-    if (!this.createLabel() || this._labelChild || !this.formControl) {
+    const field = this.previousField;
+    if (!this.createLabel() || this._labelChild || (!this.formControl && !field)) {
       return;
     }
 
-    const labelText$ = this.formsService.getLabel(this.formControl);
+    const labelText$ = field ? this.formsService.getSignalLabel(field()) : this.formsService.getLabel(this.formControl!);
     if (!labelText$) {
       return;
     }
@@ -269,16 +299,12 @@ export class ZvFormField implements AfterContentChecked, OnDestroy {
     }
     this.labelTextSubscription = labelText$.subscribe((label) => {
       if (this.controlType.startsWith('mat-mdc-checkbox')) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         const labelNode = this._elementRef.nativeElement.querySelectorAll('label')[0];
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+
         if (!labelNode.textContent.trim()) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (labelNode.childNodes.length === 1 && labelNode.childNodes[0].nodeType === Node.TEXT_NODE) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             labelNode.childNodes[0].nodeValue = label;
           } else {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             labelNode.appendChild(document.createTextNode(label));
           }
         }
@@ -302,4 +328,8 @@ function getRealFormControl(
     return matFormFieldControl;
   }
   return ngControl.valueAccessor as unknown as { noUnderline?: boolean; shouldLabelFloat?: boolean | Signal<boolean> };
+}
+
+function readMaterialState(value: boolean | Signal<boolean> | undefined): boolean {
+  return isSignal(value) ? value() : !!value;
 }

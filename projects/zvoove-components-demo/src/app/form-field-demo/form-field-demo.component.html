@@ -23,7 +23,7 @@
     <mat-checkbox [(ngModel)]="disabled" style="margin: 0.5em">disabled</mat-checkbox>
     <mat-checkbox [(ngModel)]="customLabel" style="margin: 0.5em">custom label</mat-checkbox>
     <mat-checkbox [(ngModel)]="error" style="margin: 0.5em">error</mat-checkbox>
-    <mat-checkbox [(ngModel)]="required" style="margin: 0.5em">required</mat-checkbox>
+    <mat-checkbox [(ngModel)]="required" (ngModelChange)="syncSignalSettings()" style="margin: 0.5em">required</mat-checkbox>
     <mat-checkbox [(ngModel)]="hintToggle" style="margin: 0.5em">hint toggle button</mat-checkbox>
     <mat-form-field style="margin: 0.5em">
       <mat-label>subscriptType</mat-label>
@@ -217,3 +217,26 @@
     </div>
   }
 </div>
+
+@if (showControls) {
+  <app-form-control-demo-card type="signal" [field]="signalFields.text()" [codeFiles]="signalCodeFiles">
+    <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+      @if (customLabel) {
+        <mat-label>Signal label</mat-label>
+      }
+      <input matInput [formField]="signalFields.text" />
+    </zv-form-field>
+    <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+      <mat-checkbox [formField]="signalFields.accepted">Accepted</mat-checkbox>
+    </zv-form-field>
+    <zv-form-field [hint]="hintText" [hintToggle]="hintToggle" [subscriptType]="subscriptType">
+      @if (customLabel) {
+        <mat-label>Signal select</mat-label>
+      }
+      <zv-select
+        [dataSource]="{ mode: 'id', idKey: 'key', labelKey: 'label', items: zvSelectData }"
+        [formField]="signalFields.select"
+      />
+    </zv-form-field>
+  </app-form-control-demo-card>
+}

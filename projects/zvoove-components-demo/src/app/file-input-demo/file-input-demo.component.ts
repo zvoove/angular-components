@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormField, disabled as signalDisabled, form, readonly as signalReadonly, required as signalRequired } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,7 +10,9 @@ import { MatInputModule } from '@angular/material/input';
 import { ZvFileInput } from '@zvoove/components/file-input';
 import { ZvFormService } from '@zvoove/components/form-base';
 import { ZvFormField } from '@zvoove/components/form-field';
+import { CodeFiles } from '../common/code-files/code-files.component';
 import { DemoZvFormsService } from '../common/demo-zv-form-service';
+import { FormControlDemoCard } from '../common/form-control-card/form-control-demo-card.component';
 
 @Component({
   selector: 'app-file-input-demo',
@@ -17,6 +20,8 @@ import { DemoZvFormsService } from '../common/demo-zv-form-service';
   styleUrls: ['./file-input-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    FormField,
+    FormControlDemoCard,
     MatCardModule,
     MatCheckboxModule,
     ReactiveFormsModule,
@@ -49,6 +54,31 @@ export class FileInputDemoComponent {
   public validatorRequired = false;
   public useErrorStateMatcher = false;
 
+  readonly signalSettings = signal({ required: false, disabled: false, readonly: false });
+  readonly signalModel = signal({ file: null as File | null });
+  readonly signalFields = form(this.signalModel, (path) => {
+    signalRequired(path.file, { when: () => this.signalSettings().required, message: 'Select a file' });
+    signalDisabled(path.file, { when: () => this.signalSettings().disabled });
+    signalReadonly(path.file, { when: () => this.signalSettings().readonly });
+  });
+  readonly signalCodeFiles: CodeFiles[] = [
+    {
+      filename: 'app.component.html',
+      code: `<zv-form-field>
+  <mat-label>Attachment</mat-label>
+  <zv-file-input [formField]="fields.file" [accept]="accept" [placeholder]="placeholder" />
+</zv-form-field>`,
+    },
+    {
+      filename: 'app.component.ts',
+      code: `import { signal } from '@angular/core';
+import { FormField, form, required } from '@angular/forms/signals';
+
+readonly model = signal({ file: null as File | null });
+readonly fields = form(this.model, (path) => required(path.file));`,
+    },
+  ];
+
   public onAcceptChange() {
     this.accept = this.acceptStr.split(',').map((s) => s.trim());
   }
@@ -59,6 +89,7 @@ export class FileInputDemoComponent {
       validators.push(Validators.required);
     }
     this.control.setValidators(validators);
+    this.syncSignalSettings();
   }
 
   public onUseErrorStateMatcherChange() {
@@ -75,6 +106,7 @@ export class FileInputDemoComponent {
     this.value = value;
     this.model = value;
     this.control.patchValue(value);
+    this.signalModel.update((model) => ({ ...model, file: value }));
   }
 
   public onDisabledChanged() {
@@ -83,6 +115,15 @@ export class FileInputDemoComponent {
     } else {
       this.form.enable();
     }
+    this.syncSignalSettings();
+  }
+
+  public syncSignalSettings() {
+    this.signalSettings.set({
+      required: this.required || this.validatorRequired,
+      disabled: this.disabled,
+      readonly: this.readonly,
+    });
   }
 
   public getCodeSnippet(type: 'value' | 'ngmodel' | 'form') {

@@ -1,250 +1,137 @@
-/* eslint-disable @angular-eslint/prefer-signals -- MatFormFieldControl/CVA properties must remain as @Input decorators (see design decision D2) */
-import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
-import { AfterViewInit, Directive, ElementRef, Input, OnDestroy, Provider, forwardRef, inject, output } from '@angular/core';
-import {
-  AbstractControl,
-  ControlValueAccessor,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ValidationErrors,
-  Validator,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+/* eslint-disable @angular-eslint/no-input-rename -- Preserve value binding and explicit event semantics. */
+/* eslint-disable @angular-eslint/prefer-signals -- The value adapter preserves the public input and event contract. */
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Directive, ElementRef, Input, OnDestroy, OnInit, computed, effect, inject, input, model, output, signal } from '@angular/core';
+import { AbstractControl, NgControl, ValidationErrors } from '@angular/forms';
+import { FORM_FIELD, FormValueControl, transformedValue } from '@angular/forms/signals';
 import { MAT_INPUT_VALUE_ACCESSOR } from '@angular/material/input';
 import { ZV_TIME_FORMATS, ZvTimeAdapter, ZvTimeFormats } from '@zvoove/components/core';
-import { Subject, Subscription } from 'rxjs';
+import { LegacyChangeNotifier, connectLegacyControl } from '@zvoove/components/form-base';
+import { Subject } from 'rxjs';
 
-/**
- * An event used for datepicker input and change events. We don't always have access to a native
- * input or change event because the event may have been triggered by the user clicking on the
- * calendar popup. For consistency, we always use MatDatepickerInputEvent instead.
- */
 export class ZvTimeInputEvent<TTime> {
-  /** The new value for the target datepicker input. */
   value: TTime | null;
-
   constructor(
-    /** Reference to the datepicker input component that emitted the event. */
     public target: ZvTimeInput<TTime>,
-    /** Reference to the native input element associated with the datepicker input. */
     public targetElement: HTMLElement
   ) {
-    this.value = this.target.value;
+    this.value = target.value();
   }
 }
 
-/** @docs-private */
-export const ZV_TIME_VALUE_ACCESSOR: Provider = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => ZvTimeInput),
-  multi: true,
-};
-
-/** @docs-private */
-export const ZV_TIME_VALIDATORS: Provider = {
-  provide: NG_VALIDATORS,
-  useExisting: forwardRef(() => ZvTimeInput),
-  multi: true,
-};
-
 @Directive({
   selector: 'input[zvTime]',
-  standalone: true,
-  providers: [ZV_TIME_VALUE_ACCESSOR, ZV_TIME_VALIDATORS, { provide: MAT_INPUT_VALUE_ACCESSOR, useExisting: ZvTimeInput }],
+  providers: [{ provide: MAT_INPUT_VALUE_ACCESSOR, useExisting: ZvTimeInput }],
   host: {
     class: 'zv-time-input',
-    '[disabled]': 'disabled',
+    '[disabled]': 'isDisabled()',
+    '[readOnly]': 'readonly()',
     '(input)': '_onInput($any($event.target).value)',
     '(change)': '_onChange()',
     '(blur)': '_onBlur()',
   },
   exportAs: 'matTimeInput',
 })
-export class ZvTimeInput<TTime> implements ControlValueAccessor, AfterViewInit, OnDestroy, Validator {
-  private readonly _elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
-  private readonly _timeAdapter = inject<ZvTimeAdapter<TTime>>(ZvTimeAdapter, { optional: true });
-  private readonly _timeFormats = inject<ZvTimeFormats>(ZV_TIME_FORMATS, { optional: true });
-
-  /** Whether the component has been initialized. */
-  private _isInitialized = false;
-
-  /** The value of the input. */
-  @Input()
-  get value(): TTime | null {
-    return this._value;
-  }
-  set value(value: TTime | null) {
-    this._assignValueProgrammatically(value);
-  }
-  protected _value: TTime | null = null;
-
-  /** Whether the input is disabled. */
-  @Input()
-  get disabled(): boolean {
-    return !!this._disabled;
-  }
-  set disabled(value: BooleanInput) {
-    const newValue = coerceBooleanProperty(value);
-    const element = this._elementRef.nativeElement;
-
-    if (this._disabled !== newValue) {
-      this._disabled = newValue;
-      this.stateChanges.next(undefined);
-    }
-
-    // We need to null check the `blur` method, because it's undefined during SSR.
-    // In Ivy static bindings are invoked earlier, before the element is attached to the DOM.
-    // This can cause an error to be thrown in some browsers (IE/Edge) which assert that the
-    // element has been inserted.
-    if (newValue && this._isInitialized && element.blur) {
-      // Normally, native input elements automatically blur if they turn disabled. This behavior
-      // is problematic, because it would mean that it triggers another change detection cycle,
-      // which then causes a changed after checked error if the input element was focused before.
-      element.blur();
-    }
-  }
-  private _disabled = false;
-
-  /** Emits when a `change` event is fired on this `<input>`. */
-  public readonly timeChange = output<ZvTimeInputEvent<TTime>>();
-
-  /** Emits when an `input` event is fired on this `<input>`. */
-  public readonly timeInput = output<ZvTimeInputEvent<TTime>>();
-
-  /** Emits when the internal state has changed */
+export class ZvTimeInput<TTime> implements FormValueControl<TTime | null>, OnInit, OnDestroy {
+  private readonly element = inject<ElementRef<HTMLInputElement>>(ElementRef).nativeElement;
+  private readonly adapter = inject<ZvTimeAdapter<TTime>>(ZvTimeAdapter, { optional: true });
+  private readonly formats = inject<ZvTimeFormats>(ZV_TIME_FORMATS, { optional: true });
+  readonly ngControl = inject(FORM_FIELD, { optional: true, self: true }) ? null : inject(NgControl, { optional: true, self: true });
+  readonly value = model<TTime | null>(null, { alias: 'modelValue' });
+  readonly valueChange = output<TTime | null>();
+  readonly touch = output<void>();
+  readonly disabled = input(false, { transform: coerceBooleanProperty });
+  readonly readonly = input(false, { transform: coerceBooleanProperty });
+  private readonly legacyDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.legacyDisabled());
+  readonly timeChange = output<ZvTimeInputEvent<TTime>>();
+  readonly timeInput = output<ZvTimeInputEvent<TTime>>();
   readonly stateChanges = new Subject<void>();
+  private validatorChanged = () => {};
+  private readonly validator = (control: AbstractControl) => this.validate(control);
+  private readonly raw = transformedValue(this.value, {
+    parse: (text: string) => {
+      const parsed = this.adapter?.parse(text, this.formats?.parse.timeInput) ?? null;
+      const valid = !parsed || !!this.adapter?.isValid(parsed);
+      return {
+        value: this.adapter?.getValidTimeOrNull(parsed) ?? null,
+        error: valid ? undefined : { kind: 'zvTimeInputParse', text: text },
+      };
+    },
+    format: (value) => (value == null ? '' : (this.adapter?.format(value, this.formats?.display.timeInput) ?? '')),
+  });
 
-  _onTouched = () => {};
-  _validatorOnChange = () => {};
-
-  private _cvaOnChange: (value: TTime | null) => void = () => {};
-  private _localeSubscription = Subscription.EMPTY;
-
-  /** The form control validator for whether the input parses. */
-  private _parseValidator: ValidatorFn = (): ValidationErrors | null => {
-    return this._lastValueValid ? null : { zvTimeInputParse: { text: this._elementRef.nativeElement.value } };
-  };
-
-  /** Gets the base validator functions. */
-  protected _getValidators(): ValidatorFn[] {
-    return [this._parseValidator];
+  @Input('value')
+  set valueInput(value: TTime | null) {
+    const parsed = this.adapter?.deserialize(value) ?? null;
+    const next = this.adapter?.getValidTimeOrNull(parsed) ?? null;
+    if (!this.adapter?.sameTime(next, this.value())) {
+      this.value.set(next);
+      this.element.value = next == null ? '' : (this.adapter?.format(next, this.formats?.display.timeInput) ?? '');
+    }
   }
 
-  /** Combined form control validator for this input. */
-  protected _validator: ValidatorFn | null;
-
-  /** Whether the last value set on the input was valid. */
-  protected _lastValueValid = false;
+  private readonly notifyLegacyChange: LegacyChangeNotifier<TTime | null>;
 
   constructor() {
-    this._validator = Validators.compose(this._getValidators());
+    this.notifyLegacyChange = connectLegacyControl(
+      this.ngControl,
+      this.touch,
+      (value) => {
+        this.valueInput = value;
+        this.reset();
+      },
+      (disabled) => this.legacyDisabled.set(disabled)
+    );
+    effect(() => {
+      this.element.value = this.raw();
+      this.stateChanges.next();
+    });
   }
 
-  ngAfterViewInit() {
-    this._isInitialized = true;
+  ngOnInit() {
+    this.ngControl?.control?.addValidators(this.validator);
+    this.ngControl?.control?.updateValueAndValidity({ emitEvent: false });
   }
-
   ngOnDestroy() {
-    this._localeSubscription.unsubscribe();
+    this.ngControl?.control?.removeValidators(this.validator);
     this.stateChanges.complete();
   }
-
-  /** @docs-private */
-  registerOnValidatorChange(fn: () => void): void {
-    this._validatorOnChange = fn;
+  registerOnValidatorChange(fn: () => void) {
+    this.validatorChanged = fn;
   }
-
-  /** @docs-private */
-  validate(c: AbstractControl): ValidationErrors | null {
-    return this._validator ? this._validator(c) : null;
+  validate(_control: AbstractControl): ValidationErrors | null {
+    const errors = this.raw.parseErrors();
+    return errors.length ? { zvTimeInputParse: { text: this.element.value } } : null;
   }
-
-  // Implemented as part of ControlValueAccessor.
-  writeValue(value: unknown): void {
-    this._assignValueProgrammatically(value as TTime | null);
+  reset() {
+    const value = this.value();
+    this.raw.set(value == null ? '' : (this.adapter?.format(value, this.formats?.display.timeInput) ?? ''));
+    this.element.value = this.raw();
+    this.validatorChanged();
   }
-
-  // Implemented as part of ControlValueAccessor.
-  registerOnChange(fn: (value: TTime | null) => void): void {
-    this._cvaOnChange = fn;
+  focus(options?: FocusOptions) {
+    this.element.focus(options);
   }
-
-  // Implemented as part of ControlValueAccessor.
-  registerOnTouched(fn: () => void): void {
-    this._onTouched = fn;
-  }
-
-  // Implemented as part of ControlValueAccessor.
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
-  _onInput(value: string) {
-    const lastValueWasValid = this._lastValueValid;
-    let time = this._timeAdapter?.parse(value, this._timeFormats?.parse.timeInput) ?? null;
-    this._lastValueValid = this._isValidValue(time);
-    time = this._timeAdapter?.getValidTimeOrNull(time) ?? null;
-    const hasChanged = !(this._timeAdapter?.sameTime(time, this.value) ?? false);
-
-    // We need to fire the CVA change event for all
-    // nulls, otherwise the validators won't run.
-    if (!time || hasChanged) {
-      this._cvaOnChange(time);
-    } else {
-      // Call the CVA change handler for invalid values
-      // since this is what marks the control as dirty.
-      if (value && !this.value) {
-        this._cvaOnChange(time);
-      }
-
-      if (lastValueWasValid !== this._lastValueValid) {
-        this._validatorOnChange();
-      }
+  _onInput(text: string) {
+    const previous = this.value();
+    this.raw.set(text);
+    const value = this.value();
+    const changed = !(this.adapter?.sameTime(value, previous) ?? false);
+    // The legacy pipeline has to see every null, otherwise its validators don't re-run.
+    if (!value || changed) {
+      this.notifyLegacyChange(value);
+      this.valueChange.emit(value);
     }
-
-    if (hasChanged) {
-      this._assignValue(time);
-      this.timeInput.emit(new ZvTimeInputEvent(this, this._elementRef.nativeElement));
-    }
+    this.validatorChanged();
+    if (changed) this.timeInput.emit(new ZvTimeInputEvent(this, this.element));
+    this.stateChanges.next();
   }
-
   _onChange() {
-    this.timeChange.emit(new ZvTimeInputEvent(this, this._elementRef.nativeElement));
+    this.timeChange.emit(new ZvTimeInputEvent(this, this.element));
   }
-
-  /** Handles blur events on the input. */
   _onBlur() {
-    // Reformat the input only if we have a valid value.
-    if (this.value) {
-      this._formatValue(this.value);
-    }
-
-    this._onTouched();
-  }
-
-  /** Formats a value and sets it on the input element. */
-  protected _formatValue(value: TTime | null) {
-    this._elementRef.nativeElement.value =
-      value != null ? (this._timeAdapter?.format(value, this._timeFormats?.display.timeInput) ?? '') : '';
-  }
-
-  /** Assigns a value to the model. */
-  private _assignValue(value: TTime | null) {
-    this._value = value;
-  }
-
-  /** Programmatically assigns a value to the input. */
-  protected _assignValueProgrammatically(value: TTime | null) {
-    value = this._timeAdapter?.deserialize(value) ?? null;
-    this._lastValueValid = this._isValidValue(value);
-    value = this._timeAdapter?.getValidTimeOrNull(value) ?? null;
-    this._assignValue(value);
-    this._formatValue(value);
-  }
-
-  /** Whether a value is considered valid. */
-  private _isValidValue(value: TTime | null): boolean {
-    return !value || !!this._timeAdapter?.isValid(value);
+    if (this.value()) this.element.value = this.adapter?.format(this.value(), this.formats?.display.timeInput) ?? '';
+    this.touch.emit();
   }
 }

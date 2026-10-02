@@ -231,6 +231,20 @@ export class TestValueComponent {
 }
 
 @Component({
+  selector: 'zv-test-form-control-and-value',
+  template: `<zv-select [formControl]="control" [value]="value()" [dataSource]="items" (valueChange)="emitted.push($event)" />`,
+  // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, ZvSelect],
+})
+export class TestFormControlAndValueComponent {
+  public items = [ITEMS.red, ITEMS.green, ITEMS.blue];
+  public readonly value = signal<any>(null);
+  public readonly control = new FormControl<any>(null);
+  public readonly emitted: any[] = [];
+}
+
+@Component({
   selector: 'zv-test-custom-template',
   template: `
     <zv-select [value]="value()" (valueChange)="value.set($event)" [dataSource]="items">
@@ -325,8 +339,8 @@ describe('ZvSelect', () => {
     expect(component.errorStateMatcher).toBe(undefined);
     expect(component.panelClass()).toBe('');
     expect(component.placeholder).toBe('');
-    expect(component.required).toBe(false);
-    expect(component.disabled).toBe(false);
+    expect(component.required()).toBe(false);
+    expect(component.disabled()).toBe(false);
     expect(component.focused).toBe(false);
   });
 
@@ -340,32 +354,32 @@ describe('ZvSelect', () => {
     ];
     component.dataSource = createFakeDataSource(items);
 
-    component.value = null;
+    fixture.componentRef.setInput('value', null);
     expect(component.empty).toBe(true);
 
-    component.value = [];
+    fixture.componentRef.setInput('value', []);
     expect(component.empty).toBe(true);
 
-    component.value = [items[0]];
+    fixture.componentRef.setInput('value', [items[0]]);
     expect(component.empty).toBe(false);
 
-    component.value = items;
+    fixture.componentRef.setInput('value', items);
     expect(component.empty).toBe(false);
 
     fixture.componentRef.setInput('multiple', false);
-    component.value = null;
+    fixture.componentRef.setInput('value', null);
     expect(component.empty).toBe(true);
 
-    component.value = {};
+    fixture.componentRef.setInput('value', {});
     expect(component.empty).toBe(false);
 
-    component.value = '';
+    fixture.componentRef.setInput('value', '');
     expect(component.empty).toBe(true);
 
-    component.value = 'some value';
+    fixture.componentRef.setInput('value', 'some value');
     expect(component.empty).toBe(false);
 
-    component.value = 0;
+    fixture.componentRef.setInput('value', 0);
     expect(component.empty).toBe(false);
   });
 
@@ -415,13 +429,13 @@ describe('ZvSelect', () => {
 
   it('should update disabled property when calling setDisabledState', () => {
     const { component } = createZvSelect();
-    component.disabled = true;
+    component.disabled.set(true);
 
-    component.setDisabledState(false);
-    expect(component.disabled).toBe(false);
+    component.disabled.set(false);
+    expect(component.disabled()).toBe(false);
 
-    component.setDisabledState(true);
-    expect(component.disabled).toBe(true);
+    component.disabled.set(true);
+    expect(component.disabled()).toBe(true);
   });
 
   it("should not switch dataSource when dataSource input doesn't change", () => {
@@ -470,6 +484,17 @@ describe('ZvSelect', () => {
     expect(component.value()).toEqual(ITEMS.red.value);
   });
 
+  it('should write a [value] binding through to the bound form control', async () => {
+    const { component, fixture } = await initTest(TestFormControlAndValueComponent);
+    const emittedBefore = component.emitted.length;
+    component.value.set(ITEMS.green.value);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component.control.value).toEqual(ITEMS.green.value);
+    // [value] has never emitted valueChange, and must not start now.
+    expect(component.emitted.length).toBe(emittedBefore);
+  });
+
   it('should emit only once when selecting an option', async () => {
     const { component, zvSelect: zvSelect } = await initTest(TestComponent);
     await zvSelect.clickOptions({ text: ITEMS.green.label });
@@ -495,6 +520,15 @@ describe('ZvSelect', () => {
     component.control.patchValue(1);
     fixture.detectChanges();
     expect(await zvSelect.isErrorState()).toBe(false);
+  });
+
+  it('should notify the form field when the error state matcher changes', () => {
+    const { component } = createZvSelect();
+    const stateChangesSpy = vi.spyOn(component.stateChanges, 'next');
+
+    component.errorStateMatcher = { isErrorState: () => true };
+
+    expect(stateChangesSpy).toHaveBeenCalled();
   });
 
   it('should use clearable input', async () => {
@@ -559,6 +593,7 @@ describe('ZvSelect', () => {
 
   it('should set the right css classes', async () => {
     const { fixture, component, zvSelect: zvSelect } = await initTest(TestComponent);
+    component.select().requiredInput = false;
 
     let errorState = false;
     component.errorStateMatcher.set({
@@ -589,12 +624,12 @@ describe('ZvSelect', () => {
     errorState = false;
 
     // Required
-    component.select().required = true;
+    component.select().requiredInput = true;
     (component.select() as any).cd.markForCheck();
     fixture.detectChanges();
     fixture.detectChanges();
     assertZvSelectCssClasses(fixture, ['zv-select', 'zv-select-required']);
-    component.select().required = false;
+    component.select().requiredInput = false;
 
     // mat-option
     component.panelClass.set({ 'custom-mat-option-class': true });
