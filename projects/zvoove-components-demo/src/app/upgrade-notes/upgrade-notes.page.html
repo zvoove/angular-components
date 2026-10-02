@@ -1,3 +1,23 @@
+<app-version version="22.1.0">
+  <app-change
+    >Signal Forms support was added for ZvNumberInput, ZvFileInput, ZvSelect, ZvDateTimeInput, and ZvTimeInput through Angular 22.2's
+    [formField] binding.</app-change
+  >
+  <app-change>Existing reactive-form and template bindings remain supported.</app-change>
+  <app-change
+    ><b>BREAKING CHANGE</b> The TypeScript API of the form controls now exposes signal properties. When accessing a control through
+    ViewChild, use value(), disabled(), required(), and readonly(); use set(...) to update writable signal properties.</app-change
+  >
+  <app-change
+    >zv-form-field now supports signal controls. Use an explicit mat-label or customize ZvFormService.getSignalLabel and
+    ZvFormService.getSignalErrors for signal fields; existing getLabel and getControlErrors overrides continue to apply to legacy
+    forms.</app-change
+  >
+  <app-change
+    >Signal-form errors use ZvFormService.getSignalErrors. The legacy filterErrors and mapDataToError customization pipeline is not used for
+    signal fields, so override getSignalErrors as well to localize their fallback error messages.</app-change
+  >
+</app-version>
 <app-version version="22.0.0">
   <app-change>Angular 22.2 upgrade.</app-change>
   <app-change>The component library now requires Angular, Angular Material, and Angular CDK 22.2.</app-change>
