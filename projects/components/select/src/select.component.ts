@@ -134,6 +134,8 @@ export class ZvSelect<T = unknown> implements ControlValueAccessor, MatFormField
   public readonly multiple = input(false);
   public readonly panelClass = input<string | string[] | Set<string> | Record<string, boolean>>('');
   @Input() public placeholder = '';
+  public readonly searchPlaceholder = $localize`:@@zvc.search:Search`;
+  public readonly noEntriesFoundLabel = $localize`:@@zvc.noEntries:No entries`;
   @Input() public required = false;
   public readonly selectedLabel = input(true);
 
